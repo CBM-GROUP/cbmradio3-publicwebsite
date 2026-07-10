@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <rect width="800" height="1000" fill="#111827"/>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <circle cx="400" cy="360" r="180" fill="#fdf2f8" opacity="0.95"/>
+  <circle cx="400" cy="340" r="145" fill="#f9a8d4"/>
+  <path d="M250 820c40-140 130-220 150-220s110 80 150 220" fill="#fdf2f8"/>
+  <path d="M280 300c25-95 80-160 120-160 45 0 90 65 115 160" fill="#db2777"/>
+  <text x="400" y="930" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="700" fill="#fdf2f8">Samuel Peter</text>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#be185d"/>
+      <stop offset="100%" stop-color="#831843"/>
+    </linearGradient>
+  </defs>
+</svg>
