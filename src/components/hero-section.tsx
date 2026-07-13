@@ -33,16 +33,14 @@ export default function HeroSection() {
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    const delay = 5000; // milliseconds between slides
-
     if (isPaused) return;
 
-    const id = window.setTimeout(() => {
+    const intervalId = window.setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, delay) as unknown as number;
+    }, 3000);
 
-    return () => clearTimeout(id as unknown as number);
-  }, [currentSlide, isPaused]);
+    return () => window.clearInterval(intervalId);
+  }, [isPaused]);
 
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
   const prevSlide = () =>
@@ -53,7 +51,7 @@ export default function HeroSection() {
       <section
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
-        className="relative h-screen bg-cover bg-center"
+        className="relative min-h-screen bg-cover bg-center pt-24"
         style={{
           backgroundImage: slides[currentSlide].image,
         }}

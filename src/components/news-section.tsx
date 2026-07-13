@@ -7,6 +7,7 @@ import Link from "next/link";
 const news = [
   {
     id: 1,
+    slug: "community-health-campaign",
     title: "CBM Radio Launches Community Health Campaign",
     category: "Community",
     date: "July 10, 2026",
@@ -16,6 +17,7 @@ const news = [
   },
   {
     id: 2,
+    slug: "exclusive-interview-local-entrepreneurs",
     title: "Exclusive Interview with Local Entrepreneurs",
     category: "Business",
     date: "July 8, 2026",
@@ -25,6 +27,7 @@ const news = [
   },
   {
     id: 3,
+    slug: "new-digital-studio-operational",
     title: "New Digital Studio Now Operational",
     category: "Technology",
     date: "July 5, 2026",
@@ -88,7 +91,7 @@ export default function NewsSection() {
                   </span>
 
                   <Link
-                    href="/news"
+                    href={`/news/${item.slug}`}
                     className="text-emerald-600 font-semibold hover:text-emerald-800"
                   >
                     Read More
