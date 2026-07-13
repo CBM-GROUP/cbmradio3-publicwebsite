@@ -81,7 +81,9 @@ function TeamCard({ member }: { member: (typeof team)[0] }) {
     .join("");
 
   return (
-    <motion.div
+    <>
+
+      <motion.div
       whileHover={{ y: -10 }}
       transition={{ duration: 0.3 }}
       className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 shadow-lg"
@@ -121,5 +123,7 @@ function TeamCard({ member }: { member: (typeof team)[0] }) {
         </div>
       </div>
     </motion.div>
+
+    </>
   );
 }

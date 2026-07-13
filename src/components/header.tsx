@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import { MenuIcon } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -20,7 +19,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-black text-white shadow-sm bg-zinc-800/30 backdrop-blur fixed w-full top-0 z-50">
+    <header className="bg-black/40 text-white shadow-sm backdrop-blur fixed w-full top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center p-5">
         <h1 className="text-2xl font-bold text-teal-600">CBM</h1>
 
