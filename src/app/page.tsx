@@ -6,6 +6,7 @@ import NewsSection from "@/components/news-section";
 import Footer from "@/components/footer";
 import Gallery from "@/components/gallery";
 import Contact from "@/components/contact";
+import TeamMembers from "@/components/team-members";
 
 export default function Home() {
   return (
@@ -14,7 +15,7 @@ export default function Home() {
       <div className="min-h-screen">
         <HeroSection />
       </div>
-      <TeamSection />
+      <TeamMembers />
       <ProgramsSection />
       <NewsSection />
       <Gallery />
