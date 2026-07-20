@@ -22,7 +22,7 @@ export default function AboutPage() {
       <Header />
       <main className="min-h-screen bg-zinc-950 px-6 py-24 text-white sm:px-8 lg:px-16">
         <div className="mx-auto max-w-5xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-500">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-teal-500">
             About
           </p>
           <h1 className="mt-3 text-4xl font-bold sm:text-5xl">
@@ -38,7 +38,7 @@ export default function AboutPage() {
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {highlights.map((item) => (
               <div key={item.title} className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-                <h2 className="text-xl font-semibold text-emerald-400">{item.title}</h2>
+                <h2 className="text-xl font-semibold text-teal-400">{item.title}</h2>
                 <p className="mt-3 text-sm leading-7 text-gray-400">{item.description}</p>
               </div>
             ))}

@@ -39,29 +39,27 @@ const news = [
 
 export default function NewsSection() {
   return (
-    <section className="py-20">
+    <section className="min-h-screen bg-zinc-900 pb-24">
+      {/* Heading */}
+      <div className="mb-16 mt-24 bg-black/20 flex flex-col items-center text-center py-24 px-6">
+        <h2 className="text-5xl font-medium text-teal-500">Where Culture Meets Commentary</h2>
+        <p className="text-xl font-light mt-4 text-zinc-300 max-w-2xl">
+          Stay plugged into the latest buzz, trending moments, and conversations
+          lighting up youth culture. From music drops to viral stories, this is
+          your go-to spot for what’s hot, what’s next, and what everyone’s
+          talking about.
+        </p>
+      </div>
+
       <div className="max-w-7xl mx-auto px-6">
-
-        {/* Heading */}
-        <div className="text-center mb-14">
-          <h2 className="text-4xl font-bold text-emerald-500">
-            Latest News
-          </h2>
-          <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-            Stay updated with the latest stories, announcements, and events
-            happening at CBM Radio.
-          </p>
-        </div>
-
         {/* News Cards */}
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-
           {news.map((item) => (
             <div
               key={item.id}
-              className="bg-zinc-800 rounded-2xl overflow-hidden shadow-sm shadow-gray-800/20 hover:shadow-2xl transition duration-300 hover:-translate-y-2"
+              className="bg-zinc-800 rounded-2xl overflow-hidden shadow-sm shadow-gray-900/50 hover:shadow-xl transition duration-300 hover:-translate-y-2 border border-zinc-700/50"
             >
-              <div className="relative h-60">
+              <div className="relative h-60 w-full">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -70,52 +68,48 @@ export default function NewsSection() {
                 />
               </div>
 
-              <div className="p-6">
+              <div className="p-6 flex flex-col h-[calc(100%-15rem)]">
+                <div className="mb-auto">
+                  <span className="inline-block bg-teal-500/20 text-teal-400 font-semibold text-xs px-3 py-1 rounded-full mb-4">
+                    {item.category}
+                  </span>
 
-                <span className="inline-block bg-emerald-800 text-black text-xs px-3 py-1 rounded-full mb-3">
-                  {item.category}
-                </span>
+                  <h3 className="text-xl font-bold mb-1 text-gray-100">
+                    {item.title}
+                  </h3>
 
-                <h3 className="text-lg font-bold mb-3 text-gray-200">
-                  {item.title}
-                </h3>
+                  <p className="text-zinc-400 text-sm mb-6">
+                    {item.description}
+                  </p>
+                </div>
 
-                <p className="text-gray-600 text-sm mb-4">
-                  {item.description}
-                </p>
-
-                <div className="flex justify-between items-center">
-
-                  <span className="text-sm text-gray-500">
+                <div className="flex justify-between items-center pt-4 border-t border-zinc-700">
+                  <span className="text-sm font-medium text-zinc-500">
                     {item.date}
                   </span>
 
                   <Link
                     href={`/news/${item.slug}`}
-                    className="text-emerald-600 font-semibold hover:text-emerald-800"
+                    className="text-teal-500 font-semibold hover:text-teal-400 flex items-center group transition-colors"
                   >
                     Read More
-                    <ArrowRightIcon className="inline-block w-4 h-4 ml-1" />
+                    <ArrowRightIcon className="inline-block w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" />
                   </Link>
-
                 </div>
-
               </div>
             </div>
           ))}
-
         </div>
 
         {/* Button */}
-        <div className="text-center mt-12">
+        <div className="text-center mt-16">
           <Link
             href="/news"
-            className="inline-block bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-full font-semibold transition"
+            className="inline-block bg-teal-600 hover:bg-teal-500 text-black px-8 py-3 rounded-full font-semibold transition shadow-lg hover:shadow-emerald-600/30"
           >
             View All News
           </Link>
         </div>
-
       </div>
     </section>
   );

@@ -98,9 +98,9 @@ export default function TeamMembers() {
     (typeof members)[0] | null
   >(null);
 
-  const handleSocialLinks = (url?: string)=> {
-    console.log("pressed", url)
-  }
+  const handleSocialLinks = (url?: string) => {
+    console.log("pressed", url);
+  };
   return (
     <section className="bg-black px-6 py-24 text-white sm:px-8 lg:px-16">
       <div className="mx-auto max-w-7xl">
@@ -122,7 +122,7 @@ export default function TeamMembers() {
         {members.map((member) => (
           <div
             key={member.id}
-            className={`relative inline-block h-70 w-60 rounded-2xl bg-zinc-500/30 cursor-pointer shadow-lg transition-transform duration-300 hover:scale-105 hover:z-40 ${member.style}`}
+            className={`relative inline-block h-28 w-20 sm:h-36 sm:w-28 md:h-48 md:w-36 lg:h-64 lg:w-48 xl:h-70 xl:w-60 rounded-2xl bg-zinc-500/30 cursor-pointer shadow-lg transition-transform duration-300 hover:scale-105 hover:z-40 ${member.style}`}
             onMouseEnter={() => setHoveredId(member.id)}
             onMouseLeave={() => setHoveredId(null)}
             onClick={() => setSelectedMember(member)}
@@ -155,17 +155,25 @@ export default function TeamMembers() {
 
       <ProfileCard
         isOpen={!!selectedMember}
-        onClose={()=> setSelectedMember(null)}
+        onClose={() => setSelectedMember(null)}
         name={selectedMember?.name || ""}
         title={selectedMember?.title || ""}
         bio={selectedMember?.bio || ""}
         profileUrl={selectedMember?.profileUrl || ""}
-        onFacebookPress={()=> handleSocialLinks(selectedMember?.facebookLink || "")}
-        onInstagramPress={()=> handleSocialLinks(selectedMember?.instagramLink || "")}
-        onLinkedInPress={()=> handleSocialLinks(selectedMember?.linkedInLink || "")}
-        onWhatsAppPress={()=> handleSocialLinks(selectedMember?.whatsAppLink || "")}
-        onXPress={()=> handleSocialLinks(selectedMember?.xLink || "")}
-        />
+        onFacebookPress={() =>
+          handleSocialLinks(selectedMember?.facebookLink || "")
+        }
+        onInstagramPress={() =>
+          handleSocialLinks(selectedMember?.instagramLink || "")
+        }
+        onLinkedInPress={() =>
+          handleSocialLinks(selectedMember?.linkedInLink || "")
+        }
+        onWhatsAppPress={() =>
+          handleSocialLinks(selectedMember?.whatsAppLink || "")
+        }
+        onXPress={() => handleSocialLinks(selectedMember?.xLink || "")}
+      />
     </section>
   );
 }
