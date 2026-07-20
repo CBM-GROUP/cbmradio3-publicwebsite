@@ -26,18 +26,27 @@ const articles = {
   },
 };
 
-export default function NewsArticlePage({ params }: { params: { slug: string } }) {
+export default function NewsArticlePage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const article = articles[params.slug as keyof typeof articles];
 
   if (!article) {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-zinc-950 px-6 py-24 text-white">
+        <main className="min-h-screen px-6 py-24 text-white">
           <div className="mx-auto max-w-3xl rounded-2xl border border-zinc-800 bg-zinc-900 p-8 text-center">
             <h1 className="text-3xl font-bold">Article not found</h1>
-            <p className="mt-4 text-gray-400">The requested news article could not be found.</p>
-            <Link href="/news" className="mt-6 inline-block text-emerald-500 hover:text-emerald-400">
+            <p className="mt-4 text-gray-400">
+              The requested news article could not be found.
+            </p>
+            <Link
+              href="/news"
+              className="mt-6 inline-block text-teal-500 hover:text-teal-400"
+            >
               Back to news
             </Link>
           </div>
@@ -52,13 +61,22 @@ export default function NewsArticlePage({ params }: { params: { slug: string } }
       <Header />
       <main className="min-h-screen bg-zinc-950 px-6 py-24 text-white sm:px-8 lg:px-16">
         <div className="mx-auto max-w-4xl rounded-3xl border border-zinc-800 bg-zinc-900 p-8 shadow-2xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-500">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-teal-500">
             {article.category}
           </p>
-          <h1 className="mt-3 text-3xl font-bold sm:text-4xl">{article.title}</h1>
-          <p className="mt-4 text-sm text-gray-400">Published on {article.date}</p>
-          <p className="mt-8 text-lg leading-8 text-gray-300">{article.content}</p>
-          <Link href="/news" className="mt-8 inline-block text-emerald-500 hover:text-emerald-400">
+          <h1 className="mt-3 text-3xl font-bold sm:text-4xl">
+            {article.title}
+          </h1>
+          <p className="mt-4 text-sm text-gray-400">
+            Published on {article.date}
+          </p>
+          <p className="mt-8 text-lg leading-8 text-gray-300">
+            {article.content}
+          </p>
+          <Link
+            href="/news"
+            className="mt-8 inline-block text-teal-500 hover:text-teal-400"
+          >
             ← Back to all news
           </Link>
         </div>

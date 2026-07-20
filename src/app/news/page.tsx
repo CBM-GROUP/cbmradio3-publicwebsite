@@ -6,7 +6,7 @@ export default function NewsPage() {
   return (
     <>
       <Header />
-      <main className="pt-20">
+      <main>
         <NewsSection />
       </main>
       <Footer />

@@ -13,7 +13,7 @@ import {
 
 export default function Footer() {
   return (
-    <footer id="contact" className="bg-[#111827] text-gray-300">
+    <footer id="contact" className="bg-zinc-800/20 text-gray-300">
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-6 py-16 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
 
@@ -31,7 +31,7 @@ export default function Footer() {
           </p>
 
           <div className="flex gap-4 mt-6">
-            <a
+            <Link
               href="https://www.cbmgroup.org/"
               target="_blank"
               rel="noopener noreferrer"
@@ -39,9 +39,9 @@ export default function Footer() {
               className="bg-emerald-600 p-3 rounded-full hover:bg-white hover:text-emerald-600 transition"
             >
               <FaFacebookF />
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="https://www.cbmgroup.org/"
               target="_blank"
               rel="noopener noreferrer"
@@ -49,9 +49,9 @@ export default function Footer() {
               className="bg-emerald-600 p-3 rounded-full hover:bg-white hover:text-emerald-600 transition"
             >
               <FaInstagram />
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="https://www.cbmgroup.org/"
               target="_blank"
               rel="noopener noreferrer"
@@ -59,7 +59,7 @@ export default function Footer() {
               className="bg-emerald-600 p-3 rounded-full hover:bg-white hover:text-emerald-600 transition"
             >
               <FaTwitter />
-            </a>
+            </Link>
 
             <a
               href="https://www.cbmgroup.org/"
