@@ -3,20 +3,17 @@
 import Image from "next/image";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import galleryImages from "@/gallery.json";
 import Radio2 from "../../../public/cbm_images/radio 2.jpeg";
 import logo from "../../../public/cbmradio.png";
 import { useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { useMedia } from "@/hooks/useMedia";
-import { mediaTabs } from "@/constants/media_tabs";
+import { galleryTabs } from "@/api/gallery_tabs";
+import { GalleryItem } from "@/types/gallery";
+import { useGallery } from "@/hooks/useGallery";
 
-interface GalleryItem {
-  id: string | number;
-  imageUrl: string;
-  type?: "photo" | "video";
-}
+type TabType = (typeof galleryTabs)[number]["id"];
 
 // Explicitly type as Variants
 const containerVariants: Variants = {
@@ -42,22 +39,23 @@ const itemVariants: Variants = {
 export default function GalleryPage() {
   const isMobile = useMedia("(max-width: 639px)");
   const [visibleCount, setVisibleCount] = useState(25);
-  const [activeTab, setActiveTab] = useState<"all" | "photo" | "video">("all");
+  const [activeTab, setActiveTab] = useState<TabType>("all");
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
+
+  const { items, pageContent, isLoading, error } = useGallery();
 
   const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + 25);
   };
 
-  const handleTabChange = (tab: "all" | "photo" | "video") => {
+  const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
     setVisibleCount(25);
   };
 
-  const filteredImages = galleryImages.filter((item: GalleryItem) => {
+  const filteredImages = items.filter((item) => {
     if (activeTab === "all") return true;
-    const itemType = item.type || "photo";
-    return itemType === activeTab;
+    return item.category === activeTab;
   });
 
   const displayedImages = filteredImages.slice(0, visibleCount);
@@ -76,8 +74,7 @@ export default function GalleryPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
-          className="relative mb-16 h-96 flex flex-col items-center justify-center text-center px-6 overflow-hidden w-full"
-        >
+          className="relative mb-16 h-96 flex flex-col items-center justify-center text-center px-6 overflow-hidden w-full">
           <Image
             src={Radio2}
             alt="CBM Radio News Background"
@@ -96,17 +93,16 @@ export default function GalleryPage() {
               type: "spring",
               bounce: 0.4,
             }}
-            className="text-center sm:text-left w-full py-10 px-6 md:px-12 lg:px-20 relative z-20 mt-12"
-          >
+            className="text-center sm:text-left w-full py-10 px-6 md:px-12 lg:px-20 relative z-20 mt-12">
             <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-teal-500">
               Gallery
             </p>
             <h1 className="mt-2 sm:mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-              CBM Radio Moments
+              {pageContent?.heading || "CBM Radio Moments"}
             </h1>
             <p className="mt-4 sm:mt-6 max-w-3xl text-sm sm:text-base lg:text-lg text-zinc-300 mx-auto sm:mx-0">
-              A glimpse into the energy, events and creativity behind the CBM
-              Radio experience.
+              {pageContent?.intro_content ||
+                "A glimpse into the energy, events and creativity behind the CBM Radio experience."}
             </p>
           </motion.div>
         </motion.div>
@@ -116,26 +112,37 @@ export default function GalleryPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex w-full gap-2 overflow-x-auto pb-2 scrollbar-hide"
-          >
-            {mediaTabs.map(({ id, label, icon: Icon }) => (
+            className="flex w-full gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {galleryTabs.map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
-                onClick={() => handleTabChange(id)}
-                className={`flex min-w-27.5 flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium whitespace-nowrap transition-all duration-200 sm:flex-none ${activeTab === id ? activeTabClass : inactiveTabClass}`}
-              >
+                onClick={() => handleTabChange(id as TabType)}
+                className={`flex min-w-27.5 flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium whitespace-nowrap transition-all duration-200 sm:flex-none ${activeTab === id ? activeTabClass : inactiveTabClass}`}>
                 <Icon size={18} className="shrink-0" />
                 <span>{label}</span>
               </button>
             ))}
           </motion.div>
 
-          {filteredImages.length === 0 && (
+          {/* Loading and Error States */}
+          {isLoading && (
+            <div className="flex flex-row items-center justify-center py-20 gap-4">
+              <Loader2 className="h-8 w-8 animate-spin text-teal-700" />
+              <p className="text-zinc-500">Loading gallery...</p>
+            </div>
+          )}
+
+          {error && (
+            <div className="py-20 text-center text-red-500 text-lg">
+              Failed to load gallery: {error}
+            </div>
+          )}
+
+          {!isLoading && !error && filteredImages.length === 0 && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="py-20 text-center text-zinc-500 text-lg"
-            >
+              className="py-20 text-center text-zinc-500 text-lg">
               No {activeTab}s found.
             </motion.div>
           )}
@@ -146,8 +153,7 @@ export default function GalleryPage() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="mt-8 sm:mt-10 lg:mt-12 grid grid-flow-dense auto-rows-30 xs:auto-rows-[150px] sm:auto-rows-45 md:auto-rows-50 lg:auto-rows-55 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3 lg:gap-4"
-          >
+            className="mt-8 sm:mt-10 lg:mt-12 grid grid-flow-dense auto-rows-30 xs:auto-rows-[150px] sm:auto-rows-45 md:auto-rows-50 lg:auto-rows-55 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3 lg:gap-4">
             <AnimatePresence mode="popLayout">
               {displayedImages.map((item, index) => {
                 let colSpan = "col-span-1";
@@ -206,11 +212,10 @@ export default function GalleryPage() {
                     variants={itemVariants}
                     key={item.id} // Must be a unique ID for layout animations to work correctly
                     onClick={() => setSelectedImage(item)}
-                    className={`relative ${getGridClasses()} rounded-xl break-inside-avoid overflow-hidden border border-zinc-700/30 sm:border-zinc-700/50 group hover:border-teal-500/50 transition-colors duration-300 cursor-pointer`}
-                  >
+                    className={`relative ${getGridClasses()} rounded-xl break-inside-avoid overflow-hidden border border-zinc-700/30 sm:border-zinc-700/50 group hover:border-teal-500/50 transition-colors duration-300 cursor-pointer`}>
                     <div className="relative w-full h-full flex items-center justify-center bg-zinc-900">
                       <Image
-                        src={item.imageUrl}
+                        src={item.image}
                         alt={`CBM Radio Moment ${index + 1}`}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
@@ -249,12 +254,10 @@ export default function GalleryPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
-              className="mt-12 sm:mt-16 text-center"
-            >
+              className="mt-12 sm:mt-16 text-center">
               <button
                 onClick={handleLoadMore}
-                className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-teal-600 hover:bg-teal-500 active:bg-teal-700 text-black font-semibold text-sm sm:text-base transition-all duration-300 hover:shadow-lg hover:shadow-teal-500/25 transform hover:-translate-y-0.5 cursor-pointer"
-              >
+                className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-teal-600 hover:bg-teal-500 active:bg-teal-700 text-black font-semibold text-sm sm:text-base transition-all duration-300 hover:shadow-lg hover:shadow-teal-500/25 transform hover:-translate-y-0.5 cursor-pointer">
                 Load More {activeTab === "all" ? "Moments" : `${activeTab}s`}
               </button>
             </motion.div>
@@ -263,7 +266,6 @@ export default function GalleryPage() {
       </div>
       <Footer />
 
-      {/* Lightbox / Popover */}
       <AnimatePresence>
         {selectedImage && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8">
@@ -277,8 +279,7 @@ export default function GalleryPage() {
 
             <button
               onClick={() => setSelectedImage(null)}
-              className="absolute top-4 right-4 sm:top-8 sm:right-8 z-60 p-2 rounded-full bg-white/10 text-white hover:bg-teal-500 hover:text-black transition-colors border-none cursor-pointer"
-            >
+              className="absolute top-4 right-4 sm:top-8 sm:right-8 z-60 p-2 rounded-full bg-white/10 text-white hover:bg-teal-500 hover:text-black transition-colors border-none cursor-pointer">
               <X size={28} />
             </button>
 
@@ -288,23 +289,28 @@ export default function GalleryPage() {
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative z-60 w-full max-w-5xl h-[80vh] sm:h-[90vh] rounded-2xl overflow-hidden shadow-2xl shadow-black flex items-center justify-center"
-            >
-              {selectedImage.type === "video" ? (
-                <video
-                  src={selectedImage.imageUrl}
-                  controls
-                  autoPlay
-                  className="w-full h-full object-contain"
-                />
-              ) : (
+              className="relative z-60 w-full max-w-5xl h-[80vh] sm:h-[90vh] rounded-2xl overflow-hidden shadow-2xl shadow-black flex flex-col items-center justify-center bg-zinc-900">
+              <div className="relative w-full h-full">
                 <Image
-                  src={selectedImage.imageUrl}
-                  alt="Expanded CBM Radio Moment"
+                  src={selectedImage.image}
+                  alt={selectedImage.title || "Expanded CBM Radio Moment"}
                   fill
                   unoptimized
                   className="object-contain"
                 />
+              </div>
+              {/* Display Caption if available */}
+              {(selectedImage.title || selectedImage.caption) && (
+                <div className="absolute bottom-0 inset-x-0 bg-black/60 backdrop-blur-sm p-4 sm:p-6">
+                  <h3 className="text-white text-lg sm:text-xl font-bold">
+                    {selectedImage.title}
+                  </h3>
+                  {selectedImage.caption && (
+                    <p className="text-zinc-300 mt-2 text-sm sm:text-base">
+                      {selectedImage.caption}
+                    </p>
+                  )}
+                </div>
               )}
             </motion.div>
           </div>

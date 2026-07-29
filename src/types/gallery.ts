@@ -1,9 +1,15 @@
-export interface Gallery {
-    id: string;
-    title: string;
-    description: string;
-    imageUrl: string;
-    caption: string;    
-    category: string;
-    isActive: boolean;      
-}   
+export type GalleryCategory = 'events' | 'studio' | 'team' | 'general';
+
+export interface GalleryItem {
+  id: number;
+  title: string;
+  image: string;
+  caption: string;
+  category: GalleryCategory;
+  is_active: boolean;
+} 
+
+export interface GalleryPageContent {
+  heading: string;
+  intro_content: string;
+}

@@ -1,9 +1,9 @@
-export interface Team {
-    id: number;
+export interface TeamMember {
+    id?: number;
     name: string;
     role: string;
     bio: string;
-    photo: string;
+    photo?: string | null;
     email: string;
     phone: string;
     social: {
@@ -12,4 +12,5 @@ export interface Team {
         instagram: string;
     }
     is_active: boolean;
+    order: number;
 }
