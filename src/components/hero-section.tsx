@@ -99,7 +99,7 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-black/60 z-0" />
 
         <div className="relative z-10 flex h-[80vh] items-center px-6 md:px-30">
-          <div className="max-w-2xl text-white">
+          <div className="max-w-full text-white">
             
             {/* Animated Text Content */}
             <div className="relative overflow-hidden min-h-55 md:min-h-45">
