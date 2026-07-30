@@ -6,10 +6,8 @@ export const useGallery = () => {
     useGalleryStore();
 
   useEffect(() => {
-    if (items.length === 0 && !isLoading) {
-      fetchGalleryData();
-    }
-  }, [items.length, isLoading, fetchGalleryData]);
+    fetchGalleryData();
+  }, [fetchGalleryData]);
 
   return { items, pageContent, isLoading, error, refetch: fetchGalleryData };
 };

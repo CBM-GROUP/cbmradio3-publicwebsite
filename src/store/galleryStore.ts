@@ -20,7 +20,7 @@ export const useGalleryStore = create<GalleryStore>((set) => ({
     try {
       const [itemsData, contentData] = await Promise.all([
         galleryService.getGalleryItems(),
-        galleryService.getGalleryPageContent(),
+        galleryService.getGalleryPageContent().catch(() => null),
       ]);
 
       const activeItems = itemsData.filter((item) => item.is_active);
