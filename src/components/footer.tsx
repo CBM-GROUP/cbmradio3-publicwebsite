@@ -19,11 +19,11 @@ export default function Footer() {
 
         {/* Logo & About */}
         <div>
-          <h2 className="text-3xl font-bold text-emerald-500">
+          <h2 className="text-2xl font-bold text-teal-500">
             CBM Radio
           </h2>
 
-          <p className="mt-5 leading-7 text-gray-400">
+          <p className="mt-5 text-xs text-gray-400">
             CBM Radio is committed to delivering trusted news,
             quality entertainment, educational programs and
             community-driven content that informs, inspires and
@@ -36,9 +36,9 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Visit CBM Group"
-              className="bg-emerald-600 p-3 rounded-full hover:bg-white hover:text-emerald-600 transition"
+              className="bg-teal-500 p-3 rounded-full hover:bg-teal-600 transition"
             >
-              <FaFacebookF />
+              <FaFacebookF color="black" />
             </Link>
 
             <Link
@@ -46,9 +46,9 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Visit CBM Group"
-              className="bg-emerald-600 p-3 rounded-full hover:bg-white hover:text-emerald-600 transition"
+              className="bg-teal-500 p-3 rounded-full hover:bg-teal-600 transition"
             >
-              <FaInstagram />
+              <FaInstagram  color="black" />
             </Link>
 
             <Link
@@ -56,62 +56,62 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Visit CBM Group"
-              className="bg-emerald-600 p-3 rounded-full hover:bg-white hover:text-emerald-600 transition"
+              className="bg-teal-500 p-3 rounded-full hover:bg-teal-600 transition"
             >
-              <FaTwitter />
+              <FaTwitter  color="black" />
             </Link>
 
-            <a
+            <Link
               href="https://www.cbmgroup.org/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Visit CBM Group"
-              className="bg-emerald-600 p-3 rounded-full hover:bg-white hover:text-emerald-600 transition"
+              className="bg-teal-500 p-3 rounded-full hover:bg-teal-600 transition"
             >
-              <FaYoutube />
-            </a>
+              <FaYoutube  color="black" />
+            </Link>
           </div>
         </div>
 
         {/* Quick Links */}
         <div>
-          <h3 className="text-white text-xl font-semibold mb-6">
+          <h3 className="text-white text-sm font-semibold mb-6">
             Quick Links
           </h3>
 
-          <ul className="space-y-3">
+          <ul className="space-y-1">
             <li>
-              <Link href="/" className="hover:text-emerald-500">
+              <Link href="/" className="hover:text-emerald-500 text-xs">
                 Home
               </Link>
             </li>
 
             <li>
-              <Link href="/about" className="hover:text-emerald-500">
+              <Link href="/about" className="hover:text-emerald-500 text-xs">
                 About Us
               </Link>
             </li>
 
             <li>
-              <Link href="/programs" className="hover:text-emerald-500">
+              <Link href="/programs" className="hover:text-emerald-500 text-xs">
                 Programs
               </Link>
             </li>
 
             <li>
-              <Link href="/team" className="hover:text-emerald-500">
+              <Link href="/team" className="hover:text-emerald-500 text-xs">
                 Team
               </Link>
             </li>
 
             <li>
-              <Link href="/news" className="hover:text-emerald-500">
+              <Link href="/news" className="hover:text-emerald-500 text-xs">
                 News
               </Link>
             </li>
 
             <li>
-              <Link href="/contact" className="hover:text-emerald-500">
+              <Link href="/contact" className="hover:text-emerald-500 text-xs">
                 Contact
               </Link>
             </li>
@@ -120,12 +120,12 @@ export default function Footer() {
 
         {/* Popular Programs */}
         <div>
-          <h3 className="text-white text-xl font-semibold mb-6">
+          <h3 className="text-white text-sm font-semibold mb-6">
             Popular Shows
           </h3>
 
-          <ul className="space-y-3">
-            <li>Morning Breeze</li>
+          <ul className="space-y-3 text-xs">
+            <li>Morning Breeze </li>
             <li>Drive Time Live</li>
             <li>Sports Arena</li>
             <li>Business Focus</li>
@@ -136,24 +136,24 @@ export default function Footer() {
 
         {/* Contact */}
         <div>
-          <h3 className="text-white text-xl font-semibold mb-6">
+          <h3 className="text-white text-sm font-semibold mb-6">
             Contact Us
           </h3>
 
-          <div className="space-y-5">
+          <div className="space-y-5 text-xs">
 
             <div className="flex gap-3">
-              <FaMapMarkerAlt className="text-emerald-500 mt-1" />
+              <FaMapMarkerAlt className="text-teal-600 mt-1" />
               <p>Kampala, Uganda</p>
             </div>
 
             <div className="flex gap-3">
-              <FaPhoneAlt className="text-emerald-500 mt-1" />
+              <FaPhoneAlt className="text-teal-600 mt-1" />
               <p>+256 700 000000</p>
             </div>
 
             <div className="flex gap-3">
-              <FaEnvelope className="text-emerald-500 mt-1" />
+              <FaEnvelope className="text-teal-600  mt-1" />
               <p>info@cbmradio.ug</p>
             </div>
 
