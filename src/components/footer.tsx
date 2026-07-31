@@ -42,7 +42,7 @@ export default function Footer() {
             </Link>
 
             <Link
-              href="https://www.cbmgroup.org/"
+               href="https://www.instagram.com/cbm_radio?igsh=MXR3NTZsZXBqdTY5ag=="
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Visit CBM Group"
@@ -52,7 +52,8 @@ export default function Footer() {
             </Link>
 
             <Link
-              href="https://www.cbmgroup.org/"
+             
+              href="https://x.com/CBMRadio_?s=20"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Visit CBM Group"
@@ -62,7 +63,8 @@ export default function Footer() {
             </Link>
 
             <Link
-              href="https://www.cbmgroup.org/"
+              
+              href="https://www.youtube.com/@CBMRadio3"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Visit CBM Group"
