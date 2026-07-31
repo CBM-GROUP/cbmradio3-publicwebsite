@@ -196,12 +196,7 @@ export default function GalleryPage() {
                         : "col-span-1 row-span-1";
                   }
 
-                  // Desktop-specific layout logic
-                  if (index % 8 === 0) return "col-span-2 row-span-2";
-                  if (index % 8 === 2) return "col-span-1 row-span-2";
-                  if (index % 8 === 3) return "col-span-1 row-span-1";
-                  if (index % 8 === 5) return "col-span-2 row-span-1";
-                  return "col-span-1 row-span-1";
+                  return `${colSpan} ${rowSpan}`;
                 };
 
                 // const isVideo = item.type === "video";

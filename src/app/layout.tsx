@@ -5,7 +5,7 @@ import "./globals.css";
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
-})
+});
 
 export const metadata: Metadata = {
   title: "CBM Radio",
@@ -25,8 +25,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${montserrat.variable} h-full antialiased bg-[#171717] text-zinc-200`}
-    >
+      className={`${montserrat.variable} h-full antialiased bg-[#171717] text-zinc-200`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
