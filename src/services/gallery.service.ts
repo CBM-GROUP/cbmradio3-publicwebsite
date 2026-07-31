@@ -1,6 +1,5 @@
 import { apiClient } from "@/api/client";
 import { API_ENDPOINTS } from "@/api/endpoints";
-import type { AxiosResponse } from "axios";
 import {
   GalleryItem,
   GalleryListResponse,
@@ -13,24 +12,15 @@ const isGalleryListResponse = (
 ): data is GalleryListResponse => !Array.isArray(data);
 
 export const galleryService = {
-  // Get all gallery items
+  // Get the current gallery page. Additional pages should only be requested
+  // in response to explicit user pagination, not eagerly on mount.
   getGalleryItems: async (): Promise<GalleryItem[]> => {
-    const items: GalleryItem[] = [];
-    let url: string | null = API_ENDPOINTS.GALLERY;
-
-    while (url) {
-      const response: AxiosResponse<GalleryItem[] | GalleryListResponse> =
-        await apiClient.get(url);
-
-      if (!isGalleryListResponse(response.data)) {
-        return response.data;
-      }
-
-      items.push(...response.data.results);
-      url = response.data.next;
-    }
-
-    return items;
+    const response = await apiClient.get<GalleryItem[] | GalleryListResponse>(
+      API_ENDPOINTS.GALLERY,
+    );
+    return isGalleryListResponse(response.data)
+      ? response.data.results
+      : response.data;
   },
 
   // Get gallery item by id
