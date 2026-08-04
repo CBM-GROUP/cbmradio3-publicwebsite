@@ -1,41 +1,19 @@
-export interface Article {
-  id?: number;
+export interface ArticleListItem {
+  id: number;
   slug: string;
   title: string;
-  category: string;
-  subcategory?: string;
-
-  author: {
-    name: string;
-    avatarUrl?: string;
-  };
-
-  body: string;
-  content?: string[];
-
-  summary?: string;
-
-  cover_image: string | null;
-  imageUrl?: string;
-  imageCaption?: string;
-
-  tags: string[];
-
-  readTime: string;
-  publishedAt: string;
-
+  cover_image: string;
+  author: string;
   is_featured: boolean;
   is_published: boolean;
+  published_at: string | null;
+}
 
-  previousArticle?: {
-    title: string;
-    slug: string;
-  };
-
-  nextArticle?: {
-    title: string;
-    slug: string;
-  };
+export interface ArticleDetail extends ArticleListItem {
+  body: string;
+  created_at: string;
+  updated_at: string;
+  external_cover_image_url: string;
 }
 
 export interface Comment {
