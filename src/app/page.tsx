@@ -9,6 +9,7 @@ import Gallery from "@/components/gallery";
 import Contact from "@/components/contact";
 import TeamMembers from "@/components/team-members";
 import { motion } from "framer-motion";
+import { Suspense } from "react";
 
 export default function Home() {
   return (
@@ -52,7 +53,9 @@ export default function Home() {
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.7, ease: "easeOut" }}
       >
-        <NewsSection />
+        <Suspense fallback={<div className="min-h-screen" />}>
+          <NewsSection />
+        </Suspense>
       </motion.section>
 
       {/* Gallery Section: Blur & Fade In */}
