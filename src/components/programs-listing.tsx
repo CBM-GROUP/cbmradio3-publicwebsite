@@ -6,6 +6,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import { programService } from "@/services/program.service";
+import YouTubeDialog from "@/components/media/youtube-dialog";
+import { getYouTubeMedia, type YouTubeMedia } from "@/lib/youtube";
 import type { PaginatedResponse } from "@/types/api";
 import type { ProgramSummary } from "@/types/program";
 import Logo from "../../public/cbmradio.png";
@@ -25,16 +27,6 @@ function parsePage(value: string | null) {
   return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : 1;
 }
 
-function getSafePromoUrl(value: string) {
-  if (!value) return null;
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:" ? url.href : null;
-  } catch {
-    return null;
-  }
-}
-
 export default function ProgramsListing() {
   const router = useRouter();
   const pathname = usePathname();
@@ -43,6 +35,7 @@ export default function ProgramsListing() {
   const [programs, setPrograms] = useState(EMPTY_PROGRAMS);
   const [state, setState] = useState<RequestState>("loading");
   const [retryVersion, setRetryVersion] = useState(0);
+  const [activePlayer, setActivePlayer] = useState<{ program: ProgramSummary; media: YouTubeMedia; trigger: HTMLButtonElement } | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -133,7 +126,7 @@ export default function ProgramsListing() {
         {state === "ready" && programs.results.length > 0 && (
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {programs.results.map((program) => (
-              <ProgramCard key={program.id} program={program} />
+              <ProgramCard key={program.id} program={program} onPlay={(media, trigger) => setActivePlayer({ program, media, trigger })} />
             ))}
           </div>
         )}
@@ -160,13 +153,14 @@ export default function ProgramsListing() {
           </nav>
         )}
       </div>
+      {activePlayer && <YouTubeDialog title={activePlayer.program.title} media={activePlayer.media} returnFocus={activePlayer.trigger} onClose={() => setActivePlayer(null)} />}
     </section>
   );
 }
 
-function ProgramCard({ program }: { program: ProgramSummary }) {
+function ProgramCard({ program, onPlay }: { program: ProgramSummary; onPlay: (media: YouTubeMedia, trigger: HTMLButtonElement) => void }) {
   const description = program.short_description;
-  const promoUrl = getSafePromoUrl(program.promo_video_url);
+  const promoMedia = getYouTubeMedia(program.promo_video_url);
 
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
@@ -200,16 +194,15 @@ function ProgramCard({ program }: { program: ProgramSummary }) {
           <p className="mt-5 line-clamp-4 leading-7 text-zinc-400">{description}</p>
         )}
         <div className="mt-auto flex flex-wrap items-center gap-4 pt-6">
-          {promoUrl && (
-            <a
-              href={promoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+          {promoMedia && (
+            <button
+              type="button"
+              onClick={(event) => onPlay(promoMedia, event.currentTarget)}
               className="rounded-lg bg-emerald-500 px-4 py-2 font-semibold text-black hover:bg-emerald-400"
               aria-label={"Play promo for " + program.title}
             >
               Play Promo
-            </a>
+            </button>
           )}
           <span className="text-sm text-zinc-500">Episodes page coming soon</span>
         </div>

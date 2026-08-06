@@ -9,25 +9,27 @@ import { teamService } from "@/services/team.service";
 import type { TeamMember } from "@/types/team";
 import Logo from "../../public/cbmradio.png";
 
-const HOMEPAGE_TEAM_LIMIT = 6;
 type HomepageTeamMember = TeamMember & { profileUrl: string };
 
-export default function TeamMembers() {
+export default function TeamMembers({ limit }: { limit?: number }) {
   const [members, setMembers] = useState<HomepageTeamMember[]>([]);
   const [selectedMember, setSelectedMember] = useState<HomepageTeamMember | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [partial, setPartial] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
-    teamService.getTeamMembers({ page: 1 }).then((response) => {
+    const request = limit ? teamService.getTeamMembers({ page: 1 }).then((response) => ({ members: response.results.slice(0, limit), isPartial: false })) : teamService.getTeamDirectory();
+    request.then((response) => {
       if (!isMounted) return;
-      setMembers(response.results.slice(0, HOMEPAGE_TEAM_LIMIT).map((member) => ({ ...member, profileUrl: member.photo })));
+      setMembers(response.members.map((member) => ({ ...member, profileUrl: member.photo })));
+      setPartial(response.isPartial);
       setStatus("ready");
     }).catch(() => {
       if (isMounted) setStatus("error");
     });
     return () => { isMounted = false; };
-  }, []);
+  }, [limit]);
 
   return (
     <section className="bg-black px-6 py-24 text-white sm:px-8 lg:px-16">
@@ -40,6 +42,7 @@ export default function TeamMembers() {
         {status === "loading" && <p className="min-h-48 text-center text-zinc-400" aria-live="polite">Loading team members...</p>}
         {status === "error" && <p className="min-h-48 text-center text-zinc-400">Team information is temporarily unavailable.</p>}
         {status === "ready" && members.length === 0 && <p className="min-h-48 text-center text-zinc-400">No team members are available right now.</p>}
+        {partial && <p className="mb-6 text-center text-sm text-amber-200" role="status">Some team members could not be loaded. Available profiles are shown.</p>}
         {members.length > 0 && (
           <div className="flex flex-row items-center justify-center -space-x-8">
             {members.map((member, index) => (

@@ -34,7 +34,7 @@ export default function Home() {
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.7, ease: "easeOut" }}
       >
-        <TeamMembers />
+      <TeamMembers limit={6} />
       </motion.section>
 
       {/* Programs Section: Slide In From Left */}
