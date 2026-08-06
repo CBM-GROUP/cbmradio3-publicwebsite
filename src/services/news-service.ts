@@ -1,54 +1,120 @@
-import { apiClient } from "@/api/client";
 import { API_ENDPOINTS } from "@/api/endpoints";
-import { Article } from "@/types/news";
+import { apiClient } from "@/api/client";
+import type { PaginatedResponse } from "@/types/api";
+import type {
+  ArticleCategory,
+  ArticleDetail,
+  ArticleListItem,
+} from "@/types/news";
 
-type PaginatedResponse<T> = {
-    results: T[];
-};
+export interface ArticleQuery {
+  page?: number;
+  category?: string;
+  search?: string;
+  ordering?: string;
+}
 
-type ListResponse<T> = T[] | PaginatedResponse<T>;
+export interface ArticleCategoryQuery {
+  page?: number;
+}
 
-const getResults = <T>(data: ListResponse<T>): T[] => {
-  const results = Array.isArray(data) ? data : data.results;
-
-  if (!Array.isArray(results)) {
-    throw new Error("The news API returned an invalid article list.");
+export class MalformedArticleResponseError extends Error {
+  constructor() {
+    super("Malformed article response");
+    this.name = "MalformedArticleResponseError";
   }
+}
 
-  return results;
-};
+function isArticleDetail(value: unknown): value is ArticleDetail {
+  if (!value || typeof value !== "object") return false;
+  const article = value as Record<string, unknown>;
+  return (
+    typeof article.id === "number" &&
+    typeof article.title === "string" &&
+    typeof article.slug === "string" &&
+    typeof article.body === "string" &&
+    typeof article.content_schema_version === "number" &&
+    (article.content_json === null || typeof article.content_json === "object")
+  );
+}
 
 export default class NewsService {
-  static async getArticles(): Promise<Article[]> {
-    const { data } = await apiClient.get<ListResponse<Article>>(
+  private static detailRequests = new Map<string, Promise<ArticleDetail>>();
+
+  static async getArticles(
+    params: ArticleQuery = {},
+  ): Promise<PaginatedResponse<ArticleListItem>> {
+    const { data } = await apiClient.get<PaginatedResponse<ArticleListItem>>(
       API_ENDPOINTS.ARTICLES,
+      { params },
     );
-    return getResults(data);
+
+    return data;
   }
 
-  static async getFeaturedArticles(): Promise<Article[]> {
-    const { data } = await apiClient.get<ListResponse<Article>>(
+  static async getFeaturedArticles(): Promise<ArticleListItem[]> {
+    const { data } = await apiClient.get<ArticleListItem[]>(
       API_ENDPOINTS.FEATURED_ARTICLES,
     );
-    return getResults(data);
+
+    return data;
   }
 
-    static async getArticleBySlug(slug: string){
-        const {data} = await apiClient.get<Article>(API_ENDPOINTS.ARTICLE_BY_SLUG(slug));
+  static async getLatestArticles(): Promise<ArticleListItem[]> {
+    const { data } = await apiClient.get<ArticleListItem[]>(
+      API_ENDPOINTS.LATEST_ARTICLES,
+    );
+
+    return data;
+  }
+
+  static async getArticleCategories(
+    params: ArticleCategoryQuery = {},
+  ): Promise<PaginatedResponse<ArticleCategory>> {
+    const { data } = await apiClient.get<PaginatedResponse<ArticleCategory>>(
+      API_ENDPOINTS.ARTICLE_CATEGORIES,
+      { params },
+    );
+
+    return data;
+  }
+
+  static getArticleBySlug(slug: string): Promise<ArticleDetail> {
+    const existingRequest = this.detailRequests.get(slug);
+    if (existingRequest) return existingRequest;
+
+    const request = apiClient
+      .get<unknown>(API_ENDPOINTS.ARTICLE_BY_SLUG(slug))
+      .then(({ data }) => {
+        if (!isArticleDetail(data)) throw new MalformedArticleResponseError();
         return data;
-    }
+      });
 
-  static async getArticlesByCategory(category: string): Promise<Article[]> {
-    const { data } = await apiClient.get<ListResponse<Article>>(
-      `${API_ENDPOINTS.ARTICLES}?category=${encodeURIComponent(category)}`,
+    this.detailRequests.set(slug, request);
+    request.then(
+      () => {
+        if (this.detailRequests.get(slug) === request) {
+          this.detailRequests.delete(slug);
+        }
+      },
+      () => {
+        if (this.detailRequests.get(slug) === request) {
+          this.detailRequests.delete(slug);
+        }
+      },
     );
-    return getResults(data);
+    return request;
   }
 
-  static async searchArticles(query: string): Promise<Article[]> {
-    const { data } = await apiClient.get<ListResponse<Article>>(
-      `${API_ENDPOINTS.ARTICLES}?search=${encodeURIComponent(query)}`,
-    );
-    return getResults(data);
+  static getArticlesByCategory(
+    category: string,
+  ): Promise<PaginatedResponse<ArticleListItem>> {
+    return this.getArticles({ category });
+  }
+
+  static searchArticles(
+    search: string,
+  ): Promise<PaginatedResponse<ArticleListItem>> {
+    return this.getArticles({ search });
   }
 }
