@@ -1,35 +1,57 @@
-import axios from "axios";
 import { apiClient } from "@/api/client";
 import { API_ENDPOINTS } from "@/api/endpoints";
-import { getAllPages } from "@/api/pagination";
 import { PaginatedResponse } from "@/types/api";
 import { GalleryItem, GalleryPageContent } from "@/types/gallery";
+import { PageSection } from "@/types/hero";
+import { pageSectionService } from "@/services/page-section.service";
+
+interface GalleryQuery {
+  page?: number;
+  category?: string;
+}
 
 export const galleryService = {
-  getGalleryItems: async (): Promise<PaginatedResponse<GalleryItem>> => {
-    return getAllPages<GalleryItem>(API_ENDPOINTS.GALLERY);
-  },
+  getGalleryItems: async (
+    query: GalleryQuery = {},
+  ): Promise<PaginatedResponse<GalleryItem>> => {
+    const response = await apiClient.get<PaginatedResponse<GalleryItem>>(
+      API_ENDPOINTS.GALLERY,
+      {
+        params: {
+          page: query.page,
+          category: query.category,
+        },
+      },
+    );
 
-  getGalleryItemById: async (id: number | string): Promise<GalleryItem> => {
-    const response = await apiClient.get(API_ENDPOINTS.GALLERY_BY_ID(id));
     return response.data;
   },
 
+  getGalleryItemById: async (id: number): Promise<GalleryItem> => {
+    const response = await apiClient.get<GalleryItem>(
+      API_ENDPOINTS.GALLERY_BY_ID(id),
+    );
+
+    return response.data;
+  },
+
+  getGallerySection: async (): Promise<PageSection | null> => {
+    return pageSectionService.getGallerySection();
+  },
+
+  /**
+   * Temporary compatibility method for the current Gallery page.
+   */
   getGalleryPageContent: async (): Promise<GalleryPageContent | null> => {
-    try {
-      const response = await apiClient.get<{
-        title: string;
-        body: string;
-      }>(API_ENDPOINTS.GALLERY_SECTION);
-      return {
-        heading: response.data.title,
-        intro_content: response.data.body,
-      };
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        return null;
-      }
-      throw error;
+    const section = await galleryService.getGallerySection();
+
+    if (!section) {
+      return null;
     }
+
+    return {
+      heading: section.title,
+      intro_content: section.body,
+    };
   },
 };

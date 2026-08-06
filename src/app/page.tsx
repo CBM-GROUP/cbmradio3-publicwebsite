@@ -8,6 +8,7 @@ import Footer from "@/components/footer";
 import Gallery from "@/components/gallery";
 import Contact from "@/components/contact";
 import TeamMembers from "@/components/team-members";
+import EpisodesSection from "@/components/episodes-section";
 import { motion } from "framer-motion";
 import { Suspense } from "react";
 
@@ -56,6 +57,15 @@ export default function Home() {
         <Suspense fallback={<div className="min-h-screen" />}>
           <NewsSection />
         </Suspense>
+      </motion.section>
+
+      <motion.section
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+      >
+        <EpisodesSection />
       </motion.section>
 
       {/* Gallery Section: Blur & Fade In */}

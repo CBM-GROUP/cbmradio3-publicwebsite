@@ -4,98 +4,129 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 import CBMlogo from "../../public/cbmradio.png";
+import {
+  contactNavigationItem,
+  primaryNavigation,
+} from "@/data/site-navigation";
 
 export default function Header() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
-  const links = [
-    { name: "Home", path: "/" },
-    { name: "about", path: "/about" },
-    { name: "team members", path: "/team" },
-    { name: "programs", path: "/programs" },
-    { name: "news", path: "/news" },
-    { name: "gallery", path: "/gallery" },
-  ];
-
   return (
-    <header className="bg-black/80 md:bg-black/40 text-white shadow-sm backdrop-blur fixed w-full top-0 z-50 transition-all duration-300">
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3 md:px-8">
-        {/* Logo */}
+    <header className="fixed top-0 z-50 w-full bg-black/80 text-white shadow-sm backdrop-blur transition-all duration-300 md:bg-black/40">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8">
         <Link href="/" className="flex items-center">
-          <Image 
-            src={CBMlogo.src} 
-            alt="cbm radio" 
-            width={80} 
-            height={80} 
+          <Image
+            src={CBMlogo}
+            alt="CBM Radio"
+            width={80}
+            height={80}
             priority
             sizes="80px"
-            className="object-cover w-16 h-16 md:w-20 md:h-20"
+            className="h-16 w-16 object-cover md:h-20 md:w-20"
           />
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex gap-6 lg:gap-8 items-center">
-          {links.map((link) => (
-            <Link
-              key={link.name}
-              href={link.path}
-              className={`py-1 text-sm lg:text-base transition-all duration-300 capitalize border-b-2 ${
-                pathname === link.path
-                  ? "text-teal-500 border-teal-500"
-                  : "border-transparent hover:text-teal-400 hover:border-teal-400"
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
+        <nav
+          className="hidden items-center gap-6 md:flex lg:gap-8"
+          aria-label="Main navigation"
+        >
+          {primaryNavigation.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              (item.href !== "/" && pathname.startsWith(item.href + "/"));
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`border-b-2 py-1 text-sm capitalize transition-all duration-300 lg:text-base ${
+                  isActive
+                    ? "border-teal-500 text-teal-500"
+                    : "border-transparent hover:border-teal-400 hover:text-teal-400"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="hidden md:block">
           <Link
-            href="/#contact"
-            className="bg-teal-500 hover:bg-teal-600 text-black py-2 px-5 rounded-md text-sm lg:text-base font-medium transition-colors duration-300 capitalize"
+            href={contactNavigationItem.href}
+            className="rounded-md bg-teal-500 px-5 py-2 text-sm font-medium capitalize text-black transition-colors duration-300 hover:bg-teal-600 lg:text-base"
           >
-            contact us
+            {contactNavigationItem.label}
           </Link>
         </div>
 
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1.5 z-50 focus:outline-none"
-          aria-label="Toggle menu"
+          type="button"
+          onClick={() => setIsOpen((current) => !current)}
+          className="z-50 flex h-8 w-8 flex-col items-center justify-center space-y-1.5 focus:outline-none md:hidden"
+          aria-label={isOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isOpen}
+          aria-controls="mobile-navigation"
         >
-          <span className={`block w-6 h-0.5 bg-white transition-transform duration-300 ease-in-out ${isOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
-          <span className={`block w-6 h-0.5 bg-white transition-opacity duration-300 ease-in-out ${isOpen ? 'opacity-0' : ''}`}></span>
-          <span className={`block w-6 h-0.5 bg-white transition-transform duration-300 ease-in-out ${isOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+          <span
+            className={`block h-0.5 w-6 bg-white transition-transform duration-300 ease-in-out ${
+              isOpen ? "translate-y-2 rotate-45" : ""
+            }`}
+          />
+          <span
+            className={`block h-0.5 w-6 bg-white transition-opacity duration-300 ease-in-out ${
+              isOpen ? "opacity-0" : ""
+            }`}
+          />
+          <span
+            className={`block h-0.5 w-6 bg-white transition-transform duration-300 ease-in-out ${
+              isOpen ? "-translate-y-2 -rotate-45" : ""
+            }`}
+          />
         </button>
       </div>
 
       <div
-        className={`fixed inset-0 top-0 left-0 w-full h-screen bg-black/95 backdrop-blur-lg flex flex-col items-center justify-center gap-8 text-xl transition-transform duration-300 ease-in-out md:hidden z-40 ${
+        id="mobile-navigation"
+        className={`fixed inset-0 z-40 flex h-screen w-full flex-col items-center justify-center gap-8 bg-black/95 text-xl backdrop-blur-lg transition-transform duration-300 ease-in-out md:hidden ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <nav className="flex flex-col items-center gap-6">
-          {links.map((link) => (
-            <Link
-              key={link.name}
-              href={link.path}
-              onClick={() => setIsOpen(false)}
-              className={`transition-colors duration-300 capitalize font-medium ${
-                pathname === link.path ? "text-teal-400" : "text-white hover:text-teal-400"
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
+        <nav
+          className="flex flex-col items-center gap-6"
+          aria-label="Mobile navigation"
+        >
+          {primaryNavigation.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              (item.href !== "/" && pathname.startsWith(item.href + "/"));
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsOpen(false)}
+                className={`font-medium capitalize transition-colors duration-300 ${
+                  isActive
+                    ? "text-teal-400"
+                    : "text-white hover:text-teal-400"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+
           <Link
-            href="/#contact"
+            href={contactNavigationItem.href}
             onClick={() => setIsOpen(false)}
-            className="mt-4 bg-teal-500 hover:bg-teal-600 text-black py-2.5 px-8 rounded-md text-lg font-semibold transition-colors duration-300 capitalize"
+            className="mt-4 rounded-md bg-teal-500 px-8 py-2.5 text-lg font-semibold capitalize text-black transition-colors duration-300 hover:bg-teal-600"
           >
-            contact us
+            {contactNavigationItem.label}
           </Link>
         </nav>
       </div>

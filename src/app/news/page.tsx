@@ -1,6 +1,6 @@
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import NewsSection from "@/components/news-section";
+import NewsListing from "@/components/news-listing";
 import { Suspense } from "react";
 
 function NewsLoadingState() {
@@ -17,7 +17,7 @@ export default function NewsPage() {
       <Header />
       <main>
         <Suspense fallback={<NewsLoadingState />}>
-          <NewsSection />
+          <NewsListing />
         </Suspense>
       </main>
       <Footer />
