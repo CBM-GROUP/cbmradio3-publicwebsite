@@ -22,6 +22,26 @@ export function getYouTubeEmbedUrl(value: string | undefined) {
   return getYouTubeMedia(value)?.embedUrl ?? null;
 }
 
+export function getStrictYouTubeEmbedUrl(value: string | undefined) {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    const parts = url.pathname.split("/").filter(Boolean);
+    if (
+      url.protocol !== "https:" ||
+      url.hostname !== "www.youtube.com" ||
+      parts.length !== 2 ||
+      parts[0] !== "embed" ||
+      !YOUTUBE_ID_PATTERN.test(parts[1]) ||
+      url.search ||
+      url.hash
+    ) return null;
+    return `https://www.youtube.com/embed/${parts[1]}`;
+  } catch {
+    return null;
+  }
+}
+
 function parseYouTubeEmbedUrl(value: string | undefined) {
   if (!value) return null;
 

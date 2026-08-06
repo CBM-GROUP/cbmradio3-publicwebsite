@@ -27,6 +27,7 @@ export type Program = ProgramSummary;
 
 export interface EpisodeSummary {
   id: number;
+  slug: string;
   program_id: number;
   program_title: string;
   title: string;
@@ -43,6 +44,7 @@ export interface EpisodeSummary {
 
 export interface EpisodeDetail {
   id: number;
+  slug: string;
   program: ProgramSummary;
   title: string;
   description: string;

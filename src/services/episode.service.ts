@@ -1,7 +1,7 @@
 import { apiClient } from "@/api/client";
 import { API_ENDPOINTS } from "@/api/endpoints";
 import type { PaginatedResponse } from "@/types/api";
-import type { EpisodeSummary } from "@/types/program";
+import type { EpisodeDetail, EpisodeSummary } from "@/types/program";
 
 export interface EpisodeQuery {
   page?: number;
@@ -13,6 +13,12 @@ export interface EpisodeQuery {
 const requests = new Map<string, Promise<PaginatedResponse<EpisodeSummary>>>();
 
 export const episodeService = {
+  async getEpisodeBySlug(slug: string): Promise<EpisodeDetail> {
+    const { data } = await apiClient.get<EpisodeDetail>(
+      API_ENDPOINTS.EPISODE_BY_SLUG(slug),
+    );
+    return data;
+  },
   getEpisodes(query: EpisodeQuery = {}) {
     const key = JSON.stringify(query);
     const pending = requests.get(key);

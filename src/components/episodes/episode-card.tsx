@@ -1,5 +1,6 @@
 import { CalendarDays, Play } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 import { getYouTubeMedia, type YouTubeMedia } from "@/lib/youtube";
 import type { EpisodeSummary } from "@/types/program";
@@ -38,7 +39,11 @@ export default function EpisodeCard({
       </div>
       <div className="flex flex-1 flex-col p-5">
         <p className="text-sm font-semibold text-teal-400">{episode.program_title}</p>
-        <h3 className="mt-2 text-xl font-bold text-white">{episode.title}</h3>
+        <h3 className="mt-2 text-xl font-bold text-white">
+          <Link href={`/episodes/${encodeURIComponent(episode.slug)}`} className="outline-none hover:text-teal-300 focus-visible:ring-2 focus-visible:ring-teal-300">
+            {episode.title}
+          </Link>
+        </h3>
         {published && (
           <p className="mt-3 flex items-center gap-2 text-sm text-zinc-400">
             <CalendarDays size={16} aria-hidden="true" /> {published}
@@ -49,16 +54,21 @@ export default function EpisodeCard({
             {episode.description}
           </p>
         )}
+        <div className="mt-auto flex flex-wrap items-end gap-x-5 gap-y-2 pt-5">
+          <Link href={`/episodes/${encodeURIComponent(episode.slug)}`} className="inline-flex min-h-11 items-center font-semibold text-teal-400 outline-none hover:text-teal-300 focus-visible:ring-2 focus-visible:ring-teal-300">
+            View episode
+          </Link>
         {media && (
           <button
             type="button"
             onClick={(event) => onPlay(episode, media, event.currentTarget)}
-            className="mt-auto inline-flex min-h-11 w-fit items-center gap-2 pt-5 font-semibold text-teal-400 outline-none hover:text-teal-300 focus-visible:ring-2 focus-visible:ring-teal-300"
+            className="inline-flex min-h-11 w-fit items-center gap-2 font-semibold text-teal-400 outline-none hover:text-teal-300 focus-visible:ring-2 focus-visible:ring-teal-300"
             aria-label={"Play " + episode.title}
           >
             <Play size={18} aria-hidden="true" /> Play episode
           </button>
         )}
+        </div>
       </div>
     </article>
   );

@@ -36,6 +36,8 @@ export const API_ENDPOINTS = {
   // Episodes
   EPISODES: "/api/v1/episodes/",
   EPISODE_BY_ID: (id: number) => `/api/v1/episodes/${id}/`,
+  EPISODE_BY_SLUG: (slug: string) =>
+    `/api/v1/episodes/by-slug/${encodeURIComponent(slug)}/`,
   FEATURED_EPISODES: "/api/v1/episodes/featured/",
   LATEST_EPISODES: "/api/v1/episodes/latest/",
   EPISODES_BY_PROGRAM: (programId: number) =>
