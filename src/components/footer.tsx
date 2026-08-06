@@ -18,8 +18,10 @@ import { FaXTwitter } from "react-icons/fa6";
 
 import {
   contactNavigationItem,
+  legalNavigation,
   primaryNavigation,
 } from "@/data/site-navigation";
+import { getSafeSocialUrl } from "@/lib/contact-links";
 import homeService from "@/services/home.service";
 import { siteSettingsService } from "@/services/site-settings.service";
 import type { ProgramSummary } from "@/types/program";
@@ -36,17 +38,6 @@ const socialIcons: Partial<Record<string, IconType>> = {
   tiktok: FaTiktok,
   whatsapp: FaWhatsapp,
 };
-
-function getSafeSocialUrl(value: string) {
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:"
-      ? url.href
-      : null;
-  } catch {
-    return null;
-  }
-}
 
 export default function Footer() {
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
@@ -244,6 +235,13 @@ export default function Footer() {
           <p>
             &copy; {new Date().getFullYear()} CBM Radio. All Rights Reserved.
           </p>
+          <nav aria-label="Legal" className="mt-3 flex flex-wrap justify-center gap-5 md:mt-0">
+            {legalNavigation.map((item) => (
+              <Link key={item.href} href={item.href} className="rounded hover:text-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400">
+                {item.label}
+              </Link>
+            ))}
+          </nav>
         </div>
       </div>
     </footer>
