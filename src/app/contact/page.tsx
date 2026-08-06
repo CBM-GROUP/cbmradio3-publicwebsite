@@ -1,0 +1,28 @@
+import type { Metadata } from "next";
+
+import ContactPageContent from "@/components/contact/contact-page-content";
+import Footer from "@/components/footer";
+import Header from "@/components/header";
+import PageHero from "@/components/page-hero";
+
+export const metadata: Metadata = {
+  title: "Contact | CBM Radio",
+  description: "Contact CBM Radio by phone, email, or through our business address.",
+};
+
+export default function ContactPage() {
+  return (
+    <>
+      <Header />
+      <main className="min-h-screen bg-zinc-950">
+        <PageHero
+          pageKey="contact"
+          fallbackTitle="Contact Us"
+          fallbackDescription="Get in touch with CBM Radio for general enquiries and business communication."
+        />
+        <ContactPageContent />
+      </main>
+      <Footer />
+    </>
+  );
+}

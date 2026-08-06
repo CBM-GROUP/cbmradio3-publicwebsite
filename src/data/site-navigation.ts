@@ -16,3 +16,8 @@ export const contactNavigationItem: NavigationItem = {
   label: "Contact Us",
   href: "/#contact",
 };
+
+export const legalNavigation: NavigationItem[] = [
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Terms of Use", href: "/terms" },
+];

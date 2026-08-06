@@ -1,6 +1,28 @@
 const YOUTUBE_ID_PATTERN = /^[A-Za-z0-9_-]{11}$/;
 
+export interface YouTubeMedia {
+  videoId: string;
+  watchUrl: string;
+  embedUrl: string;
+}
+
+export function getYouTubeMedia(value: string | undefined): YouTubeMedia | null {
+  const embedUrl = parseYouTubeEmbedUrl(value);
+  if (!embedUrl) return null;
+  const videoId = embedUrl.split("/").pop();
+  if (!videoId) return null;
+  return {
+    videoId,
+    watchUrl: "https://www.youtube.com/watch?v=" + videoId,
+    embedUrl,
+  };
+}
+
 export function getYouTubeEmbedUrl(value: string | undefined) {
+  return getYouTubeMedia(value)?.embedUrl ?? null;
+}
+
+function parseYouTubeEmbedUrl(value: string | undefined) {
   if (!value) return null;
 
   try {
