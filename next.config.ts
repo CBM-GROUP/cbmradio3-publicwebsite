@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
+const mediaHostname = process.env.MEDIA_HOSTNAME?.trim();
+
 const nextConfig: NextConfig = {
+  output: "standalone",
   images: {
     remotePatterns: [
       {
@@ -17,6 +20,9 @@ const nextConfig: NextConfig = {
         port: "9002",
         pathname: "/**",
       },
+      ...(mediaHostname
+        ? [{ protocol: "https" as const, hostname: mediaHostname, pathname: "/**" }]
+        : []),
     ],
   },
 };
