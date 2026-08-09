@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import homeService from "@/services/home.service";
+import YouTubeDialog from "@/components/media/youtube-dialog";
+import { getYouTubeMedia, type YouTubeMedia } from "@/lib/youtube";
 import type { EpisodeSummary } from "@/types/program";
 import Logo from "../../public/cbmradio.png";
 
@@ -16,6 +18,7 @@ export default function EpisodesSection() {
   const [latest, setLatest] = useState<EpisodeSummary[]>([]);
   const [featuredState, setFeaturedState] = useState<RequestState>("loading");
   const [latestState, setLatestState] = useState<RequestState>("loading");
+  const [activePlayer, setActivePlayer] = useState<{ episode: EpisodeSummary; media: YouTubeMedia; trigger: HTMLButtonElement } | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -44,29 +47,30 @@ export default function EpisodesSection() {
         {featuredState === "error" && latestState === "error" && <p className="min-h-48 text-center text-zinc-400">Episodes are temporarily unavailable.</p>}
         {allEmpty && <p className="min-h-48 text-center text-zinc-400">No episodes are available right now.</p>}
 
-        {featured.length > 0 && <EpisodeGroup heading="Featured episodes" episodes={featured} />}
+        {featured.length > 0 && <EpisodeGroup heading="Featured episodes" episodes={featured} onPlay={(episode, media, trigger) => setActivePlayer({ episode, media, trigger })} />}
         {featuredState === "error" && uniqueLatest.length > 0 && <p className="mb-5 text-sm text-zinc-500">Featured episodes are temporarily unavailable.</p>}
-        {uniqueLatest.length > 0 && <div className={featured.length > 0 ? "mt-12" : ""}><EpisodeGroup heading="Latest episodes" episodes={uniqueLatest} /></div>}
+        {uniqueLatest.length > 0 && <div className={featured.length > 0 ? "mt-12" : ""}><EpisodeGroup heading="Latest episodes" episodes={uniqueLatest} onPlay={(episode, media, trigger) => setActivePlayer({ episode, media, trigger })} /></div>}
         {latestState === "error" && featured.length > 0 && <p className="mt-6 text-sm text-zinc-500">Latest episodes are temporarily unavailable.</p>}
       </div>
+      {activePlayer && <YouTubeDialog title={activePlayer.episode.title} media={activePlayer.media} returnFocus={activePlayer.trigger} onClose={() => setActivePlayer(null)} />}
     </section>
   );
 }
 
-function EpisodeGroup({ heading, episodes }: { heading: string; episodes: EpisodeSummary[] }) {
+function EpisodeGroup({ heading, episodes, onPlay }: { heading: string; episodes: EpisodeSummary[]; onPlay: (episode: EpisodeSummary, media: YouTubeMedia, trigger: HTMLButtonElement) => void }) {
   return (
     <div>
       <h3 className="mb-5 text-xl font-bold">{heading}</h3>
       <div className="grid gap-6 md:grid-cols-3">
         {episodes.map((episode) => {
-          const mediaUrl = episode.youtube_link || episode.youtube_embed_url;
+          const media = getYouTubeMedia(episode.youtube_embed_url || episode.youtube_link);
           const content = (
             <>
               <div className="relative aspect-video bg-zinc-950"><Image src={episode.cover_image || Logo} alt={episode.title} fill sizes="(max-width: 768px) 100vw, 33vw" unoptimized={Boolean(episode.cover_image)} className="object-cover" /></div>
               <div className="p-5"><p className="text-sm text-emerald-500">{episode.program_title}</p><h4 className="mt-2 text-lg font-bold">{episode.title}</h4>{episode.publish_date && <p className="mt-3 flex items-center gap-2 text-xs text-zinc-400"><CalendarDays size={15} /> {new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" }).format(new Date(episode.publish_date))}</p>}</div>
             </>
           );
-          return mediaUrl ? <a key={episode.id} href={mediaUrl} target="_blank" rel="noopener noreferrer" className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 transition hover:border-emerald-600" aria-label={"Open " + episode.title + " media"}>{content}</a> : <article key={episode.id} className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950">{content}</article>;
+          return media ? <button type="button" key={episode.id} onClick={(event) => onPlay(episode, media, event.currentTarget)} className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 text-left transition hover:border-emerald-600" aria-label={"Play " + episode.title}>{content}</button> : <article key={episode.id} className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950">{content}</article>;
         })}
       </div>
     </div>
