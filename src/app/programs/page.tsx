@@ -1,6 +1,7 @@
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import ProgramsListing from "@/components/programs-listing";
+import PageHero from "@/components/page-hero";
 import { Suspense } from "react";
 
 function ProgramsLoadingState() {
@@ -15,7 +16,12 @@ export default function ProgramsPage() {
   return (
     <>
       <Header />
-      <main>
+      <main className="min-h-screen bg-zinc-950">
+        <PageHero
+          pageKey="programs"
+          fallbackTitle="Programs"
+          fallbackDescription="Explore CBM Radio programs, presenters, and broadcast schedules."
+        />
         <Suspense fallback={<ProgramsLoadingState />}>
           <ProgramsListing />
         </Suspense>

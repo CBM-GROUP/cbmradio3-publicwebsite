@@ -1,6 +1,7 @@
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import NewsListing from "@/components/news-listing";
+import PageHero from "@/components/page-hero";
 import { Suspense } from "react";
 
 function NewsLoadingState() {
@@ -15,7 +16,12 @@ export default function NewsPage() {
   return (
     <>
       <Header />
-      <main>
+      <main className="min-h-screen bg-zinc-950">
+        <PageHero
+          pageKey="news"
+          fallbackTitle="News"
+          fallbackDescription="Read CBM Radio news, stories, and community updates."
+        />
         <Suspense fallback={<NewsLoadingState />}>
           <NewsListing />
         </Suspense>

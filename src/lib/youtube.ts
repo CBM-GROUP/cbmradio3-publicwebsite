@@ -9,14 +9,18 @@ export interface YouTubeMedia {
 }
 
 export function getYouTubeMedia(value: string | undefined): YouTubeMedia | null {
-  const embedUrl = getYouTubeEmbedUrl(value);
+  const embedUrl = parseYouTubeEmbedUrl(value);
   if (!embedUrl) return null;
   const videoId = new URL(embedUrl).pathname.split("/").filter(Boolean)[1];
   return { videoId, watchUrl: `https://www.youtube.com/watch?v=${videoId}`, embedUrl };
 }
 
 export function getYouTubeEmbedUrl(value: string | undefined) {
-  return getYouTubeMedia(value)?.embedUrl ?? null;
+  return parseYouTubeEmbedUrl(value);
+}
+
+export function getStrictYouTubeEmbedUrl(value: string | undefined) {
+  return parseYouTubeEmbedUrl(value);
 }
 
 function parseYouTubeEmbedUrl(value: string | undefined) {
