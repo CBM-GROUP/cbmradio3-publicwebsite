@@ -123,9 +123,21 @@ function renderNode(
 }
 
 function renderText(node: StructuredTextNode): ReactNode {
-  // Mark semantics are not confirmed by the current backend payload contract.
-  // Unknown marks are intentionally ignored while preserving their text.
-  return node.text;
+  return (node.marks || []).reduce<ReactNode>((content, mark, index) => {
+    if (mark.type === "bold") return <strong key={index}>{content}</strong>;
+    if (mark.type === "italic") return <em key={index}>{content}</em>;
+    if (mark.type === "link") {
+      const href = typeof mark.attrs?.href === "string" ? safeTextLink(mark.attrs.href) : null;
+      if (href) return <a key={index} href={href} className="text-teal-400 underline hover:text-teal-300">{content}</a>;
+    }
+    return content;
+  }, node.text);
+}
+
+function safeTextLink(value: string) {
+  if (value.startsWith("/") && !value.startsWith("//")) return value;
+  try { const url = new URL(value); return ["http:", "https:", "mailto:", "tel:"].includes(url.protocol) ? url.href : null; }
+  catch { return null; }
 }
 
 function getSafeImageUrl(value: string | undefined) {
