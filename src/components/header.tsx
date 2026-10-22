@@ -18,7 +18,7 @@ export default function Header() {
   return (
     <header className="fixed top-0 z-50 w-full bg-black/80 text-white shadow-sm backdrop-blur transition-all duration-300 md:bg-black/40">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8">
-        <Link href="/" className="flex items-center">
+        <Link href="/" prefetch={true} className="flex items-center">
           <Image
             src={CBMlogo}
             alt="CBM Radio"
@@ -43,6 +43,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={true}
                 className={`border-b-2 py-1 text-sm capitalize transition-all duration-300 lg:text-base ${
                   isActive
                     ? "border-teal-500 text-teal-500"
@@ -58,6 +59,7 @@ export default function Header() {
         <div className="hidden md:block">
           <Link
             href={contactNavigationItem.href}
+            prefetch={true}
             className="rounded-md bg-teal-500 px-5 py-2 text-sm font-medium capitalize text-black transition-colors duration-300 hover:bg-teal-600 lg:text-base"
           >
             {contactNavigationItem.label}
@@ -109,6 +111,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={true}
                 onClick={() => setIsOpen(false)}
                 className={`font-medium capitalize transition-colors duration-300 ${
                   isActive
@@ -123,6 +126,7 @@ export default function Header() {
 
           <Link
             href={contactNavigationItem.href}
+            prefetch={true}
             onClick={() => setIsOpen(false)}
             className="mt-4 rounded-md bg-teal-500 px-8 py-2.5 text-lg font-semibold capitalize text-black transition-colors duration-300 hover:bg-teal-600"
           >

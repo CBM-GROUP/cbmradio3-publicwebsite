@@ -1,7 +1,8 @@
 "use client";
 
-import { CalendarDays } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Play } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import homeService from "@/services/home.service";
@@ -10,7 +11,7 @@ import { getYouTubeMedia, type YouTubeMedia } from "@/lib/youtube";
 import type { EpisodeSummary } from "@/types/program";
 import Logo from "../../public/cbmradio.png";
 
-const EPISODE_LIMIT = 3;
+const LATEST_EPISODE_LIMIT = 5;
 type RequestState = "loading" | "ready" | "error";
 
 export default function EpisodesSection() {
@@ -18,61 +19,282 @@ export default function EpisodesSection() {
   const [latest, setLatest] = useState<EpisodeSummary[]>([]);
   const [featuredState, setFeaturedState] = useState<RequestState>("loading");
   const [latestState, setLatestState] = useState<RequestState>("loading");
-  const [activePlayer, setActivePlayer] = useState<{ episode: EpisodeSummary; media: YouTubeMedia; trigger: HTMLButtonElement } | null>(null);
+  const [activePlayer, setActivePlayer] = useState<{
+    episode: EpisodeSummary;
+    media: YouTubeMedia;
+    trigger: HTMLButtonElement;
+  } | null>(null);
 
   useEffect(() => {
     let isMounted = true;
+
     homeService.getFeaturedEpisodes().then((items) => {
       if (!isMounted) return;
-      setFeatured(items.slice(0, EPISODE_LIMIT));
+      setFeatured(items);
       setFeaturedState("ready");
-    }).catch(() => { if (isMounted) setFeaturedState("error"); });
+    }).catch(() => {
+      if (isMounted) setFeaturedState("error");
+    });
+
     homeService.getLatestEpisodes().then((items) => {
       if (!isMounted) return;
       setLatest(items);
       setLatestState("ready");
-    }).catch(() => { if (isMounted) setLatestState("error"); });
-    return () => { isMounted = false; };
+    }).catch(() => {
+      if (isMounted) setLatestState("error");
+    });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  const featuredIds = new Set(featured.map((episode) => episode.id));
-  const uniqueLatest = latest.filter((episode) => !featuredIds.has(episode.id)).slice(0, EPISODE_LIMIT);
-  const allEmpty = featuredState === "ready" && latestState === "ready" && featured.length === 0 && uniqueLatest.length === 0;
+  const spotlight = featured[0] ?? latest[0];
+  const recentEpisodes = latest
+    .filter((episode) => episode.id !== spotlight?.id)
+    .slice(0, LATEST_EPISODE_LIMIT);
+  const hasEpisodes = Boolean(spotlight || recentEpisodes.length);
+  const allEmpty = featuredState === "ready" && latestState === "ready" && !hasEpisodes;
+  const allFailed = featuredState === "error" && latestState === "error";
 
   return (
-    <section className="bg-zinc-900 px-6 py-16 text-white">
+    <section className="bg-zinc-950 px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 text-center"><p className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-500">Episodes</p><h2 className="mt-3 text-3xl font-bold">Listen and watch</h2></div>
-        {(featuredState === "loading" || latestState === "loading") && featured.length === 0 && uniqueLatest.length === 0 && <p className="min-h-48 text-center text-zinc-400" aria-live="polite">Loading episodes...</p>}
-        {featuredState === "error" && latestState === "error" && <p className="min-h-48 text-center text-zinc-400">Episodes are temporarily unavailable.</p>}
-        {allEmpty && <p className="min-h-48 text-center text-zinc-400">No episodes are available right now.</p>}
+        <div className="mb-10 flex flex-wrap items-end justify-between gap-5">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-teal-400">
+              On CBM Radio
+            </p>
+            <h2 className="mt-3 text-3xl font-extrabold sm:text-4xl">
+              Stories worth listening to
+            </h2>
+          </div>
+          <Link
+            href="/episodes"
+            className="inline-flex min-h-11 items-center gap-2 font-semibold text-teal-400 transition hover:text-teal-300"
+          >
+            Explore all episodes <ArrowUpRight size={18} aria-hidden="true" />
+          </Link>
+        </div>
 
-        {featured.length > 0 && <EpisodeGroup heading="Featured episodes" episodes={featured} onPlay={(episode, media, trigger) => setActivePlayer({ episode, media, trigger })} />}
-        {featuredState === "error" && uniqueLatest.length > 0 && <p className="mb-5 text-sm text-zinc-500">Featured episodes are temporarily unavailable.</p>}
-        {uniqueLatest.length > 0 && <div className={featured.length > 0 ? "mt-12" : ""}><EpisodeGroup heading="Latest episodes" episodes={uniqueLatest} onPlay={(episode, media, trigger) => setActivePlayer({ episode, media, trigger })} /></div>}
-        {latestState === "error" && featured.length > 0 && <p className="mt-6 text-sm text-zinc-500">Latest episodes are temporarily unavailable.</p>}
+        {(featuredState === "loading" || latestState === "loading") && !hasEpisodes && (
+          <p className="min-h-48 text-center text-zinc-400" aria-live="polite">
+            Loading episodes...
+          </p>
+        )}
+        {allFailed && (
+          <p className="min-h-48 text-center text-zinc-400">
+            Episodes are temporarily unavailable.
+          </p>
+        )}
+        {allEmpty && (
+          <p className="min-h-48 text-center text-zinc-400">
+            No episodes are available right now.
+          </p>
+        )}
+
+        {hasEpisodes && (
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+            {spotlight && (
+              <SpotlightEpisode
+                episode={spotlight}
+                onPlay={(episode, media, trigger) =>
+                  setActivePlayer({ episode, media, trigger })
+                }
+              />
+            )}
+
+            <section
+              aria-labelledby="latest-episodes-heading"
+              className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5 sm:p-7"
+            >
+              <div className="mb-5 flex items-end justify-between gap-3 border-b border-zinc-800 pb-4">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.25em] text-teal-400">
+                    Just released
+                  </p>
+                  <h3 id="latest-episodes-heading" className="mt-2 text-2xl font-bold">
+                    Latest episodes
+                  </h3>
+                </div>
+                <span className="pb-1 text-xs uppercase tracking-wider text-zinc-500">
+                  Newest first
+                </span>
+              </div>
+
+              {recentEpisodes.length > 0 ? (
+                <ol className="divide-y divide-zinc-800">
+                  {recentEpisodes.map((episode, index) => (
+                    <LatestEpisodeRow
+                      key={episode.id}
+                      episode={episode}
+                      rank={index + 1}
+                      onPlay={(selectedEpisode, media, trigger) =>
+                        setActivePlayer({
+                          episode: selectedEpisode,
+                          media,
+                          trigger,
+                        })
+                      }
+                    />
+                  ))}
+                </ol>
+              ) : latestState === "error" ? (
+                <p className="py-8 text-sm text-zinc-400">
+                  Latest episodes are temporarily unavailable.
+                </p>
+              ) : latestState === "loading" ? (
+                <p className="py-8 text-sm text-zinc-400" aria-live="polite">
+                  Loading latest episodes...
+                </p>
+              ) : (
+                <p className="py-8 text-sm text-zinc-400">
+                  More episodes are on the way.
+                </p>
+              )}
+            </section>
+          </div>
+        )}
       </div>
-      {activePlayer && <YouTubeDialog title={activePlayer.episode.title} media={activePlayer.media} returnFocus={activePlayer.trigger} onClose={() => setActivePlayer(null)} />}
+
+      {activePlayer && (
+        <YouTubeDialog
+          title={activePlayer.episode.title}
+          media={activePlayer.media}
+          returnFocus={activePlayer.trigger}
+          onClose={() => setActivePlayer(null)}
+        />
+      )}
     </section>
   );
 }
 
-function EpisodeGroup({ heading, episodes, onPlay }: { heading: string; episodes: EpisodeSummary[]; onPlay: (episode: EpisodeSummary, media: YouTubeMedia, trigger: HTMLButtonElement) => void }) {
+function SpotlightEpisode({
+  episode,
+  onPlay,
+}: {
+  episode: EpisodeSummary;
+  onPlay: (episode: EpisodeSummary, media: YouTubeMedia, trigger: HTMLButtonElement) => void;
+}) {
+  const media = getYouTubeMedia(episode.youtube_embed_url || episode.youtube_link);
+
   return (
-    <div>
-      <h3 className="mb-5 text-xl font-bold">{heading}</h3>
-      <div className="grid gap-6 md:grid-cols-3">
-        {episodes.map((episode) => {
-          const media = getYouTubeMedia(episode.youtube_embed_url || episode.youtube_link);
-          const content = (
-            <>
-              <div className="relative aspect-video bg-zinc-950"><Image src={episode.cover_image || Logo} alt={episode.title} fill sizes="(max-width: 768px) 100vw, 33vw" unoptimized={Boolean(episode.cover_image)} className="object-cover" /></div>
-              <div className="p-5"><p className="text-sm text-emerald-500">{episode.program_title}</p><h4 className="mt-2 text-lg font-bold">{episode.title}</h4>{episode.publish_date && <p className="mt-3 flex items-center gap-2 text-xs text-zinc-400"><CalendarDays size={15} /> {new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" }).format(new Date(episode.publish_date))}</p>}</div>
-            </>
-          );
-          return media ? <button type="button" key={episode.id} onClick={(event) => onPlay(episode, media, event.currentTarget)} className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 text-left transition hover:border-emerald-600" aria-label={"Play " + episode.title}>{content}</button> : <article key={episode.id} className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950">{content}</article>;
-        })}
+    <article className="group relative flex min-h-[27rem] overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 sm:min-h-[34rem]">
+      <Image
+        src={episode.cover_image || Logo}
+        alt={episode.cover_image ? episode.title : "CBM Radio"}
+        fill
+        sizes="(max-width: 1024px) 100vw, 55vw"
+        unoptimized={Boolean(episode.cover_image)}
+        className="object-cover transition duration-700 group-hover:scale-105"
+        priority={false}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/5" />
+      <div className="relative mt-auto w-full p-6 sm:p-9">
+        <span className="inline-flex rounded-full bg-teal-400 px-3 py-1 text-xs font-bold uppercase tracking-wider text-zinc-950">
+          Featured episode
+        </span>
+        <p className="mt-5 text-sm font-semibold uppercase tracking-wider text-teal-300">
+          {episode.program_title}
+        </p>
+        <h3 className="mt-2 max-w-xl text-3xl font-extrabold leading-tight sm:text-4xl">
+          {episode.title}
+        </h3>
+        <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-zinc-300">
+          {episode.publish_date && <EpisodeDate date={episode.publish_date} />}
+          <span>Listen and watch on CBM</span>
+        </div>
+        {media ? (
+          <button
+            type="button"
+            onClick={(event) => onPlay(episode, media, event.currentTarget)}
+            className="mt-6 inline-flex min-h-12 items-center gap-3 rounded-full bg-teal-400 px-6 font-bold text-zinc-950 transition hover:bg-teal-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          >
+            <Play size={17} fill="currentColor" aria-hidden="true" />
+            Play episode
+          </button>
+        ) : (
+          <Link
+            href={"/episodes/" + episode.slug}
+            className="mt-6 inline-flex min-h-12 items-center gap-3 rounded-full bg-teal-400 px-6 font-bold text-zinc-950 transition hover:bg-teal-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          >
+            Discover episode <ArrowUpRight size={18} aria-hidden="true" />
+          </Link>
+        )}
       </div>
-    </div>
+    </article>
+  );
+}
+
+function LatestEpisodeRow({
+  episode,
+  rank,
+  onPlay,
+}: {
+  episode: EpisodeSummary;
+  rank: number;
+  onPlay: (episode: EpisodeSummary, media: YouTubeMedia, trigger: HTMLButtonElement) => void;
+}) {
+  const media = getYouTubeMedia(episode.youtube_embed_url || episode.youtube_link);
+
+  return (
+    <li className="grid grid-cols-[2rem_4rem_minmax(0,1fr)_2.75rem] items-center gap-3 py-4 sm:grid-cols-[2.5rem_4.5rem_minmax(0,1fr)_2.75rem] sm:gap-4">
+      <span className="text-xl font-extrabold tabular-nums text-zinc-500" aria-label={`Release ${rank}`}>
+        {String(rank).padStart(2, "0")}
+      </span>
+      <Image
+        src={episode.cover_image || Logo}
+        alt={episode.cover_image ? episode.title : "CBM Radio"}
+        width={72}
+        height={72}
+        sizes="72px"
+        unoptimized={Boolean(episode.cover_image)}
+        className="h-16 w-16 rounded-lg object-cover sm:h-[4.5rem] sm:w-[4.5rem]"
+      />
+      <div className="min-w-0">
+        <p className="truncate text-xs font-semibold uppercase tracking-wide text-teal-400">
+          {episode.program_title}
+        </p>
+        <h4 className="mt-1 line-clamp-2 font-bold leading-snug text-white">
+          {episode.title}
+        </h4>
+        {episode.publish_date && (
+          <p className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500">
+            <EpisodeDate date={episode.publish_date} />
+          </p>
+        )}
+      </div>
+      {media ? (
+        <button
+          type="button"
+          onClick={(event) => onPlay(episode, media, event.currentTarget)}
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-700 text-teal-300 transition hover:border-teal-400 hover:bg-teal-400 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
+          aria-label={"Play " + episode.title}
+        >
+          <Play size={16} fill="currentColor" aria-hidden="true" />
+        </button>
+      ) : (
+        <Link
+          href={"/episodes/" + episode.slug}
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-700 text-teal-300 transition hover:border-teal-400 hover:bg-teal-400 hover:text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
+          aria-label={"Discover " + episode.title}
+        >
+          <ArrowUpRight size={18} aria-hidden="true" />
+        </Link>
+      )}
+    </li>
+  );
+}
+
+function EpisodeDate({ date }: { date: string }) {
+  const formattedDate = new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "medium",
+  }).format(new Date(date));
+
+  return (
+    <>
+      <CalendarDays size={14} aria-hidden="true" />
+      <time dateTime={date}>{formattedDate}</time>
+    </>
   );
 }
