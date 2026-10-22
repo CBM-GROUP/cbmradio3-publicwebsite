@@ -17,6 +17,8 @@ export interface HeroSection {
 export interface PageSection {
   id: number;
   section_key: string;
+  page?: string;
+  position?: string;
   title: string;
   subtitle: string;
   body: string;

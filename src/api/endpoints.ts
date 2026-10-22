@@ -8,6 +8,7 @@ export const BASE_URL = configuredBaseUrl.replace(/\/$/, "");
 
 export const API_ENDPOINTS = {
   // Page Sections
+  PAGE_SECTIONS: "/api/v1/page-sections/",
   HERO_SECTION: "/api/v1/page-sections/hero/",
   SPONSORS_SECTION: "/api/v1/page-sections/sponsors/",
   FOOTER_SECTION: "/api/v1/page-sections/footer/",

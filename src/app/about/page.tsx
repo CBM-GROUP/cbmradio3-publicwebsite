@@ -7,6 +7,7 @@ import { motion, type Variants } from "framer-motion";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import PageHero from "@/components/page-hero";
+import DynamicPageSections from "@/components/dynamic-page-sections";
 import { pageSectionService } from "@/services/page-section.service";
 import type { PageSection } from "@/types/hero";
 import Take3 from "../../../public/cbm_images/take 3.jpeg";
@@ -100,6 +101,7 @@ export default function AboutPage() {
             </motion.article>
           ))}
         </motion.section>
+        <DynamicPageSections page="about" position="bottom" />
       </main>
       <Footer />
     </>
