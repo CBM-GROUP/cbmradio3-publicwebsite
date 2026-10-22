@@ -27,6 +27,20 @@ export const pageSectionService = {
     }
   },
 
+  async getSectionsForPage(page: string, position?: string): Promise<PageSection[]> {
+    try {
+      const params = new URLSearchParams({ page });
+      if (position) params.set("position", position);
+      const { data } = await apiClient.get<PageSection[] | { results: PageSection[] }>(
+        `${API_ENDPOINTS.PAGE_SECTIONS}?${params.toString()}`,
+      );
+      if (Array.isArray(data)) return data;
+      return data?.results || [];
+    } catch {
+      return [];
+    }
+  },
+
   getAboutSection: () => pageSectionService.getPageSection("about"),
   getMissionSection: () => pageSectionService.getPageSection("mission"),
   getVisionSection: () => pageSectionService.getPageSection("vision"),

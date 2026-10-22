@@ -1,1 +1,32 @@
 @import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+  background: #101110;
+  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100%;
+  background: #101110;
+}
+
+::selection {
+  background: #2dd4bf;
+  color: #101110;
+}
+
+:focus-visible {
+  outline: 2px solid #5eead4;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

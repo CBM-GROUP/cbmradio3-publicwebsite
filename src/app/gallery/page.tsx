@@ -10,6 +10,7 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import PageHero from "@/components/page-hero";
+import DynamicPageSections from "@/components/dynamic-page-sections";
 import { galleryService } from "@/services/gallery.service";
 import type { PaginatedResponse } from "@/types/api";
 import type { GalleryItem } from "@/types/gallery";
@@ -214,6 +215,7 @@ function GalleryContent() {
             )}
           </div>
         </section>
+        <DynamicPageSections page="gallery" position="bottom" />
       </main>
       <Footer />
 

@@ -2,6 +2,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import ProgramsListing from "@/components/programs-listing";
 import PageHero from "@/components/page-hero";
+import DynamicPageSections from "@/components/dynamic-page-sections";
 import { Suspense } from "react";
 
 function ProgramsLoadingState() {
@@ -22,9 +23,11 @@ export default function ProgramsPage() {
           fallbackTitle="Programs"
           fallbackDescription="Explore CBM Radio programs, presenters, and broadcast schedules."
         />
+        <DynamicPageSections page="programs" position="top" />
         <Suspense fallback={<ProgramsLoadingState />}>
           <ProgramsListing />
         </Suspense>
+        <DynamicPageSections page="programs" position="bottom" />
       </main>
       <Footer />
     </>

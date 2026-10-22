@@ -4,6 +4,7 @@ import ContactPageContent from "@/components/contact/contact-page-content";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import PageHero from "@/components/page-hero";
+import DynamicPageSections from "@/components/dynamic-page-sections";
 
 export const metadata: Metadata = {
   title: "Contact | CBM Radio",
@@ -20,7 +21,9 @@ export default function ContactPage() {
           fallbackTitle="Contact Us"
           fallbackDescription="Get in touch with CBM Radio for general enquiries and business communication."
         />
+        <DynamicPageSections page="contact" position="top" />
         <ContactPageContent />
+        <DynamicPageSections page="contact" position="bottom" />
       </main>
       <Footer />
     </>

@@ -8,6 +8,7 @@ export const primaryNavigation: NavigationItem[] = [
   { label: "About", href: "/about" },
   { label: "Team Members", href: "/team" },
   { label: "Programs", href: "/programs" },
+  { label: "Charts", href: "/charts" },
   { label: "News", href: "/news" },
   { label: "Gallery", href: "/gallery" },
 ];

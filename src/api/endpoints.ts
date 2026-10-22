@@ -8,6 +8,7 @@ export const BASE_URL = configuredBaseUrl.replace(/\/$/, "");
 
 export const API_ENDPOINTS = {
   // Page Sections
+  PAGE_SECTIONS: "/api/v1/page-sections/",
   HERO_SECTION: "/api/v1/page-sections/hero/",
   SPONSORS_SECTION: "/api/v1/page-sections/sponsors/",
   FOOTER_SECTION: "/api/v1/page-sections/footer/",
@@ -85,4 +86,9 @@ export const API_ENDPOINTS = {
   HERO_SLIDES: "/api/v1/site-settings/hero-slides/",
   HERO_SLIDE_BY_ID: (id: number) =>
     `/api/v1/site-settings/hero-slides/${id}/`,
+
+  // Charts
+  CHARTS: "/api/v1/charts/",
+  CHART_BY_SLUG: (slug: string) =>
+    `/api/v1/charts/${encodeURIComponent(slug)}/`,
 } as const;
