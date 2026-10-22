@@ -16,22 +16,22 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 z-50 w-full bg-black/80 text-white shadow-sm backdrop-blur transition-all duration-300 md:bg-black/40">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8">
+    <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-[#101110]/90 text-white shadow-sm backdrop-blur-xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 md:px-8">
         <Link href="/" prefetch={true} className="flex items-center">
           <Image
             src={CBMlogo}
             alt="CBM Radio"
-            width={80}
-            height={80}
+            width={64}
+            height={64}
             priority
-            sizes="80px"
-            className="h-16 w-16 object-cover md:h-20 md:w-20"
+            sizes="64px"
+            className="h-14 w-14 object-cover"
           />
         </Link>
 
         <nav
-          className="hidden items-center gap-6 md:flex lg:gap-8"
+          className="hidden items-center gap-5 md:flex lg:gap-7"
           aria-label="Main navigation"
         >
           {primaryNavigation.map((item) => {
@@ -44,10 +44,11 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 prefetch={true}
+                aria-current={isActive ? "page" : undefined}
                 className={`border-b-2 py-1 text-sm capitalize transition-all duration-300 lg:text-base ${
                   isActive
-                    ? "border-teal-500 text-teal-500"
-                    : "border-transparent hover:border-teal-400 hover:text-teal-400"
+                    ? "border-teal-300 text-teal-300"
+                    : "border-transparent text-zinc-300 hover:border-teal-300 hover:text-white"
                 }`}
               >
                 {item.label}
@@ -60,7 +61,7 @@ export default function Header() {
           <Link
             href={contactNavigationItem.href}
             prefetch={true}
-            className="rounded-md bg-teal-500 px-5 py-2 text-sm font-medium capitalize text-black transition-colors duration-300 hover:bg-teal-600 lg:text-base"
+            className="rounded-full bg-teal-400 px-5 py-2.5 text-sm font-bold capitalize text-zinc-950 transition-colors duration-300 hover:bg-teal-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-300 lg:text-base"
           >
             {contactNavigationItem.label}
           </Link>
@@ -69,23 +70,23 @@ export default function Header() {
         <button
           type="button"
           onClick={() => setIsOpen((current) => !current)}
-          className="z-50 flex h-8 w-8 flex-col items-center justify-center space-y-1.5 focus:outline-none md:hidden"
+          className="z-50 flex h-11 w-11 flex-col items-center justify-center space-y-1.5 rounded-full border border-white/15 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-300 md:hidden"
           aria-label={isOpen ? "Close menu" : "Open menu"}
           aria-expanded={isOpen}
           aria-controls="mobile-navigation"
         >
           <span
-            className={`block h-0.5 w-6 bg-white transition-transform duration-300 ease-in-out ${
+            className={`block h-0.5 w-6 bg-teal-300 transition-transform duration-300 ease-in-out ${
               isOpen ? "translate-y-2 rotate-45" : ""
             }`}
           />
           <span
-            className={`block h-0.5 w-6 bg-white transition-opacity duration-300 ease-in-out ${
+            className={`block h-0.5 w-6 bg-teal-300 transition-opacity duration-300 ease-in-out ${
               isOpen ? "opacity-0" : ""
             }`}
           />
           <span
-            className={`block h-0.5 w-6 bg-white transition-transform duration-300 ease-in-out ${
+            className={`block h-0.5 w-6 bg-teal-300 transition-transform duration-300 ease-in-out ${
               isOpen ? "-translate-y-2 -rotate-45" : ""
             }`}
           />
@@ -94,7 +95,9 @@ export default function Header() {
 
       <div
         id="mobile-navigation"
-        className={`fixed inset-0 z-40 flex h-screen w-full flex-col items-center justify-center gap-8 bg-black/95 text-xl backdrop-blur-lg transition-transform duration-300 ease-in-out md:hidden ${
+        aria-hidden={!isOpen}
+        inert={!isOpen}
+        className={`fixed inset-0 z-40 flex h-screen w-full flex-col items-center justify-center gap-8 bg-[#101110]/98 text-xl backdrop-blur-xl transition-transform duration-300 ease-in-out md:hidden ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -113,10 +116,11 @@ export default function Header() {
                 href={item.href}
                 prefetch={true}
                 onClick={() => setIsOpen(false)}
+                aria-current={isActive ? "page" : undefined}
                 className={`font-medium capitalize transition-colors duration-300 ${
                   isActive
                     ? "text-teal-400"
-                    : "text-white hover:text-teal-400"
+                    : "text-zinc-200 hover:text-teal-300"
                 }`}
               >
                 {item.label}
@@ -128,7 +132,7 @@ export default function Header() {
             href={contactNavigationItem.href}
             prefetch={true}
             onClick={() => setIsOpen(false)}
-            className="mt-4 rounded-md bg-teal-500 px-8 py-2.5 text-lg font-semibold capitalize text-black transition-colors duration-300 hover:bg-teal-600"
+            className="mt-4 rounded-full bg-teal-400 px-8 py-3 text-lg font-bold capitalize text-zinc-950 transition-colors duration-300 hover:bg-teal-300"
           >
             {contactNavigationItem.label}
           </Link>
