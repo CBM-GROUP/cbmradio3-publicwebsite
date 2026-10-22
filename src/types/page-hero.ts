@@ -4,7 +4,8 @@ export type PageHeroKey =
   | "news"
   | "gallery"
   | "about"
-  | "contact";
+  | "contact"
+  | "charts";
 
 export type PageHeroMediaType = "none" | "image" | "video" | "slides";
 

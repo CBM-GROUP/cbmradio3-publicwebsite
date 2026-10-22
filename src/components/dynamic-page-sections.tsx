@@ -9,7 +9,7 @@ import { pageSectionService } from "@/services/page-section.service";
 import type { PageSection } from "@/types/hero";
 
 interface Props {
-  page: "home" | "about" | "programs" | "episodes" | "news" | "gallery" | "contact";
+  page: "home" | "about" | "programs" | "episodes" | "news" | "gallery" | "contact" | "charts";
   position?: "hero" | "top" | "middle" | "bottom";
   className?: string;
 }
