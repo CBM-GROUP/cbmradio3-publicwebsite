@@ -20,10 +20,37 @@ const nextConfig: NextConfig = {
         port: "9002",
         pathname: "/**",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "8000",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "8002",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "8000",
+        pathname: "/**",
+      },
       ...(mediaHostname
         ? [{ protocol: "https" as const, hostname: mediaHostname, pathname: "/**" }]
         : []),
     ],
+  },
+  async rewrites() {
+    const backendUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+    return [
+      {
+        source: "/media/:path*",
+        destination: `${backendUrl}/media/:path*`,
+      },
+    ];
   },
 };
 
