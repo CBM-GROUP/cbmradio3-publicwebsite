@@ -34,7 +34,7 @@ export default function Header() {
               type="button"
               onClick={() => setIsOpen((current) => !current)}
               onKeyDown={handleMenuKeyDown}
-              className="inline-flex min-h-11 items-center gap-3 rounded-full px-3 text-sm font-semibold text-white transition hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-300"
+              className="inline-flex min-h-11 items-center rounded-full px-3 text-sm font-semibold text-white transition hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-300"
               aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={isOpen}
               aria-controls="site-navigation"
@@ -56,7 +56,6 @@ export default function Header() {
                   }`}
                 />
               </span>
-              <span className="hidden sm:inline">{isOpen ? "Close" : "Menu"}</span>
             </button>
 
             <Link
@@ -106,7 +105,7 @@ export default function Header() {
 
             <nav aria-label="Main navigation" className="mt-9">
               <ul className="divide-y divide-white/10 border-y border-white/10">
-                {primaryNavigation.map((item, index) => {
+                {primaryNavigation.map((item) => {
                   const isActive =
                     pathname === item.href ||
                     (item.href !== "/" && pathname.startsWith(item.href + "/"));
@@ -117,15 +116,12 @@ export default function Header() {
                         href={item.href}
                         onClick={() => setIsOpen(false)}
                         aria-current={isActive ? "page" : undefined}
-                        className={`group flex min-h-16 items-center gap-5 py-3 transition-colors sm:min-h-[4.5rem] ${
+                        className={`group flex min-h-20 items-center py-4 transition-colors sm:min-h-24 ${
                           isActive
                             ? "text-teal-300"
                             : "text-white hover:text-teal-300"
                         }`}
                       >
-                        <span className="w-8 text-xs font-semibold tabular-nums text-zinc-500">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
                         <span className="text-2xl font-bold tracking-tight sm:text-3xl">
                           {item.label}
                         </span>
