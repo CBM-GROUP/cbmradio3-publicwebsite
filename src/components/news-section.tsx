@@ -1,11 +1,11 @@
 "use client";
 
-import { Clock } from "lucide-react";
+import { Clock, Eye } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { formatPublicationDate } from "@/lib/article-metadata";
+import { formatPublicationDate, formatTimeAgo, formatViewsCount } from "@/lib/article-metadata";
 import homeService from "@/services/home.service";
 import type { ArticleSummary } from "@/types/news";
 import Logo from "../../public/cbmradio.png";
@@ -96,11 +96,31 @@ function ArticleCard({ article, label, featured = false }: { article: ArticleSum
         />
       </div>
       <div className="flex flex-col justify-center p-5">
-        <span className="text-xs font-bold uppercase tracking-wider text-teal-500">{label}</span>
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs font-bold uppercase tracking-wider text-teal-500">{label}</span>
+          {article.views_count !== undefined && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-zinc-900 border border-zinc-800 px-2 py-0.5 text-[11px] font-semibold text-amber-400">
+              <Eye size={12} />
+              <span>{formatViewsCount(article.views_count)}</span>
+            </span>
+          )}
+        </div>
         {article.category && <span className="mt-2 text-xs uppercase text-zinc-500">{article.category.name}</span>}
         <h3 className={"mt-2 font-bold text-white " + (featured ? "text-3xl" : "text-xl")}>{article.title}</h3>
         {article.author && <p className="mt-4 text-sm text-zinc-400">By {article.author}</p>}
-        {article.published_at && <p className="mt-2 flex items-center gap-2 text-sm text-zinc-400"><Clock size={16} /> {formatPublicationDate(article.published_at)}</p>}
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-400">
+          {(article.published_at || article.created_at) && (
+            <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
+              <Clock size={14} />
+              <span>Uploaded {formatTimeAgo(article.published_at || article.created_at)}</span>
+            </span>
+          )}
+          {article.published_at && (
+            <span className="text-zinc-500">
+              • {formatPublicationDate(article.published_at)}
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   );

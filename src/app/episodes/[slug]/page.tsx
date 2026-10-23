@@ -5,7 +5,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 
-import EpisodeComments from "@/components/comments/episode-comments";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import { getStrictYouTubeEmbedUrl } from "@/lib/youtube";
@@ -71,7 +70,6 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
           {embedUrl ? <div className="mt-5 aspect-video overflow-hidden rounded-xl bg-black"><iframe src={embedUrl} title={`${episode.title} video`} className="h-full w-full" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div> : <p className="mt-5 rounded-xl border border-zinc-800 bg-zinc-900 p-5 text-zinc-400">Video playback is unavailable for this episode.</p>}
         </section>
       </article>
-      <EpisodeComments episodeId={episode.id} />
     </main>
     <Footer />
   </>;

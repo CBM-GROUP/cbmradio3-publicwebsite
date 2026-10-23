@@ -1,13 +1,17 @@
 "use client";
 
 import axios from "axios";
-import { Clock } from "lucide-react";
+import { Clock, Eye } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { formatPublicationDate } from "@/lib/article-metadata";
+import {
+  formatPublicationDate,
+  formatTimeAgo,
+  formatViewsCount,
+} from "@/lib/article-metadata";
 import NewsService from "@/services/news-service";
 import type { PaginatedResponse } from "@/types/api";
 import type { ArticleCategory, ArticleListItem } from "@/types/news";
@@ -210,13 +214,45 @@ function ArticleImage({ article }: { article: ArticleListItem }) {
 }
 
 function ArticleMetadata({ article, label }: { article: ArticleListItem; label?: string }) {
+  const uploadTimestamp = article.published_at || article.created_at;
+
   return (
     <div className="flex flex-col justify-center p-5">
-      {label && <span className="text-xs font-bold uppercase tracking-wider text-teal-500">{label}</span>}
-      {article.category && <span className="mt-2 text-xs uppercase text-zinc-500">{article.category.name}</span>}
-      <h3 className="mt-2 text-xl font-bold text-white">{article.title}</h3>
-      {article.author && <p className="mt-4 text-sm text-zinc-400">By {article.author}</p>}
-      {article.published_at && <p className="mt-2 flex items-center gap-2 text-sm text-zinc-400"><Clock size={16} aria-hidden="true" /> {formatPublicationDate(article.published_at)}</p>}
+      <div className="flex items-center justify-between gap-2">
+        {label ? (
+          <span className="text-xs font-bold uppercase tracking-wider text-teal-500">{label}</span>
+        ) : article.category ? (
+          <span className="text-xs font-bold uppercase tracking-wider text-teal-500">{article.category.name}</span>
+        ) : (
+          <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">News</span>
+        )}
+        {article.views_count !== undefined && (
+          <span className="inline-flex items-center gap-1 rounded-full bg-zinc-950/80 border border-zinc-800 px-2 py-0.5 text-[11px] font-semibold text-amber-400">
+            <Eye size={12} />
+            <span>{formatViewsCount(article.views_count)}</span>
+          </span>
+        )}
+      </div>
+
+      <h3 className="mt-2 text-xl font-bold text-white group-hover:text-teal-400 transition-colors line-clamp-2">
+        {article.title}
+      </h3>
+
+      {article.author && <p className="mt-3 text-xs text-zinc-400">By {article.author}</p>}
+
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-400">
+        {uploadTimestamp && (
+          <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
+            <Clock size={13} aria-hidden="true" />
+            <span>Uploaded {formatTimeAgo(uploadTimestamp)}</span>
+          </span>
+        )}
+        {article.published_at && (
+          <span className="text-zinc-500 text-[11px]">
+            • {formatPublicationDate(article.published_at)}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
