@@ -7,7 +7,6 @@ import {
   Check,
   Clock,
   Copy,
-  Eye,
   Share2,
   Sparkles,
   User,
@@ -29,7 +28,6 @@ import {
   estimateArticleReadingTime,
   formatPublicationDateTime,
   formatTimeAgo,
-  formatViewsCount,
 } from "@/lib/article-metadata";
 import NewsService, {
   MalformedArticleResponseError,
@@ -234,12 +232,6 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
         )}
 
         <span className="text-zinc-600 hidden sm:inline">•</span>
-
-        {/* Views Count */}
-        <div className="flex items-center gap-1.5 rounded-full bg-zinc-900 border border-zinc-800 px-3 py-1 text-xs font-bold text-amber-400">
-          <Eye className="h-3.5 w-3.5" />
-          <span>{formatViewsCount(article.views_count)}</span>
-        </div>
 
         {/* Reading Time */}
         {readingTime && (
