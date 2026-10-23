@@ -33,6 +33,22 @@ export default function Header() {
                 {isMenuOpen ? <X size={20} strokeWidth={2.5} /> : <Menu size={20} strokeWidth={2.5} />}
               </button>
 
+              <Link
+                href="/"
+                aria-label="CBM Radio home"
+                className="flex shrink-0 items-center rounded-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48d4c1]"
+              >
+                <Image
+                  src={CBMlogo}
+                  alt="CBM Radio logo"
+                  width={90}
+                  height={90}
+                  priority
+                  sizes="56px"
+                  className="-my-5 h-20 w-20 object-cover"
+                />
+              </Link>
+
               <nav aria-label="Main navigation" className="hidden min-w-0 items-center gap-5 xl:flex">
                 {primaryNavigation.map((item) => {
                   const isActive =
@@ -63,22 +79,6 @@ export default function Header() {
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-3 py-2 text-[0.62rem] font-black uppercase tracking-[0.18em] text-white transition hover:border-[#48d4c1] hover:bg-[#48d4c1] hover:text-[#0a0d0c] sm:px-4"
               >
                 Contact
-              </Link>
-
-              <Link
-                href="/"
-                aria-label="CBM Radio home"
-                className="flex items-center rounded-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48d4c1]"
-              >
-                <Image
-                  src={CBMlogo}
-                  alt="CBM Radio logo"
-                  width={90}
-                  height={90}
-                  priority
-                  sizes="56px"
-                  className="h-10 w-10 object-cover sm:h-12 sm:w-12"
-                />
               </Link>
             </div>
           </div>
