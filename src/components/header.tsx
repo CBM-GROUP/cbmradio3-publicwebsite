@@ -121,7 +121,7 @@ export default function Header() {
                   onClick={() => setIsMenuOpen(false)}
                   className="absolute inset-0 h-full w-full cursor-default bg-black/60 backdrop-blur-sm"
                 />
-                <div className="relative flex h-full w-[70vw] flex-col overflow-y-auto border-r-4 border-[#48d4c1] bg-[#050505] p-5 text-white shadow-[0_0_60px_rgba(0,0,0,0.6)] sm:p-8">
+                <div className="relative mx-auto flex h-full w-[70vw] flex-col overflow-y-auto border-x-4 border-[#48d4c1] bg-[#050505] p-5 text-white shadow-[0_0_60px_rgba(0,0,0,0.6)] sm:p-8">
                   <div className="mb-6 flex items-center justify-between">
                     <span className="text-sm font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">
                       Explore
