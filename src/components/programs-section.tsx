@@ -26,21 +26,21 @@ export default function ProgramsSection() {
   }, []);
 
   return (
-    <section id="programs" className="bg-[#171a18] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24">
+    <section id="programs" className="border-y border-white/10 bg-[#111816] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-teal-300">The CBM lineup</p>
+            <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#48d4c1]">The CBM lineup</p>
             <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">Find your frequency</h2>
             <p className="mt-3 max-w-xl text-sm leading-6 text-zinc-400 sm:text-base">Good music, big conversations and fresh perspectives from the voices of our community.</p>
           </div>
-          <Link href="/programs" className="inline-flex min-h-11 items-center gap-2 font-semibold text-teal-300 transition hover:text-white">
+          <Link href="/programs" className="inline-flex min-h-11 items-center gap-2 font-bold text-[#48d4c1] transition hover:text-white">
             All programs <ArrowUpRight size={18} aria-hidden="true" />
           </Link>
         </div>
-        {status === "loading" && <p className="min-h-40 py-12 text-center text-zinc-400" aria-live="polite">Loading featured programs...</p>}
-        {status === "error" && <p className="min-h-40 py-12 text-center text-zinc-400">Featured programs are temporarily unavailable.</p>}
-        {status === "ready" && programs.length === 0 && <p className="min-h-40 py-12 text-center text-zinc-400">No featured programs are available right now.</p>}
+        {status === "loading" && <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-center text-white/70" aria-live="polite">Loading featured programs...</p>}
+        {status === "error" && <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-center text-white/75">Featured programs are temporarily unavailable.</p>}
+        {status === "ready" && programs.length === 0 && <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-center text-white/75">No featured programs are available right now.</p>}
         {programs.length > 0 && (
           <div className="border-y border-white/10">
             {programs.map((program, index) => (

@@ -45,21 +45,22 @@ export default function NewsSection() {
   const isEmpty = featuredState === "ready" && latestState === "ready" && !featured && !latest;
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <section className="border-y border-white/10 bg-[#090d0c] px-4 py-16 text-white sm:px-6 lg:px-8 lg:py-20">
+      <div className="mx-auto max-w-7xl">
       <div className="mb-8 flex items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-teal-500">News</p>
+          <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#48d4c1]">News</p>
           <h2 className="mt-2 text-3xl font-extrabold text-white">From the newsroom</h2>
         </div>
-        <Link href="/news" className="font-semibold text-teal-500 hover:text-teal-400">View all news</Link>
+        <Link href="/news" className="font-semibold text-[#48d4c1] hover:text-white">View all news</Link>
       </div>
 
       {(featuredState === "loading" || latestState === "loading") && !featured && !latest && (
-        <p className="min-h-80 text-center text-zinc-400" aria-live="polite">Loading news...</p>
+        <p className="rounded-lg border border-white/10 bg-white/[0.03] px-5 py-8 text-center text-white/70" aria-live="polite">Loading newsroom updates...</p>
       )}
-      {isEmpty && <p className="min-h-80 text-center text-zinc-400">No published news is available right now.</p>}
+      {isEmpty && <p className="rounded-lg border border-white/10 bg-white/[0.03] px-5 py-8 text-center text-white/75">No published news is available right now.</p>}
       {featuredState === "error" && latestState === "error" && (
-        <p className="min-h-80 text-center text-zinc-400">News is temporarily unavailable.</p>
+        <p className="rounded-lg border border-white/10 bg-white/[0.03] px-5 py-8 text-center text-white/75">News is temporarily unavailable.</p>
       )}
 
       {featured && (
@@ -78,13 +79,14 @@ export default function NewsSection() {
       {latestState === "error" && featured && (
         <p className="mt-6 text-sm text-zinc-500">Latest news is temporarily unavailable.</p>
       )}
+      </div>
     </section>
   );
 }
 
 function ArticleCard({ article, label, featured = false }: { article: ArticleSummary; label: string; featured?: boolean }) {
   return (
-    <Link href={"/news/" + article.slug} className={"grid overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 " + (featured ? "gap-6 lg:grid-cols-2" : "gap-5 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]")}>
+    <Link href={"/news/" + article.slug} className={"grid overflow-hidden rounded-lg border border-white/10 bg-[#111816] transition-colors hover:border-[#48d4c1]/50 " + (featured ? "gap-6 lg:grid-cols-2" : "gap-5 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]")}>
       <div className="relative aspect-video bg-zinc-900">
         <Image
           src={article.cover_image || Logo}
@@ -97,7 +99,7 @@ function ArticleCard({ article, label, featured = false }: { article: ArticleSum
       </div>
       <div className="flex flex-col justify-center p-5">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-teal-500">{label}</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-[#48d4c1]">{label}</span>
         </div>
         {article.category && <span className="mt-2 text-xs uppercase text-zinc-500">{article.category.name}</span>}
         <h3 className={"mt-2 font-bold text-white " + (featured ? "text-3xl" : "text-xl")}>{article.title}</h3>

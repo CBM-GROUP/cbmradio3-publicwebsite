@@ -58,11 +58,11 @@ export default function EpisodesSection() {
   const allFailed = featuredState === "error" && latestState === "error";
 
   return (
-    <section className="bg-zinc-950 px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
+    <section className="border-y border-white/10 bg-[#111816] px-4 py-16 text-white sm:px-6 lg:px-8 lg:py-20">
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-5">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-teal-400">
+            <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#48d4c1]">
               On CBM Radio
             </p>
             <h2 className="mt-3 text-3xl font-extrabold sm:text-4xl">
@@ -71,24 +71,24 @@ export default function EpisodesSection() {
           </div>
           <Link
             href="/episodes"
-            className="inline-flex min-h-11 items-center gap-2 font-semibold text-teal-400 transition hover:text-teal-300"
+            className="inline-flex min-h-11 items-center gap-2 font-bold text-[#48d4c1] transition hover:text-white"
           >
             Explore all episodes <ArrowUpRight size={18} aria-hidden="true" />
           </Link>
         </div>
 
         {(featuredState === "loading" || latestState === "loading") && !hasEpisodes && (
-          <p className="min-h-48 text-center text-zinc-400" aria-live="polite">
+          <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-center text-white/70" aria-live="polite">
             Loading episodes...
           </p>
         )}
         {allFailed && (
-          <p className="min-h-48 text-center text-zinc-400">
+          <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-center text-white/75">
             Episodes are temporarily unavailable.
           </p>
         )}
         {allEmpty && (
-          <p className="min-h-48 text-center text-zinc-400">
+          <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-center text-white/75">
             No episodes are available right now.
           </p>
         )}
