@@ -49,27 +49,35 @@ const footerDestinations = [
     href: "/programs",
     icon: Radio,
     color: "bg-[#48d4c1]",
+    textColor: "text-[#07100f]",
+    detailColor: "text-black/70",
   },
   {
     label: "Episodes",
     detail: "Listen to CBM",
     href: "/episodes",
     icon: Headphones,
-    color: "bg-[#f4cf55]",
+    color: "bg-white",
+    textColor: "text-[#07100f]",
+    detailColor: "text-black/70",
   },
   {
     label: "News",
     detail: "Stories and updates",
     href: "/news",
     icon: Newspaper,
-    color: "bg-[#f17b8b]",
+    color: "bg-white",
+    textColor: "text-[#07100f]",
+    detailColor: "text-black/70",
   },
   {
     label: "Gallery",
     detail: "Moments from CBM",
     href: "/gallery",
     icon: Images,
-    color: "bg-[#78b8f2]",
+    color: "bg-[#48d4c1]",
+    textColor: "text-[#07100f]",
+    detailColor: "text-black/70",
   },
 ];
 
@@ -133,7 +141,7 @@ export default function Footer() {
             </span>
           </Link>
 
-          <p className="mt-5 max-w-sm text-sm leading-6 text-white/70">
+          <p className="mt-5 max-w-sm text-sm leading-6 text-white/85">
             CBM Radio delivers trusted news, quality entertainment, educational programs and community-driven stories that inform, inspire and connect our listeners.
           </p>
 
@@ -146,7 +154,7 @@ export default function Footer() {
               <Link
                 key={destination.href}
                 href={destination.href}
-                className={`group flex min-h-32 flex-col justify-between rounded-md p-4 text-[#07100f] transition-transform hover:-translate-y-1 ${destination.color}`}
+                className={`group flex min-h-32 flex-col justify-between rounded-md p-4 transition-transform hover:-translate-y-1 ${destination.color} ${destination.textColor}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <DestinationIcon size={23} strokeWidth={2.2} aria-hidden="true" />
@@ -154,7 +162,7 @@ export default function Footer() {
                 </div>
                 <span>
                   <span className="block text-lg font-extrabold">{destination.label}</span>
-                  <span className="mt-0.5 block text-xs font-medium text-black/70">{destination.detail}</span>
+                  <span className={`mt-0.5 block text-xs font-medium ${destination.detailColor}`}>{destination.detail}</span>
                 </span>
               </Link>
             );
@@ -166,7 +174,7 @@ export default function Footer() {
           <ul className="space-y-2.5">
             {primaryNavigation.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="text-sm text-white/75 transition-colors hover:text-[#48d4c1]">
+                <Link href={item.href} className="text-sm text-white/85 transition-colors hover:text-[#48d4c1]">
                   {item.label}
                 </Link>
               </li>
@@ -180,27 +188,27 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {programs.map((program) => (
                 <li key={program.id}>
-                  <Link href="/programs" className="text-sm text-white/75 transition-colors hover:text-[#48d4c1]">
+                  <Link href="/programs" className="text-sm text-white/85 transition-colors hover:text-[#48d4c1]">
                     {program.title}
                   </Link>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-sm leading-6 text-white/55" aria-live="polite">
+            <p className="text-sm leading-6 text-white/75" aria-live="polite">
               {loading ? "Loading featured programs..." : "Featured programs are currently unavailable."}
             </p>
           )}
 
           <h3 className="mb-3 mt-7 text-sm font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">Contact</h3>
           {hasContact ? (
-            <address className="space-y-3 text-sm not-italic text-white/75">
+            <address className="space-y-3 text-sm not-italic text-white/85">
               {contact?.physical_address && <p className="flex gap-2"><FaMapMarkerAlt className="mt-1 shrink-0 text-[#48d4c1]" aria-hidden="true" />{contact.physical_address}</p>}
               {contact?.business_phone && <a href={"tel:" + contact.business_phone.replace(/[^+\d]/g, "")} className="flex gap-2 break-words hover:text-[#48d4c1]"><FaPhoneAlt className="mt-1 shrink-0 text-[#48d4c1]" aria-hidden="true" />{contact.business_phone}</a>}
               {contact?.business_email && <a href={"mailto:" + contact.business_email} className="flex gap-2 break-all hover:text-[#48d4c1]"><FaEnvelope className="mt-1 shrink-0 text-[#48d4c1]" aria-hidden="true" />{contact.business_email}</a>}
             </address>
           ) : (
-            <p className="text-sm leading-6 text-white/55" aria-live="polite">
+            <p className="text-sm leading-6 text-white/75" aria-live="polite">
               {loading ? "Loading contact information..." : "Contact information is currently unavailable."}
             </p>
           )}
@@ -260,7 +268,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/15">
-        <div className="mx-auto flex max-w-[1600px] flex-col gap-4 px-5 py-5 text-xs text-white/60 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-12">
+        <div className="mx-auto flex max-w-[1600px] flex-col gap-4 px-5 py-5 text-xs text-white/75 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-12">
           <p>&copy; {new Date().getFullYear()} CBM Radio. All Rights Reserved.</p>
           <nav aria-label="Legal" className="flex flex-wrap gap-x-5 gap-y-2">
             {legalNavigation.map((item) => (
