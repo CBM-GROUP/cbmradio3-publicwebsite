@@ -61,7 +61,7 @@ export default function TeamMembers({ limit }: { limit?: number }) {
             <motion.article initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} onClick={(event) => event.stopPropagation()} className="relative grid w-full max-w-3xl gap-6 rounded-lg border border-white/10 bg-[#111816] p-6 md:grid-cols-2">
               <button type="button" onClick={() => setSelectedMember(null)} className="absolute right-3 top-3 z-10 rounded-full bg-black/70 p-2" aria-label="Close team member profile"><FaTimes /></button>
               <div className="relative min-h-72 overflow-hidden rounded-xl bg-zinc-800"><Image src={selectedMember.profileUrl || Logo} alt={selectedMember.name} fill sizes="(max-width: 768px) 100vw, 50vw" unoptimized={Boolean(selectedMember.profileUrl)} className="object-cover" /></div>
-              <div className="flex flex-col justify-center"><h3 className="text-3xl font-bold">{selectedMember.name}</h3><p className="mt-2 text-emerald-400">{selectedMember.role}</p>{selectedMember.bio && <p className="mt-5 leading-relaxed text-zinc-300">{selectedMember.bio}</p>}</div>
+              <div className="flex flex-col justify-center"><h3 className="text-3xl font-bold">{selectedMember.name}</h3><p className="mt-2 text-emerald-400">{selectedMember.role}</p>{selectedMember.bio && selectedMember.bio.trim() !== "Station Staff Member." && <p className="mt-5 leading-relaxed text-zinc-300">{selectedMember.bio}</p>}</div>
             </motion.article>
           </div>
         )}
