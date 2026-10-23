@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import PageHero from "@/components/page-hero";
 import DynamicPageSections from "@/components/dynamic-page-sections";
 import ChartsListing from "@/components/charts-listing";
 
@@ -23,6 +24,12 @@ export default function ChartsPage() {
     <>
       <Header />
       <main className="min-h-screen bg-[#0b100f]">
+        <PageHero
+          pageKey="charts"
+          fallbackTitle="Music Charts"
+          fallbackDescription="Official Gospel Music Charts & Countdowns — discover the biggest praise, worship, and gospel songs across Africa and worldwide."
+        />
+        <DynamicPageSections page="charts" position="top" />
         <Suspense fallback={<ChartsLoadingState />}>
           <ChartsListing />
         </Suspense>
