@@ -34,7 +34,7 @@ export default function Header() {
       }`}
     >
       <div className="mx-auto max-w-[1800px] px-0 lg:px-2">
-        <div className="relative mt-0 border border-black/10 bg-white shadow-[0_12px_30px_rgba(0,0,0,0.16)]">
+        <div className="relative mt-0 border border-white/60 bg-white/80 shadow-[0_12px_30px_rgba(0,0,0,0.16)] backdrop-blur-lg">
           <div className="flex items-center justify-between gap-4 px-3 py-4 sm:px-4 lg:px-5">
             <div className="flex min-w-0 flex-1 items-center gap-4 lg:gap-6">
               <button

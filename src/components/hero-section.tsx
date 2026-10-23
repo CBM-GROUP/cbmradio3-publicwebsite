@@ -7,8 +7,6 @@ import { useEffect, useState } from "react";
 
 import FeaturedShow from "../../public/cbm_images/radio 2.jpeg";
 import Daniel from "../../public/cbm_images/daniel.svg";
-import Samuel from "../../public/cbm_images/samuel.svg";
-import Innocent from "../../public/cbm_images/innocent1.svg";
 
 const slides = [
   {
@@ -33,28 +31,6 @@ const slides = [
     secondaryLabel: "Discover CBM",
     secondaryHref: "/about",
   },
-  {
-    image: Samuel,
-    kicker: "BEHIND THE SCENES",
-    title: "Real stories. Real moments. Real impact.",
-    description:
-      "A creative process built on trust, presence and the lived realities of the people we serve.",
-    buttonLabel: "Explore shows",
-    href: "/programs",
-    secondaryLabel: "Discover CBM",
-    secondaryHref: "/about",
-  },
-  {
-    image: Innocent,
-    kicker: "LIVE ENERGY",
-    title: "Community stories that move with the culture.",
-    description:
-      "Music, ideas and experiences that carry the heartbeat of our community into the spotlight.",
-    buttonLabel: "View gallery",
-    href: "/gallery",
-    secondaryLabel: "Discover CBM",
-    secondaryHref: "/about",
-  },
 ];
 
 export default function HeroSection() {
@@ -71,7 +47,7 @@ export default function HeroSection() {
   const currentSlide = slides[activeIndex];
 
   return (
-    <section className="relative isolate min-h-[78svh] overflow-hidden bg-[#090d0c] text-white">
+    <section className="relative isolate -mt-16 min-h-[78svh] overflow-hidden bg-[#090d0c] pt-16 text-white">
       <Image
         src={currentSlide.image}
         alt=""
