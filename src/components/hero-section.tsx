@@ -64,8 +64,7 @@ export default function HeroSection() {
 
       <div className="mx-auto flex min-h-[78svh] max-w-[1800px] items-center px-4 py-8 sm:px-8 sm:py-12 lg:px-14 lg:py-16">
         <div className="w-full max-w-[760px] rounded-lg border border-white/30 bg-[#07100f]/35 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.3)] backdrop-blur-lg sm:p-8 lg:p-10">
-          <p className="flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.18em] text-[#62e6d4]">
-            <span className="h-px w-8 bg-[#48d4c1]" aria-hidden="true" />
+          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#62e6d4]">
             {currentSlide.kicker}
           </p>
 
