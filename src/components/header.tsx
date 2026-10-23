@@ -3,14 +3,37 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import {
+  ArrowUpRight,
+  BarChart3,
+  Home,
+  Images,
+  Info,
+  Menu,
+  Newspaper,
+  Radio,
+  Users,
+  X,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 import CBMlogo from "../../public/cbmradio.png";
 import {
   contactNavigationItem,
   primaryNavigation,
 } from "@/data/site-navigation";
+
+const navMeta: Record<string, { icon: LucideIcon; detail: string }> = {
+  "/": { icon: Home, detail: "Back to the start" },
+  "/about": { icon: Info, detail: "Who we are" },
+  "/team": { icon: Users, detail: "Meet the voices" },
+  "/programs": { icon: Radio, detail: "Find your frequency" },
+  "/charts": { icon: BarChart3, detail: "What's trending" },
+  "/news": { icon: Newspaper, detail: "Stories and updates" },
+  "/gallery": { icon: Images, detail: "Moments from CBM" },
+};
 
 export default function Header() {
   const pathname = usePathname();
@@ -26,6 +49,20 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMenuOpen(false);
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [isMenuOpen]);
 
   return (
     <header
@@ -75,35 +112,72 @@ export default function Header() {
               </Link>
             </div>
           </div>
-          {isMenuOpen && (
-            <nav
-              id="mobile-navigation"
-              aria-label="Main navigation"
-              className="absolute left-3 top-[calc(100%+0.5rem)] grid w-[min(22rem,calc(100vw-1.5rem))] gap-1 rounded-2xl border border-black/10 bg-white p-2 shadow-[0_16px_40px_rgba(0,0,0,0.2)]"
-            >
-              {primaryNavigation.map((item) => {
-                const isActive =
-                  pathname === item.href ||
-                  (item.href !== "/" && pathname.startsWith(item.href + "/"));
-
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    aria-current={isActive ? "page" : undefined}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={`rounded-xl px-4 py-3 text-sm font-bold uppercase tracking-[0.14em] transition-colors ${
-                      isActive
-                        ? "bg-[#48d4c1]/15 text-[#0f766e]"
-                        : "text-black/80 hover:bg-black/5 hover:text-[#0f766e]"
-                    }`}
+          {isMenuOpen &&
+            createPortal(
+              <div className="fixed inset-0 z-[100]">
+                <button
+                  type="button"
+                  aria-label="Close navigation menu"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="absolute inset-0 h-full w-full cursor-default bg-black/60 backdrop-blur-sm"
+                />
+                <div className="relative flex h-full w-[70vw] flex-col overflow-y-auto border-r-4 border-[#48d4c1] bg-[#050505] p-5 text-white shadow-[0_0_60px_rgba(0,0,0,0.6)] sm:p-8">
+                  <div className="mb-6 flex items-center justify-between">
+                    <span className="text-sm font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">
+                      Explore
+                    </span>
+                    <button
+                      type="button"
+                      aria-label="Close navigation menu"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="grid h-11 w-11 place-items-center rounded-full border border-[#48d4c1]/50 bg-[#48d4c1]/10 text-[#48d4c1] transition-colors hover:bg-[#48d4c1] hover:text-[#062521]"
+                    >
+                      <X size={20} strokeWidth={2.5} />
+                    </button>
+                  </div>
+                  <nav
+                    id="mobile-navigation"
+                    aria-label="Main navigation"
+                    className="grid grid-cols-1 gap-3 sm:grid-cols-2"
                   >
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </nav>
-          )}
+                    {primaryNavigation.map((item, index) => {
+                      const isActive =
+                        pathname === item.href ||
+                        (item.href !== "/" && pathname.startsWith(item.href + "/"));
+                      const Icon = navMeta[item.href]?.icon ?? Home;
+                      const detail = navMeta[item.href]?.detail ?? "";
+                      const isTeal = (Math.floor(index / 2) + index) % 2 === 0;
+
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          aria-current={isActive ? "page" : undefined}
+                          onClick={() => setIsMenuOpen(false)}
+                          className={`group flex min-h-32 flex-col justify-between rounded-md p-4 text-[#07100f] transition-transform hover:-translate-y-1 ${
+                            isTeal ? "bg-[#48d4c1]" : "bg-white"
+                          } ${isActive ? "ring-4 ring-white/40" : ""}`}
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <Icon size={23} strokeWidth={2.2} aria-hidden="true" />
+                            <ArrowUpRight
+                              size={18}
+                              className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                              aria-hidden="true"
+                            />
+                          </div>
+                          <span>
+                            <span className="block text-lg font-extrabold">{item.label}</span>
+                            <span className="mt-0.5 block text-xs font-medium text-black/70">{detail}</span>
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                </div>
+              </div>,
+              document.body,
+            )}
         </div>
       </div>
     </header>
