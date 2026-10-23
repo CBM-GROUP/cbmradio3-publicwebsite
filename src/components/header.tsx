@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { useState } from "react";
 
 import CBMlogo from "../../public/cbmradio.png";
 import {
@@ -13,23 +14,33 @@ import {
 
 export default function Header() {
   const pathname = usePathname();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 w-full bg-transparent">
       <div className="mx-auto max-w-[1800px] px-0 lg:px-2">
-        <div className="mt-0 flex items-center gap-3 bg-[#050505] px-4 py-3 shadow-[0_0_0_1px_rgba(255,255,255,0.08)] sm:px-5 lg:gap-4 lg:px-6">
-          <div className="flex flex-1 items-center justify-between gap-4 bg-[#050505]">
-            <div className="flex items-center gap-3 lg:gap-4">
-              <div className="flex items-center gap-3 rounded-none bg-[#f3d32b] px-3 py-2 sm:px-4">
-                <span className="grid h-8 w-8 place-items-center bg-[#060606] text-[0.68rem] font-black leading-none text-[#f3d32b] sm:h-10 sm:w-10 sm:text-[0.72rem]">
+        <div className="relative mt-0 border border-white/10 bg-[#050505] shadow-[0_12px_30px_rgba(0,0,0,0.38)]">
+          <div className="flex items-center justify-between gap-4 px-3 py-3 sm:px-4 lg:px-5">
+            <div className="flex min-w-0 flex-1 items-center gap-4 lg:gap-6">
+              <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                <button
+                  type="button"
+                  aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                  aria-expanded={isMenuOpen}
+                  aria-controls="mobile-navigation"
+                  onClick={() => setIsMenuOpen((open) => !open)}
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#f3d32b] text-black transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f3d32b] xl:hidden"
+                >
+                  {isMenuOpen ? <X size={20} strokeWidth={2.5} /> : <Menu size={20} strokeWidth={2.5} />}
+                </button>
+                <div className="flex shrink-0 items-center rounded-sm bg-[#f3d32b] px-2 py-1.5 sm:px-3 sm:py-2">
+                <span className="text-[0.72rem] font-black uppercase tracking-[0.2em] text-black sm:text-[0.82rem]">
                   CBM
                 </span>
-                <span className="text-[1.6rem] font-black uppercase leading-none tracking-[-0.08em] text-black sm:text-[2.3rem] lg:text-[3.2rem]">
-                  CBM
-                </span>
+                </div>
               </div>
 
-              <nav aria-label="Main navigation" className="hidden items-center gap-6 xl:flex">
+              <nav aria-label="Main navigation" className="hidden min-w-0 items-center gap-5 xl:flex">
                 {primaryNavigation.map((item) => {
                   const isActive =
                     pathname === item.href ||
@@ -40,8 +51,10 @@ export default function Header() {
                       key={item.href}
                       href={item.href}
                       aria-current={isActive ? "page" : undefined}
-                      className={`text-[0.65rem] font-bold uppercase tracking-[0.2em] transition-colors ${
-                        isActive ? "text-[#f3d32b]" : "text-white/80 hover:text-[#f3d32b]"
+                      className={`whitespace-nowrap rounded-full px-3 py-2 text-[0.62rem] font-bold uppercase tracking-[0.23em] transition-colors ${
+                        isActive
+                          ? "bg-white/10 text-[#f3d32b]"
+                          : "text-white/80 hover:bg-white/10 hover:text-[#f3d32b]"
                       }`}
                     >
                       {item.label}
@@ -51,10 +64,10 @@ export default function Header() {
               </nav>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex shrink-0 items-center gap-3">
               <Link
                 href={contactNavigationItem.href}
-                className="inline-flex items-center justify-center gap-2 border border-white/10 bg-[#050505] px-3 py-2 text-[0.7rem] font-black uppercase tracking-[0.16em] text-white transition hover:border-[#f3d32b] hover:text-[#f3d32b] sm:px-4"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-3 py-2 text-[0.62rem] font-black uppercase tracking-[0.18em] text-white transition hover:border-[#f3d32b] hover:bg-[#f3d32b] hover:text-black sm:px-4"
               >
                 Contact
               </Link>
@@ -62,7 +75,7 @@ export default function Header() {
               <Link
                 href="/"
                 aria-label="CBM Radio home"
-                className="flex items-center rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f3d32b]"
+                className="flex items-center rounded-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f3d32b]"
               >
                 <Image
                   src={CBMlogo}
@@ -76,6 +89,35 @@ export default function Header() {
               </Link>
             </div>
           </div>
+          {isMenuOpen && (
+            <nav
+              id="mobile-navigation"
+              aria-label="Main navigation"
+              className="absolute left-3 right-3 top-[calc(100%+0.5rem)] grid gap-1 rounded-2xl border border-white/10 bg-[#050505] p-2 shadow-[0_16px_40px_rgba(0,0,0,0.55)] xl:hidden"
+            >
+              {primaryNavigation.map((item) => {
+                const isActive =
+                  pathname === item.href ||
+                  (item.href !== "/" && pathname.startsWith(item.href + "/"));
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    aria-current={isActive ? "page" : undefined}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`rounded-xl px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] transition-colors ${
+                      isActive
+                        ? "bg-[#f3d32b] text-black"
+                        : "text-white/85 hover:bg-white/10 hover:text-[#f3d32b]"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          )}
         </div>
       </div>
     </header>
