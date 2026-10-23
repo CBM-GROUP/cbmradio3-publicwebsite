@@ -75,26 +75,26 @@ export default function HeroSection() {
       <div className="mx-auto grid min-h-[78svh] max-w-[1800px] grid-cols-1 lg:grid-cols-[0.88fr_1.12fr]">
         <div className="order-2 flex flex-col justify-center px-5 pb-8 pt-3 sm:px-10 sm:py-10 lg:order-1 lg:px-16 lg:py-16 xl:px-24">
           <div className="max-w-[620px]">
-            <p className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-[#48d4c1]">
+            <p className="flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.18em] text-[#62e6d4]">
               <span className="h-px w-8 bg-[#48d4c1]" aria-hidden="true" />
               {currentSlide.kicker}
             </p>
 
             <h1
               id="home-heading"
-              className="mt-5 text-3xl font-black leading-[1.04] text-white sm:text-4xl lg:text-5xl"
+              className="mt-5 text-3xl font-black leading-[1.08] text-white sm:text-4xl lg:text-5xl"
             >
               {currentSlide.title}
             </h1>
 
-            <p className="mt-4 max-w-[46ch] text-sm leading-6 text-white/70 sm:text-base sm:leading-7">
+            <p className="mt-4 max-w-[46ch] text-base leading-7 text-white/85 sm:text-lg sm:leading-8">
               {currentSlide.description}
             </p>
 
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <Link
                 href={currentSlide.href}
-                className="inline-flex min-h-12 items-center gap-3 rounded-sm bg-[#48d4c1] px-5 text-sm font-bold text-[#0a0d0c] transition-colors hover:bg-[#6ae3d1]"
+                className="inline-flex min-h-12 items-center gap-3 rounded-full bg-[#48d4c1] px-6 text-sm font-extrabold text-[#062521] shadow-[0_8px_24px_rgba(72,212,193,0.16)] transition-colors hover:bg-[#6ae3d1]"
               >
                 {currentSlide.buttonLabel}
                 <ArrowUpRight size={17} aria-hidden="true" />
@@ -102,7 +102,7 @@ export default function HeroSection() {
 
               <Link
                 href={currentSlide.secondaryHref}
-                className="inline-flex min-h-12 items-center gap-2 rounded-sm border border-white/20 px-5 text-sm font-bold text-white transition-colors hover:border-[#48d4c1] hover:text-[#48d4c1]"
+                className="inline-flex min-h-12 items-center gap-2 rounded-full border border-white/30 px-6 text-sm font-bold text-white transition-colors hover:border-[#48d4c1] hover:bg-white/5 hover:text-[#62e6d4]"
               >
                 <Play size={14} fill="currentColor" aria-hidden="true" />
                 {currentSlide.secondaryLabel}
@@ -127,8 +127,8 @@ export default function HeroSection() {
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="text-xs font-semibold tabular-nums text-white/50">
-                0{activeIndex + 1} <span className="text-white/25">/</span> 0{slides.length}
+                  <span className="text-sm font-bold tabular-nums text-white/75">
+                0{activeIndex + 1} <span className="text-white/40">/</span> 0{slides.length}
               </span>
               <button
                 type="button"
@@ -154,7 +154,7 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <div className="relative order-1 mx-4 mt-4 aspect-[4/3] min-h-64 max-h-[46svh] overflow-hidden border border-white/10 bg-[#111816] sm:mx-10 sm:mt-8 lg:order-2 lg:mx-0 lg:mt-0 lg:aspect-auto lg:min-h-[78svh] lg:max-h-none">
+        <div className="relative order-1 mx-4 mt-4 aspect-[4/3] min-h-64 max-h-[46svh] overflow-hidden rounded-lg border border-white/15 bg-[#111816] shadow-[0_20px_60px_rgba(0,0,0,0.3)] sm:mx-10 sm:mt-8 lg:order-2 lg:mx-5 lg:my-5 lg:aspect-auto lg:min-h-[calc(78svh-2.5rem)] lg:max-h-none xl:mx-8 xl:my-8">
           <Image
             src={currentSlide.image}
             alt={currentSlide.title}
@@ -163,7 +163,7 @@ export default function HeroSection() {
             className="object-contain p-3 sm:p-6 lg:p-10"
             sizes="(max-width: 1024px) 100vw, 56vw"
           />
-          <div className="absolute left-3 top-3 bg-[#48d4c1] px-2 py-1 text-[0.6rem] font-bold uppercase tracking-[0.16em] text-[#0a0d0c] sm:left-5 sm:top-5">
+          <div className="absolute left-3 top-3 rounded-full bg-[#48d4c1] px-3 py-1.5 text-[0.65rem] font-extrabold uppercase tracking-[0.14em] text-[#0a0d0c] sm:left-5 sm:top-5">
             {currentSlide.kicker}
           </div>
         </div>

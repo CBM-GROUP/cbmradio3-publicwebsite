@@ -75,7 +75,7 @@ export default function Header() {
                       key={item.href}
                       href={item.href}
                       aria-current={isActive ? "page" : undefined}
-                      className={`whitespace-nowrap rounded-full px-3 py-2 text-[0.62rem] font-bold uppercase tracking-[0.23em] transition-colors ${
+                      className={`whitespace-nowrap rounded-full px-3 py-2 text-[0.7rem] font-bold uppercase tracking-[0.16em] transition-colors ${
                         isActive
                           ? "bg-[#48d4c1]/15 text-[#0f766e]"
                           : "text-black/75 hover:bg-black/5 hover:text-[#0f766e]"
@@ -91,7 +91,7 @@ export default function Header() {
             <div className="flex shrink-0 items-center gap-3">
               <Link
                 href={contactNavigationItem.href}
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#48d4c1]/40 bg-transparent px-3 py-2 text-[0.62rem] font-black uppercase tracking-[0.18em] text-[#48d4c1] transition hover:border-[#48d4c1] hover:bg-[#48d4c1] hover:text-[#0a0d0c] sm:px-4"
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[#48d4c1] px-4 py-2 text-[0.7rem] font-extrabold uppercase tracking-[0.14em] text-[#062521] transition-colors hover:bg-[#6ae3d1]"
               >
                 Contact
               </Link>
@@ -114,7 +114,7 @@ export default function Header() {
                     href={item.href}
                     aria-current={isActive ? "page" : undefined}
                     onClick={() => setIsMenuOpen(false)}
-                    className={`rounded-xl px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] transition-colors ${
+                    className={`rounded-xl px-4 py-3 text-sm font-bold uppercase tracking-[0.14em] transition-colors ${
                       isActive
                         ? "bg-[#48d4c1]/15 text-[#0f766e]"
                         : "text-black/80 hover:bg-black/5 hover:text-[#0f766e]"
