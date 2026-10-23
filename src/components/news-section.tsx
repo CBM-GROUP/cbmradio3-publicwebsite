@@ -1,11 +1,11 @@
 "use client";
 
-import { Clock, Eye } from "lucide-react";
+import { Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { formatPublicationDate, formatTimeAgo, formatViewsCount } from "@/lib/article-metadata";
+import { formatPublicationDate, formatTimeAgo } from "@/lib/article-metadata";
 import homeService from "@/services/home.service";
 import type { ArticleSummary } from "@/types/news";
 import Logo from "../../public/cbmradio.png";
@@ -96,14 +96,8 @@ function ArticleCard({ article, label, featured = false }: { article: ArticleSum
         />
       </div>
       <div className="flex flex-col justify-center p-5">
-        <div className="flex items-center justify-between gap-2">
+        <div>
           <span className="text-xs font-bold uppercase tracking-wider text-teal-500">{label}</span>
-          {article.views_count !== undefined && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-zinc-900 border border-zinc-800 px-2 py-0.5 text-[11px] font-semibold text-amber-400">
-              <Eye size={12} />
-              <span>{formatViewsCount(article.views_count)}</span>
-            </span>
-          )}
         </div>
         {article.category && <span className="mt-2 text-xs uppercase text-zinc-500">{article.category.name}</span>}
         <h3 className={"mt-2 font-bold text-white " + (featured ? "text-3xl" : "text-xl")}>{article.title}</h3>

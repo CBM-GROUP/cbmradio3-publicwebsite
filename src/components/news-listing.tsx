@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { Clock, Eye } from "lucide-react";
+import { Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -10,7 +10,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   formatPublicationDate,
   formatTimeAgo,
-  formatViewsCount,
 } from "@/lib/article-metadata";
 import NewsService from "@/services/news-service";
 import type { PaginatedResponse } from "@/types/api";
@@ -218,19 +217,13 @@ function ArticleMetadata({ article, label }: { article: ArticleListItem; label?:
 
   return (
     <div className="flex flex-col justify-center p-5">
-      <div className="flex items-center justify-between gap-2">
+      <div>
         {label ? (
           <span className="text-xs font-bold uppercase tracking-wider text-teal-500">{label}</span>
         ) : article.category ? (
           <span className="text-xs font-bold uppercase tracking-wider text-teal-500">{article.category.name}</span>
         ) : (
           <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">News</span>
-        )}
-        {article.views_count !== undefined && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-zinc-950/80 border border-zinc-800 px-2 py-0.5 text-[11px] font-semibold text-amber-400">
-            <Eye size={12} />
-            <span>{formatViewsCount(article.views_count)}</span>
-          </span>
         )}
       </div>
 
