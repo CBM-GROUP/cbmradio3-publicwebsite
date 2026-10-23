@@ -34,6 +34,7 @@ export default function ChartsPage() {
         <Suspense fallback={<ChartsLoadingState />}>
           <ChartsListing />
         </Suspense>
+        <DynamicPageSections page="charts" position="middle" />
         <DynamicPageSections page="charts" position="bottom" />
       </main>
       <Footer />

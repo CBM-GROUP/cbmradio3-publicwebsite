@@ -20,6 +20,7 @@ export default function EpisodesPage() {
         <Suspense fallback={<p className="min-h-96 bg-zinc-950 pt-16 text-center text-zinc-400">Loading episodes...</p>}>
           <EpisodeBrowser />
         </Suspense>
+        <DynamicPageSections page="episodes" position="middle" />
         <DynamicPageSections page="episodes" position="bottom" />
       </main>
       <Footer />

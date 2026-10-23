@@ -142,6 +142,8 @@ function GalleryContent() {
           fallbackImage={Radio2.src}
         />
 
+        <DynamicPageSections page="gallery" position="top" />
+
         <section id="gallery-content" className="scroll-mt-24">
           <div className="mx-auto max-w-4xl px-6 py-12 text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-teal-500">Inside CBM Radio</p>
@@ -215,6 +217,7 @@ function GalleryContent() {
             )}
           </div>
         </section>
+        <DynamicPageSections page="gallery" position="middle" />
         <DynamicPageSections page="gallery" position="bottom" />
       </main>
       <Footer />

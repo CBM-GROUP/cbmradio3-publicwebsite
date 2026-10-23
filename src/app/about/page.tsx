@@ -73,6 +73,8 @@ export default function AboutPage() {
           fallbackDescription="Discover the people, purpose and community behind CBM Radio."
         />
 
+        <DynamicPageSections page="about" position="top" />
+
         <section className="mx-auto grid max-w-7xl items-center gap-10 px-6 py-16 lg:grid-cols-2 lg:gap-16">
           <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative aspect-4/3 overflow-hidden rounded-2xl border border-zinc-700/50 bg-zinc-900 shadow-2xl">
             <Image
@@ -101,6 +103,7 @@ export default function AboutPage() {
             </motion.article>
           ))}
         </motion.section>
+        <DynamicPageSections page="about" position="middle" />
         <DynamicPageSections page="about" position="bottom" />
       </main>
       <Footer />

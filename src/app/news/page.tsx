@@ -27,6 +27,7 @@ export default function NewsPage() {
         <Suspense fallback={<NewsLoadingState />}>
           <NewsListing />
         </Suspense>
+        <DynamicPageSections page="news" position="middle" />
         <DynamicPageSections page="news" position="bottom" />
       </main>
       <Footer />

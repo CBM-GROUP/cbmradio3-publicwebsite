@@ -23,6 +23,7 @@ export default function ContactPage() {
         />
         <DynamicPageSections page="contact" position="top" />
         <ContactPageContent />
+        <DynamicPageSections page="contact" position="middle" />
         <DynamicPageSections page="contact" position="bottom" />
       </main>
       <Footer />

@@ -29,14 +29,15 @@ export const pageSectionService = {
 
   async getSectionsForPage(page: string, position?: string): Promise<PageSection[]> {
     try {
-      const params = new URLSearchParams({ page });
+      const params = new URLSearchParams({ page, target_page: page });
       if (position) params.set("position", position);
       const { data } = await apiClient.get<PageSection[] | { results: PageSection[] }>(
         `${API_ENDPOINTS.PAGE_SECTIONS}?${params.toString()}`,
       );
       if (Array.isArray(data)) return data;
       return data?.results || [];
-    } catch {
+    } catch (error) {
+      console.error(`Failed to load page sections for ${page} (${position}):`, error);
       return [];
     }
   },

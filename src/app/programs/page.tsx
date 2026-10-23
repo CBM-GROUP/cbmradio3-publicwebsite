@@ -27,6 +27,7 @@ export default function ProgramsPage() {
         <Suspense fallback={<ProgramsLoadingState />}>
           <ProgramsListing />
         </Suspense>
+        <DynamicPageSections page="programs" position="middle" />
         <DynamicPageSections page="programs" position="bottom" />
       </main>
       <Footer />
