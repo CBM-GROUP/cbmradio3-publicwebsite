@@ -92,12 +92,12 @@ export default function HeroSection() {
             <div className="max-w-[620px]">
               <h1
                 id="home-heading"
-                className="text-[2.1rem] font-black leading-[0.9] tracking-[-0.06em] text-white sm:text-[2.9rem] lg:text-[4.8rem]"
+                className="text-[1.9rem] font-black leading-[0.98] tracking-[-0.06em] text-white sm:text-[2.55rem] lg:text-[4.2rem]"
               >
                 {currentSlide.title}
               </h1>
 
-              <p className="mt-5 text-base leading-7 text-[#dfeae7] sm:text-lg lg:text-[1.32rem] lg:leading-[1.45]">
+              <p className="mt-5 text-[0.95rem] leading-7 text-[#dfeae7] sm:text-base lg:text-[1.15rem] lg:leading-[1.5]">
                 {currentSlide.description}
               </p>
 

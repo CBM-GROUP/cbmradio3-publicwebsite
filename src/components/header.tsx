@@ -22,23 +22,16 @@ export default function Header() {
         <div className="relative mt-0 border border-white/10 bg-[#050505] shadow-[0_12px_30px_rgba(0,0,0,0.38)]">
           <div className="flex items-center justify-between gap-4 px-3 py-3 sm:px-4 lg:px-5">
             <div className="flex min-w-0 flex-1 items-center gap-4 lg:gap-6">
-              <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-                <button
-                  type="button"
-                  aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-                  aria-expanded={isMenuOpen}
-                  aria-controls="mobile-navigation"
-                  onClick={() => setIsMenuOpen((open) => !open)}
-                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#f3d32b] text-black transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f3d32b] xl:hidden"
-                >
-                  {isMenuOpen ? <X size={20} strokeWidth={2.5} /> : <Menu size={20} strokeWidth={2.5} />}
-                </button>
-                <div className="flex shrink-0 items-center rounded-sm bg-[#f3d32b] px-2 py-1.5 sm:px-3 sm:py-2">
-                <span className="text-[0.72rem] font-black uppercase tracking-[0.2em] text-black sm:text-[0.82rem]">
-                  CBM
-                </span>
-                </div>
-              </div>
+              <button
+                type="button"
+                aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                aria-expanded={isMenuOpen}
+                aria-controls="mobile-navigation"
+                onClick={() => setIsMenuOpen((open) => !open)}
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#48d4c1]/40 bg-[#0a0d0c] text-[#48d4c1] transition-colors hover:bg-[#48d4c1] hover:text-[#0a0d0c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48d4c1] xl:hidden"
+              >
+                {isMenuOpen ? <X size={20} strokeWidth={2.5} /> : <Menu size={20} strokeWidth={2.5} />}
+              </button>
 
               <nav aria-label="Main navigation" className="hidden min-w-0 items-center gap-5 xl:flex">
                 {primaryNavigation.map((item) => {
@@ -53,8 +46,8 @@ export default function Header() {
                       aria-current={isActive ? "page" : undefined}
                       className={`whitespace-nowrap rounded-full px-3 py-2 text-[0.62rem] font-bold uppercase tracking-[0.23em] transition-colors ${
                         isActive
-                          ? "bg-white/10 text-[#f3d32b]"
-                          : "text-white/80 hover:bg-white/10 hover:text-[#f3d32b]"
+                          ? "bg-white/10 text-[#48d4c1]"
+                          : "text-white/80 hover:bg-white/10 hover:text-[#48d4c1]"
                       }`}
                     >
                       {item.label}
@@ -67,7 +60,7 @@ export default function Header() {
             <div className="flex shrink-0 items-center gap-3">
               <Link
                 href={contactNavigationItem.href}
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-3 py-2 text-[0.62rem] font-black uppercase tracking-[0.18em] text-white transition hover:border-[#f3d32b] hover:bg-[#f3d32b] hover:text-black sm:px-4"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-3 py-2 text-[0.62rem] font-black uppercase tracking-[0.18em] text-white transition hover:border-[#48d4c1] hover:bg-[#48d4c1] hover:text-[#0a0d0c] sm:px-4"
               >
                 Contact
               </Link>
@@ -75,7 +68,7 @@ export default function Header() {
               <Link
                 href="/"
                 aria-label="CBM Radio home"
-                className="flex items-center rounded-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f3d32b]"
+                className="flex items-center rounded-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48d4c1]"
               >
                 <Image
                   src={CBMlogo}
@@ -108,8 +101,8 @@ export default function Header() {
                     onClick={() => setIsMenuOpen(false)}
                     className={`rounded-xl px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] transition-colors ${
                       isActive
-                        ? "bg-[#f3d32b] text-black"
-                        : "text-white/85 hover:bg-white/10 hover:text-[#f3d32b]"
+                        ? "bg-[#48d4c1] text-[#0a0d0c]"
+                        : "text-white/85 hover:bg-white/10 hover:text-[#48d4c1]"
                     }`}
                   >
                     {item.label}
