@@ -43,7 +43,7 @@ export default function Header() {
                 aria-expanded={isMenuOpen}
                 aria-controls="mobile-navigation"
                 onClick={() => setIsMenuOpen((open) => !open)}
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#48d4c1]/50 bg-white text-[#0f766e] transition-colors hover:bg-[#48d4c1] hover:text-[#0a0d0c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48d4c1] xl:hidden"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#48d4c1]/50 bg-white text-[#0f766e] transition-colors hover:bg-[#48d4c1] hover:text-[#0a0d0c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#48d4c1]"
               >
                 {isMenuOpen ? <X size={20} strokeWidth={2.5} /> : <Menu size={20} strokeWidth={2.5} />}
               </button>
@@ -64,28 +64,6 @@ export default function Header() {
                 />
               </Link>
 
-              <nav aria-label="Main navigation" className="hidden min-w-0 items-center gap-5 xl:flex">
-                {primaryNavigation.map((item) => {
-                  const isActive =
-                    pathname === item.href ||
-                    (item.href !== "/" && pathname.startsWith(item.href + "/"));
-
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      aria-current={isActive ? "page" : undefined}
-                      className={`whitespace-nowrap rounded-full px-3 py-2 text-[0.7rem] font-bold uppercase tracking-[0.16em] transition-colors ${
-                        isActive
-                          ? "bg-[#48d4c1]/15 text-[#0f766e]"
-                          : "text-black/75 hover:bg-black/5 hover:text-[#0f766e]"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </nav>
             </div>
 
             <div className="flex shrink-0 items-center gap-3">
@@ -101,7 +79,7 @@ export default function Header() {
             <nav
               id="mobile-navigation"
               aria-label="Main navigation"
-              className="absolute left-3 right-3 top-[calc(100%+0.5rem)] grid gap-1 rounded-2xl border border-black/10 bg-white p-2 shadow-[0_16px_40px_rgba(0,0,0,0.2)] xl:hidden"
+              className="absolute left-3 top-[calc(100%+0.5rem)] grid w-[min(22rem,calc(100vw-1.5rem))] gap-1 rounded-2xl border border-black/10 bg-white p-2 shadow-[0_16px_40px_rgba(0,0,0,0.2)]"
             >
               {primaryNavigation.map((item) => {
                 const isActive =
