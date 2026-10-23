@@ -2,7 +2,17 @@
 
 :root {
   color-scheme: dark;
-  background: #101110;
+  --brand-bg: #090807;
+  --brand-surface: #12100e;
+  --brand-surface-strong: #1a1410;
+  --brand-panel: #17130f;
+  --brand-ink: #f7f2ea;
+  --brand-muted: #d9cdb7;
+  --brand-accent: #d4a54a;
+  --brand-accent-strong: #e8bc69;
+  --brand-accent-soft: rgba(212, 165, 74, 0.15);
+  --brand-border: rgba(255, 255, 255, 0.08);
+  background: var(--brand-bg);
   font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
 }
 
@@ -12,16 +22,17 @@ html {
 
 body {
   min-height: 100%;
-  background: #101110;
+  background: var(--brand-bg);
+  color: var(--brand-ink);
 }
 
 ::selection {
-  background: #2dd4bf;
-  color: #101110;
+  background: var(--brand-accent);
+  color: #0a0908;
 }
 
 :focus-visible {
-  outline: 2px solid #5eead4;
+  outline: 2px solid var(--brand-accent-strong);
   outline-offset: 3px;
 }
 
