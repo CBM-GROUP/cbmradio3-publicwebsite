@@ -260,8 +260,44 @@ export default function ChartsListing() {
             </div>
           </div>
 
-          <div className="relative mb-8 min-h-[260px] overflow-hidden rounded-lg border border-white/10 bg-[#111816] sm:min-h-[360px]">
-            {chartArtwork.length > 0 ? (
+          <div className="relative mb-8 min-h-[260px] overflow-hidden rounded-2xl border border-white/10 bg-[#111816] sm:min-h-[360px] shadow-2xl">
+            {activeChart?.cover_image_url || activeChart?.cover_image ? (
+              <>
+                <Image
+                  src={activeChart.cover_image_url || activeChart.cover_image || ""}
+                  alt={`${activeChart.title} Official Hero Banner`}
+                  fill
+                  priority
+                  sizes="(max-width: 1200px) 100vw, 1200px"
+                  unoptimized
+                  className="object-cover object-center transition-transform duration-700 hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-black/20" />
+                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#48d4c1]/20 px-3 py-1 text-xs font-bold text-[#48d4c1] backdrop-blur-md border border-[#48d4c1]/30">
+                      <Trophy className="h-3.5 w-3.5" />
+                      Official Countdown
+                    </span>
+                    {activeChart.edition_date && (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur-md">
+                        <Calendar className="h-3.5 w-3.5 text-[#48d4c1]" />
+                        {new Date(activeChart.edition_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="max-w-2xl text-2xl font-black text-white sm:text-4xl lg:text-5xl tracking-tight drop-shadow-md">
+                    {activeChart.title}
+                  </h3>
+                  {activeChart.description && (
+                    <p className="mt-2 max-w-xl text-xs sm:text-sm text-white/80 line-clamp-2">
+                      {activeChart.description}
+                    </p>
+                  )}
+                </div>
+              </>
+            ) : chartArtwork.length > 0 ? (
               <div className={`absolute inset-0 grid grid-cols-1 ${chartArtwork.length === 1 ? "md:grid-cols-1" : chartArtwork.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3"}`}>
                 {chartArtwork.map((artwork) => (
                   <div key={artwork.rank} className="group relative min-h-[260px] overflow-hidden border-b border-white/10 last:border-b-0 md:min-h-0 md:border-b-0 md:border-r md:last:border-r-0">
@@ -277,7 +313,7 @@ export default function ChartsListing() {
               </div>
             ) : (
               <>
-                <Image src={activeChart?.cover_image_url || activeChart?.cover_image || CBMTeamArtwork} alt={activeChart ? `${activeChart.title} chart artwork` : "CBM Radio presenters"} fill sizes="(max-width: 768px) 100vw, 70vw" unoptimized={Boolean(activeChart?.cover_image_url || activeChart?.cover_image)} className="object-cover object-[center_35%]" />
+                <Image src={CBMTeamArtwork} alt={activeChart ? `${activeChart.title} chart artwork` : "CBM Radio presenters"} fill sizes="(max-width: 768px) 100vw, 70vw" className="object-cover object-[center_35%]" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-black/10" />
                 <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
                   <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#48d4c1]">CBM Radio • Gospel Charts</p>
