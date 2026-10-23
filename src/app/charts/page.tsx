@@ -1,13 +1,12 @@
 import { Suspense } from "react";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import PageHero from "@/components/page-hero";
 import DynamicPageSections from "@/components/dynamic-page-sections";
 import ChartsListing from "@/components/charts-listing";
 
 function ChartsLoadingState() {
   return (
-    <div className="min-h-screen bg-zinc-950 pt-32 text-center text-zinc-400">
+    <div className="min-h-[70vh] bg-[#0b100f] pt-32 text-center text-white/70">
       Loading music charts...
     </div>
   );
@@ -23,14 +22,7 @@ export default function ChartsPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-zinc-950">
-        <PageHero
-          pageKey="charts"
-          fallbackTitle="Music Charts"
-          fallbackSubtitle="Official Gospel Countdown"
-          fallbackDescription="Discover the biggest gospel hits, listener requests, and weekly chart toppers across Africa and the world."
-        />
-        <DynamicPageSections page="charts" position="top" />
+      <main className="min-h-screen bg-[#0b100f]">
         <Suspense fallback={<ChartsLoadingState />}>
           <ChartsListing />
         </Suspense>

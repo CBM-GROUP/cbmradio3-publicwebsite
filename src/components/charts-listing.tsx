@@ -19,6 +19,7 @@ import {
 import { FaApple, FaSpotify, FaYoutube } from "react-icons/fa";
 import { chartService } from "@/services/chart.service";
 import type { Chart, ChartEntry } from "@/types/chart";
+import CBMTeamArtwork from "../../public/cbm_images/take 3.jpeg";
 
 export default function ChartsListing() {
   const [charts, setCharts] = useState<Chart[]>([]);
@@ -27,6 +28,8 @@ export default function ChartsListing() {
   const [loading, setLoading] = useState<boolean>(true);
   const [chartLoading, setChartLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [chartFilterQuery, setChartFilterQuery] = useState<string>("");
+  const [selectedType, setSelectedType] = useState<string>("All charts");
 
   // In-page Audio Player State
   const [playingTrackId, setPlayingTrackId] = useState<string | null>(null);
@@ -121,6 +124,24 @@ export default function ChartsListing() {
   const top1 = activeChart?.entries?.find((e) => e.rank === 1);
   const top2 = activeChart?.entries?.find((e) => e.rank === 2);
   const top3 = activeChart?.entries?.find((e) => e.rank === 3);
+  const chartArtwork = [top1, top2, top3]
+    .filter((entry): entry is ChartEntry => Boolean(entry?.cover_image_url || entry?.cover_image))
+    .map((entry) => ({
+      src: entry.cover_image_url || entry.cover_image || "",
+      title: entry.title,
+      artist: entry.artist,
+      rank: entry.rank,
+    }));
+  const chartTypes = useMemo(
+    () => Array.from(new Set(charts.map((chart) => chart.chart_type.trim()).filter(Boolean))),
+    [charts],
+  );
+  const chartTypeTabs = ["All charts", ...chartTypes];
+  const visibleCharts = charts.filter((chart) => {
+    const matchesType = selectedType === "All charts" || chart.chart_type === selectedType;
+    const matchesSearch = chart.title.toLowerCase().includes(chartFilterQuery.trim().toLowerCase());
+    return matchesType && matchesSearch;
+  });
 
   if (loading) {
     return (
@@ -133,22 +154,8 @@ export default function ChartsListing() {
     );
   }
 
-  if (charts.length === 0) {
-    return (
-      <div className="py-24 text-center">
-        <div className="mx-auto max-w-md rounded-2xl border border-zinc-800 bg-zinc-900/40 p-8">
-          <Trophy className="mx-auto h-12 w-12 text-zinc-600 mb-3" />
-          <h3 className="text-lg font-semibold text-white">No Charts Available</h3>
-          <p className="mt-1 text-sm text-zinc-400">
-            Check back soon for the latest gospel music countdowns!
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <section className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <section className="min-h-screen bg-[#0b100f] text-white">
       {/* Hidden Audio Player Element */}
       <audio
         ref={audioRef}
@@ -157,86 +164,128 @@ export default function ChartsListing() {
         onPlay={() => setIsPlaying(true)}
       />
 
-      {/* Charts Selector Tabs & Meta Header */}
-      <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          {/* Chart Tabs */}
-          {charts.length > 1 && (
-            <div className="mb-4 flex flex-wrap gap-2">
-              {charts.map((c) => {
-                const isSelected = c.slug === selectedSlug;
-                return (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => setSelectedSlug(c.slug)}
-                    className={`rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide transition-all ${
-                      isSelected
-                        ? "bg-amber-500 text-black shadow-lg shadow-amber-500/20"
-                        : "border border-zinc-800 bg-zinc-900/60 text-zinc-400 hover:border-zinc-700 hover:text-white"
-                    }`}
-                  >
-                    {c.title}
-                  </button>
-                );
-              })}
-            </div>
-          )}
+      <nav aria-label="Chart categories" className="border-b border-white/10 bg-black">
+        <div className="mx-auto flex max-w-[1800px] gap-2 overflow-x-auto px-4 sm:px-6 lg:px-10">
+          {chartTypeTabs.map((type) => (
+            <button
+              key={type}
+              type="button"
+              onClick={() => {
+                setSelectedType(type);
+                const firstMatch = type === "All charts" ? charts[0] : charts.find((chart) => chart.chart_type === type);
+                if (firstMatch) setSelectedSlug(firstMatch.slug);
+              }}
+              className={`min-h-12 shrink-0 border-b-2 px-4 text-[0.68rem] font-extrabold uppercase tracking-[0.14em] transition-colors ${
+                selectedType === type
+                  ? "border-[#48d4c1] text-[#48d4c1]"
+                  : "border-transparent text-white/65 hover:text-white"
+              }`}
+            >
+              {type}
+            </button>
+          ))}
+        </div>
+      </nav>
 
-          <div className="flex items-center gap-3">
-            <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-              {activeChart?.title || "Music Charts"}
-            </h2>
-            <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-400">
-              <Flame className="h-3.5 w-3.5" />
-              Official
-            </span>
+      <div className="mx-auto grid max-w-[1800px] gap-5 px-4 py-6 sm:px-6 lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-8 lg:px-10 lg:py-8">
+        <aside className="h-fit rounded-lg border border-white/10 bg-black/70 p-4 lg:sticky lg:top-28">
+          <label htmlFor="chart-search" className="mb-2 block text-xs font-bold uppercase tracking-[0.13em] text-white/75">Search charts</label>
+          <div className="relative mb-5">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#48d4c1]" aria-hidden="true" />
+            <input
+              id="chart-search"
+              type="search"
+              placeholder="Chart name"
+              value={chartFilterQuery}
+              onChange={(event) => setChartFilterQuery(event.target.value)}
+              className="min-h-10 w-full rounded-md border border-white/15 bg-white/5 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#48d4c1] focus:outline-none focus:ring-1 focus:ring-[#48d4c1]"
+            />
           </div>
 
-          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-400">
-            {activeChart?.edition_date && (
-              <span className="flex items-center gap-1.5">
-                <Calendar className="h-3.5 w-3.5 text-amber-500" />
-                Issue:{" "}
-                <strong className="text-zinc-200">
-                  {new Date(activeChart.edition_date).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </strong>
+          <label htmlFor="artist-search" className="mb-2 block text-xs font-bold uppercase tracking-[0.13em] text-white/75">Search songs or artists</label>
+          <div className="relative mb-6">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#48d4c1]" aria-hidden="true" />
+            <input
+              id="artist-search"
+              type="search"
+              placeholder="Artist, song, album"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              className="min-h-10 w-full rounded-md border border-white/15 bg-white/5 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#48d4c1] focus:outline-none focus:ring-1 focus:ring-[#48d4c1]"
+            />
+          </div>
+
+          <h3 className="mb-2 border-b border-white/10 pb-3 text-xs font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">Charts</h3>
+          <div className="max-h-[55vh] space-y-1 overflow-y-auto pr-1">
+            {visibleCharts.map((chart) => (
+              <button
+                key={chart.id}
+                type="button"
+                onClick={() => {
+                  setSelectedType(chart.chart_type);
+                  setSelectedSlug(chart.slug);
+                }}
+                className={`flex min-h-10 w-full items-center justify-between rounded-md px-3 text-left text-sm font-semibold transition-colors ${
+                  selectedSlug === chart.slug
+                    ? "bg-[#48d4c1] text-[#062521]"
+                    : "text-white/75 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                <span className="truncate">{chart.title}</span>
+                {selectedSlug === chart.slug && <span className="ml-2 size-1.5 shrink-0 rounded-full bg-[#062521]" aria-hidden="true" />}
+              </button>
+            ))}
+            {visibleCharts.length === 0 && <p className="px-3 py-5 text-sm text-white/70">{charts.length === 0 ? "Charts are temporarily unavailable." : "No charts match your search."}</p>}
+          </div>
+        </aside>
+
+        <div className="min-w-0 rounded-lg border border-white/10 bg-[linear-gradient(180deg,rgba(72,212,193,0.08),rgba(11,16,15,0.96)_20rem)] p-4 sm:p-6 lg:p-8">
+          <div className="mb-8 border-b border-[#48d4c1]/50 pb-5">
+            <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.28em] text-[#48d4c1]">CBM Radio Charts</p>
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="text-3xl font-black tracking-tight text-white sm:text-4xl">{activeChart?.title || "Music Charts"}</h2>
+              <span className="inline-flex items-center gap-1 rounded-full border border-[#48d4c1]/30 bg-[#48d4c1]/10 px-2.5 py-1 text-xs font-bold text-[#48d4c1]">
+                <Flame className="h-3.5 w-3.5" /> Official
               </span>
-            )}
-            <span>•</span>
-            <span>
-              Total Tracks:{" "}
-              <strong className="text-zinc-200">
-                {activeChart?.entries?.length || 0}
-              </strong>
-            </span>
-            {activeChart?.description && (
-              <>
-                <span>•</span>
-                <span className="text-zinc-400 italic">
-                  {activeChart.description}
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/65">
+              {activeChart?.edition_date && (
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="h-3.5 w-3.5 text-[#48d4c1]" />
+                  Issue: <strong className="text-white/90">{new Date(activeChart.edition_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</strong>
                 </span>
+              )}
+              <span>Total tracks: <strong className="text-white/90">{activeChart?.entries?.length || 0}</strong></span>
+              {activeChart?.description && <span className="max-w-2xl text-white/65">{activeChart.description}</span>}
+            </div>
+          </div>
+
+          <div className="relative mb-8 min-h-[260px] overflow-hidden rounded-lg border border-white/10 bg-[#111816] sm:min-h-[360px]">
+            {chartArtwork.length > 0 ? (
+              <div className={`absolute inset-0 grid grid-cols-1 ${chartArtwork.length === 1 ? "md:grid-cols-1" : chartArtwork.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3"}`}>
+                {chartArtwork.map((artwork) => (
+                  <div key={artwork.rank} className="group relative min-h-[260px] overflow-hidden border-b border-white/10 last:border-b-0 md:min-h-0 md:border-b-0 md:border-r md:last:border-r-0">
+                    <Image src={artwork.src} alt={`${artwork.title} by ${artwork.artist}`} fill sizes="(max-width: 768px) 100vw, 33vw" unoptimized className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/5 to-black/15" />
+                    <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+                      <span className="inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-[#48d4c1] px-2 text-xs font-black text-[#062521]">#{artwork.rank}</span>
+                      <h3 className="mt-3 line-clamp-2 text-lg font-extrabold text-white sm:text-xl">{artwork.title}</h3>
+                      <p className="mt-1 line-clamp-1 text-sm text-white/75">{artwork.artist}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <>
+                <Image src={activeChart?.cover_image_url || activeChart?.cover_image || CBMTeamArtwork} alt={activeChart ? `${activeChart.title} chart artwork` : "CBM Radio presenters"} fill sizes="(max-width: 768px) 100vw, 70vw" unoptimized={Boolean(activeChart?.cover_image_url || activeChart?.cover_image)} className="object-cover object-[center_35%]" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-black/10" />
+                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
+                  <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#48d4c1]">CBM Radio • Gospel Charts</p>
+                  <h3 className="mt-2 max-w-xl text-2xl font-black text-white sm:text-4xl">The songs moving our community.</h3>
+                </div>
               </>
             )}
           </div>
-        </div>
-
-        {/* Search Input */}
-        <div className="relative w-full max-w-xs">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-          <input
-            type="text"
-            placeholder="Search song, artist, album…"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-full border border-zinc-800 bg-zinc-900/80 pl-9 pr-4 py-2 text-xs text-zinc-100 placeholder-zinc-500 transition-colors focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-          />
-        </div>
-      </div>
 
       {/* Top 3 Podium Spotlight (Shown when no search query active) */}
       {!searchQuery && top1 && (
@@ -512,8 +561,14 @@ export default function ChartsListing() {
 
         {chartLoading ? (
           <div className="py-12 text-center text-zinc-500">
-            <Disc3 className="h-6 w-6 animate-spin mx-auto text-amber-500 mb-2" />
+            <Disc3 className="h-6 w-6 animate-spin mx-auto text-[#48d4c1] mb-2" />
             Loading tracks…
+          </div>
+        ) : !activeChart ? (
+          <div className="flex min-h-56 flex-col items-center justify-center rounded-lg border border-dashed border-white/20 bg-black/20 px-6 py-10 text-center">
+            <Trophy className="mb-3 h-10 w-10 text-[#48d4c1]/70" aria-hidden="true" />
+            <h3 className="text-lg font-bold text-white">Charts are temporarily unavailable</h3>
+            <p className="mt-2 max-w-md text-sm leading-6 text-white/65">The chart service could not be reached. Please try again later.</p>
           </div>
         ) : filteredEntries.length === 0 ? (
           <div className="rounded-xl border border-dashed border-zinc-800 p-8 text-center text-zinc-500">
@@ -753,6 +808,8 @@ export default function ChartsListing() {
             </div>
           </div>
         )}
+      </div>
+      </div>
       </div>
     </section>
   );
