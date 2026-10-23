@@ -114,70 +114,75 @@ export default function Header() {
           </div>
           {isMenuOpen &&
             createPortal(
-              <div className="fixed inset-0 z-[100]">
-                <button
-                  type="button"
-                  aria-label="Close navigation menu"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="absolute inset-0 h-full w-full cursor-default bg-black/60 backdrop-blur-sm"
-                />
-                <div className="relative mx-auto flex h-full w-[70vw] flex-col overflow-y-auto border-x-4 border-[#48d4c1] bg-[#050505] p-5 text-white shadow-[0_0_60px_rgba(0,0,0,0.6)] sm:p-8">
-                  <div className="mb-6 flex items-center justify-between">
-                    <span className="text-sm font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">
-                      Explore
-                    </span>
-                    <button
-                      type="button"
-                      aria-label="Close navigation menu"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="grid h-11 w-11 place-items-center rounded-full border border-[#48d4c1]/50 bg-[#48d4c1]/10 text-[#48d4c1] transition-colors hover:bg-[#48d4c1] hover:text-[#062521]"
-                    >
-                      <X size={20} strokeWidth={2.5} />
-                    </button>
-                  </div>
-                  <nav
-                    id="mobile-navigation"
-                    aria-label="Main navigation"
-                    className="grid grid-cols-1 gap-3 sm:grid-cols-2"
-                  >
-                    {primaryNavigation.map((item, index) => {
-                      const isActive =
-                        pathname === item.href ||
-                        (item.href !== "/" && pathname.startsWith(item.href + "/"));
-                      const Icon = navMeta[item.href]?.icon ?? Home;
-                      const detail = navMeta[item.href]?.detail ?? "";
-                      const isTeal = (Math.floor(index / 2) + index) % 2 === 0;
-
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          aria-current={isActive ? "page" : undefined}
-                          onClick={() => setIsMenuOpen(false)}
-                          className={`group flex min-h-32 flex-col justify-between rounded-md p-4 text-[#07100f] transition-transform hover:-translate-y-1 ${
-                            isTeal ? "bg-[#48d4c1]" : "bg-white"
-                          } ${isActive ? "ring-4 ring-white/40" : ""}`}
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <Icon size={23} strokeWidth={2.2} aria-hidden="true" />
-                            <ArrowUpRight
-                              size={18}
-                              className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                              aria-hidden="true"
-                            />
-                          </div>
-                          <span>
-                            <span className="block text-lg font-extrabold">{item.label}</span>
-                            <span className="mt-0.5 block text-xs font-medium text-black/70">{detail}</span>
-                          </span>
-                        </Link>
-                      );
-                    })}
-                  </nav>
-                </div>
-              </div>,
+              <button
+                type="button"
+                aria-label="Close navigation menu"
+                onClick={() => setIsMenuOpen(false)}
+                className="fixed inset-0 z-40 h-full w-full cursor-default bg-black/50 backdrop-blur-[2px]"
+              />,
               document.body,
             )}
+          <div
+            inert={!isMenuOpen}
+            aria-hidden={!isMenuOpen}
+            className={`absolute -left-px -right-px top-full border-x-4 border-b-4 border-[#48d4c1] bg-[#050505] text-white shadow-[0_24px_60px_rgba(0,0,0,0.45)] transition-[clip-path] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              isMenuOpen
+                ? "[clip-path:inset(0_0_0_0)]"
+                : "pointer-events-none [clip-path:inset(0_0_100%_0)]"
+            }`}
+          >
+            <div className="max-h-[70vh] overflow-y-auto p-5 sm:p-8">
+              <span className="mb-5 block text-sm font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">
+                Explore
+              </span>
+              <nav
+                id="mobile-navigation"
+                aria-label="Main navigation"
+                className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+              >
+                {primaryNavigation.map((item, index) => {
+                  const isActive =
+                    pathname === item.href ||
+                    (item.href !== "/" && pathname.startsWith(item.href + "/"));
+                  const Icon = navMeta[item.href]?.icon ?? Home;
+                  const detail = navMeta[item.href]?.detail ?? "";
+                  const isTeal = index % 2 === 0;
+
+                  return (
+                    <div
+                      key={item.href}
+                      style={{ transitionDelay: isMenuOpen ? `${150 + index * 50}ms` : "0ms" }}
+                      className={`transition-[opacity,translate] duration-500 ease-out ${
+                        isMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0"
+                      }`}
+                    >
+                    <Link
+                      href={item.href}
+                      aria-current={isActive ? "page" : undefined}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={`group flex h-full min-h-32 flex-col justify-between rounded-md p-4 text-[#07100f] transition-transform hover:-translate-y-1 ${
+                        isTeal ? "bg-[#48d4c1]" : "bg-white"
+                      } ${isActive ? "ring-4 ring-white/40" : ""}`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <Icon size={23} strokeWidth={2.2} aria-hidden="true" />
+                        <ArrowUpRight
+                          size={18}
+                          className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <span>
+                        <span className="block text-lg font-extrabold">{item.label}</span>
+                        <span className="mt-0.5 block text-xs font-medium text-black/70">{detail}</span>
+                      </span>
+                    </Link>
+                    </div>
+                  );
+                })}
+              </nav>
+            </div>
+          </div>
         </div>
       </div>
     </header>
