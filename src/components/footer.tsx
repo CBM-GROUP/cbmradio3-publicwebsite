@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { ArrowUpRight, Headphones, Images, Newspaper, Radio } from "lucide-react";
 import type { IconType } from "react-icons";
 import {
   FaEnvelope,
@@ -26,6 +28,7 @@ import homeService from "@/services/home.service";
 import { siteSettingsService } from "@/services/site-settings.service";
 import type { ProgramSummary } from "@/types/program";
 import type { SiteContact, SocialLink } from "@/types/site-settings";
+import CBMlogo from "../../public/cbmradio.png";
 
 const MAX_FOOTER_PROGRAMS = 6;
 
@@ -38,6 +41,37 @@ const socialIcons: Partial<Record<string, IconType>> = {
   tiktok: FaTiktok,
   whatsapp: FaWhatsapp,
 };
+
+const footerDestinations = [
+  {
+    label: "Programs",
+    detail: "Find your frequency",
+    href: "/programs",
+    icon: Radio,
+    color: "bg-[#48d4c1]",
+  },
+  {
+    label: "Episodes",
+    detail: "Listen to CBM",
+    href: "/episodes",
+    icon: Headphones,
+    color: "bg-[#f4cf55]",
+  },
+  {
+    label: "News",
+    detail: "Stories and updates",
+    href: "/news",
+    icon: Newspaper,
+    color: "bg-[#f17b8b]",
+  },
+  {
+    label: "Gallery",
+    detail: "Moments from CBM",
+    href: "/gallery",
+    icon: Images,
+    color: "bg-[#78b8f2]",
+  },
+];
 
 export default function Footer() {
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
@@ -89,155 +123,148 @@ export default function Footer() {
   );
 
   return (
-    <footer className="bg-zinc-800/20 text-gray-300">
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-2 lg:grid-cols-4">
-        <div>
-          <h2 className="text-3xl font-bold text-emerald-500">CBM Radio</h2>
+    <footer className="border-t-4 border-[#48d4c1] bg-[#050505] text-white">
+      <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-8 px-5 py-10 sm:px-8 md:grid-cols-2 lg:grid-cols-12 lg:gap-6 lg:px-12 lg:py-14">
+        <section className="lg:col-span-3">
+          <Link href="/" aria-label="CBM Radio home" className="inline-flex items-center gap-3">
+            <Image src={CBMlogo} alt="" width={96} height={96} className="h-20 w-20 object-cover" />
+            <span>
+              <span className="block text-2xl font-black">CBM Radio</span>
+            </span>
+          </Link>
 
-          <p className="mt-5 leading-7 text-gray-400">
-            CBM Radio is committed to delivering trusted news, quality
-            entertainment, educational programs and community-driven content
-            that informs, inspires and connects our listeners.
+          <p className="mt-5 max-w-sm text-sm leading-6 text-white/70">
+            CBM Radio delivers trusted news, quality entertainment, educational programs and community-driven stories that inform, inspire and connect our listeners.
           </p>
 
-          {socialLinks.length > 0 && (
-            <div className="mt-6 flex flex-wrap gap-4">
-              {socialLinks.map((socialLink) => {
-                const SocialIcon = socialIcons[socialLink.platform_key];
-                const socialUrl = getSafeSocialUrl(socialLink.url);
-                if (!SocialIcon || !socialUrl) return null;
+        </section>
 
-                return (
-                  <a
-                    key={socialLink.id}
-                    href={socialUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={
-                      "Visit CBM Radio on " + socialLink.platform_label
-                    }
-                    className="rounded-full bg-emerald-600 p-3 transition hover:bg-white hover:text-emerald-600"
-                  >
-                    <SocialIcon aria-hidden="true" />
-                  </a>
-                );
-              })}
-            </div>
-          )}
-        </div>
+        <nav aria-label="Featured pages" className="grid grid-cols-2 gap-3 sm:col-span-1 lg:col-span-5">
+          {footerDestinations.map((destination) => {
+            const DestinationIcon = destination.icon;
+            return (
+              <Link
+                key={destination.href}
+                href={destination.href}
+                className={`group flex min-h-32 flex-col justify-between rounded-md p-4 text-[#07100f] transition-transform hover:-translate-y-1 ${destination.color}`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <DestinationIcon size={23} strokeWidth={2.2} aria-hidden="true" />
+                  <ArrowUpRight size={18} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+                </div>
+                <span>
+                  <span className="block text-lg font-extrabold">{destination.label}</span>
+                  <span className="mt-0.5 block text-xs font-medium text-black/70">{destination.detail}</span>
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
 
-        <div>
-          <h3 className="mb-6 text-xl font-semibold text-white">Quick Links</h3>
-
-          <ul className="space-y-3">
+        <nav aria-label="Site links" className="lg:col-span-2">
+          <h3 className="mb-4 text-sm font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">Explore</h3>
+          <ul className="space-y-2.5">
             {primaryNavigation.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="hover:text-emerald-500">
+                <Link href={item.href} className="text-sm text-white/75 transition-colors hover:text-[#48d4c1]">
                   {item.label}
                 </Link>
               </li>
             ))}
-            <li>
-              <Link
-                href={contactNavigationItem.href}
-                className="hover:text-emerald-500"
-              >
-                {contactNavigationItem.label}
-              </Link>
-            </li>
           </ul>
-        </div>
+        </nav>
 
-        <div>
-          <h3 className="mb-6 text-xl font-semibold text-white">
-            Featured Programs
-          </h3>
-
+        <section className="md:col-span-2 lg:col-span-2">
+          <h3 className="mb-4 text-sm font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">Featured programs</h3>
           {programs.length > 0 ? (
-            <ul className="space-y-3">
+            <ul className="space-y-2.5">
               {programs.map((program) => (
                 <li key={program.id}>
-                  <Link href="/programs" className="hover:text-emerald-500">
+                  <Link href="/programs" className="text-sm text-white/75 transition-colors hover:text-[#48d4c1]">
                     {program.title}
                   </Link>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-gray-400" aria-live="polite">
-              {loading
-                ? "Loading featured programs..."
-                : "Featured programs are currently unavailable."}
+            <p className="text-sm leading-6 text-white/55" aria-live="polite">
+              {loading ? "Loading featured programs..." : "Featured programs are currently unavailable."}
             </p>
           )}
-        </div>
 
-        <div>
-          <h3 className="mb-6 text-xl font-semibold text-white">Contact Us</h3>
-
+          <h3 className="mb-3 mt-7 text-sm font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">Contact</h3>
           {hasContact ? (
-            <div className="space-y-5">
-              {contact?.physical_address && (
-                <div className="flex gap-3">
-                  <FaMapMarkerAlt
-                    className="mt-1 shrink-0 text-emerald-500"
-                    aria-hidden="true"
-                  />
-                  <p>{contact.physical_address}</p>
-                </div>
-              )}
-
-              {contact?.business_phone && (
-                <div className="flex gap-3">
-                  <FaPhoneAlt
-                    className="mt-1 shrink-0 text-emerald-500"
-                    aria-hidden="true"
-                  />
-                  <a
-                    href={
-                      "tel:" +
-                      contact.business_phone.replace(/[^+\d]/g, "")
-                    }
-                    className="wrap-break-word hover:text-emerald-500"
-                  >
-                    {contact.business_phone}
-                  </a>
-                </div>
-              )}
-
-              {contact?.business_email && (
-                <div className="flex gap-3">
-                  <FaEnvelope
-                    className="mt-1 shrink-0 text-emerald-500"
-                    aria-hidden="true"
-                  />
-                  <a
-                    href={"mailto:" + contact.business_email}
-                    className="break-all hover:text-emerald-500"
-                  >
-                    {contact.business_email}
-                  </a>
-                </div>
-              )}
-            </div>
+            <address className="space-y-3 text-sm not-italic text-white/75">
+              {contact?.physical_address && <p className="flex gap-2"><FaMapMarkerAlt className="mt-1 shrink-0 text-[#48d4c1]" aria-hidden="true" />{contact.physical_address}</p>}
+              {contact?.business_phone && <a href={"tel:" + contact.business_phone.replace(/[^+\d]/g, "")} className="flex gap-2 break-words hover:text-[#48d4c1]"><FaPhoneAlt className="mt-1 shrink-0 text-[#48d4c1]" aria-hidden="true" />{contact.business_phone}</a>}
+              {contact?.business_email && <a href={"mailto:" + contact.business_email} className="flex gap-2 break-all hover:text-[#48d4c1]"><FaEnvelope className="mt-1 shrink-0 text-[#48d4c1]" aria-hidden="true" />{contact.business_email}</a>}
+            </address>
           ) : (
-            <p className="text-sm text-gray-400" aria-live="polite">
-              {loading
-                ? "Loading contact information..."
-                : "Contact information is currently unavailable."}
+            <p className="text-sm leading-6 text-white/55" aria-live="polite">
+              {loading ? "Loading contact information..." : "Contact information is currently unavailable."}
             </p>
           )}
+          <Link href={contactNavigationItem.href} className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#48d4c1] px-4 py-2 text-xs font-extrabold uppercase tracking-[0.1em] text-[#062521] transition-colors hover:bg-[#6ae3d1]">
+            Contact us <ArrowUpRight size={15} aria-hidden="true" />
+          </Link>
+        </section>
+      </div>
+
+      <div className="border-t border-white/15">
+        <div className="mx-auto flex max-w-[1600px] flex-col gap-4 px-5 py-6 sm:px-8 sm:flex-row sm:items-center sm:justify-between lg:px-12">
+          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">
+            Follow CBM Radio
+          </p>
+          <div className="flex flex-wrap items-center gap-3" aria-label="Social media">
+            {(() => {
+              const configuredLinks = socialLinks.flatMap((socialLink) => {
+                const SocialIcon = socialIcons[socialLink.platform_key];
+                const socialUrl = getSafeSocialUrl(socialLink.url);
+                return SocialIcon && socialUrl
+                  ? [{ key: socialLink.id, label: socialLink.platform_label, Icon: SocialIcon, url: socialUrl }]
+                  : [];
+              });
+
+              if (configuredLinks.length > 0) {
+                return configuredLinks.map(({ key, label, Icon, url }) => (
+                  <a
+                    key={key}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={"Visit CBM Radio on " + label}
+                    className="grid h-11 w-11 place-items-center rounded-full border border-[#48d4c1]/50 bg-[#48d4c1]/10 text-[#48d4c1] transition-colors hover:border-[#48d4c1] hover:bg-[#48d4c1] hover:text-[#062521]"
+                  >
+                    <Icon size={18} aria-hidden="true" />
+                  </a>
+                ));
+              }
+
+              return Object.entries(socialIcons).map(([platform, Icon]) => {
+                if (!Icon) return null;
+
+                return (
+                  <span
+                    key={platform}
+                    title={platform}
+                    aria-label={platform}
+                    className="grid h-11 w-11 place-items-center rounded-full border border-[#48d4c1]/40 bg-[#48d4c1]/10 text-[#48d4c1]"
+                  >
+                    <Icon size={18} aria-hidden="true" />
+                  </span>
+                );
+              });
+            })()}
+          </div>
         </div>
       </div>
 
-      <div className="border-t border-gray-700">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between px-6 py-5 text-sm md:flex-row">
-          <p>
-            &copy; {new Date().getFullYear()} CBM Radio. All Rights Reserved.
-          </p>
-          <nav aria-label="Legal" className="mt-3 flex flex-wrap justify-center gap-5 md:mt-0">
+      <div className="border-t border-white/15">
+        <div className="mx-auto flex max-w-[1600px] flex-col gap-4 px-5 py-5 text-xs text-white/60 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-12">
+          <p>&copy; {new Date().getFullYear()} CBM Radio. All Rights Reserved.</p>
+          <nav aria-label="Legal" className="flex flex-wrap gap-x-5 gap-y-2">
             {legalNavigation.map((item) => (
-              <Link key={item.href} href={item.href} className="rounded hover:text-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400">
+              <Link key={item.href} href={item.href} className="transition-colors hover:text-[#48d4c1]">
                 {item.label}
               </Link>
             ))}
