@@ -176,7 +176,7 @@ export default function HomepageAdditions() {
     <section className="border-y border-white/10 bg-[#090d0c] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24">
       <div className="mx-auto max-w-7xl space-y-14">
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-lg border border-[#48d4c1]/25 bg-[#111816] p-6 sm:p-8">
+          <div id="live-radio" className="rounded-lg border border-[#48d4c1]/25 bg-[#111816] p-6 sm:p-8">
             <div className="flex items-center gap-3 text-[#48d4c1]">
               <span className="grid size-11 place-items-center rounded-full bg-[#48d4c1]/10">
                 <Radio size={21} aria-hidden="true" />

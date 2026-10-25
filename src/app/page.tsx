@@ -13,6 +13,7 @@ import TeamMembers from "@/components/team-members";
 import EpisodesSection from "@/components/episodes-section";
 import DynamicPageSections from "@/components/dynamic-page-sections";
 import HomepageAdditions from "@/components/homepage-additions";
+import HomepageCharts from "@/components/homepage-charts";
 import CBMTeam from "../../public/cbm_images/take 3.jpeg";
 
 export default function Home() {
@@ -67,10 +68,11 @@ export default function Home() {
           </div>
         </section>
         <DynamicPageSections page="home" position="top" />
-        <ProgramsSection />
-        <NewsSection />
-        <EpisodesSection />
         <HomepageAdditions />
+        <HomepageCharts />
+        <ProgramsSection />
+        <EpisodesSection />
+        <NewsSection />
         <DynamicPageSections page="home" position="middle" />
         <TeamMembers limit={6} />
         <Gallery />

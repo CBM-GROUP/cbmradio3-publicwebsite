@@ -63,10 +63,10 @@ export default function EpisodesSection() {
         <div className="mb-10 flex flex-wrap items-end justify-between gap-5">
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#48d4c1]">
-              On CBM Radio
+              From the lineup
             </p>
             <h2 className="mt-3 text-3xl font-extrabold sm:text-4xl">
-              Stories worth listening to
+              What we’re talking about
             </h2>
           </div>
           <Link
