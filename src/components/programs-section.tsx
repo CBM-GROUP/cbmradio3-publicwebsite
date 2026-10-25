@@ -6,6 +6,11 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import homeService from "@/services/home.service";
 import type { ProgramSummary } from "@/types/program";
+import DanielPortrait from "../../public/cbm_images/daniel.svg";
+import BrianPortrait from "../../public/cbm_images/brian.svg";
+import SamuelPortrait from "../../public/cbm_images/samuel.svg";
+
+const programArtwork = [DanielPortrait, BrianPortrait, SamuelPortrait];
 
 const HOMEPAGE_PROGRAM_LIMIT = 3;
 
@@ -39,19 +44,42 @@ export default function ProgramsSection() {
           </Link>
         </div>
         {status === "loading" && <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-center text-white/70" aria-live="polite">Loading featured programs...</p>}
-        {status === "error" && <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-center text-white/75">Featured programs are temporarily unavailable.</p>}
-        {status === "ready" && programs.length === 0 && <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-center text-white/75">No featured programs are available right now.</p>}
+        {(status === "error" || (status === "ready" && programs.length === 0)) && (
+          <article className="grid overflow-hidden rounded-xl border border-white/10 bg-[#090d0c]/70 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+            <div className="relative min-h-56 sm:min-h-72">
+              <Image
+                src={DanielPortrait}
+                alt="CBM Radio presenter Daniel Moses"
+                fill
+                sizes="(max-width: 640px) 100vw, 42vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="flex flex-col justify-center p-6 sm:p-8">
+              <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#48d4c1]">Show spotlight</p>
+              <h3 className="mt-3 text-2xl font-black sm:text-3xl">My Life, My Purpose</h3>
+              <p className="mt-3 max-w-lg text-sm leading-6 text-zinc-300">
+                Thoughtful conversations about purpose, personal growth, and the stories that shape our community.
+              </p>
+              <p className="mt-4 text-sm font-semibold text-[#48d4c1]">Thursdays · 4:00–5:00 PM</p>
+              <Link href="/programs" className="mt-5 inline-flex min-h-11 w-fit items-center gap-2 rounded-full border border-[#48d4c1]/50 px-5 text-sm font-bold text-[#48d4c1] transition-colors hover:bg-[#48d4c1] hover:text-[#062521]">
+                Explore the lineup <ArrowUpRight size={17} aria-hidden="true" />
+              </Link>
+              {status === "error" && <p className="mt-4 text-xs text-white/45">Live program listings are temporarily unavailable.</p>}
+            </div>
+          </article>
+        )}
         {programs.length > 0 && (
-          <div className="border-y border-white/10">
+          <div className="space-y-3">
             {programs.map((program, index) => (
-              <article key={program.id} className="grid items-center gap-x-5 gap-y-4 border-b border-white/10 py-5 last:border-b-0 sm:grid-cols-[4.25rem_8rem_minmax(0,1fr)_auto] sm:gap-6 sm:py-6">
+              <article key={program.id} className="grid items-center gap-x-5 gap-y-4 rounded-xl border border-white/10 bg-[#090d0c]/70 p-4 transition-colors hover:border-[#48d4c1]/35 sm:grid-cols-[4.25rem_8rem_minmax(0,1fr)_auto] sm:gap-6 sm:p-5">
                 <span aria-label={`Featured show ${index + 1}`} className="text-4xl font-black leading-none tracking-tighter text-teal-300/80 sm:text-5xl">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <div className="relative col-start-2 row-start-1 aspect-[4/3] overflow-hidden rounded-lg bg-zinc-900 sm:col-start-auto sm:row-auto">
                   <Image
-                    src={program.cover_image || "/cbmradio.png"}
-                    alt={program.cover_image ? program.title : "CBM Radio"}
+                    src={program.cover_image || programArtwork[index % programArtwork.length]}
+                    alt={program.cover_image ? `${program.title} show artwork` : "CBM Radio presenter artwork"}
                     fill
                     sizes="(max-width: 640px) 42vw, 128px"
                     unoptimized={Boolean(program.cover_image)}

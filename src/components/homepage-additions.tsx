@@ -34,6 +34,10 @@ import type { ProgramSummary } from "@/types/program";
 import type { SiteContact, SocialLink } from "@/types/site-settings";
 import type { TeamMember } from "@/types/team";
 import Logo from "../../public/cbmradio.png";
+import DanielPortrait from "../../public/cbm_images/daniel.svg";
+import BrianPortrait from "../../public/cbm_images/brian.svg";
+import SamuelPortrait from "../../public/cbm_images/samuel.svg";
+import InnocentPortrait from "../../public/cbm_images/innocent1.svg";
 
 type LoadState = "loading" | "ready" | "error";
 
@@ -46,6 +50,13 @@ const socialIcons: Record<string, IconType> = {
   youtube: FaYoutube,
   x: FaXTwitter,
 };
+
+const scheduleArtwork = [
+  DanielPortrait,
+  BrianPortrait,
+  SamuelPortrait,
+  InnocentPortrait,
+];
 
 function safeWebUrl(value: string | undefined) {
   if (!value?.trim()) return null;
@@ -176,43 +187,58 @@ export default function HomepageAdditions() {
     <section className="border-y border-white/10 bg-[#090d0c] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24">
       <div className="mx-auto max-w-7xl space-y-14">
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-          <div id="live-radio" className="rounded-lg border border-[#48d4c1]/25 bg-[#111816] p-6 sm:p-8">
-            <div className="flex items-center gap-3 text-[#48d4c1]">
-              <span className="grid size-11 place-items-center rounded-full bg-[#48d4c1]/10">
-                <Radio size={21} aria-hidden="true" />
-              </span>
-              <p className="text-xs font-extrabold uppercase tracking-[0.2em]">CBM Radio live</p>
-            </div>
-            <h2 className="mt-5 text-2xl font-black sm:text-3xl">Listen wherever you are.</h2>
-            <p className="mt-3 max-w-xl text-sm leading-6 text-white/70">
-              Tune in for music, conversations, and stories from your community.
-            </p>
-            {streamUrl ? (
-              <>
-                <audio
-                  className="mt-6 w-full"
-                  controls
-                  preload="none"
-                  src={streamUrl}
-                  aria-label="CBM Radio live stream"
-                  onError={() => setStreamError(true)}
-                  onPlaying={() => setStreamError(false)}
-                >
-                  Your browser does not support audio playback.
-                </audio>
-                {streamError && (
-                  <p className="mt-3 text-sm text-amber-200" role="status">
-                    The live stream could not be loaded. Please try again later.
-                  </p>
-                )}
-              </>
-            ) : (
-              <p className="mt-6 rounded-md border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/65">
-                {rawStreamUrl
-                  ? "The configured stream URL must be a valid HTTP or HTTPS address."
-                  : "Live listening will be available once the station stream URL is configured."}
+          <div id="live-radio" className="grid overflow-hidden rounded-2xl border border-[#48d4c1]/25 bg-[#111816] lg:grid-cols-[minmax(0,1fr)_15rem]">
+            <div className="p-6 sm:p-8">
+              <div className="flex items-center gap-3 text-[#48d4c1]">
+                <span className="grid size-11 place-items-center rounded-full bg-[#48d4c1]/10">
+                  <Radio size={21} aria-hidden="true" />
+                </span>
+                <p className="text-xs font-extrabold uppercase tracking-[0.2em]">CBM Radio live</p>
+              </div>
+              <h2 className="mt-5 text-2xl font-black sm:text-3xl">Listen wherever you are.</h2>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-white/70">
+                Tune in for music, conversations, and stories from your community.
               </p>
-            )}
+              {streamUrl ? (
+                <>
+                  <audio
+                    className="mt-6 w-full"
+                    controls
+                    preload="none"
+                    src={streamUrl}
+                    aria-label="CBM Radio live stream"
+                    onError={() => setStreamError(true)}
+                    onPlaying={() => setStreamError(false)}
+                  >
+                    Your browser does not support audio playback.
+                  </audio>
+                  {streamError && (
+                    <p className="mt-3 text-sm text-amber-200" role="status">
+                      The live stream could not be loaded. Please try again later.
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p className="mt-6 rounded-md border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/65">
+                  {rawStreamUrl
+                    ? "The configured stream URL must be a valid HTTP or HTTPS address."
+                    : "Live listening will be available once the station stream URL is configured."}
+                </p>
+              )}
+            </div>
+            <div className="relative min-h-56 overflow-hidden lg:min-h-full">
+              <Image
+                src={DanielPortrait}
+                alt="CBM Radio presenter Daniel Moses"
+                fill
+                sizes="(max-width: 1024px) 100vw, 240px"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent lg:bg-gradient-to-r" />
+              <span className="absolute bottom-5 left-5 rounded-full border border-white/30 bg-black/45 px-3 py-1 text-[0.65rem] font-extrabold uppercase tracking-[0.18em] text-white">
+                Voices from the community
+              </span>
+            </div>
           </div>
 
           <div className="rounded-lg border border-white/10 bg-[#111816] p-6 sm:p-8">
@@ -229,8 +255,18 @@ export default function HomepageAdditions() {
             )}
             {scheduledPrograms.length > 0 && (
               <ul className="divide-y divide-white/10">
-                {scheduledPrograms.map((program) => (
-                  <li key={program.id} className="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
+                {scheduledPrograms.map((program, index) => (
+                  <li key={program.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+                    <div className="relative size-14 shrink-0 overflow-hidden rounded-md bg-black/30">
+                      <Image
+                        src={program.cover_image || scheduleArtwork[index % scheduleArtwork.length]}
+                        alt={program.cover_image ? `${program.title} show artwork` : "CBM Radio presenter artwork"}
+                        fill
+                        sizes="56px"
+                        unoptimized={Boolean(program.cover_image)}
+                        className="object-cover"
+                      />
+                    </div>
                     <CalendarDays className="mt-0.5 shrink-0 text-[#48d4c1]" size={17} aria-hidden="true" />
                     <div className="min-w-0">
                       <p className="font-bold">{program.title}</p>

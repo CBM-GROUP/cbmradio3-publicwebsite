@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock } from "lucide-react";
+import { ArrowUpRight, Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -8,7 +8,9 @@ import { useEffect, useState } from "react";
 import { formatPublicationDate, formatTimeAgo } from "@/lib/article-metadata";
 import homeService from "@/services/home.service";
 import type { ArticleSummary } from "@/types/news";
-import Logo from "../../public/cbmradio.png";
+import InnocentPortrait from "../../public/cbm_images/innocent1.svg";
+import BrianPortrait from "../../public/cbm_images/brian.svg";
+import SamuelPortrait from "../../public/cbm_images/samuel.svg";
 
 type RequestState = "loading" | "ready" | "error";
 
@@ -58,9 +60,33 @@ export default function NewsSection() {
       {(featuredState === "loading" || latestState === "loading") && !featured && !latest && (
         <p className="rounded-lg border border-white/10 bg-white/[0.03] px-5 py-8 text-center text-white/70" aria-live="polite">Loading newsroom updates...</p>
       )}
-      {isEmpty && <p className="rounded-lg border border-white/10 bg-white/[0.03] px-5 py-8 text-center text-white/75">No published news is available right now.</p>}
-      {featuredState === "error" && latestState === "error" && (
-        <p className="rounded-lg border border-white/10 bg-white/[0.03] px-5 py-8 text-center text-white/75">News is temporarily unavailable.</p>
+      {(!featured && !latest && featuredState !== "loading" && latestState !== "loading") && (
+        <div className="grid overflow-hidden rounded-xl border border-white/10 bg-[#111816] sm:grid-cols-[0.9fr_1.1fr]">
+          <div className="relative min-h-52 sm:min-h-64">
+            <Image
+              src={InnocentPortrait}
+              alt="CBM Radio presenter Innocent Kato"
+              fill
+              sizes="(max-width: 640px) 100vw, 42vw"
+              className="object-cover"
+            />
+          </div>
+          <div className="flex flex-col justify-center p-6 sm:p-8">
+            <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#48d4c1]">The CBM newsroom</p>
+            <h3 className="mt-3 text-2xl font-black">Stories from our community.</h3>
+            <p className="mt-3 max-w-lg text-sm leading-6 text-white/70">
+              Find station announcements, fresh perspectives, and the latest from across CBM Radio.
+            </p>
+            <Link href="/news" className="mt-5 inline-flex min-h-11 w-fit items-center gap-2 font-semibold text-[#48d4c1] hover:text-white">
+              Visit the newsroom <ArrowUpRight size={17} aria-hidden="true" />
+            </Link>
+            {(isEmpty || featuredState === "error" || latestState === "error") && (
+              <p className="mt-3 text-xs text-white/45">
+                {isEmpty ? "No published news is available right now." : "Some news updates are temporarily unavailable."}
+              </p>
+            )}
+          </div>
+        </div>
       )}
 
       {featured && (
@@ -89,7 +115,7 @@ function ArticleCard({ article, label, featured = false }: { article: ArticleSum
     <Link href={"/news/" + article.slug} className={"grid overflow-hidden rounded-lg border border-white/10 bg-[#111816] transition-colors hover:border-[#48d4c1]/50 " + (featured ? "gap-6 lg:grid-cols-2" : "gap-5 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]")}>
       <div className="relative aspect-video bg-zinc-900">
         <Image
-          src={article.cover_image || Logo}
+          src={article.cover_image || (label === "Featured" ? BrianPortrait : SamuelPortrait)}
           alt={article.title}
           fill
           sizes={featured ? "(max-width: 1024px) 100vw, 50vw" : "(max-width: 640px) 100vw, 34vw"}

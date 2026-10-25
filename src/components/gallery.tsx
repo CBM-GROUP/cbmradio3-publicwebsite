@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { galleryService } from "@/services/gallery.service";
 import type { GalleryItem } from "@/types/gallery";
+import BrianPortrait from "../../public/cbm_images/brian.svg";
 
 const HOMEPAGE_GALLERY_LIMIT = 6;
 
@@ -34,8 +35,27 @@ export default function Gallery() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-8"><p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#48d4c1]">Gallery</p><h2 className="mt-3 text-3xl font-black sm:text-4xl">CBM Radio Moments</h2></div>
         {status === "loading" && <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-white/70" aria-live="polite">Loading gallery...</p>}
-        {status === "error" && <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-white/75">The gallery is temporarily unavailable.</p>}
-        {status === "ready" && items.length === 0 && <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-white/75">No gallery images are available right now.</p>}
+        {(status === "error" || (status === "ready" && items.length === 0)) && (
+          <div className="grid overflow-hidden rounded-xl border border-white/10 bg-[#090d0c] sm:grid-cols-[1.2fr_0.8fr]">
+            <div className="relative min-h-56 sm:min-h-72">
+              <Image
+                src={BrianPortrait}
+                alt="CBM Radio presenter Brian Mugisha"
+                fill
+                sizes="(max-width: 640px) 100vw, 55vw"
+                className="object-cover object-[center_30%]"
+              />
+            </div>
+            <div className="flex flex-col justify-center p-6 sm:p-8">
+              <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#48d4c1]">Behind the scenes</p>
+              <h3 className="mt-3 text-2xl font-black">The people and moments behind CBM Radio.</h3>
+              <p className="mt-3 text-sm leading-6 text-white/70">
+                Explore the voices, studio moments, and community stories that bring the station to life.
+              </p>
+              {status === "error" && <p className="mt-4 text-xs text-white/45">Gallery updates are temporarily unavailable.</p>}
+            </div>
+          </div>
+        )}
         {items.length > 0 && (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {items.map((item) => (

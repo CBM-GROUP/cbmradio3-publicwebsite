@@ -9,7 +9,17 @@ import homeService from "@/services/home.service";
 import YouTubeDialog from "@/components/media/youtube-dialog";
 import { getYouTubeMedia, type YouTubeMedia } from "@/lib/youtube";
 import type { EpisodeSummary } from "@/types/program";
-import Logo from "../../public/cbmradio.png";
+import DanielPortrait from "../../public/cbm_images/daniel.svg";
+import BrianPortrait from "../../public/cbm_images/brian.svg";
+import SamuelPortrait from "../../public/cbm_images/samuel.svg";
+import InnocentPortrait from "../../public/cbm_images/innocent2.svg";
+
+const episodeArtwork = [
+  DanielPortrait,
+  BrianPortrait,
+  SamuelPortrait,
+  InnocentPortrait,
+];
 
 const LATEST_EPISODE_LIMIT = 5;
 type RequestState = "loading" | "ready" | "error";
@@ -82,15 +92,33 @@ export default function EpisodesSection() {
             Loading episodes...
           </p>
         )}
-        {allFailed && (
-          <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-center text-white/75">
-            Episodes are temporarily unavailable.
-          </p>
-        )}
-        {allEmpty && (
-          <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-center text-white/75">
-            No episodes are available right now.
-          </p>
+        {!hasEpisodes && featuredState !== "loading" && latestState !== "loading" && (
+          <article className="grid overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/70 sm:grid-cols-[0.9fr_1.1fr]">
+            <div className="relative min-h-56 sm:min-h-72">
+              <Image
+                src={DanielPortrait}
+                alt="CBM Radio presenter Daniel Moses"
+                fill
+                sizes="(max-width: 640px) 100vw, 42vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="flex flex-col justify-center p-6 sm:p-8">
+              <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-teal-300">A CBM conversation</p>
+              <h3 className="mt-3 text-2xl font-black sm:text-3xl">My Life, My Purpose</h3>
+              <p className="mt-3 max-w-lg leading-7 text-zinc-300">
+                Join Jerry Keyz and Kalinzi Louis for conversations about purpose, life, and the experiences we share.
+              </p>
+              <Link href="/programs" className="mt-5 inline-flex min-h-11 w-fit items-center gap-2 font-semibold text-teal-300 hover:text-white">
+                Explore the show <ArrowUpRight size={18} aria-hidden="true" />
+              </Link>
+              {(allFailed || allEmpty) && (
+                <p className="mt-3 text-xs text-white/45">
+                  {allFailed ? "Episode listings are temporarily unavailable." : "More episode stories are on the way."}
+                </p>
+              )}
+            </div>
+          </article>
         )}
 
         {hasEpisodes && (
@@ -181,7 +209,7 @@ function SpotlightEpisode({
   return (
     <article className="group relative flex min-h-[27rem] overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 sm:min-h-[34rem]">
       <Image
-        src={episode.cover_image || Logo}
+        src={episode.cover_image || DanielPortrait}
         alt={episode.cover_image ? episode.title : "CBM Radio"}
         fill
         sizes="(max-width: 1024px) 100vw, 55vw"
@@ -243,8 +271,8 @@ function LatestEpisodeRow({
         {String(rank).padStart(2, "0")}
       </span>
       <Image
-        src={episode.cover_image || Logo}
-        alt={episode.cover_image ? episode.title : "CBM Radio"}
+        src={episode.cover_image || episodeArtwork[(rank - 1) % episodeArtwork.length]}
+        alt={episode.cover_image ? episode.title : "CBM Radio presenter"}
         width={72}
         height={72}
         sizes="72px"

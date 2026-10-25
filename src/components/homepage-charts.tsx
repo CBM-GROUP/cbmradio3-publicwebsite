@@ -7,10 +7,19 @@ import { useEffect, useState } from "react";
 
 import { chartService } from "@/services/chart.service";
 import type { Chart, ChartEntry } from "@/types/chart";
-import FeaturedShow from "../../public/cbm_images/radio 2.jpeg";
-import Logo from "../../public/cbmradio.png";
+import SamuelPortrait from "../../public/cbm_images/samuel.svg";
+import DanielPortrait from "../../public/cbm_images/daniel.svg";
+import BrianPortrait from "../../public/cbm_images/brian.svg";
+import InnocentPortrait from "../../public/cbm_images/innocent2.svg";
 
 type LoadState = "loading" | "ready" | "error";
+
+const chartArtwork = [
+  DanielPortrait,
+  BrianPortrait,
+  SamuelPortrait,
+  InnocentPortrait,
+];
 
 export default function HomepageCharts() {
   const [chart, setChart] = useState<Chart | null>(null);
@@ -46,7 +55,7 @@ export default function HomepageCharts() {
     ?.filter((entry) => entry.rank > 0)
     .sort((a, b) => a.rank - b.rank)
     .slice(0, 3) ?? [];
-  const artwork = chart?.cover_image_url || chart?.cover_image || FeaturedShow;
+  const artwork = chart?.cover_image_url || chart?.cover_image || SamuelPortrait;
 
   return (
     <section id="charts" className="border-y border-white/10 bg-[#090d0c] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24">
@@ -135,8 +144,8 @@ export default function HomepageCharts() {
           )}
           {entries.length > 0 && (
             <ol className="divide-y divide-white/10">
-              {entries.map((entry) => (
-                <ChartSpotlightEntry key={entry.id} entry={entry} />
+              {entries.map((entry, index) => (
+                    <ChartSpotlightEntry key={entry.id} entry={entry} index={index} />
               ))}
             </ol>
           )}
@@ -152,7 +161,7 @@ export default function HomepageCharts() {
   );
 }
 
-function ChartSpotlightEntry({ entry }: { entry: ChartEntry }) {
+function ChartSpotlightEntry({ entry, index }: { entry: ChartEntry; index: number }) {
   const image = entry.cover_image_url || entry.cover_image;
 
   return (
@@ -162,8 +171,8 @@ function ChartSpotlightEntry({ entry }: { entry: ChartEntry }) {
       </span>
       <div className="relative size-16 shrink-0 overflow-hidden rounded-md bg-black/30">
         <Image
-          src={image || Logo}
-          alt={image ? `${entry.title} cover` : "CBM Radio"}
+          src={image || chartArtwork[index % chartArtwork.length]}
+          alt={image ? `${entry.title} cover` : "CBM Radio chart presenter"}
           fill
           sizes="64px"
           unoptimized={Boolean(image)}
