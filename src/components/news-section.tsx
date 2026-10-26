@@ -61,7 +61,7 @@ export default function NewsSection() {
         <p className="rounded-lg border border-white/10 bg-white/[0.03] px-5 py-8 text-center text-white/70" aria-live="polite">Loading newsroom updates...</p>
       )}
       {(!featured && !latest && featuredState !== "loading" && latestState !== "loading") && (
-        <div className="grid overflow-hidden rounded-xl border border-white/10 bg-[#111816] sm:grid-cols-[0.9fr_1.1fr]">
+        <div className="cbm-card grid overflow-hidden rounded-xl border border-white/10 bg-[#111816] sm:grid-cols-[0.9fr_1.1fr]">
           <div className="relative min-h-52 sm:min-h-64">
             <Image
               src={InnocentPortrait}
@@ -112,7 +112,7 @@ export default function NewsSection() {
 
 function ArticleCard({ article, label, featured = false }: { article: ArticleSummary; label: string; featured?: boolean }) {
   return (
-    <Link href={"/news/" + article.slug} className={"grid overflow-hidden rounded-lg border border-white/10 bg-[#111816] transition-colors hover:border-[#48d4c1]/50 " + (featured ? "gap-6 lg:grid-cols-2" : "gap-5 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]")}>
+    <Link href={"/news/" + article.slug} className={"cbm-card grid overflow-hidden rounded-lg border border-white/10 bg-[#111816] transition-colors hover:border-[#48d4c1]/50 " + (featured ? "gap-6 lg:grid-cols-2" : "gap-5 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]")}>
       <div className="relative aspect-video bg-zinc-900">
         <Image
           src={article.cover_image || (label === "Featured" ? BrianPortrait : SamuelPortrait)}

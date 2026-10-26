@@ -163,7 +163,7 @@ function ProgramCard({ program, onPlay }: { program: ProgramSummary; onPlay: (me
   const promoMedia = getYouTubeMedia(program.promo_video_url);
 
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
+    <article className="cbm-card flex h-full flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
       <div className="relative aspect-video bg-zinc-800">
         <Image
           src={program.cover_image || Logo}

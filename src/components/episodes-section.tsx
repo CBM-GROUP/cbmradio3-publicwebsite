@@ -93,7 +93,7 @@ export default function EpisodesSection() {
           </p>
         )}
         {!hasEpisodes && featuredState !== "loading" && latestState !== "loading" && (
-          <article className="grid overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/70 sm:grid-cols-[0.9fr_1.1fr]">
+          <article className="cbm-card grid overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/70 sm:grid-cols-[0.9fr_1.1fr]">
             <div className="relative min-h-56 sm:min-h-72">
               <Image
                 src={DanielPortrait}
@@ -134,7 +134,7 @@ export default function EpisodesSection() {
 
             <section
               aria-labelledby="latest-episodes-heading"
-              className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5 sm:p-7"
+              className="cbm-card rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5 sm:p-7"
             >
               <div className="mb-5 flex items-end justify-between gap-3 border-b border-zinc-800 pb-4">
                 <div>
@@ -207,7 +207,7 @@ function SpotlightEpisode({
   const media = getYouTubeMedia(episode.youtube_embed_url || episode.youtube_link);
 
   return (
-    <article className="group relative flex min-h-[27rem] overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 sm:min-h-[34rem]">
+    <article className="cbm-card group relative flex min-h-[27rem] overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 sm:min-h-[34rem]">
       <Image
         src={episode.cover_image || DanielPortrait}
         alt={episode.cover_image ? episode.title : "CBM Radio"}

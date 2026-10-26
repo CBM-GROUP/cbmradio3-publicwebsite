@@ -21,7 +21,7 @@ export default function EpisodeCard({
   const published = formatEpisodeDate(episode.publish_date);
 
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 transition hover:border-teal-700 hover:shadow-lg hover:shadow-teal-950/30">
+    <article className="cbm-card flex h-full flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 transition hover:border-teal-700 hover:shadow-lg hover:shadow-teal-950/30">
       <div className="relative aspect-video bg-zinc-800">
         <Image
           src={episode.cover_image || Logo}

@@ -56,13 +56,13 @@ export default function HomepageCharts() {
       <div className="border-b border-white/10 bg-white px-5 text-[#090d0c] sm:px-8 lg:px-12">
         <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-5">
           <Link href="/charts" className="text-2xl font-black tracking-[-0.08em] sm:text-3xl">
-            CBM<span className="text-[#00aeea]">CHARTS</span>
+            CBM<span className="text-[#00d4a5]">CHARTS</span>
           </Link>
           <nav aria-label="Chart links" className="flex items-center gap-5 text-xs font-extrabold sm:gap-9 sm:text-sm">
-            <Link href="/charts" className="hover:text-[#008bbd]">Charts</Link>
-            <Link href="/programs" className="hover:text-[#008bbd]">Music</Link>
-            <Link href="/episodes" className="hover:text-[#008bbd]">Shows</Link>
-            <Link href="/news" className="hidden hover:text-[#008bbd] sm:inline">News</Link>
+            <Link href="/charts" className="hover:text-[#00d4a5]">Charts</Link>
+            <Link href="/programs" className="hover:text-[#00d4a5]">Music</Link>
+            <Link href="/episodes" className="hover:text-[#00d4a5]">Shows</Link>
+            <Link href="/news" className="hidden hover:text-[#00d4a5] sm:inline">News</Link>
           </nav>
           <Link href="/charts" className="hidden text-[0.65rem] font-black uppercase tracking-[0.15em] text-[#111] sm:inline">
             Explore <ArrowUpRight className="ml-1 inline" size={14} aria-hidden="true" />
@@ -82,7 +82,7 @@ export default function HomepageCharts() {
       </div>
 
       <div className="mx-auto grid max-w-7xl gap-6 px-5 py-8 sm:px-8 sm:py-12 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10 lg:px-12 lg:py-14">
-        <aside className="rounded-lg border border-white/10 bg-black p-5">
+        <aside className="cbm-card rounded-lg border border-white/10 bg-black p-5">
           <p className="mb-4 text-[0.65rem] font-extrabold uppercase tracking-[0.2em] text-[#00d4a5]">Explore charts</p>
           <div className="space-y-1">
             {chartCategories.map((category, index) => (
@@ -105,8 +105,8 @@ export default function HomepageCharts() {
             {chart?.edition_date && <p className="text-xs font-bold uppercase tracking-wider text-white/50">{chart.edition_date}</p>}
           </div>
 
-          <div className="relative isolate overflow-hidden border-[5px] border-[#00aeea] bg-[#00aeea] p-1.5 sm:border-[9px] sm:p-2">
-            <div className="relative min-h-[18rem] overflow-hidden sm:min-h-[25rem]">
+          <div className="cbm-card relative isolate overflow-hidden border-[5px] border-[#00d4a5] bg-[#00d4a5] p-1.5 sm:border-[9px] sm:p-2">
+            <div className="relative min-h-[18rem] overflow-hidden rounded-xl sm:min-h-[25rem]">
               <Image
                 src={CBMTeamArtwork}
                 alt="The CBM Radio team together"
@@ -133,7 +133,7 @@ export default function HomepageCharts() {
                   className="object-cover"
                 />
               </div>
-              <div className="absolute bottom-4 left-4 bg-[#00aeea] px-3 py-2 text-lg font-black tracking-[-0.07em] text-black shadow-lg sm:bottom-7 sm:left-7 sm:px-5 sm:py-3 sm:text-4xl">
+              <div className="absolute bottom-4 left-4 rounded-lg bg-[#00d4a5] px-3 py-2 text-lg font-black tracking-[-0.07em] text-black shadow-lg sm:bottom-7 sm:left-7 sm:px-5 sm:py-3 sm:text-4xl">
                 CBM <span className="font-light tracking-tight text-white">MUSIC</span>
               </div>
             </div>
@@ -148,8 +148,7 @@ export default function HomepageCharts() {
               <Link
                 key={tile.title}
                 href={index === 0 ? "/team" : index === 1 ? "/programs" : "/charts"}
-                className="group relative min-h-32 overflow-hidden border border-white/10 bg-black sm:min-h-44"
-                style={{ clipPath: "polygon(14% 0, 86% 0, 100% 22%, 100% 78%, 86% 100%, 14% 100%, 0 78%, 0 22%)" }}
+                className="cbm-card group relative min-h-32 overflow-hidden border border-white/10 bg-black sm:min-h-44"
               >
                 <Image
                   src={tile.image}
@@ -168,7 +167,7 @@ export default function HomepageCharts() {
           </div>
 
           <div className="mt-7 grid gap-5 lg:grid-cols-[minmax(0,1fr)_16rem]">
-            <div className="rounded-lg border border-white/10 bg-[#171b19] p-5 sm:p-6">
+            <div className="cbm-card rounded-lg border border-white/10 bg-[#171b19] p-5 sm:p-6">
               <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
                 <div>
                   <p className="flex items-center gap-2 text-[0.65rem] font-extrabold uppercase tracking-[0.18em] text-[#00d4a5]">
@@ -192,7 +191,7 @@ export default function HomepageCharts() {
                 See the full countdown <ArrowUpRight size={17} aria-hidden="true" />
               </Link>
             </div>
-            <Link href="/charts" className="group relative min-h-64 overflow-hidden rounded-lg border border-white/10 bg-black">
+            <Link href="/charts" className="cbm-card group relative min-h-64 overflow-hidden rounded-lg border border-white/10 bg-black">
               <Image src={RadioShowArtwork} alt="My Life My Purpose show with CBM Radio presenters" fill sizes="(max-width: 1024px) 100vw, 250px" className="object-cover transition-transform duration-500 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5">

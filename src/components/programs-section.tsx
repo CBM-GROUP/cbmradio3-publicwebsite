@@ -45,7 +45,7 @@ export default function ProgramsSection() {
         </div>
         {status === "loading" && <p className="rounded-lg border border-white/10 bg-black/20 px-5 py-8 text-center text-white/70" aria-live="polite">Loading featured programs...</p>}
         {(status === "error" || (status === "ready" && programs.length === 0)) && (
-          <article className="grid overflow-hidden rounded-xl border border-white/10 bg-[#090d0c]/70 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+          <article className="cbm-card grid overflow-hidden rounded-xl border border-white/10 bg-[#090d0c]/70 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
             <div className="relative min-h-56 sm:min-h-72">
               <Image
                 src={DanielPortrait}
@@ -72,7 +72,7 @@ export default function ProgramsSection() {
         {programs.length > 0 && (
           <div className="space-y-3">
             {programs.map((program, index) => (
-              <article key={program.id} className="grid items-center gap-x-5 gap-y-4 rounded-xl border border-white/10 bg-[#090d0c]/70 p-4 transition-colors hover:border-[#48d4c1]/35 sm:grid-cols-[4.25rem_8rem_minmax(0,1fr)_auto] sm:gap-6 sm:p-5">
+              <article key={program.id} className="cbm-card grid items-center gap-x-5 gap-y-4 rounded-xl border border-white/10 bg-[#090d0c]/70 p-4 transition-colors hover:border-[#48d4c1]/35 sm:grid-cols-[4.25rem_8rem_minmax(0,1fr)_auto] sm:gap-6 sm:p-5">
                 <span aria-label={`Featured show ${index + 1}`} className="text-4xl font-black leading-none tracking-tighter text-teal-300/80 sm:text-5xl">
                   {String(index + 1).padStart(2, "0")}
                 </span>

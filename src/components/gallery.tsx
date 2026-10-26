@@ -59,7 +59,7 @@ export default function Gallery() {
         {items.length > 0 && (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {items.map((item) => (
-              <button type="button" key={item.id} onClick={() => setSelectedItem(item)} className="group relative aspect-[4/3] overflow-hidden rounded-lg bg-[#090d0c] text-left">
+              <button type="button" key={item.id} onClick={() => setSelectedItem(item)} className="cbm-card group relative aspect-[4/3] overflow-hidden rounded-lg bg-[#090d0c] text-left">
                 <Image src={item.image} alt={item.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" unoptimized className="object-cover transition-transform duration-500 group-hover:scale-105" />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/55 to-transparent p-4 pt-16">{item.category && <span className="mb-2 inline-block rounded-full bg-[#48d4c1] px-3 py-1 text-xs font-bold capitalize text-[#062521]">{item.category}</span>}<h3 className="text-base font-bold text-white sm:text-lg">{item.title}</h3>{item.caption && <p className="mt-1 text-sm text-white/80">{item.caption}</p>}</div>
               </button>

@@ -187,7 +187,7 @@ export default function HomepageAdditions() {
     <section className="border-y border-white/10 bg-[#090d0c] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24">
       <div className="mx-auto max-w-7xl space-y-14">
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-          <div id="live-radio" className="grid overflow-hidden rounded-2xl border border-[#48d4c1]/25 bg-[#111816] lg:grid-cols-[minmax(0,1fr)_15rem]">
+          <div id="live-radio" className="cbm-card grid overflow-hidden rounded-2xl border border-[#48d4c1]/25 bg-[#111816] lg:grid-cols-[minmax(0,1fr)_15rem]">
             <div className="p-6 sm:p-8">
               <div className="flex items-center gap-3 text-[#48d4c1]">
                 <span className="grid size-11 place-items-center rounded-full bg-[#48d4c1]/10">
@@ -241,7 +241,7 @@ export default function HomepageAdditions() {
             </div>
           </div>
 
-          <div className="rounded-lg border border-white/10 bg-[#111816] p-6 sm:p-8">
+          <div className="cbm-card rounded-lg border border-white/10 bg-[#111816] p-6 sm:p-8">
             <SectionHeading
               eyebrow="This week on CBM"
               title="Show schedule"
@@ -325,7 +325,7 @@ export default function HomepageAdditions() {
             </Link>
           </div>
 
-          <div className="rounded-lg border border-white/10 bg-[#111816] p-6 sm:p-8">
+          <div className="cbm-card rounded-lg border border-white/10 bg-[#111816] p-6 sm:p-8">
             <SectionHeading
               eyebrow="Your voice matters"
               title="Join the conversation"
@@ -374,7 +374,7 @@ export default function HomepageAdditions() {
         </div>
 
         <div className="grid gap-8 md:grid-cols-2">
-          <div className="rounded-lg border border-white/10 bg-[#111816] p-6 sm:p-8">
+          <div className="cbm-card rounded-lg border border-white/10 bg-[#111816] p-6 sm:p-8">
             <div className="flex items-center gap-3 text-[#48d4c1]">
               <Handshake size={20} aria-hidden="true" />
               <p className="text-xs font-extrabold uppercase tracking-[0.2em]">Partner with CBM</p>

@@ -188,7 +188,7 @@ export default function ChartsListing() {
       </nav>
 
       <div className="mx-auto grid max-w-[1800px] gap-5 px-4 py-6 sm:px-6 lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-8 lg:px-10 lg:py-8">
-        <aside className="h-fit rounded-lg border border-white/10 bg-black/70 p-4 lg:sticky lg:top-28">
+        <aside className="cbm-card h-fit rounded-lg border border-white/10 bg-black/70 p-4 lg:sticky lg:top-28">
           <label htmlFor="chart-search" className="mb-2 block text-xs font-bold uppercase tracking-[0.13em] text-white/75">Search charts</label>
           <div className="relative mb-5">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#48d4c1]" aria-hidden="true" />
@@ -239,7 +239,7 @@ export default function ChartsListing() {
           </div>
         </aside>
 
-        <div className="min-w-0 rounded-lg border border-white/10 bg-[linear-gradient(180deg,rgba(72,212,193,0.08),rgba(11,16,15,0.96)_20rem)] p-4 sm:p-6 lg:p-8">
+        <div className="cbm-card min-w-0 rounded-lg border border-white/10 bg-[linear-gradient(180deg,rgba(72,212,193,0.08),rgba(11,16,15,0.96)_20rem)] p-4 sm:p-6 lg:p-8">
           <div className="mb-8 border-b border-[#48d4c1]/50 pb-5">
             <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.28em] text-[#48d4c1]">CBM Radio Charts</p>
             <div className="flex flex-wrap items-center gap-3">
@@ -260,7 +260,7 @@ export default function ChartsListing() {
             </div>
           </div>
 
-          <div className="relative mb-8 min-h-[260px] overflow-hidden rounded-2xl border border-white/10 bg-[#111816] sm:min-h-[360px] shadow-2xl">
+          <div className="cbm-card relative mb-8 min-h-[260px] overflow-hidden rounded-2xl border border-white/10 bg-[#111816] sm:min-h-[360px] shadow-2xl">
             {activeChart?.cover_image_url || activeChart?.cover_image ? (
               <>
                 <Image
@@ -611,7 +611,7 @@ export default function ChartsListing() {
             No tracks found matching &ldquo;{searchQuery}&rdquo;.
           </div>
         ) : (
-          <div className="overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/40 backdrop-blur-sm">
+          <div className="cbm-card overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/40 backdrop-blur-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead className="border-b border-zinc-800 bg-zinc-950/60 text-[11px] font-bold uppercase tracking-wider text-zinc-400">

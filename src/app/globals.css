@@ -2,15 +2,15 @@
 
 :root {
   color-scheme: dark;
-  --brand-bg: #090807;
-  --brand-surface: #12100e;
-  --brand-surface-strong: #1a1410;
-  --brand-panel: #17130f;
-  --brand-ink: #f7f2ea;
-  --brand-muted: #d9cdb7;
-  --brand-accent: #d4a54a;
-  --brand-accent-strong: #e8bc69;
-  --brand-accent-soft: rgba(212, 165, 74, 0.15);
+  --brand-bg: #090d0c;
+  --brand-surface: #111816;
+  --brand-surface-strong: #171f1c;
+  --brand-panel: #121a17;
+  --brand-ink: #ffffff;
+  --brand-muted: #c4d0cc;
+  --brand-accent: #00d4a5;
+  --brand-accent-strong: #48d4c1;
+  --brand-accent-soft: rgba(0, 212, 165, 0.15);
   --brand-border: rgba(255, 255, 255, 0.08);
   background: var(--brand-bg);
   font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
@@ -36,8 +36,32 @@ body {
   outline-offset: 3px;
 }
 
+:where(.cbm-card, article, a.group, button.group):where([class*="rounded-"][class*="border"]) {
+  border-color: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  box-shadow: 0 14px 40px -30px rgba(0, 212, 165, 0.5);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+:where(.cbm-card, article, a.group, button.group):where([class*="rounded-"][class*="border"]):hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 212, 165, 0.4);
+  box-shadow: 0 18px 44px -28px rgba(0, 212, 165, 0.32);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  :where(.cbm-card, article, a.group, button.group):where([class*="rounded-"][class*="border"]) {
+    transition: none;
+  }
+
+  :where(.cbm-card, article, a.group, button.group):where([class*="rounded-"][class*="border"]):hover {
+    transform: none;
   }
 }
