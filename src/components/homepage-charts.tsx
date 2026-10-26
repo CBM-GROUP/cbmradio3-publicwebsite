@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Music2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Music2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -13,9 +13,13 @@ import CBMTeamArtwork from "../../public/cbm_images/take 3.jpeg";
 type LoadState = "loading" | "ready" | "error";
 
 const chartArtwork = [RadioShowArtwork, CBMTeamArtwork];
+const fallbackChartCategories = ["Top charts", "Gospel", "Afrobeats", "Local sounds"];
 
 export default function HomepageCharts() {
   const [chart, setChart] = useState<Chart | null>(null);
+  const [availableCharts, setAvailableCharts] = useState<Chart[]>([]);
+  const [selectedChartType, setSelectedChartType] = useState(fallbackChartCategories[0]);
+  const [discRotation, setDiscRotation] = useState(0);
   const [status, setStatus] = useState<LoadState>("loading");
 
   useEffect(() => {
@@ -24,13 +28,19 @@ export default function HomepageCharts() {
     async function loadChart() {
       try {
         const charts = await chartService.getCharts();
-        const featured = charts.find((item) => item.is_active) ?? charts[0];
+        const activeCharts = charts.filter((item) => item.is_active);
+        const visibleCharts = activeCharts.length > 0 ? activeCharts : charts;
+        const featured = visibleCharts[0];
         const details = featured
           ? await chartService.getChartBySlug(featured.slug)
           : null;
 
         if (!isMounted) return;
+        setAvailableCharts(visibleCharts);
         setChart(details ?? featured ?? null);
+        setSelectedChartType(
+          (details ?? featured)?.chart_type ?? fallbackChartCategories[0],
+        );
         setStatus("ready");
       } catch (error) {
         console.error("Failed to load homepage chart:", error);
@@ -49,7 +59,30 @@ export default function HomepageCharts() {
     .sort((a, b) => a.rank - b.rank)
     .slice(0, 3) ?? [];
   const artwork = chart?.cover_image_url || chart?.cover_image || RadioShowArtwork;
-  const chartCategories = ["Top charts", "Gospel", "Afrobeats", "Local sounds"];
+  const availableChartTypes = Array.from(
+    new Set(availableCharts.map((item) => item.chart_type.trim()).filter(Boolean)),
+  );
+  const chartCategories =
+    availableChartTypes.length > 0 ? availableChartTypes : fallbackChartCategories;
+  const selectedChart =
+    availableCharts.find((item) => item.chart_type === selectedChartType) ?? chart;
+  const selectedArtwork =
+    selectedChart?.cover_image_url || selectedChart?.cover_image || artwork;
+
+  function rotateDisc(direction: -1 | 1) {
+    if (chartCategories.length === 0) return;
+    const currentIndex = Math.max(0, chartCategories.indexOf(selectedChartType));
+    const nextIndex =
+      (currentIndex + direction + chartCategories.length) % chartCategories.length;
+    setSelectedChartType(chartCategories[nextIndex]);
+    setDiscRotation((rotation) => rotation + direction * 360);
+  }
+
+  function selectChartType(type: string) {
+    if (type === selectedChartType) return;
+    setSelectedChartType(type);
+    setDiscRotation((rotation) => rotation + 360);
+  }
 
   return (
     <section id="charts" className="border-y border-white/10 bg-[#101311] text-white">
@@ -72,28 +105,99 @@ export default function HomepageCharts() {
 
       <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top,rgba(0,212,165,0.18),transparent_52%)] px-5 sm:px-8 lg:px-12">
         <nav aria-label="Music chart categories" className="mx-auto flex max-w-7xl gap-7 overflow-x-auto whitespace-nowrap py-4 text-[0.65rem] font-extrabold uppercase tracking-[0.18em] text-white/75 sm:gap-12">
-          {chartCategories.map((category, index) => (
-            <Link key={category} href="/charts" className={index === 0 ? "text-[#00d4a5]" : "transition hover:text-[#00d4a5]"}>
+          {chartCategories.map((category) => (
+            <button
+              key={category}
+              type="button"
+              onClick={() => selectChartType(category)}
+              aria-pressed={selectedChartType === category}
+              className={selectedChartType === category ? "text-[#00d4a5]" : "transition hover:text-[#00d4a5]"}
+            >
               {category}
-            </Link>
+            </button>
           ))}
-          {chart?.chart_type && <Link href="/charts" className="transition hover:text-[#00d4a5]">{chart.chart_type}</Link>}
         </nav>
       </div>
 
       <div className="mx-auto grid max-w-7xl gap-6 px-5 py-8 sm:px-8 sm:py-12 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10 lg:px-12 lg:py-14">
         <aside className="cbm-card rounded-lg border border-white/10 bg-black p-5">
           <p className="mb-4 text-[0.65rem] font-extrabold uppercase tracking-[0.2em] text-[#00d4a5]">Explore charts</p>
-          <div className="space-y-1">
-            {chartCategories.map((category, index) => (
-              <Link key={category} href="/charts" className={"flex min-h-11 items-center justify-between border-b border-white/10 text-sm font-bold transition hover:text-[#00d4a5] " + (index === 0 ? "text-white" : "text-white/65")}>
-                {category}<span aria-hidden="true" className="text-white/35">›</span>
+          <div>
+            <div className="relative mx-auto my-5 aspect-square w-36 sm:w-40">
+                <div
+                  role="img"
+                  aria-label={`Selected chart type: ${selectedChartType}`}
+                  className="absolute inset-0 overflow-hidden rounded-full border-[5px] border-[#1c2522] shadow-[0_0_0_2px_rgba(72,212,193,0.5),0_12px_28px_rgba(0,0,0,0.55)] transition-transform duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+                  style={{ transform: `rotate(${discRotation}deg)` }}
+                >
+                  <Image
+                    src={selectedArtwork}
+                    alt=""
+                    fill
+                    sizes="160px"
+                    unoptimized={typeof selectedArtwork === "string"}
+                    className="object-cover grayscale"
+                  />
+                  <div className="absolute inset-0 rounded-full bg-[repeating-radial-gradient(circle,transparent_0_12px,rgba(0,0,0,0.42)_13px_15px)]" />
+                  <div className="absolute inset-0 grid place-items-center">
+                    <span className="grid size-14 place-items-center rounded-full border-4 border-black/70 bg-[#48d4c1] px-1 text-center text-[0.48rem] font-black uppercase leading-tight tracking-wide text-[#062521] shadow-[0_0_0_3px_rgba(255,255,255,0.18)]">
+                      {selectedChartType}
+                    </span>
+                  </div>
+                </div>
+            </div>
+            <p className="text-center text-xs font-bold text-white/60" aria-live="polite">
+                Spin to choose a chart
+              </p>
+              <div className="mt-3 flex items-center justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => rotateDisc(-1)}
+                  aria-label="Choose previous chart type"
+                  className="grid size-9 place-items-center rounded-full border border-white/15 text-white transition hover:border-[#48d4c1] hover:text-[#48d4c1]"
+                >
+                  <ArrowLeft size={16} aria-hidden="true" />
+                </button>
+                <span className="min-w-0 max-w-36 truncate text-center text-sm font-extrabold text-[#48d4c1]">
+                  {selectedChartType}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => rotateDisc(1)}
+                  aria-label="Choose next chart type"
+                  className="grid size-9 place-items-center rounded-full border border-white/15 text-white transition hover:border-[#48d4c1] hover:text-[#48d4c1]"
+                >
+                  <ArrowRight size={16} aria-hidden="true" />
+                </button>
+              </div>
+              <div className="mt-4 max-h-36 space-y-1 overflow-y-auto">
+                {chartCategories.map((category) => (
+                  <button
+                    key={category}
+                    type="button"
+                    onClick={() => selectChartType(category)}
+                    aria-pressed={selectedChartType === category}
+                    className={`flex min-h-10 w-full items-center justify-between rounded-md px-3 text-left text-sm font-bold transition ${
+                      selectedChartType === category
+                        ? "bg-[#48d4c1]/15 text-[#48d4c1]"
+                        : "text-white/65 hover:bg-white/5 hover:text-white"
+                    }`}
+                  >
+                    {category}<span aria-hidden="true">›</span>
+                  </button>
+                ))}
+              </div>
+              <Link
+                href={
+                  selectedChart
+                    ? `/charts?chart=${encodeURIComponent(selectedChart.slug)}`
+                    : `/charts?type=${encodeURIComponent(selectedChartType)}`
+                }
+                className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[#48d4c1] px-4 text-xs font-extrabold text-[#062521] transition hover:bg-[#6ae3d1]"
+              >
+                Explore {selectedChartType} <ArrowUpRight size={15} aria-hidden="true" />
               </Link>
-            ))}
           </div>
-          <Link href="/charts" className="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-md border border-[#00d4a5]/60 text-xs font-extrabold text-[#00d4a5] transition hover:bg-[#00d4a5] hover:text-black">
-            Browse all charts
-          </Link>
         </aside>
 
         <div className="min-w-0">

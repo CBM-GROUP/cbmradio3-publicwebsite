@@ -44,11 +44,24 @@ export default function ChartsListing() {
         const list = await chartService.getCharts();
         if (!isMounted) return;
         const activeList = list.filter((c) => c.is_active);
-        setCharts(activeList.length ? activeList : list);
+        const displayedCharts = activeList.length ? activeList : list;
+        setCharts(displayedCharts);
 
-        if (list.length > 0) {
-          const firstSlug = (activeList[0] || list[0]).slug;
-          setSelectedSlug(firstSlug);
+        if (displayedCharts.length > 0) {
+          const params = new URLSearchParams(window.location.search);
+          const requestedSlug = params.get("chart");
+          const requestedType = params.get("type");
+          const requestedChart = displayedCharts.find((item) => item.slug === requestedSlug);
+          const requestedTypeChart = displayedCharts.find(
+            (item) => item.chart_type === requestedType,
+          );
+          const initialChart =
+            requestedChart ?? requestedTypeChart ?? displayedCharts[0];
+          setSelectedType(
+            requestedChart?.chart_type ??
+              (requestedTypeChart ? requestedTypeChart.chart_type : "All charts"),
+          );
+          setSelectedSlug(initialChart.slug);
         }
       } catch (err) {
         console.error("Failed to fetch charts:", err);
