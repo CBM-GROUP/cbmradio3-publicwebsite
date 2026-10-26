@@ -148,20 +148,20 @@ export default function HomepageCharts() {
               <Link
                 key={tile.title}
                 href={index === 0 ? "/team" : index === 1 ? "/programs" : "/charts"}
-                className="cbm-card group relative min-h-32 overflow-hidden border border-white/10 bg-black sm:min-h-44"
+                className="cbm-card group flex flex-col items-center rounded-2xl border border-white/10 bg-[#111816]/70 px-2 py-4 text-center sm:px-4 sm:py-5"
               >
-                <Image
-                  src={tile.image}
-                  alt=""
-                  fill
-                  sizes="(max-width: 640px) 30vw, 280px"
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/15 to-black/10" />
-                <div className="absolute inset-x-0 bottom-0 p-3 text-center sm:p-4">
-                  <p className="text-xs font-black uppercase tracking-wide text-white sm:text-base">{tile.title}</p>
-                  <p className="mt-1 hidden text-[0.65rem] text-white/70 sm:block">{tile.detail}</p>
+                <div className="relative aspect-square w-full max-w-36 overflow-hidden rounded-full border border-white/20 bg-black shadow-[0_10px_28px_rgba(0,0,0,0.35)] transition-colors duration-300 group-hover:border-[#48d4c1]/80 sm:max-w-44">
+                  <Image
+                    src={tile.image}
+                    alt=""
+                    fill
+                    sizes="(max-width: 640px) 28vw, 176px"
+                    className="object-cover grayscale transition duration-500 group-hover:scale-105 group-hover:grayscale-0"
+                  />
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/45 via-transparent to-white/5" />
                 </div>
+                <p className="mt-3 text-[0.65rem] font-black uppercase tracking-wide text-white sm:mt-4 sm:text-sm">{tile.title}</p>
+                <p className="mt-1 hidden text-[0.65rem] text-white/65 sm:block">{tile.detail}</p>
               </Link>
             ))}
           </div>
