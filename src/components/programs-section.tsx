@@ -7,6 +7,7 @@ import { ArrowUpRight } from "lucide-react";
 import homeService from "@/services/home.service";
 import type { ProgramSummary } from "@/types/program";
 import DanielPortrait from "../../public/cbm_images/daniel.svg";
+import ArtistSpotlightArtwork from "../../public/cbm_images/artist-spotlight.png";
 import BrianPortrait from "../../public/cbm_images/brian.svg";
 import SamuelPortrait from "../../public/cbm_images/samuel.svg";
 
@@ -48,8 +49,8 @@ export default function ProgramsSection() {
           <article className="cbm-card grid overflow-hidden rounded-xl border border-white/10 bg-[#090d0c]/70 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
             <div className="relative min-h-56 sm:min-h-72">
               <Image
-                src={DanielPortrait}
-                alt="CBM Radio presenter Daniel Moses"
+                src={ArtistSpotlightArtwork}
+                alt="Artist spotlight: get to know your artiste"
                 fill
                 sizes="(max-width: 640px) 100vw, 42vw"
                 className="object-cover"

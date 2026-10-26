@@ -10,6 +10,7 @@ import YouTubeDialog from "@/components/media/youtube-dialog";
 import { getYouTubeMedia, type YouTubeMedia } from "@/lib/youtube";
 import type { EpisodeSummary } from "@/types/program";
 import DanielPortrait from "../../public/cbm_images/daniel.svg";
+import ConversationArtwork from "../../public/cbm_images/cbm-conversation-radio-show.png";
 import BrianPortrait from "../../public/cbm_images/brian.svg";
 import SamuelPortrait from "../../public/cbm_images/samuel.svg";
 import InnocentPortrait from "../../public/cbm_images/innocent2.svg";
@@ -96,8 +97,8 @@ export default function EpisodesSection() {
           <article className="cbm-card grid overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/70 sm:grid-cols-[0.9fr_1.1fr]">
             <div className="relative min-h-56 sm:min-h-72">
               <Image
-                src={DanielPortrait}
-                alt="CBM Radio presenter Daniel Moses"
+                src={ConversationArtwork}
+                alt="Radio show microphone and On Air radio talk show artwork"
                 fill
                 sizes="(max-width: 640px) 100vw, 42vw"
                 className="object-cover"

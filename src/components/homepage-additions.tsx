@@ -34,6 +34,7 @@ import type { ProgramSummary } from "@/types/program";
 import type { SiteContact, SocialLink } from "@/types/site-settings";
 import type { TeamMember } from "@/types/team";
 import Logo from "../../public/cbmradio.png";
+import OnAirStudioImage from "../../public/cbm_images/on-air-studio.png";
 import DanielPortrait from "../../public/cbm_images/daniel.svg";
 import BrianPortrait from "../../public/cbm_images/brian.svg";
 import SamuelPortrait from "../../public/cbm_images/samuel.svg";
@@ -228,8 +229,8 @@ export default function HomepageAdditions() {
             </div>
             <div className="relative min-h-56 overflow-hidden lg:min-h-full">
               <Image
-                src={DanielPortrait}
-                alt="CBM Radio presenter Daniel Moses"
+                src={OnAirStudioImage}
+                alt="Studio microphone beside an ON AIR sign"
                 fill
                 sizes="(max-width: 1024px) 100vw, 240px"
                 className="object-cover"
