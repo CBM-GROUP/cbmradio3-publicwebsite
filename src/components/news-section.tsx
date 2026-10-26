@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { formatPublicationDate, formatTimeAgo } from "@/lib/article-metadata";
 import homeService from "@/services/home.service";
 import type { ArticleSummary } from "@/types/news";
-import InnocentPortrait from "../../public/cbm_images/innocent1.svg";
+import NewsroomStudioSet from "../../public/cbm_images/newsroom-studio-set.png";
 import BrianPortrait from "../../public/cbm_images/brian.svg";
 import SamuelPortrait from "../../public/cbm_images/samuel.svg";
 
@@ -64,8 +64,8 @@ export default function NewsSection() {
         <div className="cbm-card grid overflow-hidden rounded-xl border border-white/10 bg-[#111816] sm:grid-cols-[0.9fr_1.1fr]">
           <div className="relative min-h-52 sm:min-h-64">
             <Image
-              src={InnocentPortrait}
-              alt="CBM Radio presenter Innocent Kato"
+              src={NewsroomStudioSet}
+              alt="CBM Radio newsroom studio set"
               fill
               sizes="(max-width: 640px) 100vw, 42vw"
               className="object-cover"
