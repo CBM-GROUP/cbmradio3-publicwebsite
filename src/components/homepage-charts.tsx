@@ -70,7 +70,7 @@ export default function HomepageCharts() {
         </div>
       </div>
 
-      <div className="border-b border-white/10 bg-black px-5 sm:px-8 lg:px-12">
+      <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top,rgba(0,212,165,0.18),transparent_52%)] px-5 sm:px-8 lg:px-12">
         <nav aria-label="Music chart categories" className="mx-auto flex max-w-7xl gap-7 overflow-x-auto whitespace-nowrap py-4 text-[0.65rem] font-extrabold uppercase tracking-[0.18em] text-white/75 sm:gap-12">
           {chartCategories.map((category, index) => (
             <Link key={category} href="/charts" className={index === 0 ? "text-[#00d4a5]" : "transition hover:text-[#00d4a5]"}>

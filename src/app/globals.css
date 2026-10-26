@@ -36,20 +36,30 @@ body {
   outline-offset: 3px;
 }
 
-:where(.cbm-card, article, a.group, button.group):where([class*="rounded-"][class*="border"]) {
+.cbm-card {
   border-color: rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
-  box-shadow: 0 14px 40px -30px rgba(0, 212, 165, 0.5);
+  box-shadow: 0 18px 42px -32px rgba(0, 212, 165, 0.5);
+  backdrop-filter: blur(4px);
   transition:
     transform 220ms ease,
     border-color 220ms ease,
-    box-shadow 220ms ease;
+    box-shadow 220ms ease,
+    background 220ms ease;
 }
 
-:where(.cbm-card, article, a.group, button.group):where([class*="rounded-"][class*="border"]):hover {
+.cbm-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(0, 212, 165, 0.4);
-  box-shadow: 0 18px 44px -28px rgba(0, 212, 165, 0.32);
+  border-color: rgba(0, 212, 165, 0.45);
+  box-shadow: 0 24px 52px -30px rgba(0, 212, 165, 0.42);
+}
+
+.cbm-card img {
+  transition: transform 260ms ease;
+}
+
+.cbm-card:hover img {
+  transform: scale(1.04);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -57,11 +67,13 @@ body {
     scroll-behavior: auto;
   }
 
-  :where(.cbm-card, article, a.group, button.group):where([class*="rounded-"][class*="border"]) {
+  .cbm-card,
+  .cbm-card img {
     transition: none;
   }
 
-  :where(.cbm-card, article, a.group, button.group):where([class*="rounded-"][class*="border"]):hover {
+  .cbm-card:hover,
+  .cbm-card:hover img {
     transform: none;
   }
 }

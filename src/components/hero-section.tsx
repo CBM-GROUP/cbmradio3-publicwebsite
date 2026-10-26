@@ -59,18 +59,18 @@ export default function HeroSection() {
       />
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(4,10,9,0.48)_0%,rgba(4,10,9,0.28)_55%,rgba(4,10,9,0.12)_100%)]"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(4,10,9,0.78)_0%,rgba(4,10,9,0.52)_55%,rgba(4,10,9,0.18)_100%)]"
       />
 
       <div className="mx-auto flex min-h-[78svh] max-w-[1800px] items-center px-4 py-8 sm:px-8 sm:py-12 lg:px-14 lg:py-16">
-        <div className="w-full max-w-[760px] rounded-lg border border-white/30 bg-[#07100f]/35 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.3)] backdrop-blur-lg sm:p-8 lg:p-10">
-          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#62e6d4]">
+        <div className="cbm-card w-full max-w-[780px] rounded-2xl border border-white/20 border-t-2 border-t-[#48d4c1] bg-[#07100f]/65 p-6 shadow-[0_28px_90px_rgba(0,0,0,0.48)] backdrop-blur-xl sm:p-9 lg:p-11">
+          <p className="inline-flex rounded-full border border-[#48d4c1]/30 bg-[#48d4c1]/10 px-3 py-1.5 text-[0.65rem] font-extrabold uppercase tracking-[0.2em] text-[#62e6d4]">
             {currentSlide.kicker}
           </p>
 
           <h1
             id="home-heading"
-            className="mt-5 text-3xl font-black leading-[1.08] text-white sm:text-4xl lg:text-5xl"
+            className="mt-5 text-3xl font-black leading-[1.08] tracking-[-0.035em] text-white sm:text-4xl lg:text-5xl"
           >
             {currentSlide.title}
           </h1>
@@ -82,7 +82,7 @@ export default function HeroSection() {
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <Link
               href={currentSlide.href}
-              className="inline-flex min-h-12 items-center gap-3 rounded-full bg-[#48d4c1] px-6 text-sm font-extrabold text-[#062521] shadow-[0_8px_24px_rgba(72,212,193,0.16)] transition-colors hover:bg-[#6ae3d1]"
+              className="inline-flex min-h-12 items-center gap-3 rounded-full bg-[#48d4c1] px-6 text-sm font-extrabold text-[#062521] shadow-[0_8px_24px_rgba(72,212,193,0.2)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#6ae3d1] hover:shadow-[0_12px_32px_rgba(72,212,193,0.28)]"
             >
               {currentSlide.buttonLabel}
               <ArrowUpRight size={17} aria-hidden="true" />
@@ -90,7 +90,7 @@ export default function HeroSection() {
 
             <Link
               href={currentSlide.secondaryHref}
-              className="inline-flex min-h-12 items-center gap-2 rounded-full border border-white/40 bg-white/5 px-6 text-sm font-bold text-white transition-colors hover:border-[#48d4c1] hover:bg-white/10 hover:text-[#62e6d4]"
+              className="inline-flex min-h-12 items-center gap-2 rounded-full border border-white/25 bg-black/25 px-6 text-sm font-bold text-white backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#48d4c1]/70 hover:bg-white/10 hover:text-[#62e6d4]"
             >
               <Play size={14} fill="currentColor" aria-hidden="true" />
               {currentSlide.secondaryLabel}
@@ -125,7 +125,7 @@ export default function HeroSection() {
                     current === 0 ? slides.length - 1 : current - 1,
                   )
                 }
-                className="grid h-9 w-9 place-items-center rounded-full border border-white/40 bg-white/5 text-white transition-colors hover:border-[#48d4c1] hover:text-[#62e6d4]"
+                className="grid h-10 w-10 place-items-center rounded-full border border-white/25 bg-black/25 text-white backdrop-blur-sm transition-all hover:border-[#48d4c1]/70 hover:bg-white/10 hover:text-[#62e6d4]"
               >
                 <ArrowLeft size={16} aria-hidden="true" />
               </button>
@@ -133,7 +133,7 @@ export default function HeroSection() {
                 type="button"
                 aria-label="Next slide"
                 onClick={() => setActiveIndex((current) => (current + 1) % slides.length)}
-                className="grid h-9 w-9 place-items-center rounded-full bg-[#48d4c1] text-[#0a0d0c] transition-colors hover:bg-[#6ae3d1]"
+                className="grid h-10 w-10 place-items-center rounded-full bg-[#48d4c1] text-[#0a0d0c] shadow-[0_6px_20px_rgba(72,212,193,0.2)] transition-all hover:scale-105 hover:bg-[#6ae3d1]"
               >
                 <ArrowRight size={16} aria-hidden="true" />
               </button>

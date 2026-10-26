@@ -38,20 +38,20 @@ export default function Home() {
               <div className="mt-7 flex flex-wrap items-center gap-5">
                 <Link
                   href="/team"
-                  className="inline-flex min-h-12 items-center gap-3 rounded-full bg-[#48d4c1] px-6 text-sm font-extrabold text-[#062521] transition-colors hover:bg-[#6ae3d1]"
+                  className="inline-flex min-h-12 items-center gap-3 rounded-full bg-[#48d4c1] px-6 text-sm font-extrabold text-[#062521] shadow-[0_8px_24px_rgba(72,212,193,0.18)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#6ae3d1] hover:shadow-[0_12px_30px_rgba(72,212,193,0.28)]"
                 >
                   Meet the team <ArrowUpRight size={17} aria-hidden="true" />
                 </Link>
                 <Link
                   href="/programs"
-                  className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-white/80 transition-colors hover:text-[#48d4c1]"
+                  className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-white/80 transition-all duration-200 hover:translate-x-1 hover:text-[#48d4c1]"
                 >
                   Explore programs <ArrowUpRight size={16} aria-hidden="true" />
                 </Link>
               </div>
             </div>
 
-            <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-[#090d0c]">
+            <div className="cbm-card relative aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-[#090d0c] shadow-[0_22px_60px_rgba(0,0,0,0.3)]">
               <Image
                 src={CBMTeam}
                 alt="CBM Radio presenters and team members"
