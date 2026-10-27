@@ -1,7 +1,17 @@
 "use client";
 
 import axios from "axios";
-import { Clock } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Clock,
+  Flame,
+  Search,
+  Send,
+  Sparkles,
+  User,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -14,6 +24,7 @@ import {
 import NewsService from "@/services/news-service";
 import type { PaginatedResponse } from "@/types/api";
 import type { ArticleCategory, ArticleListItem } from "@/types/news";
+import NewsroomStudioSet from "../../public/cbm_images/newsroom-studio-set.png";
 import Logo from "../../public/cbmradio.png";
 
 type RequestState = "loading" | "ready" | "error";
@@ -35,8 +46,17 @@ export default function NewsListing() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
   const category = searchParams.get("category")?.trim() || "";
+  const searchQuery = searchParams.get("search")?.trim() || "";
   const page = parsePage(searchParams.get("page"));
+
+  const [searchInput, setSearchInput] = useState(searchQuery);
+  const [prevSearchQuery, setPrevSearchQuery] = useState(searchQuery);
+  if (prevSearchQuery !== searchQuery) {
+    setPrevSearchQuery(searchQuery);
+    setSearchInput(searchQuery);
+  }
 
   const [articles, setArticles] = useState(EMPTY_PAGE);
   const [categories, setCategories] = useState<ArticleCategory[]>([]);
@@ -44,39 +64,43 @@ export default function NewsListing() {
   const [latestArticles, setLatestArticles] = useState<ArticleListItem[]>([]);
   const [articlesState, setArticlesState] = useState<RequestState>("loading");
   const [categoriesState, setCategoriesState] = useState<RequestState>("loading");
-  const [featuredState, setFeaturedState] = useState<RequestState>("loading");
-  const [latestState, setLatestState] = useState<RequestState>("loading");
   const [articleRequestVersion, setArticleRequestVersion] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
-    NewsService.getArticleCategories({ page: 1 }).then((response) => {
-      if (!isMounted) return;
-      setCategories(response.results);
-      setCategoriesState("ready");
-    }).catch(() => {
-      if (isMounted) setCategoriesState("error");
-    });
-    return () => { isMounted = false; };
+    NewsService.getArticleCategories({ page: 1 })
+      .then((response) => {
+        if (!isMounted) return;
+        setCategories(response.results);
+        setCategoriesState("ready");
+      })
+      .catch(() => {
+        if (isMounted) setCategoriesState("error");
+      });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
     let isMounted = true;
-    NewsService.getFeaturedArticles().then((items) => {
-      if (!isMounted) return;
-      setFeaturedArticles(items);
-      setFeaturedState("ready");
-    }).catch(() => {
-      if (isMounted) setFeaturedState("error");
-    });
-    NewsService.getLatestArticles().then((items) => {
-      if (!isMounted) return;
-      setLatestArticles(items);
-      setLatestState("ready");
-    }).catch(() => {
-      if (isMounted) setLatestState("error");
-    });
-    return () => { isMounted = false; };
+    NewsService.getFeaturedArticles()
+      .then((items) => {
+        if (!isMounted) return;
+        setFeaturedArticles(items);
+      })
+      .catch(() => undefined);
+
+    NewsService.getLatestArticles()
+      .then((items) => {
+        if (!isMounted) return;
+        setLatestArticles(items);
+      })
+      .catch(() => undefined);
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -84,44 +108,110 @@ export default function NewsListing() {
     queueMicrotask(() => {
       if (isMounted) setArticlesState("loading");
     });
-    NewsService.getArticles({ page, category: category || undefined }).then((response) => {
-      if (!isMounted) return;
-      setArticles(response);
-      setArticlesState("ready");
-    }).catch((error: unknown) => {
-      if (!isMounted) return;
-      if (page > 1 && axios.isAxiosError(error) && error.response?.status === 404) {
-        setArticles(EMPTY_PAGE);
+
+    NewsService.getArticles({
+      page,
+      category: category || undefined,
+      search: searchQuery || undefined,
+    })
+      .then((response) => {
+        if (!isMounted) return;
+        setArticles(response);
         setArticlesState("ready");
-      } else {
-        setArticlesState("error");
+      })
+      .catch((error: unknown) => {
+        if (!isMounted) return;
+        if (page > 1 && axios.isAxiosError(error) && error.response?.status === 404) {
+          setArticles(EMPTY_PAGE);
+          setArticlesState("ready");
+        } else {
+          setArticlesState("error");
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [articleRequestVersion, category, page, searchQuery]);
+
+  const navigate = useCallback(
+    (updates: { category?: string | null; search?: string | null; page?: number }) => {
+      const nextParams = new URLSearchParams(searchParams.toString());
+
+      if (updates.category !== undefined) {
+        if (updates.category) nextParams.set("category", updates.category);
+        else nextParams.delete("category");
       }
-    });
-    return () => { isMounted = false; };
-  }, [articleRequestVersion, category, page]);
 
-  const navigate = useCallback((updates: { category?: string | null; page?: number }) => {
-    const nextParams = new URLSearchParams(searchParams.toString());
-    if (updates.category !== undefined) {
-      if (updates.category) nextParams.set("category", updates.category);
-      else nextParams.delete("category");
-    }
-    if (updates.page === undefined || updates.page <= 1) nextParams.delete("page");
-    else nextParams.set("page", String(updates.page));
-    const query = nextParams.toString();
-    router.push(query ? pathname + "?" + query : pathname, { scroll: false });
-    window.requestAnimationFrame(() => {
-      document.getElementById("news-content")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  }, [pathname, router, searchParams]);
+      if (updates.search !== undefined) {
+        if (updates.search) nextParams.set("search", updates.search);
+        else nextParams.delete("search");
+      }
 
-  const featured = featuredArticles[0];
-  const latest = latestArticles.find((article) => article.id !== featured?.id);
-  const promotedIds = useMemo(
-    () => new Set([featured?.id, latest?.id].filter((id): id is number => id !== undefined)),
-    [featured?.id, latest?.id],
+      if (updates.page === undefined || updates.page <= 1) nextParams.delete("page");
+      else nextParams.set("page", String(updates.page));
+
+      const query = nextParams.toString();
+      router.push(query ? pathname + "?" + query : pathname, { scroll: false });
+      window.requestAnimationFrame(() => {
+        document.getElementById("news-content")?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
+    },
+    [pathname, router, searchParams],
   );
-  const gridArticles = articles.results.filter((article) => !promotedIds.has(article.id));
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    navigate({ search: searchInput.trim() || null, page: 1 });
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput("");
+    navigate({ search: null, page: 1 });
+  };
+
+  // Wire stories for the top breaking ticker tape
+  const tickerStories = latestArticles.slice(0, 5);
+
+  // Hierarchy for frontpage layout (when not actively searching)
+  const isSearchActive = Boolean(searchQuery);
+
+  const leadArticle = useMemo(() => {
+    if (isSearchActive) return null;
+    return featuredArticles[0] || latestArticles[0] || articles.results[0] || null;
+  }, [featuredArticles, latestArticles, articles.results, isSearchActive]);
+
+  const wireArticles = useMemo(() => {
+    if (isSearchActive || !leadArticle) return [];
+    return latestArticles.filter((item) => item.id !== leadArticle.id).slice(0, 4);
+  }, [latestArticles, leadArticle, isSearchActive]);
+
+  const promotedIds = useMemo(() => {
+    const ids = new Set<number>();
+    if (leadArticle) ids.add(leadArticle.id);
+    wireArticles.forEach((a) => ids.add(a.id));
+    return ids;
+  }, [leadArticle, wireArticles]);
+
+  // Remaining articles for spotlight duo & archive grid
+  const remainingArticles = useMemo(() => {
+    if (isSearchActive) return articles.results;
+    return articles.results.filter((item) => !promotedIds.has(item.id));
+  }, [articles.results, promotedIds, isSearchActive]);
+
+  const spotlightArticles = useMemo(() => {
+    if (isSearchActive) return [];
+    return remainingArticles.slice(0, 2);
+  }, [remainingArticles, isSearchActive]);
+
+  const gridArticles = useMemo(() => {
+    if (isSearchActive) return remainingArticles;
+    return remainingArticles.slice(spotlightArticles.length);
+  }, [remainingArticles, spotlightArticles.length, isSearchActive]);
+
   const invalidCategory = Boolean(
     category &&
       categoriesState === "ready" &&
@@ -129,80 +219,460 @@ export default function NewsListing() {
   );
 
   return (
-    <section id="news-content" className="scroll-mt-24 bg-[#04b093] px-4 pb-20 pt-16 text-black sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-10 text-center sm:text-left">
-          <span className="inline-block rounded-full bg-black px-4 py-1 text-xs font-black uppercase tracking-wider text-[#04b093]">
-            News
-          </span>
-          <h1 className="mt-4 text-4xl font-black uppercase tracking-tight text-black sm:text-5xl">CBM Radio News</h1>
-          <p className="mt-3 max-w-2xl font-bold text-black/80">Read our featured coverage and latest published stories.</p>
+    <section id="news-content" className="scroll-mt-20 bg-[#04b093] text-black">
+      {/* 01 // Interactive Billboard / Omroep Zwart Live Wire Ticker Tape */}
+      <div className="border-b-2 border-black bg-black px-4 py-2.5 text-white sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+          <div className="flex items-center gap-3 overflow-hidden">
+            <span className="flex shrink-0 items-center gap-2 rounded-full bg-[#04b093] px-3 py-1 text-[10px] font-black uppercase tracking-wider text-black">
+              <span className="size-2 animate-ping rounded-full bg-red-600" />
+              <span>THE WIRE</span>
+            </span>
+            <div className="flex items-center gap-6 overflow-x-auto whitespace-nowrap text-xs font-bold text-zinc-300 no-scrollbar">
+              {tickerStories.length > 0 ? (
+                tickerStories.map((story) => (
+                  <Link
+                    key={story.id}
+                    href={`/news/${story.slug}`}
+                    className="inline-flex items-center gap-2 transition hover:text-[#04b093]"
+                  >
+                    <span className="font-mono text-[#04b093]">&bull;</span>
+                    <span className="uppercase">{story.title}</span>
+                  </Link>
+                ))
+              ) : (
+                <span className="text-zinc-500 uppercase tracking-wider">
+                  Broadcasting live news, features and music dispatches across Uganda and beyond.
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="hidden shrink-0 items-center gap-2 border-l border-zinc-800 pl-4 text-[11px] font-bold uppercase tracking-wider text-zinc-400 lg:flex">
+            <span>CBM NEWSROOM</span>
+            <span className="text-[#04b093]">&bull;</span>
+            <span>KAMPALA, UG</span>
+          </div>
         </div>
+      </div>
 
-        <nav aria-label="News categories" className="mb-10 flex flex-wrap gap-2.5">
-          <button
-            type="button"
-            onClick={() => navigate({ category: null, page: 1 })}
-            aria-pressed={!category}
-            className={"rounded-full border-2 border-black px-5 py-2 text-xs font-black uppercase tracking-wider transition-all " + (!category ? "bg-black text-[#04b093] shadow-md" : "bg-black/10 text-black hover:border-black hover:bg-black hover:text-white")}
-          >
-            All
-          </button>
-          {categories.map((item) => (
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        {/* 02 // Editorial Masthead Command Bar: Categories & Search */}
+        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between border-b-2 border-black pb-8">
+          {/* Category Filter Pills (Omroep Zwart Style) */}
+          <nav aria-label="News categories" className="flex flex-wrap items-center gap-2">
             <button
               type="button"
-              key={item.id}
-              onClick={() => navigate({ category: item.slug, page: 1 })}
-              aria-pressed={category === item.slug}
-              className={"rounded-full border-2 border-black px-5 py-2 text-xs font-black uppercase tracking-wider transition-all " + (category === item.slug ? "bg-black text-[#04b093] shadow-md" : "bg-black/10 text-black hover:border-black hover:bg-black hover:text-white")}
+              onClick={() => navigate({ category: null, page: 1 })}
+              aria-pressed={!category}
+              className={
+                "rounded-full border-2 border-black px-5 py-2 text-xs font-black uppercase tracking-wider transition-all " +
+                (!category
+                  ? "bg-black text-[#04b093] shadow-[3px_3px_0px_0px_#000]"
+                  : "bg-black/10 text-black hover:border-black hover:bg-black hover:text-white")
+              }
             >
-              {item.name}
+              All Stories
             </button>
-          ))}
-          {categoriesState === "loading" && <span className="self-center text-xs font-black uppercase tracking-wider text-black/70" aria-live="polite">Loading categories...</span>}
-          {categoriesState === "error" && <span className="self-center text-xs font-black uppercase tracking-wider text-black/70">Categories are unavailable.</span>}
-        </nav>
+            {categories.map((item) => (
+              <button
+                type="button"
+                key={item.id}
+                onClick={() => navigate({ category: item.slug, page: 1 })}
+                aria-pressed={category === item.slug}
+                className={
+                  "rounded-full border-2 border-black px-5 py-2 text-xs font-black uppercase tracking-wider transition-all " +
+                  (category === item.slug
+                    ? "bg-black text-[#04b093] shadow-[3px_3px_0px_0px_#000]"
+                    : "bg-black/10 text-black hover:border-black hover:bg-black hover:text-white")
+                }
+              >
+                {item.name}
+              </button>
+            ))}
+            {categoriesState === "loading" && (
+              <span className="self-center text-xs font-black uppercase tracking-wider text-black/70" aria-live="polite">
+                Loading categories...
+              </span>
+            )}
+          </nav>
 
+          {/* Quick Search Form */}
+          <form onSubmit={handleSearchSubmit} className="relative w-full max-w-sm">
+            <label htmlFor="news-search" className="sr-only">
+              Search news stories
+            </label>
+            <div className="relative">
+              <Search
+                size={16}
+                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#04b093]"
+                aria-hidden="true"
+              />
+              <input
+                id="news-search"
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Search stories, artists, topics..."
+                className="w-full rounded-full border-2 border-black bg-black py-2.5 pl-10 pr-10 text-xs font-bold text-white placeholder-zinc-400 shadow-md transition focus:border-white focus:outline-none"
+              />
+              {searchInput && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-zinc-400 hover:text-white"
+                  aria-label="Clear search query"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
+
+        {/* Warning: Invalid Category */}
         {invalidCategory && (
           <div className="mb-8 rounded-2xl border-2 border-black bg-black p-4 text-xs font-bold uppercase tracking-wider text-[#04b093]">
-            This category is unavailable. <button type="button" onClick={() => navigate({ category: null, page: 1 })} className="underline text-white hover:text-[#04b093]">Show all news</button>
+            This category is unavailable.{" "}
+            <button
+              type="button"
+              onClick={() => navigate({ category: null, page: 1 })}
+              className="text-white underline hover:text-[#04b093]"
+            >
+              Show all stories
+            </button>
           </div>
         )}
 
-        <div className="grid gap-8 lg:grid-cols-2">
-          {featured && <PromotedArticle article={featured} label="Featured" />}
-          {latest && <PromotedArticle article={latest} label="Latest" />}
-        </div>
-        {featuredState === "error" && <p className="mt-4 text-xs font-black uppercase tracking-wider text-black/70">Featured coverage is temporarily unavailable.</p>}
-        {latestState === "error" && <p className="mt-4 text-xs font-black uppercase tracking-wider text-black/70">Latest coverage is temporarily unavailable.</p>}
-        {(featuredState === "loading" || latestState === "loading") && !featured && !latest && <p className="min-h-20 text-xs font-black uppercase tracking-wider text-black/70" aria-live="polite">Loading featured coverage...</p>}
+        {/* Active Search Notification Banner */}
+        {isSearchActive && (
+          <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border-2 border-black bg-black p-5 text-white shadow-xl">
+            <div>
+              <span className="inline-block rounded-full bg-[#04b093] px-3 py-0.5 text-[10px] font-black uppercase tracking-wider text-black">
+                Search Results
+              </span>
+              <h2 className="mt-1 text-xl font-black uppercase tracking-tight text-white">
+                Stories matching &ldquo;{searchQuery}&rdquo;
+              </h2>
+              <p className="mt-1 text-xs font-bold text-zinc-400">
+                {articles.count} {articles.count === 1 ? "story" : "stories"} found
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleClearSearch}
+              className="rounded-full border-2 border-zinc-700 bg-zinc-900 px-4 py-1.5 text-xs font-black uppercase tracking-wider text-zinc-200 transition hover:border-[#04b093] hover:text-[#04b093]"
+            >
+              Reset Search
+            </button>
+          </div>
+        )}
 
-        <div className="mb-6 mt-14 flex items-end justify-between gap-4 border-b-2 border-black pb-4">
+        {/* 03 // Billboard Hot Lead Broadsheet Showcase (When not searching & has lead) */}
+        {!isSearchActive && leadArticle && (
+          <div className="mb-14 grid gap-8 lg:grid-cols-12">
+            {/* Left: Lead Headline Feature (7 Cols) */}
+            <article className="cbm-card group flex flex-col justify-between overflow-hidden rounded-2xl border-2 border-black bg-black text-white shadow-2xl transition-all duration-300 hover:-translate-y-1 lg:col-span-7">
+              <div>
+                <div className="relative aspect-[16/10] w-full overflow-hidden border-b-2 border-black bg-zinc-900">
+                  <Image
+                    src={leadArticle.cover_image || NewsroomStudioSet}
+                    alt={leadArticle.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 60vw"
+                    unoptimized={Boolean(leadArticle.cover_image)}
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent" />
+
+                  {/* Badges Overlay */}
+                  <div className="absolute inset-x-4 top-4 flex items-center justify-between">
+                    {leadArticle.category ? (
+                      <span className="rounded-full border border-black bg-[#04b093] px-3 py-1 text-[11px] font-black uppercase tracking-wider text-black shadow-md">
+                        {leadArticle.category.name}
+                      </span>
+                    ) : (
+                      <span className="rounded-full border border-black bg-[#04b093] px-3 py-1 text-[11px] font-black uppercase tracking-wider text-black shadow-md">
+                        Lead Feature
+                      </span>
+                    )}
+
+                    <span className="flex items-center gap-1.5 rounded-full border border-white/20 bg-black/80 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-white backdrop-blur-sm">
+                      <Sparkles size={11} className="text-[#04b093]" />
+                      <span>SPOTLIGHT</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-6 sm:p-8">
+                  {/* Byline metadata */}
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-bold uppercase tracking-wider text-zinc-400">
+                    {leadArticle.author && (
+                      <span className="flex items-center gap-1.5 text-zinc-200">
+                        <User size={13} className="text-[#04b093]" />
+                        <span>By {leadArticle.author}</span>
+                      </span>
+                    )}
+                    {(leadArticle.published_at || leadArticle.created_at) && (
+                      <span className="flex items-center gap-1.5 text-[#04b093]">
+                        <Clock size={13} />
+                        <span>{formatTimeAgo(leadArticle.published_at || leadArticle.created_at || "")}</span>
+                      </span>
+                    )}
+                  </div>
+
+                  <h2 className="mt-4 text-2xl font-black uppercase leading-tight tracking-tight text-white transition-colors group-hover:text-[#04b093] sm:text-3xl lg:text-4xl">
+                    <Link href={`/news/${leadArticle.slug}`}>{leadArticle.title}</Link>
+                  </h2>
+                </div>
+              </div>
+
+              <div className="border-t border-zinc-800 p-6 sm:p-8 pt-4">
+                <Link
+                  href={`/news/${leadArticle.slug}`}
+                  className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-[#04b093] px-6 py-2.5 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-white hover:text-black"
+                >
+                  <span>Read Full Story</span>
+                  <ArrowRight size={14} />
+                </Link>
+              </div>
+            </article>
+
+            {/* Right: The Wire Top Stories (5 Cols) */}
+            <aside className="flex flex-col justify-between rounded-2xl border-2 border-black bg-black p-6 text-white shadow-2xl sm:p-8 lg:col-span-5">
+              <div>
+                <div className="flex items-center justify-between border-b-2 border-zinc-800 pb-4">
+                  <span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-[#04b093]">
+                    <Flame size={15} />
+                    <span>THE WIRE</span>
+                  </span>
+                  <span className="text-[11px] font-black uppercase tracking-wider text-zinc-400">
+                    TOP DISPATCHES
+                  </span>
+                </div>
+
+                <div className="divide-y divide-zinc-800/80">
+                  {wireArticles.length > 0 ? (
+                    wireArticles.map((story, index) => (
+                      <Link
+                        key={story.id}
+                        href={`/news/${story.slug}`}
+                        className="group/wire flex items-start gap-4 py-4 transition-colors hover:bg-zinc-950/60"
+                      >
+                        <span className="shrink-0 font-mono text-2xl font-black text-[#04b093]">
+                          0{index + 1}
+                        </span>
+                        <div className="flex-1">
+                          {story.category && (
+                            <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
+                              {story.category.name}
+                            </span>
+                          )}
+                          <h3 className="mt-1 line-clamp-2 text-sm font-black uppercase leading-snug tracking-tight text-white transition-colors group-hover/wire:text-[#04b093]">
+                            {story.title}
+                          </h3>
+                          <p className="mt-1.5 flex items-center gap-1.5 text-[11px] font-bold text-zinc-400">
+                            <Clock size={11} className="text-[#04b093]" />
+                            <span>
+                              {formatTimeAgo(story.published_at || story.created_at || "")}
+                            </span>
+                          </p>
+                        </div>
+                        <ArrowUpRight
+                          size={16}
+                          className="shrink-0 text-zinc-600 transition-colors group-hover/wire:text-[#04b093]"
+                        />
+                      </Link>
+                    ))
+                  ) : (
+                    <div className="py-8 text-center text-xs font-bold text-zinc-500">
+                      Additional wire dispatches will be displayed here as stories are published.
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-6 border-t border-zinc-800 pt-4">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                  Updated around the clock from the CBM Radio newsroom.
+                </p>
+              </div>
+            </aside>
+          </div>
+        )}
+
+        {/* 04 // Secondary Spotlight Duo (If available) */}
+        {!isSearchActive && spotlightArticles.length > 0 && (
+          <div className="mb-14">
+            <div className="mb-6 flex items-center justify-between border-b-2 border-black pb-3">
+              <div className="flex items-center gap-2">
+                <span className="inline-block rounded-full bg-black px-3 py-1 text-[11px] font-black uppercase tracking-wider text-[#04b093]">
+                  Spotlight Features
+                </span>
+                <span className="text-xs font-black uppercase tracking-wider text-black">
+                  In-Depth Reporting
+                </span>
+              </div>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              {spotlightArticles.map((article) => (
+                <SpotlightCard key={article.id} article={article} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 05 // The Archive Feed Header */}
+        <div className="mb-6 mt-8 flex flex-wrap items-end justify-between gap-4 border-b-2 border-black pb-4">
           <div>
-            <span className="inline-block rounded-full bg-black px-3 py-1 text-[11px] font-black uppercase tracking-wider text-[#04b093]">More News</span>
-            <h2 className="mt-2 text-2xl font-black uppercase tracking-tight text-black">{category && !invalidCategory ? categories.find((item) => item.slug === category)?.name || "News" : "All Articles"}</h2>
+            <span className="inline-block rounded-full bg-black px-3 py-1 text-[11px] font-black uppercase tracking-wider text-[#04b093]">
+              {category && !invalidCategory
+                ? categories.find((c) => c.slug === category)?.name || "Category"
+                : "News Archive"}
+            </span>
+            <h2 className="mt-2 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl">
+              {category && !invalidCategory
+                ? categories.find((c) => c.slug === category)?.name || "Category Stories"
+                : "All Dispatches & Features"}
+            </h2>
           </div>
-          {articles.count > 0 && <p className="text-xs font-black uppercase tracking-wider text-black/80">{articles.count} article{articles.count === 1 ? "" : "s"}</p>}
+          {articles.count > 0 && (
+            <p className="text-xs font-black uppercase tracking-wider text-black/80">
+              {articles.count} total {articles.count === 1 ? "story" : "stories"}
+            </p>
+          )}
         </div>
 
-        {articlesState === "loading" && <p className="min-h-64 text-center font-black uppercase tracking-wider text-black/70" aria-live="polite">Loading articles...</p>}
-        {articlesState === "error" && (
-          <div className="min-h-64 text-center font-bold text-black"><p className="text-lg">Articles are temporarily unavailable.</p><button type="button" onClick={() => setArticleRequestVersion((value) => value + 1)} className="mt-4 rounded-full border-2 border-black bg-black px-6 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black">Retry</button></div>
-        )}
-        {articlesState === "ready" && articles.results.length === 0 && (
-          <div className="min-h-64 text-center font-bold text-black">
-            <p>{page > 1 ? "No articles are available on this page." : category ? "No articles are available in this category." : "No news articles are available yet."}</p>
-            {page > 1 && <button type="button" onClick={() => navigate({ page: 1 })} className="mt-4 font-black uppercase text-black underline underline-offset-4">Return to page 1</button>}
+        {/* Loading State */}
+        {articlesState === "loading" && (
+          <div className="flex min-h-64 items-center justify-center rounded-2xl border-2 border-black bg-black p-12 text-center">
+            <p className="text-xs font-black uppercase tracking-wider text-[#04b093]" aria-live="polite">
+              Loading newsroom articles...
+            </p>
           </div>
         )}
-        {articlesState === "ready" && articles.results.length > 0 && gridArticles.length === 0 && <p className="min-h-32 text-center font-bold text-black/80">All articles on this page are already highlighted above.</p>}
-        {gridArticles.length > 0 && <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{gridArticles.map((article) => <ArticleCard key={article.id} article={article} />)}</div>}
 
+        {/* Error State */}
+        {articlesState === "error" && (
+          <div className="min-h-64 rounded-2xl border-2 border-black bg-black p-12 text-center font-bold text-white shadow-2xl" role="alert">
+            <p className="text-lg">Articles are temporarily unavailable.</p>
+            <button
+              type="button"
+              onClick={() => setArticleRequestVersion((value) => value + 1)}
+              className="mt-4 rounded-full border-2 border-black bg-[#04b093] px-6 py-2.5 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-white hover:text-black"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {articlesState === "ready" && articles.results.length === 0 && (
+          <div className="min-h-64 rounded-2xl border-2 border-black bg-black p-12 text-center font-bold text-white shadow-2xl">
+            <p className="text-lg">
+              {page > 1
+                ? "No articles are available on this page."
+                : searchQuery
+                  ? `No stories match "${searchQuery}".`
+                  : category
+                    ? "No stories found in this category."
+                    : "No news articles are available yet."}
+            </p>
+            <div className="mt-4 flex flex-wrap justify-center gap-3">
+              {page > 1 && (
+                <button
+                  type="button"
+                  onClick={() => navigate({ page: 1 })}
+                  className="rounded-full border-2 border-black bg-[#04b093] px-5 py-2 text-xs font-black uppercase tracking-wider text-black hover:bg-white"
+                >
+                  Return to Page 1
+                </button>
+              )}
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="rounded-full border-2 border-black bg-[#04b093] px-5 py-2 text-xs font-black uppercase tracking-wider text-black hover:bg-white"
+                >
+                  Clear Search
+                </button>
+              )}
+              {category && (
+                <button
+                  type="button"
+                  onClick={() => navigate({ category: null, page: 1 })}
+                  className="rounded-full border-2 border-zinc-700 bg-zinc-900 px-5 py-2 text-xs font-black uppercase tracking-wider text-zinc-200 hover:border-[#04b093] hover:text-[#04b093]"
+                >
+                  Show All Stories
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Already Highlighted Warning */}
+        {articlesState === "ready" && articles.results.length > 0 && gridArticles.length === 0 && (
+          <div className="my-8 rounded-2xl border-2 border-black bg-black p-8 text-center text-xs font-bold uppercase tracking-wider text-[#04b093]">
+            All available stories on this page are featured above in the Lead and Wire spotlights.
+          </div>
+        )}
+
+        {/* Grid Stories (3 Columns) */}
+        {gridArticles.length > 0 && (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {gridArticles.map((article) => (
+              <ArticleCard key={article.id} article={article} />
+            ))}
+          </div>
+        )}
+
+        {/* 06 // Newsroom Tip-Off / Story Pitch Banner (Billboard Style) */}
+        <section className="mt-16 overflow-hidden rounded-2xl border-2 border-black bg-black p-8 text-white shadow-2xl sm:p-10">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-2xl">
+              <span className="inline-block rounded-full bg-[#04b093] px-3 py-1 text-[10px] font-black uppercase tracking-wider text-black">
+                CBM NEWS DESK &bull; TIPS
+              </span>
+              <h3 className="mt-3 text-2xl font-black uppercase tracking-tight text-white sm:text-3xl">
+                Have A Gospel Music Scoop Or Community Story?
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-300">
+                Connect with the CBM Radio editorial desk. We welcome song releases, ministry milestones, testimonies, and cultural dispatches from across Uganda and beyond.
+              </p>
+            </div>
+            <Link
+              href="/contact"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full border-2 border-black bg-[#04b093] px-6 py-3 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-white hover:text-black shadow-lg"
+            >
+              <span>Submit Story Tip</span>
+              <Send size={14} />
+            </Link>
+          </div>
+        </section>
+
+        {/* 07 // Pagination Navigation */}
         {articlesState === "ready" && (articles.previous || articles.next) && (
           <nav aria-label="Article pagination" className="mt-12 flex items-center justify-center gap-4">
-            <button type="button" disabled={!articles.previous} onClick={() => navigate({ page: Math.max(1, page - 1) })} className="rounded-full border-2 border-black bg-black px-5 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40">Previous</button>
-            <span className="text-xs font-black uppercase tracking-wider text-black" aria-current="page">Page {page}</span>
-            <button type="button" disabled={!articles.next} onClick={() => navigate({ page: page + 1 })} className="rounded-full border-2 border-black bg-black px-5 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40">Next</button>
+            <button
+              type="button"
+              disabled={!articles.previous}
+              onClick={() => navigate({ page: Math.max(1, page - 1) })}
+              className="rounded-full border-2 border-black bg-black px-5 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              &larr; Previous
+            </button>
+            <span className="text-xs font-black uppercase tracking-wider text-black" aria-current="page">
+              Page {page}
+            </span>
+            <button
+              type="button"
+              disabled={!articles.next}
+              onClick={() => navigate({ page: page + 1 })}
+              className="rounded-full border-2 border-black bg-black px-5 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Next &rarr;
+            </button>
           </nav>
         )}
       </div>
@@ -210,62 +680,112 @@ export default function NewsListing() {
   );
 }
 
-function PromotedArticle({ article, label }: { article: ArticleListItem; label: "Featured" | "Latest" }) {
+function SpotlightCard({ article }: { article: ArticleListItem }) {
+  const uploadTimestamp = article.published_at || article.created_at;
+
   return (
-    <Link href={"/news/" + article.slug} className="cbm-card group grid overflow-hidden rounded-2xl border-2 border-black bg-black text-white shadow-2xl sm:grid-cols-2">
-      <ArticleImage article={article} />
-      <ArticleMetadata article={article} label={label} />
+    <Link
+      href={`/news/${article.slug}`}
+      className="cbm-card group grid overflow-hidden rounded-2xl border-2 border-black bg-black text-white shadow-2xl transition-all duration-300 hover:-translate-y-1 sm:grid-cols-12"
+    >
+      <div className="relative aspect-video sm:aspect-auto sm:col-span-5 bg-zinc-900 border-b-2 sm:border-b-0 sm:border-r-2 border-black">
+        <Image
+          src={article.cover_image || NewsroomStudioSet}
+          alt={article.title}
+          fill
+          sizes="(max-width: 768px) 100vw, 30vw"
+          unoptimized={Boolean(article.cover_image)}
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        {article.category && (
+          <div className="absolute left-3 top-3 sm:hidden">
+            <span className="rounded-full bg-[#04b093] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-black">
+              {article.category.name}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-col justify-between p-6 sm:col-span-7">
+        <div>
+          {article.category && (
+            <span className="hidden sm:inline-block rounded-full bg-[#04b093] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-black">
+              {article.category.name}
+            </span>
+          )}
+          <h3 className="mt-2 text-lg font-black uppercase leading-tight tracking-tight text-white transition-colors group-hover:text-[#04b093] line-clamp-3">
+            {article.title}
+          </h3>
+        </div>
+
+        <div className="mt-4 pt-3 border-t border-zinc-800 text-xs text-zinc-400">
+          {article.author && <p className="font-bold text-zinc-300">By {article.author}</p>}
+          {uploadTimestamp && (
+            <p className="mt-1 flex items-center gap-1.5 font-bold text-[#04b093] text-[11px]">
+              <Clock size={12} />
+              <span>{formatTimeAgo(uploadTimestamp)}</span>
+            </p>
+          )}
+        </div>
+      </div>
     </Link>
   );
 }
 
 function ArticleCard({ article }: { article: ArticleListItem }) {
-  return (
-    <Link href={"/news/" + article.slug} className="cbm-card group flex flex-col overflow-hidden rounded-2xl border-2 border-black bg-black text-white shadow-xl">
-      <ArticleImage article={article} />
-      <ArticleMetadata article={article} />
-    </Link>
-  );
-}
-
-function ArticleImage({ article }: { article: ArticleListItem }) {
-  return <div className="relative aspect-video border-b-2 border-black/80 bg-zinc-900"><Image src={article.cover_image || Logo} alt={article.title} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" unoptimized={Boolean(article.cover_image)} className="object-cover" /></div>;
-}
-
-function ArticleMetadata({ article, label }: { article: ArticleListItem; label?: string }) {
   const uploadTimestamp = article.published_at || article.created_at;
 
   return (
-    <div className="flex flex-1 flex-col justify-between p-6">
+    <Link
+      href={`/news/${article.slug}`}
+      className="cbm-card group flex flex-col justify-between overflow-hidden rounded-2xl border-2 border-black bg-black text-white shadow-xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
+    >
       <div>
-        {label ? (
-          <span className="inline-block rounded-full bg-[#04b093] px-3 py-1 text-[11px] font-black uppercase tracking-wider text-black">{label}</span>
-        ) : article.category ? (
-          <span className="inline-block rounded-full bg-[#04b093] px-3 py-1 text-[11px] font-black uppercase tracking-wider text-black">{article.category.name}</span>
-        ) : (
-          <span className="inline-block rounded-full bg-zinc-800 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-zinc-300">News</span>
-        )}
-        <h3 className="mt-3 text-lg font-black uppercase leading-tight tracking-tight text-white group-hover:text-[#04b093] transition-colors line-clamp-2">
-          {article.title}
-        </h3>
+        <div className="relative aspect-video border-b-2 border-black bg-zinc-900">
+          <Image
+            src={article.cover_image || Logo}
+            alt={article.title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            unoptimized={Boolean(article.cover_image)}
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          {article.category && (
+            <div className="absolute left-3 top-3">
+              <span className="rounded-full bg-[#04b093] px-3 py-1 text-[10px] font-black uppercase tracking-wider text-black shadow-md">
+                {article.category.name}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="p-6">
+          <h3 className="text-lg font-black uppercase leading-snug tracking-tight text-white transition-colors group-hover:text-[#04b093] line-clamp-2">
+            {article.title}
+          </h3>
+        </div>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-zinc-800">
-        {article.author && <p className="text-xs font-bold uppercase tracking-wider text-zinc-400">By {article.author}</p>}
-        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+      <div className="border-t border-zinc-800 p-6 pt-3">
+        {article.author && (
+          <p className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+            By {article.author}
+          </p>
+        )}
+        <div className="mt-2 flex items-center justify-between text-xs">
           {uploadTimestamp && (
             <span className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-[#04b093]">
-              <Clock size={13} aria-hidden="true" />
+              <Clock size={12} aria-hidden="true" />
               <span>{formatTimeAgo(uploadTimestamp)}</span>
             </span>
           )}
           {article.published_at && (
-            <span className="text-zinc-500 text-[11px] font-semibold">
-              • {formatPublicationDate(article.published_at)}
+            <span className="text-[11px] font-semibold text-zinc-500">
+              {formatPublicationDate(article.published_at)}
             </span>
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
