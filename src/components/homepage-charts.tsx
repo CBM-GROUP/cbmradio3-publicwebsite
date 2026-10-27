@@ -272,14 +272,14 @@ export default function HomepageCharts() {
             </div>
 
             {/* Inset chart artwork stamp on bottom right */}
-            <div className="absolute bottom-4 right-4 h-24 w-20 overflow-hidden rounded-lg border-2 border-white shadow-2xl sm:bottom-7 sm:right-7 sm:h-36 sm:w-28 sm:border-4">
+            <div className="absolute bottom-4 right-4 h-24 w-28 overflow-hidden rounded-lg border-2 border-white shadow-2xl sm:bottom-7 sm:right-7 sm:h-36 sm:w-44 sm:border-4 bg-black">
               <Image
                 src={chartHeroArtwork}
                 alt={chart?.title ? `${chart.title} artwork` : "Chart artwork"}
                 fill
-                sizes="120px"
+                sizes="180px"
                 unoptimized={typeof chartHeroArtwork === "string"}
-                className="object-cover"
+                className="object-contain object-center"
               />
             </div>
 
@@ -305,11 +305,6 @@ export default function HomepageCharts() {
                     Current #1 Anthem
                   </span>
                 </div>
-                {chart?.edition_date && (
-                  <span className="text-[0.68rem] font-bold text-white/50 uppercase tracking-wider">
-                    Week of {chart.edition_date}
-                  </span>
-                )}
               </div>
 
               {/* Artwork Showcase with Vinyl Sleeve Effect */}

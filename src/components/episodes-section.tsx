@@ -88,32 +88,32 @@ export default function EpisodesSection() {
   return (
     <section
       id="episodes"
-      className="relative scroll-mt-20 border-b-2 border-white/20 bg-black px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
+      className="relative scroll-mt-20 border-b-2 border-black bg-[#04b093] px-5 py-16 text-black sm:px-8 sm:py-20 lg:px-12 lg:py-24"
     >
       <div className="mx-auto max-w-7xl">
         
         {/* Section Header: Billboard + Zwart Aesthetic */}
-        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-white/20 pb-6">
+        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-black pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
+              <span className="bg-black px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
                 THE HOT CRATE
               </span>
-              <span className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
+              <span className="text-xs font-black uppercase tracking-[0.22em] text-black">
                 ON-DEMAND EPISODES & SERIES
               </span>
             </div>
-            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight sm:text-4xl lg:text-5xl">
+            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">
               Must-Listen Episodes & Podcast Releases
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-300">
+            <p className="mt-2 max-w-2xl text-sm font-semibold leading-relaxed text-black/85">
               Browse our curated releases across life, culture, faith, and entertainment. Stream every release directly in the master player.
             </p>
           </div>
 
           <Link
             href="/episodes"
-            className="inline-flex items-center gap-2 border-2 border-white bg-transparent px-5 py-2.5 text-xs font-black uppercase tracking-wider text-white transition hover:bg-white hover:text-black w-fit"
+            className="inline-flex items-center gap-2 border-2 border-black bg-black px-5 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black w-fit shadow-xl"
           >
             <span>All Catalog ({episodes.length})</span>
             <ArrowUpRight size={15} />
@@ -121,7 +121,7 @@ export default function EpisodesSection() {
         </div>
 
         {/* Billboard Search & Filter Bar */}
-        <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between border-b border-white/10 pb-5">
+        <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between border-b border-black/20 pb-5">
           
           {/* Live Search Input */}
           <div className="relative w-full max-w-md">
@@ -134,7 +134,7 @@ export default function EpisodesSection() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search episodes, series, or topics..."
-              className="w-full border-2 border-white/20 bg-[#0d0d0d] py-2.5 pl-10 pr-9 text-xs font-bold text-white placeholder-zinc-500 focus:border-[#04b093] focus:outline-none"
+              className="w-full border-2 border-black bg-black py-2.5 pl-10 pr-9 text-xs font-bold text-white placeholder-zinc-400 focus:outline-none"
             />
             {searchQuery && (
               <button
@@ -150,11 +150,11 @@ export default function EpisodesSection() {
 
           {/* View Mode Toggle */}
           <div className="flex items-center gap-3">
-            <span className="text-[0.68rem] font-bold uppercase tracking-wider text-zinc-400">
+            <span className="text-[0.68rem] font-black uppercase tracking-wider text-black">
               {filteredEpisodes.length} {filteredEpisodes.length === 1 ? "release" : "releases"} found
             </span>
 
-            <div className="flex items-center border-2 border-white/20 bg-[#0d0d0d]">
+            <div className="flex items-center border-2 border-black bg-black">
               <button
                 type="button"
                 onClick={() => setViewMode("grid")}
@@ -187,7 +187,7 @@ export default function EpisodesSection() {
         {/* Series Filter Chips */}
         {programs.length > 0 && (
           <div className="mb-8 flex flex-wrap items-center gap-2">
-            <span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-zinc-400 mr-2">
+            <span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-black mr-2">
               <Filter size={12} />
               <span>Series:</span>
             </span>
@@ -196,8 +196,8 @@ export default function EpisodesSection() {
               onClick={() => setSelectedProgramId("all")}
               className={`px-3.5 py-1.5 text-xs font-black uppercase tracking-wider transition ${
                 selectedProgramId === "all"
-                  ? "bg-[#04b093] text-black"
-                  : "border border-white/20 bg-[#0d0d0d] text-zinc-400 hover:border-white hover:text-white"
+                  ? "bg-black text-[#04b093] shadow-md"
+                  : "border-2 border-black bg-transparent text-black hover:bg-black hover:text-white"
               }`}
             >
               All Series ({episodes.length})
@@ -211,8 +211,8 @@ export default function EpisodesSection() {
                   onClick={() => setSelectedProgramId(prog.id)}
                   className={`px-3.5 py-1.5 text-xs font-black uppercase tracking-wider transition ${
                     selectedProgramId === prog.id
-                      ? "bg-[#04b093] text-black"
-                      : "border border-white/20 bg-[#0d0d0d] text-zinc-400 hover:border-white hover:text-white"
+                      ? "bg-black text-[#04b093] shadow-md"
+                      : "border-2 border-black bg-transparent text-black hover:bg-black hover:text-white"
                   }`}
                 >
                   {prog.title} {count > 0 && `(${count})`}
@@ -224,14 +224,14 @@ export default function EpisodesSection() {
 
         {/* Loading State */}
         {loading && (
-          <div className="border-2 border-white/20 bg-[#0d0d0d] p-16 text-center text-zinc-400">
+          <div className="border-2 border-black bg-black p-16 text-center text-white">
             <p className="text-sm font-black uppercase tracking-wider">RETRIEVING CRATE DROPS...</p>
           </div>
         )}
 
         {/* Empty State */}
         {!loading && displayList.length === 0 && (
-          <div className="border-2 border-white/20 bg-[#0d0d0d] p-16 text-center text-zinc-400">
+          <div className="border-2 border-black bg-black p-16 text-center text-white">
             <p className="text-sm">No episodes match your search or filter.</p>
             <button
               type="button"
@@ -239,7 +239,7 @@ export default function EpisodesSection() {
                 setSelectedProgramId("all");
                 setSearchQuery("");
               }}
-              className="mt-4 text-xs font-bold text-[#04b093] underline"
+              className="mt-4 text-xs font-black text-[#04b093] underline uppercase"
             >
               Reset all filters
             </button>
@@ -255,7 +255,7 @@ export default function EpisodesSection() {
               return (
                 <article
                   key={episode.id}
-                  className="group flex flex-col justify-between border-2 border-white/15 bg-[#0d0d0d] p-5 transition-all duration-200 hover:border-[#04b093]"
+                  className="group flex flex-col justify-between border-2 border-black bg-black p-5 text-white transition-all duration-200 hover:border-white shadow-2xl"
                 >
                   <div>
                     {/* Media Thumbnail */}
@@ -366,10 +366,10 @@ export default function EpisodesSection() {
 
         {/* VIEW MODE 2: BILLBOARD CHART LIST VIEW */}
         {!loading && displayList.length > 0 && viewMode === "list" && (
-          <div className="border-2 border-white/20 bg-[#0d0d0d] divide-y divide-white/10">
+          <div className="border-2 border-black bg-black text-white divide-y divide-white/10 shadow-2xl">
             
             {/* Table Header */}
-            <div className="hidden sm:grid grid-cols-12 gap-4 p-4 text-[0.68rem] font-black uppercase tracking-wider text-zinc-400 border-b border-white/15 bg-black/40">
+            <div className="hidden sm:grid grid-cols-12 gap-4 p-4 text-[0.68rem] font-black uppercase tracking-wider text-zinc-400 border-b border-white/15 bg-black">
               <span className="col-span-1">RANK</span>
               <span className="col-span-6">EPISODE / SHOW</span>
               <span className="col-span-2">RELEASE</span>

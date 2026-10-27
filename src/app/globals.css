@@ -2,16 +2,16 @@
 
 :root {
   color-scheme: dark;
-  --brand-bg: #090d0c;
-  --brand-surface: #111816;
-  --brand-surface-strong: #171f1c;
-  --brand-panel: #121a17;
-  --brand-ink: #ffffff;
-  --brand-muted: #c4d0cc;
+  --brand-bg: #04b093;
+  --brand-surface: #03957d;
+  --brand-surface-strong: #027a66;
+  --brand-panel: #038a73;
+  --brand-ink: #000000;
+  --brand-muted: #11362e;
   --brand-accent: #04b093;
   --brand-accent-strong: #05c6a5;
   --brand-accent-soft: rgba(4, 176, 147, 0.15);
-  --brand-border: rgba(255, 255, 255, 0.08);
+  --brand-border: rgba(0, 0, 0, 0.15);
   background: var(--brand-bg);
   font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
 }

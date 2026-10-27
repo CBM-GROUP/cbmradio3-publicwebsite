@@ -80,32 +80,32 @@ export default function Gallery() {
   return (
     <section
       id="gallery"
-      className="relative scroll-mt-20 border-b-2 border-white/20 bg-black px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
+      className="relative scroll-mt-20 border-b-2 border-black bg-[#04b093] px-5 py-16 text-black sm:px-8 sm:py-20 lg:px-12 lg:py-24"
     >
       <div className="mx-auto max-w-7xl">
         
         {/* Section Header: Zwart Visual Studio Archive */}
-        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-white/20 pb-6">
+        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-black pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
+              <span className="bg-black px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
                 DARKROOM
               </span>
-              <span className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
+              <span className="text-xs font-black uppercase tracking-[0.22em] text-black/75">
                 BEHIND THE SCENES
               </span>
             </div>
-            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight sm:text-4xl lg:text-5xl">
+            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">
               Inside the Studio Booth & Archives
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-300">
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-black/80 font-medium">
               Documentary photography capturing host conversations, guest recordings, and the authentic energy of CBM Radio.
             </p>
           </div>
 
           <Link
             href="/gallery"
-            className="inline-flex items-center gap-2 border-2 border-white bg-transparent px-5 py-2.5 text-xs font-black uppercase tracking-wider text-white transition hover:bg-white hover:text-black w-fit"
+            className="inline-flex items-center gap-2 border-2 border-black bg-black px-5 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black w-fit shadow-md"
           >
             <span>Full Gallery</span>
             <ArrowUpRight size={15} />
@@ -126,7 +126,7 @@ export default function Gallery() {
               }}
               role="button"
               tabIndex={0}
-              className="group relative cursor-pointer border-2 border-white/15 bg-[#0d0d0d] overflow-hidden transition-all duration-300 hover:border-[#04b093]"
+              className="group relative cursor-pointer border-2 border-black bg-black overflow-hidden shadow-xl transition-all duration-300 hover:scale-[1.02] hover:border-white"
             >
               <div className="relative aspect-square w-full overflow-hidden bg-black">
                 <Image

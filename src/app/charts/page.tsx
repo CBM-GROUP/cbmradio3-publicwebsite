@@ -7,7 +7,7 @@ import ChartsListing from "@/components/charts-listing";
 
 function ChartsLoadingState() {
   return (
-    <div className="min-h-[70vh] bg-[#0b100f] pt-32 text-center text-white/70">
+    <div className="min-h-[70vh] bg-[#04b093] pt-32 text-center text-black font-bold">
       Loading music charts...
     </div>
   );
@@ -23,7 +23,7 @@ export default function ChartsPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-[#0b100f]">
+      <main className="min-h-screen bg-[#04b093] text-black">
         <PageHero
           pageKey="charts"
           fallbackTitle="Music Charts"

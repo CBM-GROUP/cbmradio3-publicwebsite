@@ -47,10 +47,10 @@ export default function HeroSection() {
   const activeEpisode = episodes[selectedIndex] || null;
 
   return (
-    <section className="relative border-b-2 border-white/20 bg-black text-white">
+    <section className="relative border-b-2 border-black bg-[#04b093] text-black">
       {/* Billboard Editorial Marquee News Wire */}
-      <div className="border-b border-white/15 bg-[#0a0a0a] py-2.5 overflow-hidden">
-        <div className="animate-marquee flex items-center gap-8 whitespace-nowrap text-[0.68rem] font-black uppercase tracking-[0.25em] text-zinc-400">
+      <div className="border-b-2 border-black bg-black py-2.5 overflow-hidden text-white">
+        <div className="animate-marquee flex items-center gap-8 whitespace-nowrap text-[0.68rem] font-black uppercase tracking-[0.25em]">
           <span className="flex items-center gap-2 text-[#04b093]">
             <Flame size={13} className="fill-[#04b093]" />
             HOT PODCAST DROPS
@@ -58,9 +58,9 @@ export default function HeroSection() {
           <span className="text-white/30">•</span>
           <span>ORIGINAL EAST AFRICAN TALK & AUDIO SERIES</span>
           <span className="text-white/30">•</span>
-          <span className="text-white font-black">STREAM ON DEMAND</span>
+          <span className="text-[#04b093] font-black">STREAM ON DEMAND</span>
           <span className="text-white/30">•</span>
-          <span className="text-[#04b093]">CBM RADIO MEDIA NETWORK</span>
+          <span>CBM RADIO MEDIA NETWORK</span>
           <span className="text-white/30">•</span>
           <span>FAITH · CULTURE · CONVERSATIONS · VOICES</span>
           <span className="text-white/30">•</span>
@@ -71,9 +71,9 @@ export default function HeroSection() {
           <span className="text-white/30">•</span>
           <span>ORIGINAL EAST AFRICAN TALK & AUDIO SERIES</span>
           <span className="text-white/30">•</span>
-          <span className="text-white font-black">STREAM ON DEMAND</span>
+          <span className="text-[#04b093] font-black">STREAM ON DEMAND</span>
           <span className="text-white/30">•</span>
-          <span className="text-[#04b093]">CBM RADIO MEDIA NETWORK</span>
+          <span>CBM RADIO MEDIA NETWORK</span>
           <span className="text-white/30">•</span>
           <span>FAITH · CULTURE · CONVERSATIONS · VOICES</span>
           <span className="text-white/30">•</span>
@@ -89,23 +89,22 @@ export default function HeroSection() {
             <div>
               {/* Category Kicker */}
               <div className="flex items-center gap-3">
-                <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
+                <span className="bg-black px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
                   COVER STORY
                 </span>
-                <span className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-[#04b093] flex items-center gap-1.5">
+                <span className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-black flex items-center gap-1.5">
                   <Sparkles size={12} />
                   <span>CBM ORIGINAL BROADCAST</span>
                 </span>
               </div>
 
               {/* Massive Billboard Headline */}
-              <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.98] text-white">
-                Moving African Sound, Culture & Faith{" "}
-                <span className="text-[#04b093]">Forward.</span>
+              <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.98] text-black">
+                Moving African Sound, Culture & Faith Forward.
               </h1>
 
               {/* Lead Deck */}
-              <p className="mt-5 max-w-xl text-sm sm:text-base leading-relaxed text-zinc-300">
+              <p className="mt-5 max-w-xl text-sm sm:text-base leading-relaxed text-black/85 font-semibold">
                 Authentic dialogue, transformative conversations, and community-powered stories created for the people who shape culture every day. Stream every episode on demand.
               </p>
 
@@ -113,7 +112,7 @@ export default function HeroSection() {
               <div className="mt-6 flex flex-wrap items-center gap-4">
                 <a
                   href="#episodes"
-                  className="inline-flex min-h-12 items-center gap-2.5 bg-[#04b093] px-7 text-xs font-black uppercase tracking-wider text-black transition hover:bg-[#05c6a5] hover:scale-[1.02]"
+                  className="inline-flex min-h-12 items-center gap-2.5 bg-black px-7 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black hover:scale-[1.02] shadow-xl"
                 >
                   <Headphones size={16} />
                   <span>Stream The Crate</span>
@@ -121,7 +120,7 @@ export default function HeroSection() {
 
                 <a
                   href="#shows"
-                  className="inline-flex min-h-12 items-center gap-2 border-2 border-white bg-transparent px-6 text-xs font-black uppercase tracking-wider text-white transition hover:bg-white hover:text-black"
+                  className="inline-flex min-h-12 items-center gap-2 border-2 border-black bg-transparent px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-black hover:text-white"
                 >
                   <span>Explore Series</span>
                   <ArrowUpRight size={15} />
@@ -130,7 +129,7 @@ export default function HeroSection() {
             </div>
 
             {/* Spotlight Video Tile (The Zwart/Billboard Lead Media Card) */}
-            <div className="mt-10 border-2 border-white/20 bg-[#0d0d0d] p-4 transition-colors hover:border-[#04b093]">
+            <div className="mt-10 border-2 border-black bg-black p-4 text-white shadow-2xl">
               <div className="group relative aspect-video w-full overflow-hidden bg-black">
                 <Image
                   src={
@@ -201,7 +200,7 @@ export default function HeroSection() {
 
           {/* Right Column (5 cols): The Billboard Hot Drops Leaderboard */}
           <div className="lg:col-span-5 flex flex-col justify-between">
-            <div className="border-2 border-white/20 bg-[#0d0d0d] p-5 sm:p-7">
+            <div className="border-2 border-black bg-black p-5 sm:p-7 text-white shadow-2xl">
               
               {/* Leaderboard Header */}
               <div className="flex items-center justify-between border-b-2 border-white/20 pb-4">
@@ -211,7 +210,7 @@ export default function HeroSection() {
                     Billboard Hot Drops
                   </h3>
                 </div>
-                <span className="bg-[#04b093]/10 px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-[#04b093] border border-[#04b093]/30">
+                <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-black">
                   TOP RELEASES
                 </span>
               </div>
@@ -226,7 +225,7 @@ export default function HeroSection() {
                       key={ep.id}
                       onClick={() => setSelectedIndex(idx)}
                       className={`group flex items-center justify-between gap-4 py-4 cursor-pointer transition-colors ${
-                        isSelected ? "bg-white/[0.05]" : "hover:bg-white/[0.02]"
+                        isSelected ? "bg-white/[0.08]" : "hover:bg-white/[0.03]"
                       }`}
                     >
                       <div className="flex items-center gap-4 min-w-0">

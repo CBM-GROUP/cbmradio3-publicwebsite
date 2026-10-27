@@ -91,32 +91,32 @@ export default function HomepageAdditions() {
   return (
     <section
       id="community"
-      className="relative scroll-mt-20 border-b-2 border-white/20 bg-black px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
+      className="relative scroll-mt-20 border-b-2 border-black bg-[#04b093] px-5 py-16 text-black sm:px-8 sm:py-20 lg:px-12 lg:py-24"
     >
       <div className="mx-auto max-w-7xl">
         
         {/* Section Header: Zwart Community Callout */}
-        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-white/20 pb-6">
+        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-black pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
+              <span className="bg-black px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
                 COMMUNITY NETWORK
               </span>
-              <span className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
+              <span className="text-xs font-black uppercase tracking-[0.22em] text-black/75">
                 SLUIT JE AAN // JOIN THE MOVEMENT
               </span>
             </div>
-            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight sm:text-4xl lg:text-5xl">
+            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">
               Be Part of the CBM Collective
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-300">
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-black/80 font-medium">
               Connect directly on WhatsApp, receive episode drop dispatches, or partner with our original productions.
             </p>
           </div>
 
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 border-2 border-white bg-transparent px-5 py-2.5 text-xs font-black uppercase tracking-wider text-white transition hover:bg-white hover:text-black w-fit"
+            className="inline-flex items-center gap-2 border-2 border-black bg-black px-5 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black w-fit shadow-md"
           >
             <span>Contact Studio</span>
             <ArrowUpRight size={15} />
@@ -127,7 +127,7 @@ export default function HomepageAdditions() {
         <div className="grid gap-8 lg:grid-cols-2">
           
           {/* Panel 1: Community Network & Channels */}
-          <div className="border-2 border-white/15 bg-[#0d0d0d] p-7 sm:p-10 flex flex-col justify-between">
+          <div className="border-2 border-black bg-black p-7 sm:p-10 flex flex-col justify-between text-white shadow-2xl">
             <div>
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <span className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#04b093]">
@@ -225,7 +225,7 @@ export default function HomepageAdditions() {
           </div>
 
           {/* Panel 2: Brand Partnerships & Sponsorships */}
-          <div className="border-2 border-white/15 bg-[#0d0d0d] p-7 sm:p-10 flex flex-col justify-between">
+          <div className="border-2 border-black bg-black p-7 sm:p-10 flex flex-col justify-between text-white shadow-2xl">
             <div>
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <span className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#04b093]">

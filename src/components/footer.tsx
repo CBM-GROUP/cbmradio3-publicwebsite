@@ -131,7 +131,7 @@ export default function Footer() {
   );
 
   return (
-    <footer className="border-t-4 border-[#04b093] bg-[#050505] text-white">
+    <footer className="border-t-4 border-black bg-black text-white">
       <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-8 px-5 py-10 sm:px-8 md:grid-cols-2 lg:grid-cols-12 lg:gap-6 lg:px-12 lg:py-14">
         <section className="lg:col-span-3">
           <Link href="/" aria-label="CBM Radio home" className="inline-flex items-center gap-3">

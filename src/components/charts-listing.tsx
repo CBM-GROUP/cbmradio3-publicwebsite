@@ -5,7 +5,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDown,
   ArrowUp,
-  Calendar,
   Disc3,
   Flame,
   Minus,
@@ -262,20 +261,25 @@ export default function ChartsListing() {
               </span>
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/65">
-              {activeChart?.edition_date && (
-                <span className="flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5 text-[#04b093]" />
-                  Issue: <strong className="text-white/90">{new Date(activeChart.edition_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</strong>
-                </span>
-              )}
               <span>Total tracks: <strong className="text-white/90">{activeChart?.entries?.length || 0}</strong></span>
               {activeChart?.description && <span className="max-w-2xl text-white/65">{activeChart.description}</span>}
             </div>
           </div>
 
-          <div className="cbm-card relative mb-8 min-h-[260px] overflow-hidden rounded-2xl border border-white/10 bg-[#111816] sm:min-h-[360px] shadow-2xl">
+          {/* Dedicated Chart Hero Banner Container - Responsive and fitted */}
+          <div className="cbm-card relative mb-8 w-full overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl aspect-video sm:aspect-[16/9] max-h-[520px]">
             {activeChart?.cover_image_url || activeChart?.cover_image ? (
               <>
+                {/* Ambient Blurred Backdrop to avoid letterbox gaps */}
+                <Image
+                  src={activeChart.cover_image_url || activeChart.cover_image || ""}
+                  alt=""
+                  fill
+                  aria-hidden="true"
+                  unoptimized
+                  className="object-cover object-center blur-2xl opacity-40 scale-110 pointer-events-none"
+                />
+                {/* Dedicated Crisp Hero Image - fits cleanly inside the div, fully responsive without cropping or overflowing */}
                 <Image
                   src={activeChart.cover_image_url || activeChart.cover_image || ""}
                   alt={`${activeChart.title} Official Hero Banner`}
@@ -283,28 +287,21 @@ export default function ChartsListing() {
                   priority
                   sizes="(max-width: 1200px) 100vw, 1200px"
                   unoptimized
-                  className="object-cover object-center transition-transform duration-700 hover:scale-105"
+                  className="object-contain object-center transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-black/20" />
-                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
+                <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 lg:p-7">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-[#04b093]/20 px-3 py-1 text-xs font-bold text-[#04b093] backdrop-blur-md border border-[#04b093]/30">
                       <Trophy className="h-3.5 w-3.5" />
                       Official Countdown
                     </span>
-                    {activeChart.edition_date && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur-md">
-                        <Calendar className="h-3.5 w-3.5 text-[#04b093]" />
-                        {new Date(activeChart.edition_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
-                      </span>
-                    )}
                   </div>
-                  <h3 className="max-w-2xl text-2xl font-black text-white sm:text-4xl lg:text-5xl tracking-tight drop-shadow-md">
+                  <h3 className="max-w-2xl text-xl font-black text-white sm:text-3xl lg:text-4xl tracking-tight drop-shadow-md">
                     {activeChart.title}
                   </h3>
                   {activeChart.description && (
-                    <p className="mt-2 max-w-xl text-xs sm:text-sm text-white/80 line-clamp-2">
+                    <p className="mt-1.5 max-w-xl text-xs sm:text-sm text-white/80 line-clamp-2">
                       {activeChart.description}
                     </p>
                   )}

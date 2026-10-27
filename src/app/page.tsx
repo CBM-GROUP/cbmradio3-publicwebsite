@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="overflow-hidden bg-[#08090a]">
+      <main className="overflow-hidden bg-[#04b093] text-black">
         {/* Dynamic Hero Placement */}
         <DynamicPageSections page="home" position="hero" />
 

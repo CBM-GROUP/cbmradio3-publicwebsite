@@ -38,32 +38,32 @@ export default function ProgramsSection() {
   return (
     <section
       id="shows"
-      className="relative scroll-mt-20 border-b-2 border-white/20 bg-black px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
+      className="relative scroll-mt-20 border-b-2 border-black bg-[#04b093] px-5 py-16 text-black sm:px-8 sm:py-20 lg:px-12 lg:py-24"
     >
       <div className="mx-auto max-w-7xl">
         
         {/* Section Header: Zwart + Billboard Broadsheet */}
-        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-white/20 pb-6">
+        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-black pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
+              <span className="bg-black px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
                 ORIGINAL ROSTER
               </span>
-              <span className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
+              <span className="text-xs font-black uppercase tracking-[0.22em] text-black">
                 PRODUCTIONS & SHOW FRANCHISES
               </span>
             </div>
-            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight sm:text-4xl lg:text-5xl">
+            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">
               Curated Shows & Cultural Talk Series
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-300">
+            <p className="mt-2 max-w-2xl text-sm font-semibold leading-relaxed text-black/85">
               CBM produces dedicated talk programs that ask tough questions, celebrate authentic achievements, and connect diverse perspectives.
             </p>
           </div>
 
           <Link
             href="/programs"
-            className="inline-flex items-center gap-2 border-2 border-white bg-transparent px-5 py-2.5 text-xs font-black uppercase tracking-wider text-white transition hover:bg-white hover:text-black w-fit"
+            className="inline-flex items-center gap-2 border-2 border-black bg-black px-5 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black w-fit shadow-xl"
           >
             <span>Full Show Directory</span>
             <ArrowUpRight size={15} />
@@ -72,7 +72,7 @@ export default function ProgramsSection() {
 
         {/* Loading State */}
         {loading && (
-          <div className="border-2 border-white/20 bg-[#0d0d0d] p-16 text-center text-zinc-400">
+          <div className="border-2 border-black bg-black p-16 text-center text-white">
             <p className="text-sm font-black uppercase tracking-wider">RETRIEVING SHOW ROSTER...</p>
           </div>
         )}
@@ -87,7 +87,7 @@ export default function ProgramsSection() {
               return (
                 <article
                   key={program.id}
-                  className="group relative border-2 border-white/15 bg-[#0d0d0d] p-6 transition-all duration-200 hover:border-[#04b093]"
+                  className="group relative border-2 border-black bg-black p-6 text-white transition-all duration-200 hover:border-white shadow-2xl"
                 >
                   <div className="flex flex-col sm:flex-row gap-6">
                     
@@ -158,7 +158,7 @@ export default function ProgramsSection() {
 
         {/* Fallback Display if no programs returned */}
         {!loading && programs.length === 0 && (
-          <article className="border-2 border-white/20 bg-[#0d0d0d] p-8 sm:p-12">
+          <article className="border-2 border-black bg-black p-8 sm:p-12 text-white">
             <div className="max-w-2xl">
               <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase text-black">
                 PREMIERE SERIES
@@ -181,9 +181,9 @@ export default function ProgramsSection() {
         )}
 
         {/* Zwart-Style Co-Creation Pitch Banner */}
-        <div className="mt-12 border-2 border-white/20 bg-[#0d0d0d] p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="mt-12 border-2 border-black bg-black p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-white shadow-2xl">
           <div>
-            <span className="bg-[#04b093]/10 px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-[#04b093] border border-[#04b093]/30">
+            <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-black">
               CO-CREATE WITH US
             </span>
             <h4 className="mt-2 text-base sm:text-lg font-black uppercase tracking-tight text-white">
