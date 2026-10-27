@@ -63,7 +63,7 @@ export default function NewsSection() {
   return (
     <section
       id="news"
-      className="relative border-y border-white/10 bg-[#070c0a] px-4 py-16 text-white sm:px-6 lg:px-8 lg:py-24"
+      className="relative border-y border-white/10 bg-[#060a08] px-4 py-16 text-white sm:px-6 lg:px-8 lg:py-24"
     >
       {/* Background ambient lighting */}
       <div

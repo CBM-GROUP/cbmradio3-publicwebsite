@@ -93,7 +93,7 @@ export default function Gallery() {
   return (
     <section
       id="gallery"
-      className="relative border-y border-white/10 bg-[#080d0b] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
+      className="relative border-y border-white/10 bg-[#060a08] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
     >
       <div className="mx-auto max-w-7xl">
         

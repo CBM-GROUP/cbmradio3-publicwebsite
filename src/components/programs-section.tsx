@@ -54,7 +54,7 @@ export default function ProgramsSection() {
     const schedule = (program.schedule || "").toLowerCase();
     const title = (program.title || "").toLowerCase();
 
-    if (activeTab === "Today's Shows") return true; // Show all when looking at today
+    if (activeTab === "Today's Shows") return true;
     if (activeTab === "Morning Prime")
       return schedule.includes("am") || title.includes("breakfast") || title.includes("morning");
     if (activeTab === "Midday Drive")
@@ -69,45 +69,42 @@ export default function ProgramsSection() {
   return (
     <section
       id="programs"
-      className="relative border-y border-white/10 bg-[#090e0c] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
+      className="relative border-y border-white/10 bg-[#070b09] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
     >
-      {/* Background glow */}
+      {/* Background ambient lighting */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute right-0 top-1/4 -z-10 h-96 w-96 rounded-full bg-[#00d4a5]/5 blur-3xl"
+        className="pointer-events-none absolute right-1/4 top-1/4 -z-10 h-96 w-96 rounded-full bg-[#00d4a5]/5 blur-3xl"
       />
 
       <div className="mx-auto max-w-7xl">
         
         {/* Section Header */}
-        <div className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b border-white/10 pb-6">
+        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b border-white/10 pb-6">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="grid size-7 place-items-center rounded-lg bg-[#00d4a5]/10 text-[#00d4a5]">
-                <Radio size={16} />
-              </span>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
-                BROADCAST LINEUP & SCHEDULE
-              </p>
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-3.5 py-1 text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+              <Radio size={14} />
+              <span>Broadcast Lineup</span>
             </div>
-            <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
+            <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
               Find Your Frequency
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
-              Original talk, prime community conversations, and pure African rhythms hosted by your favorite station voices.
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:text-base">
+              Original conversations, investigative talk, and vibrant community music curated by your favorite station voices.
             </p>
           </div>
 
           <Link
             href="/programs"
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-5 text-sm font-extrabold text-[#00d4a5] transition-all hover:bg-[#00d4a5] hover:text-[#062521]"
+            className="inline-flex items-center gap-2 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-5 py-2.5 text-xs font-black uppercase tracking-wider text-[#00d4a5] transition-all hover:bg-[#00d4a5] hover:text-[#062521] w-fit"
           >
-            Full Show Guide <ArrowUpRight size={17} aria-hidden="true" />
+            <span>Full Show Guide</span>
+            <ArrowUpRight size={15} aria-hidden="true" />
           </Link>
         </div>
 
         {/* Schedule Filter Tabs */}
-        <div className="mb-8 flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+        <div className="mb-8 flex items-center gap-2.5 overflow-x-auto pb-2 no-scrollbar">
           {scheduleFilterTabs.map((tab) => (
             <button
               key={tab}
@@ -115,8 +112,8 @@ export default function ProgramsSection() {
               onClick={() => setActiveTab(tab)}
               className={`whitespace-nowrap rounded-full px-4 py-2 text-xs font-black uppercase tracking-wider transition-all duration-200 ${
                 activeTab === tab
-                  ? "bg-[#00d4a5] text-[#062521] shadow-[0_0_15px_rgba(0,212,165,0.35)]"
-                  : "border border-white/10 bg-white/[0.03] text-white/70 hover:border-white/25 hover:text-white"
+                  ? "bg-[#00d4a5] text-[#062521] shadow-[0_0_16px_rgba(0,212,165,0.35)]"
+                  : "border border-white/10 bg-white/5 text-white/70 hover:border-white/25 hover:text-white"
               }`}
             >
               {tab}
@@ -126,17 +123,17 @@ export default function ProgramsSection() {
 
         {/* Loading State */}
         {status === "loading" && (
-          <p
-            className="rounded-2xl border border-white/10 bg-black/20 px-5 py-12 text-center text-white/70"
+          <div
+            className="rounded-2xl border border-white/10 bg-white/[0.02] px-5 py-16 text-center text-zinc-400"
             aria-live="polite"
           >
             Loading broadcast lineup...
-          </p>
+          </div>
         )}
 
         {/* Empty / Error Fallback Feature Card */}
         {(status === "error" || (status === "ready" && programs.length === 0)) && (
-          <article className="cbm-card grid overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-r from-[#0d1614] to-[#070b09] sm:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+          <article className="cbm-card grid overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-r from-[#0d1614] to-[#070b09] sm:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
             <div className="relative min-h-64 sm:min-h-80">
               <Image
                 src={ArtistSpotlightArtwork}
@@ -154,7 +151,7 @@ export default function ProgramsSection() {
               <h3 className="mt-3 text-2xl font-black text-white sm:text-3xl">
                 My Life, My Purpose
               </h3>
-              <p className="mt-3 text-sm leading-6 text-zinc-300">
+              <p className="mt-3 text-sm leading-relaxed text-zinc-300">
                 Transformational conversations on career, purpose, personal growth, and community culture with top guest interviews.
               </p>
               <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-[#00d4a5]">
@@ -163,9 +160,9 @@ export default function ProgramsSection() {
               </div>
               <Link
                 href="/programs"
-                className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 rounded-full bg-[#00d4a5] px-6 text-sm font-extrabold text-[#062521] transition hover:bg-[#48d4c1]"
+                className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 rounded-full bg-[#00d4a5] px-6 text-xs font-black uppercase tracking-wider text-[#062521] transition hover:bg-[#34e2b8]"
               >
-                Explore Complete Lineup <ArrowUpRight size={17} aria-hidden="true" />
+                Explore Complete Lineup <ArrowUpRight size={16} aria-hidden="true" />
               </Link>
             </div>
           </article>
@@ -182,30 +179,30 @@ export default function ProgramsSection() {
               return (
                 <article
                   key={program.id}
-                  className="cbm-card group relative grid items-center gap-5 overflow-hidden rounded-2xl border border-white/10 bg-[#0c1411]/80 p-4 transition-all duration-300 hover:border-[#00d4a5]/40 hover:bg-[#101b17] sm:grid-cols-[4rem_9rem_minmax(0,1fr)_auto] sm:gap-6 sm:p-5"
+                  className="group relative grid items-center gap-5 overflow-hidden rounded-2xl border border-white/10 bg-[#09120f]/80 p-4 transition-all duration-300 hover:border-[#00d4a5]/40 hover:bg-[#0c1814] hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)] sm:grid-cols-[4.5rem_9.5rem_minmax(0,1fr)_auto] sm:gap-6 sm:p-5 backdrop-blur-md"
                 >
-                  {/* Show Sequence / On Air Indicator */}
+                  {/* Show Sequence Indicator */}
                   <div className="flex items-center gap-2 sm:flex-col sm:items-start sm:justify-center">
                     <span
                       aria-label={`Show ${index + 1}`}
-                      className="text-3xl font-black tabular-nums tracking-tighter text-[#00d4a5]/80 sm:text-4xl"
+                      className="text-3xl font-black tabular-nums tracking-tighter text-[#00d4a5]/70 sm:text-4xl"
                     >
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     {isFirst && (
-                      <span className="inline-flex items-center gap-1 rounded bg-[#00d4a5]/20 px-2 py-0.5 text-[0.6rem] font-black uppercase text-[#00d4a5]">
+                      <span className="inline-flex items-center rounded-md bg-[#00d4a5]/20 px-2 py-0.5 text-[0.6rem] font-black uppercase tracking-wider text-[#00d4a5]">
                         FEATURED
                       </span>
                     )}
                   </div>
 
                   {/* Show Artwork */}
-                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-black/40 border border-white/10">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-black/40 border border-white/10 shadow-sm">
                     <Image
                       src={artwork}
                       alt={`${program.title} show cover`}
                       fill
-                      sizes="(max-width: 640px) 100vw, 144px"
+                      sizes="(max-width: 640px) 100vw, 150px"
                       unoptimized={Boolean(program.cover_image)}
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
@@ -213,9 +210,9 @@ export default function ProgramsSection() {
 
                   {/* Program Info */}
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2.5">
                       <span className="text-[0.65rem] font-black uppercase tracking-[0.18em] text-[#00d4a5]">
-                        {isFirst ? "FEATURED SHOW" : "SCHEDULED SHOW"}
+                        {isFirst ? "FEATURED SHOW" : "DAILY PROGRAM"}
                       </span>
                       {program.schedule && (
                         <span className="inline-flex items-center gap-1 text-xs text-white/60">
@@ -237,7 +234,7 @@ export default function ProgramsSection() {
                     )}
 
                     {program.short_description && (
-                      <p className="mt-2 line-clamp-2 text-xs leading-5 text-zinc-400 sm:text-sm">
+                      <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-zinc-400 sm:text-sm">
                         {program.short_description}
                       </p>
                     )}
@@ -250,7 +247,7 @@ export default function ProgramsSection() {
                       aria-label={`Tune into ${program.title}`}
                       className="inline-flex size-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-[#00d4a5] shadow-sm transition-all duration-200 group-hover:border-[#00d4a5] group-hover:bg-[#00d4a5] group-hover:text-[#062521] group-hover:scale-110"
                     >
-                      <ArrowUpRight size={19} aria-hidden="true" />
+                      <ArrowUpRight size={18} aria-hidden="true" />
                     </Link>
                   </div>
                 </article>
@@ -260,7 +257,7 @@ export default function ProgramsSection() {
         )}
 
         {/* Presenter Callout Footer Banner */}
-        <div className="mt-10 rounded-2xl border border-white/10 bg-[#0d1512]/60 p-6 sm:flex sm:items-center sm:justify-between sm:p-8 backdrop-blur-md">
+        <div className="mt-10 rounded-2xl border border-white/10 bg-[#08120e]/60 p-6 sm:flex sm:items-center sm:justify-between sm:p-8 backdrop-blur-md">
           <div className="flex items-center gap-4">
             <div className="grid size-12 shrink-0 place-items-center rounded-xl bg-[#00d4a5]/10 text-[#00d4a5]">
               <Mic2 size={24} />
@@ -276,9 +273,10 @@ export default function ProgramsSection() {
           </div>
           <Link
             href="/contact"
-            className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 text-xs font-extrabold uppercase tracking-wider text-white transition hover:border-[#00d4a5] hover:text-[#00d4a5] sm:mt-0"
+            className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 text-xs font-black uppercase tracking-wider text-white transition hover:border-[#00d4a5] hover:text-[#00d4a5] sm:mt-0"
           >
-            Pitch a Program <ArrowUpRight size={15} />
+            <span>Pitch a Program</span>
+            <ArrowUpRight size={14} />
           </Link>
         </div>
 

@@ -174,7 +174,7 @@ export default function HomepageCharts() {
   };
 
   return (
-    <section id="charts" className="relative border-y border-white/10 bg-[#070c0a] py-14 text-white sm:py-20">
+    <section id="charts" className="relative border-y border-white/10 bg-[#060a08] py-14 text-white sm:py-20">
       {/* Background radial ambiance */}
       <div
         aria-hidden="true"

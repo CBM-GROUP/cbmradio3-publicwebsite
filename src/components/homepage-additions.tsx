@@ -124,7 +124,7 @@ export default function HomepageAdditions() {
   const featuredHost = hosts[0];
 
   return (
-    <section className="relative border-y border-white/10 bg-[#070c0a] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24">
+    <section className="relative border-y border-white/10 bg-[#060a08] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24">
       {/* Background ambient lighting */}
       <div
         aria-hidden="true"
