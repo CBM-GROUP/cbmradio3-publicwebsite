@@ -170,9 +170,9 @@ export default function HomepageAdditions() {
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/15 px-3 py-1 text-xs font-black uppercase tracking-wider text-[#62e6d4]">
                   <MessageSquare size={13} /> STUDIO HOTLINE
                 </span>
-                <span className="text-xs font-bold text-red-400 flex items-center gap-1.5">
-                  <span className="size-2 rounded-full bg-red-400 animate-pulse" />
-                  LIVE REQUESTS OPEN
+                <span className="text-xs font-bold text-[#00d4a5] flex items-center gap-1.5">
+                  <span className="size-2 rounded-full bg-[#00d4a5]" />
+                  STUDIO REQUESTS
                 </span>
               </div>
 
@@ -180,7 +180,7 @@ export default function HomepageAdditions() {
                 Make a Song Request or Send a Shoutout
               </h3>
               <p className="mt-3 text-sm leading-6 text-zinc-300">
-                Want to hear your favorite tune or shout out someone special? Reach directly into the studio booth to talk with our hosts.
+                Want to hear your favorite tune or shout out someone special? Reach directly into the studio booth to connect with our team.
               </p>
             </div>
 
@@ -194,7 +194,7 @@ export default function HomepageAdditions() {
                   className="flex min-h-12 w-full items-center justify-center gap-2.5 rounded-xl bg-[#25D366] px-6 text-sm font-black text-black shadow-[0_6px_20px_rgba(37,211,102,0.25)] transition-all hover:bg-[#20ba5a] hover:scale-[1.01]"
                 >
                   <FaWhatsapp size={19} aria-hidden="true" />
-                  <span>WhatsApp The Studio On Air</span>
+                  <span>WhatsApp The Studio Desk</span>
                 </a>
               ) : (
                 <a
@@ -204,7 +204,7 @@ export default function HomepageAdditions() {
                   className="flex min-h-12 w-full items-center justify-center gap-2.5 rounded-xl bg-[#25D366] px-6 text-sm font-black text-black shadow-[0_6px_20px_rgba(37,211,102,0.25)] transition-all hover:bg-[#20ba5a] hover:scale-[1.01]"
                 >
                   <FaWhatsapp size={19} aria-hidden="true" />
-                  <span>WhatsApp The Studio On Air</span>
+                  <span>WhatsApp The Studio Desk</span>
                 </a>
               )}
 

@@ -193,9 +193,8 @@ export default function ProgramsSection() {
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     {isFirst && (
-                      <span className="inline-flex items-center gap-1 rounded bg-red-500/20 px-2 py-0.5 text-[0.6rem] font-black uppercase text-red-400">
-                        <span className="size-1.5 rounded-full bg-red-400 animate-pulse" />
-                        ON AIR
+                      <span className="inline-flex items-center gap-1 rounded bg-[#00d4a5]/20 px-2 py-0.5 text-[0.6rem] font-black uppercase text-[#00d4a5]">
+                        FEATURED
                       </span>
                     )}
                   </div>
@@ -216,7 +215,7 @@ export default function ProgramsSection() {
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-[0.65rem] font-black uppercase tracking-[0.18em] text-[#00d4a5]">
-                        {isFirst ? "NOW PLAYING" : "SCHEDULED BROADCAST"}
+                        {isFirst ? "FEATURED SHOW" : "SCHEDULED SHOW"}
                       </span>
                       {program.schedule && (
                         <span className="inline-flex items-center gap-1 text-xs text-white/60">

@@ -12,7 +12,7 @@ import RadioShowArtwork from "../../public/cbm_images/radio 2.jpeg";
 import CBMTeam from "../../public/cbm_images/take 3.jpeg";
 
 const HOMEPAGE_GALLERY_LIMIT = 6;
-const galleryFilterCategories = ["All Moments", "Studio Sessions", "Presenters", "On Air"];
+const galleryFilterCategories = ["All Moments", "Studio Sessions", "Presenters", "Events"];
 
 export default function Gallery() {
   const [items, setItems] = useState<GalleryItem[]>([]);
@@ -137,7 +137,7 @@ export default function Gallery() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:to-[#070b09]/80" />
             <span className="absolute bottom-4 left-4 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[0.65rem] font-black uppercase tracking-wider text-[#00d4a5] backdrop-blur-md">
-              STUDIO A · ON AIR
+              STUDIO A · RECORDING SESSION
             </span>
           </div>
 

@@ -111,15 +111,6 @@ export default function Header() {
                 </span>
               </div>
             </Link>
-
-            {/* Live Beacon Pill */}
-            <div className="hidden md:flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-2.5 py-1 text-[0.65rem] font-black uppercase tracking-wider text-red-400">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
-              </span>
-              <span>LIVE ON AIR</span>
-            </div>
           </div>
 
           {/* Center: Desktop Navigation Links */}
