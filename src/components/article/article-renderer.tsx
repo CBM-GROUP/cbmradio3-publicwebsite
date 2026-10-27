@@ -49,7 +49,7 @@ export function ArticleRenderer({
   articleTitle: string;
 }) {
   return (
-    <div className="space-y-6 text-base leading-8 text-zinc-300 sm:text-lg">
+    <div className="space-y-6 text-base leading-relaxed text-zinc-300 break-words [overflow-wrap:anywhere] sm:text-lg sm:leading-8">
       {document.content.map((node, index) =>
         renderNode(node, articleTitle, "root-" + index),
       )}
@@ -93,22 +93,22 @@ function renderNode(
     case "text":
       return <span key={path}>{renderText(node)}</span>;
     case "paragraph":
-      return <p key={path}>{renderChildren(node, articleTitle, path)}</p>;
+      return <p key={path} className="break-words [overflow-wrap:anywhere] leading-relaxed sm:leading-8">{renderChildren(node, articleTitle, path)}</p>;
     case "heading": {
       const children = renderChildren(node, articleTitle, path);
       const level = node.attrs?.level;
-      if (level === 3) return <h3 key={path} className="pt-3 text-2xl font-bold text-white">{children}</h3>;
-      if (level && level >= 4) return <h4 key={path} className="pt-2 text-xl font-bold text-white">{children}</h4>;
-      return <h2 key={path} className="pt-4 text-3xl font-bold text-white">{children}</h2>;
+      if (level === 3) return <h3 key={path} className="pt-4 text-lg sm:text-xl md:text-2xl font-black uppercase tracking-tight text-white break-words [overflow-wrap:anywhere]">{children}</h3>;
+      if (level && level >= 4) return <h4 key={path} className="pt-3 text-base sm:text-lg md:text-xl font-black uppercase tracking-tight text-white break-words [overflow-wrap:anywhere]">{children}</h4>;
+      return <h2 key={path} className="pt-6 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black uppercase tracking-tight text-white break-words [overflow-wrap:anywhere]">{children}</h2>;
     }
     case "bulletList":
-      return <ul key={path} className="ml-6 list-disc space-y-2">{renderChildren(node, articleTitle, path)}</ul>;
+      return <ul key={path} className="ml-5 sm:ml-6 list-disc space-y-2 break-words [overflow-wrap:anywhere]">{renderChildren(node, articleTitle, path)}</ul>;
     case "orderedList":
-      return <ol key={path} start={node.attrs?.start} className="ml-6 list-decimal space-y-2">{renderChildren(node, articleTitle, path)}</ol>;
+      return <ol key={path} start={node.attrs?.start} className="ml-5 sm:ml-6 list-decimal space-y-2 break-words [overflow-wrap:anywhere]">{renderChildren(node, articleTitle, path)}</ol>;
     case "listItem":
-      return <li key={path} className="[&>p]:inline">{renderChildren(node, articleTitle, path)}</li>;
+      return <li key={path} className="[&>p]:inline break-words [overflow-wrap:anywhere]">{renderChildren(node, articleTitle, path)}</li>;
     case "blockquote":
-      return <blockquote key={path} className="border-l-4 border-teal-600 pl-5 italic text-zinc-400">{renderChildren(node, articleTitle, path)}</blockquote>;
+      return <blockquote key={path} className="my-6 border-l-4 border-[#04b093] pl-4 sm:pl-5 italic text-zinc-300 text-base sm:text-xl break-words [overflow-wrap:anywhere] leading-relaxed">{renderChildren(node, articleTitle, path)}</blockquote>;
     case "image":
       return <StructuredImage key={node.attrs.media_id || path} node={node} articleTitle={articleTitle} />;
     case "youtube":
@@ -128,7 +128,7 @@ function renderText(node: StructuredTextNode): ReactNode {
     if (mark.type === "italic") return <em key={index}>{content}</em>;
     if (mark.type === "link") {
       const href = typeof mark.attrs?.href === "string" ? safeTextLink(mark.attrs.href) : null;
-      if (href) return <a key={index} href={href} className="text-teal-400 underline hover:text-teal-300">{content}</a>;
+      if (href) return <a key={index} href={href} className="text-[#04b093] underline hover:text-white break-all [overflow-wrap:anywhere]">{content}</a>;
     }
     return content;
   }, node.text);
