@@ -3,21 +3,50 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Camera, X, ZoomIn } from "lucide-react";
+import { ArrowUpRight, X, ZoomIn } from "lucide-react";
+
 import { galleryService } from "@/services/gallery.service";
 import type { GalleryItem } from "@/types/gallery";
+
 import StudioImage from "../../public/cbm_images/behind-the-scenes-studio.png";
 import OnAirStudio from "../../public/cbm_images/on-air-studio.png";
 import RadioShowArtwork from "../../public/cbm_images/radio 2.jpeg";
 import CBMTeam from "../../public/cbm_images/take 3.jpeg";
 
-const HOMEPAGE_GALLERY_LIMIT = 6;
-const galleryFilterCategories = ["All Moments", "Studio Sessions", "Presenters", "Events"];
+const fallbackGalleryItems = [
+  {
+    id: 991,
+    image: StudioImage,
+    title: "Recording 'My Life, My Purpose' in Studio A",
+    category: "Studio Sessions",
+    caption: "CBM hosts in conversation during an original episode recording session.",
+  },
+  {
+    id: 992,
+    image: OnAirStudio,
+    title: "Studio Microphone & Production Desk",
+    category: "Production",
+    caption: "In the studio recording booth capturing inspiring stories and community dialogues.",
+  },
+  {
+    id: 993,
+    image: CBMTeam,
+    title: "The Presenter & Host Collective",
+    category: "Presenters",
+    caption: "Our team of cultural curators, journalists, and podcast creators.",
+  },
+  {
+    id: 994,
+    image: RadioShowArtwork,
+    title: "Sound Design & Audio Engineering",
+    category: "Mastering",
+    caption: "Audio post-production and mastering in the CBM digital studio.",
+  },
+];
 
 export default function Gallery() {
   const [items, setItems] = useState<GalleryItem[]>([]);
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
-  const [activeCategory, setActiveCategory] = useState("All Moments");
 
   useEffect(() => {
     let isMounted = true;
@@ -28,18 +57,15 @@ export default function Gallery() {
         setItems(
           response.results
             .filter((item) => Boolean(item.image))
-            .slice(0, HOMEPAGE_GALLERY_LIMIT),
+            .slice(0, 4),
         );
       })
-      .catch(() => {
-        // Fallback items will display automatically
-      });
+      .catch(() => {});
     return () => {
       isMounted = false;
     };
   }, []);
 
-  // Keyboard escape for lightbox
   useEffect(() => {
     if (!selectedItem) return;
     const handleKey = (e: KeyboardEvent) => {
@@ -49,228 +75,137 @@ export default function Gallery() {
     return () => window.removeEventListener("keydown", handleKey);
   }, [selectedItem]);
 
-  // Fallback items if API is empty or offline
-  const fallbackGalleryItems = [
-    {
-      id: 991,
-      image: StudioImage,
-      title: "Recording 'My Life, My Purpose' in Studio A",
-      category: "Studio Sessions",
-      caption: "CBM Radio hosts deep in conversation during an episode recording session.",
-    },
-    {
-      id: 992,
-      image: OnAirStudio,
-      title: "Studio Microphone & Production Desk",
-      category: "Studio Sessions",
-      caption: "In the studio recording booth capturing inspiring stories and conversations.",
-    },
-    {
-      id: 993,
-      image: CBMTeam,
-      title: "The Presenter Collective",
-      category: "Presenters",
-      caption: "Our team of cultural curators, journalists, and podcast personalities.",
-    },
-    {
-      id: 994,
-      image: RadioShowArtwork,
-      title: "Behind The Mic & Sound Design",
-      category: "Studio Sessions",
-      caption: "Audio production and mastering in the CBM media studio.",
-    },
-  ];
-
-  const galleryList = items.length > 0 ? items : fallbackGalleryItems;
-
-  const filteredItems = galleryList.filter((item) => {
-    if (activeCategory === "All Moments") return true;
-    return item.category?.toLowerCase().includes(activeCategory.toLowerCase().slice(0, 4));
-  });
-
-  const displayList = filteredItems.length > 0 ? filteredItems : galleryList;
+  const displayList = items.length > 0 ? items : fallbackGalleryItems;
 
   return (
     <section
       id="gallery"
-      className="relative border-y border-white/10 bg-[#060a08] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
+      className="relative scroll-mt-20 border-b border-white/10 bg-[#08090a] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
     >
       <div className="mx-auto max-w-7xl">
         
-        {/* Header */}
-        <div className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b border-white/10 pb-6">
+        {/* Header Strip */}
+        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b border-white/10 pb-6">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="grid size-7 place-items-center rounded-lg bg-[#00d4a5]/10 text-[#00d4a5]">
-                <Camera size={16} />
-              </span>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
-                INSIDE CBM RADIO
-              </p>
+            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.22em] text-[#00d4a5]">
+              <span>INDEX 05</span>
+              <span className="text-white/20">/</span>
+              <span>VISUAL ARCHIVE</span>
             </div>
-            <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-              Studio Moments & Culture
+            <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
+              Inside the Studio Booth
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
-              Step behind the microphone to see the real conversations, recording sessions, and teamwork bringing the station to life.
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:text-base">
+              Behind the microphone: documentary snapshots of recording sessions, host interviews, and creative production.
             </p>
           </div>
 
           <Link
             href="/gallery"
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-5 text-sm font-extrabold text-[#00d4a5] transition-all hover:bg-[#00d4a5] hover:text-[#062521]"
+            className="inline-flex items-center gap-2 border border-white/20 bg-transparent px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition hover:border-[#00d4a5] hover:text-[#00d4a5] w-fit"
           >
-            Explore Full Gallery <ArrowUpRight size={17} aria-hidden="true" />
+            <span>Full Gallery Archive</span>
+            <ArrowUpRight size={15} />
           </Link>
         </div>
 
-        {/* Studio Spotlight Feature Banner */}
-        <div className="cbm-card mb-8 grid overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-r from-[#0c1513] to-[#070b09] shadow-xl sm:grid-cols-[1.1fr_0.9fr]">
-          <div className="relative min-h-72 sm:min-h-96">
-            <Image
-              src={StudioImage}
-              alt="CBM Radio presenters recording together in studio"
-              fill
-              sizes="(max-width: 640px) 100vw, 55vw"
-              className="object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:to-[#070b09]/80" />
-            <span className="absolute bottom-4 left-4 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[0.65rem] font-black uppercase tracking-wider text-[#00d4a5] backdrop-blur-md">
-              STUDIO A · RECORDING SESSION
-            </span>
-          </div>
-
-          <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-12">
-            <span className="text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
-              BEHIND THE MICROPHONE
-            </span>
-            <h3 className="mt-3 text-2xl font-black text-white sm:text-3xl lg:text-4xl leading-tight">
-              Where Voices Become Movement.
-            </h3>
-            <p className="mt-3 text-sm leading-6 text-zinc-300">
-              Every day at CBM Radio is fueled by energy, authentic debates, laughter, and high-impact dialogue designed to amplify African stories.
-            </p>
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <Link
-                href="/team"
-                className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#00d4a5] px-6 text-sm font-extrabold text-[#062521] transition hover:bg-[#48d4c1]"
-              >
-                Meet The Presenters <ArrowUpRight size={16} />
-              </Link>
-              <Link
-                href="/about"
-                className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/20 px-5 text-sm font-bold text-white hover:border-[#00d4a5] hover:text-[#00d4a5] transition-colors"
-              >
-                Our Mission
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Filter Pills */}
-        <div className="mb-6 flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
-          {galleryFilterCategories.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setActiveCategory(cat)}
-              className={`whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-wider transition-all duration-200 ${
-                activeCategory === cat
-                  ? "bg-[#00d4a5] text-[#062521] shadow-[0_0_12px_rgba(0,212,165,0.35)]"
-                  : "border border-white/10 bg-white/[0.04] text-white/70 hover:border-white/25 hover:text-white"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Visual Media Grid */}
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {displayList.map((item) => (
-            <button
-              type="button"
+        {/* Visual Archive Grid: 4-up Contact Sheet */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {displayList.map((item, idx) => (
+            <div
               key={item.id}
               onClick={() => setSelectedItem(item as GalleryItem)}
-              className="cbm-card group relative aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-[#090f0d] text-left transition-all hover:border-[#00d4a5]/50 shadow-md"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setSelectedItem(item as GalleryItem);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              className="group relative cursor-pointer border border-white/10 bg-[#0e1013] overflow-hidden transition-all duration-300 hover:border-[#00d4a5]"
             >
-              <Image
-                src={item.image}
-                alt={item.title}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                unoptimized={typeof item.image === "string"}
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent p-5 flex flex-col justify-end">
-                <div className="flex items-center justify-between">
-                  {item.category && (
-                    <span className="rounded-full bg-[#00d4a5] px-2.5 py-0.5 text-[0.65rem] font-black uppercase text-[#062521]">
-                      {item.category}
-                    </span>
-                  )}
-                  <span className="size-8 grid place-items-center rounded-full bg-black/60 text-white/80 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ZoomIn size={15} />
+              <div className="relative aspect-square w-full overflow-hidden bg-black/60">
+                <Image
+                  src={item.image}
+                  alt={item.title || "Studio archive photo"}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity" />
+
+                {/* Index tag */}
+                <div className="absolute left-3 top-3">
+                  <span className="bg-black/85 px-2 py-0.5 text-[0.62rem] font-black uppercase tracking-wider text-[#00d4a5] border border-white/10">
+                    FRAME 0{idx + 1}
                   </span>
                 </div>
-                <h4 className="mt-2 text-base font-black text-white sm:text-lg group-hover:text-[#00d4a5] transition-colors line-clamp-2">
-                  {item.title}
-                </h4>
-                {item.caption && (
-                  <p className="mt-1 text-xs text-white/70 line-clamp-1">
+
+                {/* Hover Zoom Icon */}
+                <div className="absolute right-3 top-3 grid size-8 place-items-center bg-[#00d4a5] text-[#062521] opacity-0 group-hover:opacity-100 transition-opacity">
+                  <ZoomIn size={14} />
+                </div>
+
+                {/* Bottom Caption Overlay */}
+                <div className="absolute bottom-0 inset-x-0 p-4">
+                  <p className="text-[0.65rem] font-black uppercase tracking-wider text-[#00d4a5]">
+                    {item.category || "Studio"}
+                  </p>
+                  <h4 className="mt-0.5 text-sm font-black text-white line-clamp-1">
+                    {item.title}
+                  </h4>
+                  <p className="mt-1 text-xs text-zinc-400 line-clamp-2">
                     {item.caption}
                   </p>
-                )}
+                </div>
               </div>
-            </button>
+            </div>
           ))}
         </div>
 
       </div>
 
-      {/* Interactive Lightbox Modal */}
+      {/* Lightbox Dialog Modal */}
       {selectedItem && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 sm:p-8 backdrop-blur-xl animate-in fade-in"
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-md"
           onClick={() => setSelectedItem(null)}
         >
           <div
-            className="relative max-w-5xl w-full rounded-2xl overflow-hidden border border-white/20 bg-[#0a1210] shadow-2xl"
+            className="relative max-w-4xl w-full border border-white/20 bg-[#0e1013] p-4 text-white shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              type="button"
-              onClick={() => setSelectedItem(null)}
-              className="absolute top-4 right-4 z-10 grid size-10 place-items-center rounded-full bg-black/70 text-white hover:bg-[#00d4a5] hover:text-[#062521] transition-colors"
-              aria-label="Close image preview"
-            >
-              <X size={20} />
-            </button>
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <span className="text-xs font-black uppercase tracking-wider text-[#00d4a5]">
+                {selectedItem.category || "STUDIO FRAME"}
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedItem(null)}
+                className="grid size-8 place-items-center border border-white/20 text-white hover:border-[#00d4a5] hover:text-[#00d4a5]"
+                aria-label="Close image preview"
+              >
+                <X size={16} />
+              </button>
+            </div>
 
-            <div className="relative aspect-video w-full max-h-[75vh] bg-black">
+            <div className="relative mt-4 aspect-video w-full overflow-hidden bg-black">
               <Image
                 src={selectedItem.image}
-                alt={selectedItem.title}
+                alt={selectedItem.title || "Gallery frame"}
                 fill
-                unoptimized={typeof selectedItem.image === "string"}
+                sizes="(max-width: 1024px) 100vw, 896px"
                 className="object-contain"
               />
             </div>
 
-            <div className="p-6 bg-[#0c1513] border-t border-white/10">
-              {selectedItem.category && (
-                <span className="rounded-full bg-[#00d4a5]/20 px-2.5 py-0.5 text-xs font-bold text-[#00d4a5]">
-                  {selectedItem.category}
-                </span>
-              )}
-              <h3 className="mt-2 text-xl font-black text-white">
-                {selectedItem.title}
-              </h3>
+            <div className="mt-4">
+              <h3 className="text-lg font-black text-white">{selectedItem.title}</h3>
               {selectedItem.caption && (
-                <p className="mt-1 text-sm text-zinc-300">
-                  {selectedItem.caption}
-                </p>
+                <p className="mt-1 text-xs text-zinc-400">{selectedItem.caption}</p>
               )}
             </div>
           </div>

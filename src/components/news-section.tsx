@@ -1,271 +1,212 @@
 "use client";
 
-import { ArrowUpRight, Clock, Flame, Newspaper, Radio } from "lucide-react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { ArrowUpRight, Clock } from "lucide-react";
 
-import { formatPublicationDate, formatTimeAgo } from "@/lib/article-metadata";
+import { formatTimeAgo } from "@/lib/article-metadata";
 import homeService from "@/services/home.service";
 import type { ArticleSummary } from "@/types/news";
-import NewsroomStudioSet from "../../public/cbm_images/newsroom-studio-set.png";
-import BrianPortrait from "../../public/cbm_images/brian.svg";
-import SamuelPortrait from "../../public/cbm_images/samuel.svg";
 
-type RequestState = "loading" | "ready" | "error";
+import NewsroomStudioSet from "../../public/cbm_images/newsroom-studio-set.png";
 
 export default function NewsSection() {
   const [featuredArticles, setFeaturedArticles] = useState<ArticleSummary[]>([]);
   const [latestArticles, setLatestArticles] = useState<ArticleSummary[]>([]);
-  const [featuredState, setFeaturedState] = useState<RequestState>("loading");
-  const [latestState, setLatestState] = useState<RequestState>("loading");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
 
-    homeService
-      .getFeaturedArticles()
-      .then((items) => {
-        if (!isMounted) return;
-        setFeaturedArticles(items);
-        setFeaturedState("ready");
-      })
-      .catch(() => {
-        if (isMounted) setFeaturedState("error");
-      });
-
-    homeService
-      .getLatestArticles()
-      .then((items) => {
-        if (!isMounted) return;
-        setLatestArticles(items);
-        setLatestState("ready");
-      })
-      .catch(() => {
-        if (isMounted) setLatestState("error");
-      });
+    Promise.allSettled([
+      homeService.getFeaturedArticles(),
+      homeService.getLatestArticles(),
+    ]).then(([featuredRes, latestRes]) => {
+      if (!isMounted) return;
+      if (featuredRes.status === "fulfilled") {
+        setFeaturedArticles(featuredRes.value);
+      }
+      if (latestRes.status === "fulfilled") {
+        setLatestArticles(latestRes.value);
+      }
+      setLoading(false);
+    });
 
     return () => {
       isMounted = false;
     };
   }, []);
 
-  const featured = featuredArticles[0];
-  const secondaryStories = latestArticles
-    .filter((article) => article.id !== featured?.id)
+  const leadArticle = featuredArticles[0] || latestArticles[0] || null;
+  const secondaryArticles = latestArticles
+    .filter((a) => a.id !== leadArticle?.id)
     .slice(0, 3);
-  const isEmpty =
-    featuredState === "ready" &&
-    latestState === "ready" &&
-    !featured &&
-    secondaryStories.length === 0;
 
   return (
     <section
       id="news"
-      className="relative border-y border-white/10 bg-[#060a08] px-4 py-16 text-white sm:px-6 lg:px-8 lg:py-24"
+      className="relative scroll-mt-20 border-b border-white/10 bg-[#08090a] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
     >
-      {/* Background ambient lighting */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-0 top-1/3 -z-10 h-96 w-96 rounded-full bg-[#00d4a5]/5 blur-3xl"
-      />
-
       <div className="mx-auto max-w-7xl">
-        {/* Newsroom Header */}
-        <div className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b border-white/10 pb-6">
+        
+        {/* Header Strip */}
+        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b border-white/10 pb-6">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="grid size-7 place-items-center rounded-lg bg-[#00d4a5]/10 text-[#00d4a5]">
-                <Newspaper size={16} />
-              </span>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
-                FROM THE CBM NEWSROOM
-              </p>
+            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.22em] text-[#00d4a5]">
+              <span>INDEX 04</span>
+              <span className="text-white/20">/</span>
+              <span>EDITORIAL & JOURNAL</span>
             </div>
-            <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-              Community Voices & Stories
+            <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
+              Dispatches & Perspectives
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
-              Investigative features, arts & culture perspectives, and station dispatches covering our community.
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:text-base">
+              Cultural reporting, arts and entertainment, and reflective commentary from the CBM newsroom.
             </p>
           </div>
 
           <Link
             href="/news"
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-5 text-sm font-extrabold text-[#00d4a5] transition-all hover:bg-[#00d4a5] hover:text-[#062521]"
+            className="inline-flex items-center gap-2 border border-white/20 bg-transparent px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition hover:border-[#00d4a5] hover:text-[#00d4a5] w-fit"
           >
-            All News Stories <ArrowUpRight size={17} aria-hidden="true" />
+            <span>All Articles</span>
+            <ArrowUpRight size={15} />
           </Link>
         </div>
 
         {/* Loading State */}
-        {(featuredState === "loading" || latestState === "loading") &&
-          !featured &&
-          secondaryStories.length === 0 && (
-            <p
-              className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-12 text-center text-white/70"
-              aria-live="polite"
-            >
-              Loading newsroom dispatches...
-            </p>
-          )}
-
-        {/* Fallback when no live news stories */}
-        {!featured &&
-          secondaryStories.length === 0 &&
-          featuredState !== "loading" &&
-          latestState !== "loading" && (
-            <div className="cbm-card grid overflow-hidden rounded-2xl border border-white/15 bg-[#0f1715] sm:grid-cols-[0.9fr_1.1fr]">
-              <div className="relative min-h-60 sm:min-h-72">
-                <Image
-                  src={NewsroomStudioSet}
-                  alt="CBM Radio newsroom studio set"
-                  fill
-                  sizes="(max-width: 640px) 100vw, 45vw"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent sm:bg-gradient-to-r" />
-              </div>
-              <div className="flex flex-col justify-center p-6 sm:p-10">
-                <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#00d4a5]/10 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
-                  <Radio size={13} /> DESK DISPATCH
-                </span>
-                <h3 className="mt-3 text-2xl font-black sm:text-3xl">
-                  Stories That Move Culture Forward
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-zinc-300">
-                  Stay updated on station developments, regional arts and entertainment, and authentic perspectives from our community.
-                </p>
-                <Link
-                  href="/news"
-                  className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 rounded-full bg-[#00d4a5] px-6 text-sm font-extrabold text-[#062521] transition hover:bg-[#48d4c1]"
-                >
-                  Visit The Newsroom <ArrowUpRight size={17} aria-hidden="true" />
-                </Link>
-                {(isEmpty || featuredState === "error" || latestState === "error") && (
-                  <p className="mt-4 text-xs text-white/40">
-                    {isEmpty
-                      ? "Fresh articles are being drafted. Check back shortly."
-                      : "Some news feeds are momentarily offline."}
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
-
-        {/* Primary Featured Story Hero Card */}
-        {featured && (
-          <Link
-            href={`/news/${featured.slug}`}
-            className="cbm-card group relative mb-8 grid overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-r from-[#0c1412] to-[#070b0a] shadow-xl hover:border-[#00d4a5]/50 lg:grid-cols-[1.1fr_0.9fr]"
-          >
-            <div className="relative min-h-72 lg:min-h-[22rem]">
-              <Image
-                src={featured.cover_image || NewsroomStudioSet}
-                alt={featured.title}
-                fill
-                sizes="(max-width: 1024px) 100vw, 55vw"
-                unoptimized={Boolean(featured.cover_image)}
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent lg:bg-gradient-to-r" />
-              <div className="absolute left-4 top-4">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/90 px-3 py-1 text-xs font-black uppercase tracking-wider text-white shadow-md">
-                  <Flame size={13} /> TOP STORY
-                </span>
-              </div>
-            </div>
-
-            <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
-              {featured.category && (
-                <span className="text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
-                  {featured.category.name}
-                </span>
-              )}
-              <h3 className="mt-2 text-2xl font-black text-white sm:text-3xl lg:text-4xl group-hover:text-[#00d4a5] transition-colors leading-tight">
-                {featured.title}
-              </h3>
-
-              <div className="mt-6 flex flex-wrap items-center gap-4 text-xs text-zinc-400 border-t border-white/10 pt-4">
-                {featured.author && (
-                  <span className="font-bold text-white">By {featured.author}</span>
-                )}
-                {(featured.published_at || featured.created_at) && (
-                  <span className="flex items-center gap-1 text-[#00d4a5]">
-                    <Clock size={13} />
-                    <span>{formatTimeAgo(featured.published_at || featured.created_at)}</span>
-                  </span>
-                )}
-                {featured.published_at && (
-                  <span className="text-zinc-500">
-                    {formatPublicationDate(featured.published_at)}
-                  </span>
-                )}
-              </div>
-            </div>
-          </Link>
+        {loading && (
+          <div className="border border-white/10 bg-[#0e1013] p-16 text-center text-zinc-400">
+            <p className="text-sm font-semibold tracking-wider">LOADING NEWSROOM DISPATCHES...</p>
+          </div>
         )}
 
-        {/* Secondary Recent Stories Grid */}
-        {secondaryStories.length > 0 && (
-          <div>
-            <div className="mb-4 flex items-center justify-between">
-              <p className="text-xs font-extrabold uppercase tracking-wider text-[#00d4a5]">
-                More from the wire
-              </p>
-            </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {secondaryStories.map((article, index) => {
-                const fallbackImg = index % 2 === 0 ? BrianPortrait : SamuelPortrait;
+        {/* Broadsheet Editorial Spread */}
+        {!loading && leadArticle && (
+          <div className="grid gap-8 lg:grid-cols-12">
+            
+            {/* Left: Lead Article Broadsheet Column */}
+            <article className="lg:col-span-7 border border-white/10 bg-[#0e1013] p-6 sm:p-8 flex flex-col justify-between group hover:border-[#00d4a5] transition-colors">
+              <div>
+                <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/60 border border-white/10">
+                  <Image
+                    src={leadArticle.cover_image || NewsroomStudioSet}
+                    alt={leadArticle.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 55vw"
+                    unoptimized={Boolean(leadArticle.cover_image)}
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  
+                  {leadArticle.category && (
+                    <div className="absolute left-4 top-4">
+                      <span className="bg-black/85 px-3 py-1 text-[0.65rem] font-black uppercase tracking-wider text-[#00d4a5] border border-white/10">
+                        {leadArticle.category.name}
+                      </span>
+                    </div>
+                  )}
+                </div>
 
-                return (
-                  <Link
-                    key={article.id}
-                    href={`/news/${article.slug}`}
-                    className="cbm-card group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0d1614]/80 transition-all hover:border-[#00d4a5]/40 hover:bg-[#111c19]"
-                  >
-                    <div className="relative aspect-video w-full overflow-hidden bg-black/40">
-                      <Image
-                        src={article.cover_image || fallbackImg}
-                        alt={article.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        unoptimized={Boolean(article.cover_image)}
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      {article.category && (
-                        <span className="absolute bottom-3 left-3 rounded-full bg-black/60 px-2.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-[#00d4a5] backdrop-blur-sm">
-                          {article.category.name}
-                        </span>
+                <div className="mt-6 flex items-center gap-4 text-[0.68rem] text-zinc-400">
+                  {leadArticle.author && (
+                    <span className="font-bold text-white uppercase tracking-wider">
+                      BY {leadArticle.author}
+                    </span>
+                  )}
+                  {(leadArticle.published_at || leadArticle.created_at) && (
+                    <span className="flex items-center gap-1 text-[#00d4a5]">
+                      <Clock size={11} />
+                      <span>{formatTimeAgo(leadArticle.published_at || leadArticle.created_at)}</span>
+                    </span>
+                  )}
+                </div>
+
+                <h3 className="mt-3 text-2xl font-black text-white sm:text-3xl leading-snug group-hover:text-[#00d4a5] transition-colors">
+                  <Link href={`/news/${leadArticle.slug}`}>
+                    {leadArticle.title}
+                  </Link>
+                </h3>
+              </div>
+
+              <div className="mt-6 border-t border-white/10 pt-4 flex items-center justify-between text-xs font-bold">
+                <Link
+                  href={`/news/${leadArticle.slug}`}
+                  className="inline-flex items-center gap-1.5 text-[#00d4a5] hover:underline"
+                >
+                  <span>Read Full Dispatch</span>
+                  <ArrowUpRight size={14} />
+                </Link>
+                <span className="text-zinc-500 text-[0.68rem] uppercase tracking-wider">
+                  EDITORIAL DESK
+                </span>
+              </div>
+            </article>
+
+            {/* Right: Secondary Dispatches List */}
+            <div className="lg:col-span-5 flex flex-col justify-between gap-6">
+              <div className="border border-white/10 bg-[#0e1013] p-6 divide-y divide-white/10">
+                <p className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-zinc-500 pb-4">
+                  MORE STORIES // RECENT WIRE
+                </p>
+
+                {secondaryArticles.map((article, idx) => (
+                  <article key={article.id} className="py-5 group">
+                    <div className="flex items-center justify-between text-[0.65rem] text-zinc-500">
+                      <span className="font-black uppercase tracking-wider text-[#00d4a5]">
+                        {article.category?.name || `WIRE 0${idx + 1}`}
+                      </span>
+                      {(article.published_at || article.created_at) && (
+                        <span>{formatTimeAgo(article.published_at || article.created_at)}</span>
                       )}
                     </div>
 
-                    <div className="flex flex-1 flex-col justify-between p-5">
-                      <div>
-                        <h4 className="font-extrabold text-white text-lg group-hover:text-[#00d4a5] transition-colors line-clamp-2">
-                          {article.title}
-                        </h4>
-                      </div>
+                    <h4 className="mt-1.5 text-base font-black text-white group-hover:text-[#00d4a5] transition-colors line-clamp-2">
+                      <Link href={`/news/${article.slug}`}>
+                        {article.title}
+                      </Link>
+                    </h4>
 
-                      <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3 text-xs text-zinc-400">
-                        <span className="truncate max-w-[140px]">
-                          {article.author ? `By ${article.author}` : "CBM News"}
-                        </span>
-                        {(article.published_at || article.created_at) && (
-                          <span className="flex items-center gap-1 text-[#00d4a5]">
-                            <Clock size={12} />
-                            <span>{formatTimeAgo(article.published_at || article.created_at)}</span>
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
+                    <Link
+                      href={`/news/${article.slug}`}
+                      className="mt-2.5 inline-flex items-center gap-1 text-[0.7rem] font-bold text-zinc-400 hover:text-white transition"
+                    >
+                      <span>Read Story</span>
+                      <ArrowUpRight size={12} />
+                    </Link>
+                  </article>
+                ))}
+
+                {secondaryArticles.length === 0 && (
+                  <div className="py-8 text-center text-xs text-zinc-500">
+                    Additional articles being published from the newsroom.
+                  </div>
+                )}
+              </div>
+
+              {/* Newsroom Wire Footer */}
+              <div className="border border-white/10 bg-[#0c0e11] p-5 flex items-center justify-between">
+                <div>
+                  <h5 className="text-xs font-black uppercase tracking-wider text-white">
+                    CBM Editorial Pressroom
+                  </h5>
+                  <p className="text-[0.68rem] text-zinc-400">
+                    Stories covering East African culture, sound, and dialogue.
+                  </p>
+                </div>
+                <Link
+                  href="/news"
+                  className="text-xs font-black uppercase tracking-wider text-[#00d4a5] hover:underline"
+                >
+                  View All &rarr;
+                </Link>
+              </div>
             </div>
+
           </div>
         )}
+
       </div>
     </section>
   );

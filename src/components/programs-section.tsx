@@ -3,19 +3,12 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  Headphones,
-  Mic2,
-  Radio,
-  Sparkles,
-} from "lucide-react";
+import { ArrowUpRight, Headphones, Mic2 } from "lucide-react";
 
 import homeService from "@/services/home.service";
 import type { ProgramSummary } from "@/types/program";
 
 import DanielPortrait from "../../public/cbm_images/daniel.svg";
-import ArtistSpotlightArtwork from "../../public/cbm_images/artist-spotlight.png";
 import BrianPortrait from "../../public/cbm_images/brian.svg";
 import SamuelPortrait from "../../public/cbm_images/samuel.svg";
 
@@ -23,7 +16,7 @@ const programArtwork = [DanielPortrait, BrianPortrait, SamuelPortrait];
 
 export default function ProgramsSection() {
   const [programs, setPrograms] = useState<ProgramSummary[]>([]);
-  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -32,10 +25,10 @@ export default function ProgramsSection() {
       .then((items) => {
         if (!isMounted) return;
         setPrograms(items);
-        setStatus("ready");
+        setLoading(false);
       })
       .catch(() => {
-        if (isMounted) setStatus("error");
+        if (isMounted) setLoading(false);
       });
     return () => {
       isMounted = false;
@@ -45,163 +38,111 @@ export default function ProgramsSection() {
   return (
     <section
       id="shows"
-      className="relative scroll-mt-20 border-b border-white/10 bg-[#070b09] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
+      className="relative scroll-mt-20 border-b border-white/10 bg-[#08090a] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
     >
-      {/* Background ambient lighting */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute right-1/4 top-1/4 -z-10 h-96 w-96 rounded-full bg-[#00d4a5]/5 blur-3xl"
-      />
-
       <div className="mx-auto max-w-7xl">
         
-        {/* Section Header */}
+        {/* Header Strip */}
         <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b border-white/10 pb-6">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-3.5 py-1 text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
-              <Radio size={14} />
-              <span>Original Series</span>
+            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.22em] text-[#00d4a5]">
+              <span>INDEX 03</span>
+              <span className="text-white/20">/</span>
+              <span>SERIES ANTHOLOGY</span>
             </div>
             <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-              Our Shows & Series
+              Original Shows & Talk Series
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:text-base">
-              Original conversations, insightful series, and cultural discussions hosted by your favorite CBM voices.
+              Explore CBM’s ongoing broadcast franchises covering purpose, regional arts, faith, and cultural dialogue.
             </p>
           </div>
 
           <Link
             href="/programs"
-            className="inline-flex items-center gap-2 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-5 py-2.5 text-xs font-black uppercase tracking-wider text-[#00d4a5] transition-all hover:bg-[#00d4a5] hover:text-[#062521] w-fit"
+            className="inline-flex items-center gap-2 border border-white/20 bg-transparent px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition hover:border-[#00d4a5] hover:text-[#00d4a5] w-fit"
           >
-            <span>Full Show Directory</span>
-            <ArrowUpRight size={15} aria-hidden="true" />
+            <span>Full Program Directory</span>
+            <ArrowUpRight size={15} />
           </Link>
         </div>
 
         {/* Loading State */}
-        {status === "loading" && (
-          <div
-            className="rounded-2xl border border-white/10 bg-white/[0.02] px-5 py-16 text-center text-zinc-400"
-            aria-live="polite"
-          >
-            Loading shows from CBM Radio...
+        {loading && (
+          <div className="border border-white/10 bg-[#0e1013] p-16 text-center text-zinc-400">
+            <p className="text-sm font-semibold tracking-wider">RETRIEVING SHOW ROSTER...</p>
           </div>
         )}
 
-        {/* Empty / Error Fallback Feature Card */}
-        {(status === "error" || (status === "ready" && programs.length === 0)) && (
-          <article className="cbm-card grid overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-r from-[#0d1614] to-[#070b09] sm:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
-            <div className="relative min-h-64 sm:min-h-80">
-              <Image
-                src={ArtistSpotlightArtwork}
-                alt="My Life, My Purpose show showcase"
-                fill
-                sizes="(max-width: 640px) 100vw, 45vw"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent sm:bg-gradient-to-r" />
-            </div>
-            <div className="flex flex-col justify-center p-6 sm:p-10">
-              <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#00d4a5]/10 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
-                <Sparkles size={13} /> SHOWCASE SERIES
-              </span>
-              <h3 className="mt-3 text-2xl font-black text-white sm:text-3xl">
-                My Life, My Purpose
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-zinc-300">
-                Transformational conversations on career, purpose, personal growth, and community culture with top guest interviews.
-              </p>
-              <div className="mt-6 flex flex-wrap items-center gap-4">
-                <Link
-                  href="/programs"
-                  className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#00d4a5] px-6 text-xs font-black uppercase tracking-wider text-[#062521] transition hover:bg-[#34e2b8]"
-                >
-                  <span>Explore Shows</span>
-                  <ArrowUpRight size={16} aria-hidden="true" />
-                </Link>
-                <Link
-                  href="/episodes"
-                  className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 text-xs font-bold uppercase tracking-wider text-white transition hover:border-[#00d4a5] hover:text-[#00d4a5]"
-                >
-                  <Headphones size={15} />
-                  <span>Stream Episodes</span>
-                </Link>
-              </div>
-            </div>
-          </article>
-        )}
-
-        {/* Shows Cards Grid */}
-        {programs.length > 0 && (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {programs.map((program, index) => {
+        {/* Shows Roster: Architectural Ledger Grid */}
+        {!loading && programs.length > 0 && (
+          <div className="grid gap-6 md:grid-cols-2">
+            {programs.map((program, idx) => {
               const artwork =
-                program.cover_image || programArtwork[index % programArtwork.length];
+                program.cover_image || programArtwork[idx % programArtwork.length];
 
               return (
                 <article
                   key={program.id}
-                  className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#09120f]/80 p-5 transition-all duration-300 hover:border-[#00d4a5]/40 hover:bg-[#0c1814] hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)] backdrop-blur-md"
+                  className="group relative border border-white/10 bg-[#0e1013] p-6 transition-all duration-200 hover:border-[#00d4a5]"
                 >
-                  <div>
-                    {/* Show Artwork */}
-                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-black/40 border border-white/10 shadow-sm">
+                  <div className="flex flex-col sm:flex-row gap-5">
+                    
+                    {/* Artwork Poster */}
+                    <div className="relative aspect-[4/3] w-full sm:w-44 shrink-0 overflow-hidden bg-black/60 border border-white/10">
                       <Image
                         src={artwork}
-                        alt={`${program.title} show cover`}
+                        alt={`${program.title} artwork`}
                         fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        sizes="(max-width: 640px) 100vw, 176px"
                         unoptimized={Boolean(program.cover_image)}
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                      
-                      {program.presenter && (
-                        <div className="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-full bg-black/75 px-3 py-1 text-[0.68rem] font-bold text-white/90 backdrop-blur-md">
-                          <Mic2 size={11} className="text-[#00d4a5]" />
-                          <span>{program.presenter}</span>
+                    </div>
+
+                    {/* Show Information */}
+                    <div className="flex flex-1 flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+                          <span>SHOW // 0{idx + 1}</span>
+                          {program.schedule && (
+                            <span className="text-zinc-500">{program.schedule}</span>
+                          )}
                         </div>
-                      )}
-                    </div>
 
-                    {/* Program Information */}
-                    <div className="mt-4">
-                      <span className="text-[0.65rem] font-black uppercase tracking-[0.18em] text-[#00d4a5]">
-                        CBM ORIGINAL SERIES
-                      </span>
+                        <h3 className="mt-1.5 text-xl font-black text-white group-hover:text-[#00d4a5] transition-colors">
+                          <Link href={`/episodes?program=${encodeURIComponent(program.slug)}`}>
+                            {program.title}
+                          </Link>
+                        </h3>
 
-                      <h3 className="mt-1 text-xl font-black text-white group-hover:text-[#00d4a5] transition-colors">
-                        <Link href={`/episodes?program=${encodeURIComponent(program.slug)}`}>
-                          {program.title}
+                        {program.presenter && (
+                          <p className="mt-1 flex items-center gap-1.5 text-xs font-bold text-zinc-400">
+                            <Mic2 size={12} className="text-[#00d4a5]" />
+                            <span>{program.presenter}</span>
+                          </p>
+                        )}
+
+                        {program.short_description && (
+                          <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-zinc-400">
+                            {program.short_description}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Explore Show Episodes CTA */}
+                      <div className="mt-4 border-t border-white/10 pt-3 flex items-center justify-between text-xs">
+                        <Link
+                          href={`/episodes?program=${encodeURIComponent(program.slug)}`}
+                          className="inline-flex items-center gap-1.5 font-black uppercase tracking-wider text-[#00d4a5] hover:underline"
+                        >
+                          <Headphones size={13} />
+                          <span>Stream Show Episodes</span>
                         </Link>
-                      </h3>
-
-                      {program.short_description && (
-                        <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-zinc-400">
-                          {program.short_description}
-                        </p>
-                      )}
+                        <ArrowUpRight size={14} className="text-zinc-500 group-hover:text-white" />
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Show Footer Links */}
-                  <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
-                    <Link
-                      href={`/episodes?program=${encodeURIComponent(program.slug)}`}
-                      className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#00d4a5] hover:text-[#5eead4] transition-colors"
-                    >
-                      <Headphones size={13} />
-                      <span>Listen to Episodes</span>
-                    </Link>
-
-                    <Link
-                      href={`/programs#${program.slug || program.id}`}
-                      aria-label={`Show guide for ${program.title}`}
-                      className="grid size-8 place-items-center rounded-full border border-white/15 bg-white/5 text-white/70 transition-all group-hover:border-[#00d4a5] group-hover:bg-[#00d4a5] group-hover:text-[#062521]"
-                    >
-                      <ArrowUpRight size={14} />
-                    </Link>
                   </div>
                 </article>
               );
@@ -209,26 +150,48 @@ export default function ProgramsSection() {
           </div>
         )}
 
-        {/* Creator / Proposal Banner */}
-        <div className="mt-10 rounded-2xl border border-white/10 bg-[#08120e]/60 p-6 sm:flex sm:items-center sm:justify-between sm:p-8 backdrop-blur-md">
-          <div className="flex items-center gap-4">
-            <div className="grid size-12 shrink-0 place-items-center rounded-xl bg-[#00d4a5]/10 text-[#00d4a5]">
-              <Mic2 size={24} />
-            </div>
-            <div>
-              <h4 className="text-base font-black text-white">
-                Interested in hosting or collaborating on a show?
-              </h4>
-              <p className="text-xs text-zinc-400">
-                Partner with CBM Radio to bring authentic, high-impact stories to our audience.
+        {/* Fallback Display if no programs returned */}
+        {!loading && programs.length === 0 && (
+          <article className="border border-white/10 bg-[#0e1013] p-8 sm:p-12">
+            <div className="max-w-2xl">
+              <span className="text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+                PREMIERE SERIES
+              </span>
+              <h3 className="mt-2 text-2xl font-black text-white sm:text-3xl">
+                My Life, My Purpose
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-zinc-400">
+                Transformational conversations on career, purpose, personal growth, and community culture with top guest interviews.
               </p>
+              <Link
+                href="/episodes"
+                className="mt-6 inline-flex items-center gap-2 bg-[#00d4a5] px-6 py-3 text-xs font-black uppercase tracking-wider text-[#062521] hover:bg-[#34e2b8]"
+              >
+                <span>Browse All Episodes</span>
+                <ArrowUpRight size={15} />
+              </Link>
             </div>
+          </article>
+        )}
+
+        {/* Creative Pitch Banner */}
+        <div className="mt-12 border border-white/10 bg-[#0c0e11] p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+              STUDIO COLLABORATION
+            </p>
+            <h4 className="mt-1 text-base font-black text-white">
+              Pitch an original talk concept or guest feature
+            </h4>
+            <p className="mt-0.5 text-xs text-zinc-400">
+              CBM Radio collaborates with producers, writers, and cultural voices.
+            </p>
           </div>
           <Link
             href="/contact"
-            className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-5 text-xs font-black uppercase tracking-wider text-[#00d4a5] transition hover:bg-[#00d4a5] hover:text-[#062521] sm:mt-0"
+            className="inline-flex items-center gap-2 border border-white/20 bg-transparent px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition hover:border-[#00d4a5] hover:text-[#00d4a5] w-fit shrink-0"
           >
-            <span>Pitch a Program</span>
+            <span>Submit Proposal</span>
             <ArrowUpRight size={14} />
           </Link>
         </div>

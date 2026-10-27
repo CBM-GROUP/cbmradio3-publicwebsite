@@ -7,42 +7,47 @@ import Gallery from "@/components/gallery";
 import HomepageAdditions from "@/components/homepage-additions";
 import Footer from "@/components/footer";
 import DynamicPageSections from "@/components/dynamic-page-sections";
+import FloatingPlayerDock from "@/components/media/floating-player-dock";
 
 export default function Home() {
   return (
     <>
       <Header />
-      <main className="overflow-hidden bg-[#060a08]">
+      <main className="overflow-hidden bg-[#08090a]">
         {/* Dynamic Hero Placement */}
         <DynamicPageSections page="home" position="hero" />
 
-        {/* 1. Cinematic On-Demand Media Hero with Spotlight Episode Preview */}
+        {/* 01 // Master Editorial Cover Deck with Live Switcher & Player Stage */}
         <HeroSection />
 
-        {/* Dynamic Top Sections */}
+        {/* Dynamic Top Placement */}
         <DynamicPageSections page="home" position="top" />
 
-        {/* 2. On-Demand Podcast Episodes & Audio Series (Dashboard Releases) */}
+        {/* 02 // Episode Archive Crate (On-Demand Filterable Crate) */}
         <EpisodesSection />
 
-        {/* 3. Original Shows & Series Lineup */}
+        {/* 03 // Original Shows & Series Roster */}
         <ProgramsSection />
 
-        {/* 4. Newsroom Dispatches & Community Stories */}
+        {/* 04 // Newsroom Dispatches & Journal */}
         <NewsSection />
 
-        {/* 5. Studio Moments & Behind-the-Scenes Gallery */}
+        {/* 05 // Studio Darkroom Visual Archive */}
         <Gallery />
 
-        {/* Dynamic Middle Sections */}
+        {/* Dynamic Middle Placement */}
         <DynamicPageSections page="home" position="middle" />
 
-        {/* 6. Community Hub, WhatsApp Network & Brand Partnerships */}
+        {/* 06 // Community WhatsApp & Studio Partnerships Hub */}
         <HomepageAdditions />
 
-        {/* Dynamic Bottom Sections */}
+        {/* Dynamic Bottom Placement */}
         <DynamicPageSections page="home" position="bottom" />
       </main>
+
+      {/* Interactive Global Bottom Player Dock */}
+      <FloatingPlayerDock />
+
       <Footer />
     </>
   );
