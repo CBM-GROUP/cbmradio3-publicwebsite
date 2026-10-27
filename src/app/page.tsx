@@ -99,13 +99,16 @@ export default function Home() {
         {/* Priority 2: Inside The Studio & Moments Gallery */}
         <Gallery />
 
-        {/* Dynamic & Community Additions */}
+        {/* Dynamic Sections */}
         <DynamicPageSections page="home" position="top" />
-        <HomepageAdditions />
-        <DynamicPageSections page="home" position="middle" />
 
         {/* On-Air Talent Highlights */}
         <TeamMembers limit={6} />
+
+        <DynamicPageSections page="home" position="middle" />
+
+        {/* Community & Broadcast Engagement Hub */}
+        <HomepageAdditions />
         
         <DynamicPageSections page="home" position="bottom" />
         
