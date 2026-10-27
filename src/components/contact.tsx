@@ -60,14 +60,14 @@ export default function Contact() {
       {/* Background ambient radial glow */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 -z-10 h-96 w-full max-w-7xl bg-[radial-gradient(ellipse_at_top,rgba(0,212,165,0.1)_0%,transparent_70%)]"
+        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 -z-10 h-96 w-full max-w-7xl bg-[radial-gradient(ellipse_at_top,rgba(4,176,147,0.1)_0%,transparent_70%)]"
       />
 
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-12 flex flex-col gap-4 border-b border-white/10 pb-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-3.5 py-1 text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#04b093]/40 bg-[#04b093]/10 px-3.5 py-1 text-xs font-black uppercase tracking-[0.2em] text-[#04b093]">
               <Radio size={14} />
               <span>Studio & Inquiries</span>
             </div>
@@ -98,7 +98,7 @@ export default function Contact() {
           <div className="space-y-4 lg:col-span-5">
             {/* Quick Station Stats Card */}
             <div className="rounded-2xl border border-white/10 bg-[#0a120f]/80 p-6 shadow-xl backdrop-blur-md">
-              <span className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+              <span className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
                 STATION HEADQUARTERS
               </span>
               <h3 className="mt-2 text-xl font-black text-white">
@@ -110,7 +110,7 @@ export default function Contact() {
 
               <div className="mt-6 space-y-4 border-t border-white/10 pt-5 text-sm">
                 <div className="flex items-start gap-3.5">
-                  <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#00d4a5]/10 text-[#00d4a5]">
+                  <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#04b093]/10 text-[#04b093]">
                     <MapPin size={17} />
                   </div>
                   <div>
@@ -122,14 +122,14 @@ export default function Contact() {
                 </div>
 
                 <div className="flex items-start gap-3.5">
-                  <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#00d4a5]/10 text-[#00d4a5]">
+                  <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#04b093]/10 text-[#04b093]">
                     <Phone size={17} />
                   </div>
                   <div>
                     <span className="block text-xs font-bold text-white/50 uppercase tracking-wider">Studio Hotline</span>
                     <a
                       href={`tel:${contact?.business_phone?.replace(/[^+\d]/g, "") || "+256700000000"}`}
-                      className="font-semibold text-white hover:text-[#00d4a5] transition-colors"
+                      className="font-semibold text-white hover:text-[#04b093] transition-colors"
                     >
                       {contact?.business_phone || "+256 700 000 000"}
                     </a>
@@ -137,14 +137,14 @@ export default function Contact() {
                 </div>
 
                 <div className="flex items-start gap-3.5">
-                  <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#00d4a5]/10 text-[#00d4a5]">
+                  <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#04b093]/10 text-[#04b093]">
                     <Mail size={17} />
                   </div>
                   <div>
                     <span className="block text-xs font-bold text-white/50 uppercase tracking-wider">Official Email</span>
                     <a
                       href={`mailto:${contact?.business_email || "studio@cbmradio.com"}`}
-                      className="font-semibold text-white hover:text-[#00d4a5] transition-colors break-all"
+                      className="font-semibold text-white hover:text-[#04b093] transition-colors break-all"
                     >
                       {contact?.business_email || "studio@cbmradio.com"}
                     </a>
@@ -152,7 +152,7 @@ export default function Contact() {
                 </div>
 
                 <div className="flex items-start gap-3.5">
-                  <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#00d4a5]/10 text-[#00d4a5]">
+                  <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#04b093]/10 text-[#04b093]">
                     <Clock size={17} />
                   </div>
                   <div>
@@ -167,7 +167,7 @@ export default function Contact() {
 
             {/* Quick Direct Inquiries Box */}
             <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#0c1814] to-[#070e0b] p-6 shadow-md">
-              <span className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#00d4a5]">
+              <span className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#04b093]">
                 <Sparkles size={14} /> Sponsorships & Collaborations
               </span>
               <p className="mt-2 text-xs text-zinc-300">
@@ -189,7 +189,7 @@ export default function Contact() {
             <div className="rounded-2xl border border-white/15 bg-[#09120f]/90 p-6 sm:p-9 shadow-2xl backdrop-blur-xl">
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <div>
-                  <span className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+                  <span className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
                     DIRECT MESSAGE DESK
                   </span>
                   <h3 className="mt-1 text-xl font-black text-white">
@@ -197,14 +197,14 @@ export default function Contact() {
                   </h3>
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-white/50">
-                  <Headphones size={14} className="text-[#00d4a5]" />
+                  <Headphones size={14} className="text-[#04b093]" />
                   <span>Listener Support</span>
                 </div>
               </div>
 
               {formSubmitted ? (
                 <div className="py-12 text-center space-y-4">
-                  <div className="mx-auto grid size-16 place-items-center rounded-full bg-[#00d4a5]/20 text-[#00d4a5]">
+                  <div className="mx-auto grid size-16 place-items-center rounded-full bg-[#04b093]/20 text-[#04b093]">
                     <CheckCircle2 size={36} />
                   </div>
                   <h4 className="text-2xl font-black text-white">
@@ -219,7 +219,7 @@ export default function Contact() {
                       setFormSubmitted(false);
                       setFormData({ name: "", email: "", topic: "general", message: "" });
                     }}
-                    className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-2.5 text-xs font-black uppercase tracking-wider text-white hover:border-[#00d4a5] hover:text-[#00d4a5] transition-all"
+                    className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-2.5 text-xs font-black uppercase tracking-wider text-white hover:border-[#04b093] hover:text-[#04b093] transition-all"
                   >
                     Send Another Note
                   </button>
@@ -238,7 +238,7 @@ export default function Contact() {
                         placeholder="e.g. Alex Mugisha"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[#00d4a5] focus:outline-none focus:ring-1 focus:ring-[#00d4a5]"
+                        className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[#04b093] focus:outline-none focus:ring-1 focus:ring-[#04b093]"
                       />
                     </div>
 
@@ -253,7 +253,7 @@ export default function Contact() {
                         placeholder="alex@example.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[#00d4a5] focus:outline-none focus:ring-1 focus:ring-[#00d4a5]"
+                        className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[#04b093] focus:outline-none focus:ring-1 focus:ring-[#04b093]"
                       />
                     </div>
                   </div>
@@ -266,7 +266,7 @@ export default function Contact() {
                       id="contact-topic"
                       value={formData.topic}
                       onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
-                      className="w-full rounded-xl border border-white/15 bg-[#0b1411] px-4 py-3 text-sm text-white focus:border-[#00d4a5] focus:outline-none focus:ring-1 focus:ring-[#00d4a5]"
+                      className="w-full rounded-xl border border-white/15 bg-[#0b1411] px-4 py-3 text-sm text-white focus:border-[#04b093] focus:outline-none focus:ring-1 focus:ring-[#04b093]"
                     >
                       <option value="general">General Listener Feedback</option>
                       <option value="music">Music Submission / Chart Request</option>
@@ -286,14 +286,14 @@ export default function Contact() {
                       placeholder="Share your thoughts, music recommendations, or partnership inquiry with our team..."
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[#00d4a5] focus:outline-none focus:ring-1 focus:ring-[#00d4a5]"
+                      className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[#04b093] focus:outline-none focus:ring-1 focus:ring-[#04b093]"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-xl bg-[#00d4a5] px-6 text-xs font-black uppercase tracking-wider text-[#062521] shadow-[0_8px_25px_rgba(0,212,165,0.3)] transition-all hover:bg-[#34e2b8] hover:shadow-[0_12px_32px_rgba(0,212,165,0.4)] disabled:opacity-60"
+                    className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-xl bg-[#04b093] px-6 text-xs font-black uppercase tracking-wider text-[#062521] shadow-[0_8px_25px_rgba(4,176,147,0.3)] transition-all hover:bg-[#05c6a5] hover:shadow-[0_12px_32px_rgba(4,176,147,0.4)] disabled:opacity-60"
                   >
                     {isSubmitting ? (
                       <span>Sending note...</span>

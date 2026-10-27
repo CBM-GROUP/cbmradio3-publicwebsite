@@ -8,9 +8,9 @@
   --brand-panel: #121a17;
   --brand-ink: #ffffff;
   --brand-muted: #c4d0cc;
-  --brand-accent: #00d4a5;
-  --brand-accent-strong: #48d4c1;
-  --brand-accent-soft: rgba(0, 212, 165, 0.15);
+  --brand-accent: #04b093;
+  --brand-accent-strong: #05c6a5;
+  --brand-accent-soft: rgba(4, 176, 147, 0.15);
   --brand-border: rgba(255, 255, 255, 0.08);
   background: var(--brand-bg);
   font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
@@ -39,7 +39,7 @@ body {
 .cbm-card {
   border-color: rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
-  box-shadow: 0 18px 42px -32px rgba(0, 212, 165, 0.5);
+  box-shadow: 0 18px 42px -32px rgba(4, 176, 147, 0.5);
   backdrop-filter: blur(8px);
   transition:
     transform 220ms ease,
@@ -50,8 +50,8 @@ body {
 
 .cbm-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(0, 212, 165, 0.45);
-  box-shadow: 0 24px 52px -30px rgba(0, 212, 165, 0.42);
+  border-color: rgba(4, 176, 147, 0.45);
+  box-shadow: 0 24px 52px -30px rgba(4, 176, 147, 0.42);
 }
 
 .cbm-card img {
@@ -118,10 +118,10 @@ body {
 /* Neon Glow Pulse */
 @keyframes neon-pulse {
   0%, 100% {
-    box-shadow: 0 0 15px rgba(72, 212, 193, 0.25), inset 0 0 15px rgba(72, 212, 193, 0.15);
+    box-shadow: 0 0 15px rgba(4, 176, 147, 0.25), inset 0 0 15px rgba(4, 176, 147, 0.15);
   }
   50% {
-    box-shadow: 0 0 28px rgba(72, 212, 193, 0.45), inset 0 0 22px rgba(72, 212, 193, 0.25);
+    box-shadow: 0 0 28px rgba(4, 176, 147, 0.45), inset 0 0 22px rgba(4, 176, 147, 0.25);
   }
 }
 

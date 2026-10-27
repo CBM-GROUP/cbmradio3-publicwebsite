@@ -96,7 +96,7 @@ export default function EpisodesSection() {
         <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-white/20 pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="bg-[#00d4a5] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
+              <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
                 THE HOT CRATE
               </span>
               <span className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
@@ -134,7 +134,7 @@ export default function EpisodesSection() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search episodes, series, or topics..."
-              className="w-full border-2 border-white/20 bg-[#0d0d0d] py-2.5 pl-10 pr-9 text-xs font-bold text-white placeholder-zinc-500 focus:border-[#00d4a5] focus:outline-none"
+              className="w-full border-2 border-white/20 bg-[#0d0d0d] py-2.5 pl-10 pr-9 text-xs font-bold text-white placeholder-zinc-500 focus:border-[#04b093] focus:outline-none"
             />
             {searchQuery && (
               <button
@@ -161,7 +161,7 @@ export default function EpisodesSection() {
                 aria-label="Grid layout"
                 className={`p-2 transition ${
                   viewMode === "grid"
-                    ? "bg-[#00d4a5] text-black"
+                    ? "bg-[#04b093] text-black"
                     : "text-zinc-400 hover:text-white"
                 }`}
               >
@@ -173,7 +173,7 @@ export default function EpisodesSection() {
                 aria-label="List layout"
                 className={`p-2 transition ${
                   viewMode === "list"
-                    ? "bg-[#00d4a5] text-black"
+                    ? "bg-[#04b093] text-black"
                     : "text-zinc-400 hover:text-white"
                 }`}
               >
@@ -196,7 +196,7 @@ export default function EpisodesSection() {
               onClick={() => setSelectedProgramId("all")}
               className={`px-3.5 py-1.5 text-xs font-black uppercase tracking-wider transition ${
                 selectedProgramId === "all"
-                  ? "bg-[#00d4a5] text-black"
+                  ? "bg-[#04b093] text-black"
                   : "border border-white/20 bg-[#0d0d0d] text-zinc-400 hover:border-white hover:text-white"
               }`}
             >
@@ -211,7 +211,7 @@ export default function EpisodesSection() {
                   onClick={() => setSelectedProgramId(prog.id)}
                   className={`px-3.5 py-1.5 text-xs font-black uppercase tracking-wider transition ${
                     selectedProgramId === prog.id
-                      ? "bg-[#00d4a5] text-black"
+                      ? "bg-[#04b093] text-black"
                       : "border border-white/20 bg-[#0d0d0d] text-zinc-400 hover:border-white hover:text-white"
                   }`}
                 >
@@ -239,7 +239,7 @@ export default function EpisodesSection() {
                 setSelectedProgramId("all");
                 setSearchQuery("");
               }}
-              className="mt-4 text-xs font-bold text-[#00d4a5] underline"
+              className="mt-4 text-xs font-bold text-[#04b093] underline"
             >
               Reset all filters
             </button>
@@ -255,7 +255,7 @@ export default function EpisodesSection() {
               return (
                 <article
                   key={episode.id}
-                  className="group flex flex-col justify-between border-2 border-white/15 bg-[#0d0d0d] p-5 transition-all duration-200 hover:border-[#00d4a5]"
+                  className="group flex flex-col justify-between border-2 border-white/15 bg-[#0d0d0d] p-5 transition-all duration-200 hover:border-[#04b093]"
                 >
                   <div>
                     {/* Media Thumbnail */}
@@ -280,7 +280,7 @@ export default function EpisodesSection() {
                           #{idx + 1}
                         </span>
                         {idx === 0 && (
-                          <span className="bg-[#00d4a5] px-2 py-0.5 text-[0.62rem] font-black uppercase tracking-wider text-black">
+                          <span className="bg-[#04b093] px-2 py-0.5 text-[0.62rem] font-black uppercase tracking-wider text-black">
                             HOT
                           </span>
                         )}
@@ -291,7 +291,7 @@ export default function EpisodesSection() {
                         type="button"
                         onClick={() => playEpisode(episode, true)}
                         aria-label={`Play ${episode.title}`}
-                        className="absolute inset-0 m-auto grid size-12 place-items-center bg-[#00d4a5] text-black opacity-0 transition-opacity group-hover:opacity-100 hover:scale-105"
+                        className="absolute inset-0 m-auto grid size-12 place-items-center bg-[#04b093] text-black opacity-0 transition-opacity group-hover:opacity-100 hover:scale-105"
                       >
                         <Play size={18} className="ml-0.5 fill-black" />
                       </button>
@@ -299,7 +299,7 @@ export default function EpisodesSection() {
 
                     {/* Metadata Header */}
                     <div className="mt-4 flex items-center justify-between text-[0.68rem]">
-                      <span className="font-black uppercase tracking-wider text-[#00d4a5]">
+                      <span className="font-black uppercase tracking-wider text-[#04b093]">
                         {episode.program_title || "Original Series"}
                       </span>
                       {formattedDate && (
@@ -310,7 +310,7 @@ export default function EpisodesSection() {
                     </div>
 
                     {/* Episode Headline */}
-                    <h3 className="mt-2 text-lg font-black uppercase tracking-tight text-white group-hover:text-[#00d4a5] transition-colors line-clamp-2">
+                    <h3 className="mt-2 text-lg font-black uppercase tracking-tight text-white group-hover:text-[#04b093] transition-colors line-clamp-2">
                       <Link href={`/episodes/${encodeURIComponent(episode.slug)}`}>
                         {episode.title}
                       </Link>
@@ -329,7 +329,7 @@ export default function EpisodesSection() {
                     <button
                       type="button"
                       onClick={() => playEpisode(episode, true)}
-                      className="inline-flex items-center gap-1.5 text-[#00d4a5] hover:text-[#34e2b8] transition"
+                      className="inline-flex items-center gap-1.5 text-[#04b093] hover:text-[#05c6a5] transition"
                     >
                       <Play size={12} className="fill-current" />
                       <span>Stream Master</span>
@@ -340,10 +340,10 @@ export default function EpisodesSection() {
                         type="button"
                         onClick={() => handleCopyLink(episode)}
                         aria-label="Copy link"
-                        className="text-zinc-400 hover:text-[#00d4a5] transition"
+                        className="text-zinc-400 hover:text-[#04b093] transition"
                       >
                         {copiedId === episode.id ? (
-                          <span className="text-[0.68rem] text-[#00d4a5]">Copied!</span>
+                          <span className="text-[0.68rem] text-[#04b093]">Copied!</span>
                         ) : (
                           <Copy size={13} />
                         )}
@@ -386,7 +386,7 @@ export default function EpisodesSection() {
                 >
                   {/* Rank */}
                   <div className="sm:col-span-1 flex items-center gap-3">
-                    <span className="text-2xl font-black tabular-nums tracking-tighter text-[#00d4a5]">
+                    <span className="text-2xl font-black tabular-nums tracking-tighter text-[#04b093]">
                       0{idx + 1}
                     </span>
                   </div>
@@ -408,10 +408,10 @@ export default function EpisodesSection() {
                       />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-[0.65rem] font-black uppercase tracking-wider text-[#00d4a5]">
+                      <p className="text-[0.65rem] font-black uppercase tracking-wider text-[#04b093]">
                         {episode.program_title}
                       </p>
-                      <h4 className="text-sm font-black uppercase text-white group-hover:text-[#00d4a5] transition-colors truncate">
+                      <h4 className="text-sm font-black uppercase text-white group-hover:text-[#04b093] transition-colors truncate">
                         <Link href={`/episodes/${encodeURIComponent(episode.slug)}`}>
                           {episode.title}
                         </Link>
@@ -429,7 +429,7 @@ export default function EpisodesSection() {
                     <button
                       type="button"
                       onClick={() => playEpisode(episode, true)}
-                      className="inline-flex items-center gap-1.5 bg-[#00d4a5] px-3.5 py-1.5 text-black hover:bg-[#34e2b8] transition"
+                      className="inline-flex items-center gap-1.5 bg-[#04b093] px-3.5 py-1.5 text-black hover:bg-[#05c6a5] transition"
                     >
                       <Play size={12} className="fill-black" />
                       <span>Play</span>
@@ -441,7 +441,7 @@ export default function EpisodesSection() {
                       className="border border-white/20 p-2 text-zinc-400 hover:text-white hover:border-white transition"
                     >
                       {copiedId === episode.id ? (
-                        <span className="text-[0.65rem] text-[#00d4a5]">✓</span>
+                        <span className="text-[0.65rem] text-[#04b093]">✓</span>
                       ) : (
                         <Copy size={13} />
                       )}

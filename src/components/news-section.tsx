@@ -54,7 +54,7 @@ export default function NewsSection() {
         <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-white/20 pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="bg-[#00d4a5] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
+              <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
                 THE WIRE
               </span>
               <span className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
@@ -90,7 +90,7 @@ export default function NewsSection() {
           <div className="grid gap-8 lg:grid-cols-12">
             
             {/* Left: Lead Article Column */}
-            <article className="lg:col-span-7 border-2 border-white/15 bg-[#0d0d0d] p-6 sm:p-8 flex flex-col justify-between group hover:border-[#00d4a5] transition-colors">
+            <article className="lg:col-span-7 border-2 border-white/15 bg-[#0d0d0d] p-6 sm:p-8 flex flex-col justify-between group hover:border-[#04b093] transition-colors">
               <div>
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-black border border-white/20">
                   <Image
@@ -105,7 +105,7 @@ export default function NewsSection() {
                   
                   {leadArticle.category && (
                     <div className="absolute left-4 top-4">
-                      <span className="bg-[#00d4a5] px-3 py-1 text-[0.65rem] font-black uppercase tracking-wider text-black">
+                      <span className="bg-[#04b093] px-3 py-1 text-[0.65rem] font-black uppercase tracking-wider text-black">
                         {leadArticle.category.name}
                       </span>
                     </div>
@@ -119,14 +119,14 @@ export default function NewsSection() {
                     </span>
                   )}
                   {(leadArticle.published_at || leadArticle.created_at) && (
-                    <span className="flex items-center gap-1 text-[#00d4a5]">
+                    <span className="flex items-center gap-1 text-[#04b093]">
                       <Clock size={11} />
                       <span>{formatTimeAgo(leadArticle.published_at || leadArticle.created_at)}</span>
                     </span>
                   )}
                 </div>
 
-                <h3 className="mt-3 text-2xl font-black uppercase tracking-tight text-white sm:text-3xl lg:text-4xl leading-tight group-hover:text-[#00d4a5] transition-colors">
+                <h3 className="mt-3 text-2xl font-black uppercase tracking-tight text-white sm:text-3xl lg:text-4xl leading-tight group-hover:text-[#04b093] transition-colors">
                   <Link href={`/news/${leadArticle.slug}`}>
                     {leadArticle.title}
                   </Link>
@@ -136,7 +136,7 @@ export default function NewsSection() {
               <div className="mt-8 border-t border-white/10 pt-4 flex items-center justify-between text-xs font-black uppercase">
                 <Link
                   href={`/news/${leadArticle.slug}`}
-                  className="inline-flex items-center gap-1.5 text-[#00d4a5] hover:text-[#34e2b8] transition"
+                  className="inline-flex items-center gap-1.5 text-[#04b093] hover:text-[#05c6a5] transition"
                 >
                   <span>Read Full Story</span>
                   <ArrowUpRight size={14} />
@@ -151,7 +151,7 @@ export default function NewsSection() {
             <div className="lg:col-span-5 flex flex-col justify-between gap-6">
               <div className="border-2 border-white/15 bg-[#0d0d0d] p-6 divide-y divide-white/10">
                 <div className="flex items-center justify-between pb-4">
-                  <p className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+                  <p className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
                     LATEST WIRE STORIES
                   </p>
                   <Newspaper size={14} className="text-zinc-400" />
@@ -160,7 +160,7 @@ export default function NewsSection() {
                 {secondaryArticles.map((article, idx) => (
                   <article key={article.id} className="py-4 group">
                     <div className="flex items-center justify-between text-[0.65rem] text-zinc-400">
-                      <span className="font-black uppercase tracking-wider text-[#00d4a5]">
+                      <span className="font-black uppercase tracking-wider text-[#04b093]">
                         {article.category?.name || "WIRE"}
                       </span>
                       {(article.published_at || article.created_at) && (
@@ -169,10 +169,10 @@ export default function NewsSection() {
                     </div>
 
                     <div className="mt-1 flex items-baseline gap-3">
-                      <span className="text-lg font-black tabular-nums tracking-tighter text-zinc-500 group-hover:text-[#00d4a5] transition-colors">
+                      <span className="text-lg font-black tabular-nums tracking-tighter text-zinc-500 group-hover:text-[#04b093] transition-colors">
                         0{idx + 1}
                       </span>
-                      <h4 className="text-sm font-black uppercase text-white group-hover:text-[#00d4a5] transition-colors line-clamp-2">
+                      <h4 className="text-sm font-black uppercase text-white group-hover:text-[#04b093] transition-colors line-clamp-2">
                         <Link href={`/news/${article.slug}`}>
                           {article.title}
                         </Link>
@@ -210,7 +210,7 @@ export default function NewsSection() {
                 </div>
                 <Link
                   href="/news"
-                  className="text-xs font-black uppercase tracking-wider text-[#00d4a5] hover:underline"
+                  className="text-xs font-black uppercase tracking-wider text-[#04b093] hover:underline"
                 >
                   All Wire &rarr;
                 </Link>

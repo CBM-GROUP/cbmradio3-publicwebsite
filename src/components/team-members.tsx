@@ -52,10 +52,10 @@ export default function TeamMembers({ limit }: { limit?: number }) {
         <div className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b border-white/10 pb-6">
           <div>
             <div className="flex items-center gap-2">
-              <span className="grid size-7 place-items-center rounded-lg bg-[#00d4a5]/10 text-[#00d4a5]">
+              <span className="grid size-7 place-items-center rounded-lg bg-[#04b093]/10 text-[#04b093]">
                 <Users size={16} />
               </span>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#04b093]">
                 ON-AIR VOICES & TALENT
               </p>
             </div>
@@ -69,7 +69,7 @@ export default function TeamMembers({ limit }: { limit?: number }) {
 
           <Link
             href="/team"
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-5 text-sm font-extrabold text-[#00d4a5] transition-all hover:bg-[#00d4a5] hover:text-[#062521]"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#04b093]/40 bg-[#04b093]/10 px-5 text-sm font-extrabold text-[#04b093] transition-all hover:bg-[#04b093] hover:text-[#062521]"
           >
             All Station Members <ArrowUpRight size={17} aria-hidden="true" />
           </Link>
@@ -107,7 +107,7 @@ export default function TeamMembers({ limit }: { limit?: number }) {
           /* Single member: Beautifully balanced wide showcase card */
           <div className="cbm-card relative overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-r from-[#0c1613] to-[#070b09] p-6 sm:p-10 shadow-xl">
             <div className="grid items-center gap-8 md:grid-cols-[18rem_minmax(0,1fr)]">
-              <div className="relative aspect-square w-full max-w-xs mx-auto overflow-hidden rounded-2xl border-2 border-[#00d4a5]/40 bg-black/40 shadow-xl">
+              <div className="relative aspect-square w-full max-w-xs mx-auto overflow-hidden rounded-2xl border-2 border-[#04b093]/40 bg-black/40 shadow-xl">
                 <Image
                   src={members[0].profileUrl || Logo}
                   alt={members[0].name}
@@ -120,7 +120,7 @@ export default function TeamMembers({ limit }: { limit?: number }) {
 
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#00d4a5]/15 px-3 py-1 text-xs font-black uppercase tracking-wider text-[#00d4a5]">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#04b093]/15 px-3 py-1 text-xs font-black uppercase tracking-wider text-[#04b093]">
                     <Mic2 size={13} /> {members[0].role || "Station Presenter"}
                   </span>
                 </div>
@@ -136,13 +136,13 @@ export default function TeamMembers({ limit }: { limit?: number }) {
                   <button
                     type="button"
                     onClick={() => setSelectedMember(members[0])}
-                    className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#00d4a5] px-6 text-xs font-black uppercase tracking-wider text-[#062521] transition hover:bg-[#48d4c1]"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#04b093] px-6 text-xs font-black uppercase tracking-wider text-[#062521] transition hover:bg-[#04b093]"
                   >
                     View Presenter Profile
                   </button>
                   <Link
                     href="/team"
-                    className="inline-flex min-h-11 items-center gap-2 text-xs font-bold text-white/70 hover:text-[#00d4a5] transition"
+                    className="inline-flex min-h-11 items-center gap-2 text-xs font-bold text-white/70 hover:text-[#04b093] transition"
                   >
                     Explore Full Team Directory <ArrowUpRight size={15} />
                   </Link>
@@ -157,7 +157,7 @@ export default function TeamMembers({ limit }: { limit?: number }) {
               <button
                 type="button"
                 key={member.id}
-                className="cbm-card group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-[#0c1411] text-left transition-all hover:border-[#00d4a5]/50 shadow-md"
+                className="cbm-card group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-[#0c1411] text-left transition-all hover:border-[#04b093]/50 shadow-md"
                 onClick={() => setSelectedMember(member)}
                 aria-label={`View ${member.name} profile`}
               >
@@ -171,11 +171,11 @@ export default function TeamMembers({ limit }: { limit?: number }) {
                 />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent p-5 pt-16">
                   {member.role && (
-                    <span className="block text-[0.65rem] font-black uppercase tracking-wider text-[#00d4a5]">
+                    <span className="block text-[0.65rem] font-black uppercase tracking-wider text-[#04b093]">
                       {member.role}
                     </span>
                   )}
-                  <h4 className="mt-1 text-lg font-black text-white group-hover:text-[#00d4a5] transition-colors">
+                  <h4 className="mt-1 text-lg font-black text-white group-hover:text-[#04b093] transition-colors">
                     {member.name}
                   </h4>
                 </div>
@@ -188,7 +188,7 @@ export default function TeamMembers({ limit }: { limit?: number }) {
           <div className="mt-10">
             <Link
               href="/team"
-              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#00d4a5]/40 px-6 text-sm font-bold text-[#00d4a5] transition-colors hover:bg-[#00d4a5] hover:text-[#062521]"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#04b093]/40 px-6 text-sm font-bold text-[#04b093] transition-colors hover:bg-[#04b093] hover:text-[#062521]"
             >
               Meet The Full On-Air Collective <ArrowUpRight size={16} />
             </Link>
@@ -213,7 +213,7 @@ export default function TeamMembers({ limit }: { limit?: number }) {
               <button
                 type="button"
                 onClick={() => setSelectedMember(null)}
-                className="absolute right-4 top-4 z-10 grid size-9 place-items-center rounded-full bg-black/70 text-white hover:bg-[#00d4a5] hover:text-[#062521] transition"
+                className="absolute right-4 top-4 z-10 grid size-9 place-items-center rounded-full bg-black/70 text-white hover:bg-[#04b093] hover:text-[#062521] transition"
                 aria-label="Close profile"
               >
                 <X size={18} />
@@ -231,7 +231,7 @@ export default function TeamMembers({ limit }: { limit?: number }) {
               </div>
 
               <div className="flex flex-col justify-center">
-                <span className="text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+                <span className="text-xs font-black uppercase tracking-[0.2em] text-[#04b093]">
                   {selectedMember.role}
                 </span>
                 <h3 className="mt-2 text-3xl font-black text-white">

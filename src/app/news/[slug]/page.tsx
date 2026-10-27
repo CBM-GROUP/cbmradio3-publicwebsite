@@ -236,7 +236,7 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
         {/* Reading Time */}
         {readingTime && (
           <div className="flex items-center gap-1.5 rounded-full bg-zinc-900 border border-zinc-800 px-3 py-1 text-xs font-medium text-zinc-300">
-            <BookOpen className="h-3.5 w-3.5 text-[#48d4c1]" />
+            <BookOpen className="h-3.5 w-3.5 text-[#04b093]" />
             <span>{readingTime} min read</span>
           </div>
         )}
@@ -292,7 +292,7 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
             )}`}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-1.5 rounded-lg border border-[#48d4c1]/20 bg-[#48d4c1]/10 px-3 py-1.5 font-semibold text-[#48d4c1] hover:bg-[#48d4c1]/20 transition-colors"
+            className="flex items-center gap-1.5 rounded-lg border border-[#04b093]/20 bg-[#04b093]/10 px-3 py-1.5 font-semibold text-[#04b093] hover:bg-[#04b093]/20 transition-colors"
             title="Share on Facebook"
           >
             <FaFacebook className="h-3.5 w-3.5" />

@@ -51,8 +51,8 @@ export default function HeroSection() {
       {/* Billboard Editorial Marquee News Wire */}
       <div className="border-b border-white/15 bg-[#0a0a0a] py-2.5 overflow-hidden">
         <div className="animate-marquee flex items-center gap-8 whitespace-nowrap text-[0.68rem] font-black uppercase tracking-[0.25em] text-zinc-400">
-          <span className="flex items-center gap-2 text-[#00d4a5]">
-            <Flame size={13} className="fill-[#00d4a5]" />
+          <span className="flex items-center gap-2 text-[#04b093]">
+            <Flame size={13} className="fill-[#04b093]" />
             HOT PODCAST DROPS
           </span>
           <span className="text-white/30">•</span>
@@ -60,12 +60,12 @@ export default function HeroSection() {
           <span className="text-white/30">•</span>
           <span className="text-white font-black">STREAM ON DEMAND</span>
           <span className="text-white/30">•</span>
-          <span className="text-[#00d4a5]">CBM RADIO MEDIA NETWORK</span>
+          <span className="text-[#04b093]">CBM RADIO MEDIA NETWORK</span>
           <span className="text-white/30">•</span>
           <span>FAITH · CULTURE · CONVERSATIONS · VOICES</span>
           <span className="text-white/30">•</span>
-          <span className="flex items-center gap-2 text-[#00d4a5]">
-            <Flame size={13} className="fill-[#00d4a5]" />
+          <span className="flex items-center gap-2 text-[#04b093]">
+            <Flame size={13} className="fill-[#04b093]" />
             HOT PODCAST DROPS
           </span>
           <span className="text-white/30">•</span>
@@ -73,7 +73,7 @@ export default function HeroSection() {
           <span className="text-white/30">•</span>
           <span className="text-white font-black">STREAM ON DEMAND</span>
           <span className="text-white/30">•</span>
-          <span className="text-[#00d4a5]">CBM RADIO MEDIA NETWORK</span>
+          <span className="text-[#04b093]">CBM RADIO MEDIA NETWORK</span>
           <span className="text-white/30">•</span>
           <span>FAITH · CULTURE · CONVERSATIONS · VOICES</span>
           <span className="text-white/30">•</span>
@@ -89,10 +89,10 @@ export default function HeroSection() {
             <div>
               {/* Category Kicker */}
               <div className="flex items-center gap-3">
-                <span className="bg-[#00d4a5] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
+                <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
                   COVER STORY
                 </span>
-                <span className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-[#00d4a5] flex items-center gap-1.5">
+                <span className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-[#04b093] flex items-center gap-1.5">
                   <Sparkles size={12} />
                   <span>CBM ORIGINAL BROADCAST</span>
                 </span>
@@ -101,7 +101,7 @@ export default function HeroSection() {
               {/* Massive Billboard Headline */}
               <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.98] text-white">
                 Moving African Sound, Culture & Faith{" "}
-                <span className="text-[#00d4a5]">Forward.</span>
+                <span className="text-[#04b093]">Forward.</span>
               </h1>
 
               {/* Lead Deck */}
@@ -113,7 +113,7 @@ export default function HeroSection() {
               <div className="mt-6 flex flex-wrap items-center gap-4">
                 <a
                   href="#episodes"
-                  className="inline-flex min-h-12 items-center gap-2.5 bg-[#00d4a5] px-7 text-xs font-black uppercase tracking-wider text-black transition hover:bg-[#34e2b8] hover:scale-[1.02]"
+                  className="inline-flex min-h-12 items-center gap-2.5 bg-[#04b093] px-7 text-xs font-black uppercase tracking-wider text-black transition hover:bg-[#05c6a5] hover:scale-[1.02]"
                 >
                   <Headphones size={16} />
                   <span>Stream The Crate</span>
@@ -130,7 +130,7 @@ export default function HeroSection() {
             </div>
 
             {/* Spotlight Video Tile (The Zwart/Billboard Lead Media Card) */}
-            <div className="mt-10 border-2 border-white/20 bg-[#0d0d0d] p-4 transition-colors hover:border-[#00d4a5]">
+            <div className="mt-10 border-2 border-white/20 bg-[#0d0d0d] p-4 transition-colors hover:border-[#04b093]">
               <div className="group relative aspect-video w-full overflow-hidden bg-black">
                 <Image
                   src={
@@ -149,7 +149,7 @@ export default function HeroSection() {
 
                 {/* Top Badge */}
                 <div className="absolute left-3 top-3">
-                  <span className="bg-black/90 px-3 py-1 text-[0.62rem] font-black uppercase tracking-widest text-[#00d4a5] border border-white/20">
+                  <span className="bg-black/90 px-3 py-1 text-[0.62rem] font-black uppercase tracking-widest text-[#04b093] border border-white/20">
                     ★ NOW FEATURED // {activeEpisode?.program_title || "ORIGINAL SERIES"}
                   </span>
                 </div>
@@ -160,14 +160,14 @@ export default function HeroSection() {
                     type="button"
                     onClick={() => playEpisode(activeEpisode, true)}
                     aria-label={`Play ${activeEpisode.title}`}
-                    className="absolute inset-0 m-auto grid size-16 place-items-center bg-[#00d4a5] text-black shadow-2xl transition hover:scale-110 hover:bg-[#34e2b8]"
+                    className="absolute inset-0 m-auto grid size-16 place-items-center bg-[#04b093] text-black shadow-2xl transition hover:scale-110 hover:bg-[#05c6a5]"
                   >
                     <Play size={24} className="ml-1 fill-black" />
                   </button>
                 ) : (
                   <a
                     href="#episodes"
-                    className="absolute inset-0 m-auto grid size-16 place-items-center bg-[#00d4a5] text-black shadow-2xl transition hover:scale-110 hover:bg-[#34e2b8]"
+                    className="absolute inset-0 m-auto grid size-16 place-items-center bg-[#04b093] text-black shadow-2xl transition hover:scale-110 hover:bg-[#05c6a5]"
                   >
                     <Play size={24} className="ml-1 fill-black" />
                   </a>
@@ -177,7 +177,7 @@ export default function HeroSection() {
               {/* Title & Metadata Strip */}
               <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-[0.65rem] font-black uppercase tracking-wider text-[#00d4a5]">
+                  <p className="text-[0.65rem] font-black uppercase tracking-wider text-[#04b093]">
                     {activeEpisode?.program_title || "My Life, My Purpose"}
                   </p>
                   <h2 className="text-lg font-black uppercase text-white truncate max-w-lg">
@@ -189,7 +189,7 @@ export default function HeroSection() {
                   <button
                     type="button"
                     onClick={() => playEpisode(activeEpisode, true)}
-                    className="inline-flex items-center gap-1.5 self-start sm:self-auto bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#00d4a5] hover:bg-[#00d4a5] hover:text-black transition shrink-0"
+                    className="inline-flex items-center gap-1.5 self-start sm:self-auto bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] hover:bg-[#04b093] hover:text-black transition shrink-0"
                   >
                     <Play size={12} className="fill-current" />
                     <span>Watch / Listen</span>
@@ -206,12 +206,12 @@ export default function HeroSection() {
               {/* Leaderboard Header */}
               <div className="flex items-center justify-between border-b-2 border-white/20 pb-4">
                 <div className="flex items-center gap-2 text-white">
-                  <TrendingUp size={18} className="text-[#00d4a5]" />
+                  <TrendingUp size={18} className="text-[#04b093]" />
                   <h3 className="text-base sm:text-lg font-black uppercase tracking-tight">
                     Billboard Hot Drops
                   </h3>
                 </div>
-                <span className="bg-[#00d4a5]/10 px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-[#00d4a5] border border-[#00d4a5]/30">
+                <span className="bg-[#04b093]/10 px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-[#04b093] border border-[#04b093]/30">
                   TOP RELEASES
                 </span>
               </div>
@@ -234,7 +234,7 @@ export default function HeroSection() {
                         <span
                           className={`text-2xl sm:text-3xl font-black tabular-nums tracking-tighter ${
                             idx === 0
-                              ? "text-[#00d4a5]"
+                              ? "text-[#04b093]"
                               : isSelected
                               ? "text-white"
                               : "text-zinc-500 group-hover:text-white"
@@ -264,7 +264,7 @@ export default function HeroSection() {
                               playEpisode(ep, true);
                             }}
                             aria-label={`Play ${ep.title}`}
-                            className="absolute inset-0 m-auto grid size-7 place-items-center bg-[#00d4a5] text-black opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="absolute inset-0 m-auto grid size-7 place-items-center bg-[#04b093] text-black opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             <Play size={12} className="ml-0.5 fill-black" />
                           </button>
@@ -272,10 +272,10 @@ export default function HeroSection() {
 
                         {/* Track Info */}
                         <div className="min-w-0">
-                          <p className="text-[0.65rem] font-black uppercase tracking-wider text-[#00d4a5] truncate">
+                          <p className="text-[0.65rem] font-black uppercase tracking-wider text-[#04b093] truncate">
                             {ep.program_title}
                           </p>
-                          <h4 className="mt-0.5 text-xs sm:text-sm font-black uppercase text-white truncate max-w-xs group-hover:text-[#00d4a5] transition-colors">
+                          <h4 className="mt-0.5 text-xs sm:text-sm font-black uppercase text-white truncate max-w-xs group-hover:text-[#04b093] transition-colors">
                             {ep.title}
                           </h4>
                           {ep.publish_date && (
@@ -294,7 +294,7 @@ export default function HeroSection() {
                           playEpisode(ep, true);
                         }}
                         aria-label={`Stream ${ep.title}`}
-                        className="grid size-8 place-items-center border border-white/20 text-zinc-400 group-hover:border-[#00d4a5] group-hover:bg-[#00d4a5] group-hover:text-black transition shrink-0"
+                        className="grid size-8 place-items-center border border-white/20 text-zinc-400 group-hover:border-[#04b093] group-hover:bg-[#04b093] group-hover:text-black transition shrink-0"
                       >
                         <Play size={12} className="ml-0.5 fill-current" />
                       </button>
@@ -316,7 +316,7 @@ export default function HeroSection() {
                 </span>
                 <Link
                   href="/episodes"
-                  className="font-black uppercase tracking-wider text-[#00d4a5] hover:underline flex items-center gap-1"
+                  className="font-black uppercase tracking-wider text-[#04b093] hover:underline flex items-center gap-1"
                 >
                   <span>Full Charts</span>
                   <ArrowUpRight size={13} />

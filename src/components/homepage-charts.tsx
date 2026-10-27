@@ -178,7 +178,7 @@ export default function HomepageCharts() {
       {/* Background radial ambiance */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,rgba(0,212,165,0.12)_0%,transparent_70%)]"
+        className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,rgba(4,176,147,0.12)_0%,transparent_70%)]"
       />
 
       {/* Hidden audio element for previews */}
@@ -194,8 +194,8 @@ export default function HomepageCharts() {
         {/* Section Header */}
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b border-white/10 pb-8">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
-              <Trophy size={14} className="text-[#00d4a5]" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#04b093]/40 bg-[#04b093]/10 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-[#04b093]">
+              <Trophy size={14} className="text-[#04b093]" />
               <span>Official Music Countdown</span>
             </div>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl">
@@ -219,7 +219,7 @@ export default function HomepageCharts() {
                     aria-pressed={isSelected}
                     className={`rounded-full px-4 py-2 text-xs font-black uppercase tracking-wider transition-all duration-200 ${
                       isSelected
-                        ? "bg-[#00d4a5] text-[#062521] shadow-[0_0_16px_rgba(0,212,165,0.35)]"
+                        ? "bg-[#04b093] text-[#062521] shadow-[0_0_16px_rgba(4,176,147,0.35)]"
                         : "border border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"
                     }`}
                   >
@@ -228,14 +228,14 @@ export default function HomepageCharts() {
                 );
               })
             ) : (
-              <span className="rounded-full bg-[#00d4a5] px-4 py-2 text-xs font-black uppercase tracking-wider text-[#062521]">
+              <span className="rounded-full bg-[#04b093] px-4 py-2 text-xs font-black uppercase tracking-wider text-[#062521]">
                 Gospel Hot 100
               </span>
             )}
 
             <Link
               href={selectedChartSlug ? `/charts?chart=${encodeURIComponent(selectedChartSlug)}` : "/charts"}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#00d4a5] transition-all hover:bg-[#00d4a5] hover:text-[#062521]"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#04b093]/40 bg-[#04b093]/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-[#04b093] hover:text-[#062521]"
             >
               <span>Full 100 Tracks</span>
               <ArrowUpRight size={14} aria-hidden="true" />
@@ -244,7 +244,7 @@ export default function HomepageCharts() {
         </div>
 
         {/* Chart Hero Image Banner */}
-        <div className="mt-8 cbm-card relative isolate overflow-hidden rounded-2xl border-4 border-[#00d4a5] bg-[#00d4a5] p-1.5 shadow-[0_20px_50px_rgba(0,212,165,0.2)] sm:border-[6px] sm:p-2">
+        <div className="mt-8 cbm-card relative isolate overflow-hidden rounded-2xl border-4 border-[#04b093] bg-[#04b093] p-1.5 shadow-[0_20px_50px_rgba(4,176,147,0.2)] sm:border-[6px] sm:p-2">
           <div className="relative min-h-[17rem] overflow-hidden rounded-xl sm:min-h-[22rem] lg:min-h-[26rem]">
             <Image
               src={CBMTeamArtwork}
@@ -259,7 +259,7 @@ export default function HomepageCharts() {
 
             {/* Overlay Headline */}
             <div className="absolute left-5 top-5 max-w-sm sm:left-8 sm:top-8 sm:max-w-lg">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/20 px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#78f2d5]">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#04b093]/40 bg-[#04b093]/20 px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#78f2d5]">
                 <Music2 size={13} /> Your world. Your frequency.
               </span>
               <h3 className="mt-3 text-2xl font-black leading-tight text-white drop-shadow-lg sm:text-4xl lg:text-5xl">
@@ -284,7 +284,7 @@ export default function HomepageCharts() {
             </div>
 
             {/* Bottom Left Brand Pill */}
-            <div className="absolute bottom-4 left-4 rounded-lg bg-[#00d4a5] px-3.5 py-1.5 text-base font-black tracking-[-0.07em] text-[#062521] shadow-lg sm:bottom-7 sm:left-7 sm:px-5 sm:py-2.5 sm:text-3xl">
+            <div className="absolute bottom-4 left-4 rounded-lg bg-[#04b093] px-3.5 py-1.5 text-base font-black tracking-[-0.07em] text-[#062521] shadow-lg sm:bottom-7 sm:left-7 sm:px-5 sm:py-2.5 sm:text-3xl">
               CBM <span className="font-light tracking-tight text-white">MUSIC</span>
             </div>
           </div>
@@ -294,7 +294,7 @@ export default function HomepageCharts() {
         <div className="mt-10 grid gap-8 lg:grid-cols-12 lg:items-start">
           {/* Left Column: #1 Track Spotlight (5 Cols) */}
           <div className="lg:col-span-5">
-            <div className="relative isolate overflow-hidden rounded-2xl border border-[#00d4a5]/40 bg-gradient-to-b from-[#0c1814] to-[#070e0b] p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,212,165,0.12)]">
+            <div className="relative isolate overflow-hidden rounded-2xl border border-[#04b093]/40 bg-gradient-to-b from-[#0c1814] to-[#070e0b] p-6 sm:p-7 shadow-[0_20px_50px_rgba(4,176,147,0.12)]">
               {/* Header badge */}
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <div className="flex items-center gap-2">
@@ -316,7 +316,7 @@ export default function HomepageCharts() {
               <div className="relative mx-auto my-7 aspect-square w-full max-w-[280px] sm:max-w-[320px]">
                 {/* Vinyl Record Peeking Behind Sleeve */}
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 size-44 sm:size-52 rounded-full border-[5px] border-[#181818] bg-[radial-gradient(circle_at_center,#111_0%,#090909_40%,#1a1a1a_60%,#050505_100%)] shadow-2xl transition-transform duration-500 hover:translate-x-7">
-                  <div className="absolute inset-0 m-auto size-16 rounded-full border-2 border-black bg-[#00d4a5] p-1 flex items-center justify-center">
+                  <div className="absolute inset-0 m-auto size-16 rounded-full border-2 border-black bg-[#04b093] p-1 flex items-center justify-center">
                     <div className="size-3 rounded-full bg-black" />
                   </div>
                 </div>
@@ -334,10 +334,10 @@ export default function HomepageCharts() {
 
                   {/* Big Rank #01 Stamp */}
                   <div className="absolute bottom-4 left-4 flex items-center gap-2.5">
-                    <span className="flex size-12 items-center justify-center rounded-xl bg-[#00d4a5] font-black text-2xl text-[#062521] shadow-lg">
+                    <span className="flex size-12 items-center justify-center rounded-xl bg-[#04b093] font-black text-2xl text-[#062521] shadow-lg">
                       #01
                     </span>
-                    <span className="rounded-full bg-black/60 px-2.5 py-1 text-[0.65rem] font-extrabold uppercase tracking-widest text-[#00d4a5] backdrop-blur-md">
+                    <span className="rounded-full bg-black/60 px-2.5 py-1 text-[0.65rem] font-extrabold uppercase tracking-widest text-[#04b093] backdrop-blur-md">
                       Leader
                     </span>
                   </div>
@@ -349,7 +349,7 @@ export default function HomepageCharts() {
                 <h3 className="text-2xl font-black tracking-tight text-white sm:text-3xl line-clamp-1">
                   {top1.title}
                 </h3>
-                <p className="text-base font-bold text-[#00d4a5]">
+                <p className="text-base font-bold text-[#04b093]">
                   {top1.artist}
                   {top1.featured_artists ? (
                     <span className="text-white/60 font-medium"> feat. {top1.featured_artists}</span>
@@ -363,7 +363,7 @@ export default function HomepageCharts() {
                     <span>{top1.weeks_on_chart ?? 4} wks on chart</span>
                   </span>
                   <span className="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-semibold text-white/70">
-                    <Trophy size={12} className="text-[#00d4a5]" />
+                    <Trophy size={12} className="text-[#04b093]" />
                     <span>Peak #{top1.peak_rank ?? 1}</span>
                   </span>
                 </div>
@@ -376,8 +376,8 @@ export default function HomepageCharts() {
                   onClick={() => togglePlay(top1)}
                   className={`flex flex-1 items-center justify-center gap-2.5 rounded-xl py-3 px-4 text-xs font-black uppercase tracking-wider transition-all duration-200 ${
                     playingTrackId === top1.id && isPlaying
-                      ? "bg-[#00d4a5] text-[#062521] shadow-[0_0_20px_rgba(0,212,165,0.4)]"
-                      : "bg-[#00d4a5] text-[#062521] hover:bg-[#34e2b8] hover:scale-[1.02]"
+                      ? "bg-[#04b093] text-[#062521] shadow-[0_0_20px_rgba(4,176,147,0.4)]"
+                      : "bg-[#04b093] text-[#062521] hover:bg-[#05c6a5] hover:scale-[1.02]"
                   }`}
                 >
                   {playingTrackId === top1.id && isPlaying ? (
@@ -395,7 +395,7 @@ export default function HomepageCharts() {
 
                 <Link
                   href={selectedChartSlug ? `/charts?chart=${encodeURIComponent(selectedChartSlug)}` : "/charts"}
-                  className="grid size-11 shrink-0 place-items-center rounded-xl border border-white/15 bg-white/5 text-white/80 transition-all hover:border-[#00d4a5] hover:text-[#00d4a5]"
+                  className="grid size-11 shrink-0 place-items-center rounded-xl border border-white/15 bg-white/5 text-white/80 transition-all hover:border-[#04b093] hover:text-[#04b093]"
                   aria-label="View full countdown details"
                 >
                   <ArrowUpRight size={18} />
@@ -409,7 +409,7 @@ export default function HomepageCharts() {
             <div className="rounded-2xl border border-white/15 bg-[#0a120f]/85 p-5 sm:p-7 shadow-xl backdrop-blur-md">
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <div className="flex items-center gap-2">
-                  <Music2 size={16} className="text-[#00d4a5]" />
+                  <Music2 size={16} className="text-[#04b093]" />
                   <h3 className="text-base font-black uppercase tracking-wider text-white">
                     Ranked Countdown (#02 – #05)
                   </h3>
@@ -464,7 +464,7 @@ export default function HomepageCharts() {
 
                         {/* Track Info */}
                         <div className="min-w-0">
-                          <h4 className="truncate font-extrabold text-white text-sm sm:text-base group-hover:text-[#00d4a5] transition-colors">
+                          <h4 className="truncate font-extrabold text-white text-sm sm:text-base group-hover:text-[#04b093] transition-colors">
                             {entry.title}
                           </h4>
                           <p className="truncate text-xs text-white/60 mt-0.5">
@@ -488,7 +488,7 @@ export default function HomepageCharts() {
                           </span>
                         )}
                         {entry.movement?.status === "new" && (
-                          <span className="hidden sm:inline-flex items-center rounded-full bg-[#00d4a5]/20 px-2.5 py-0.5 text-[0.65rem] font-black text-[#00d4a5]">
+                          <span className="hidden sm:inline-flex items-center rounded-full bg-[#04b093]/20 px-2.5 py-0.5 text-[0.65rem] font-black text-[#04b093]">
                             ★ NEW
                           </span>
                         )}
@@ -505,8 +505,8 @@ export default function HomepageCharts() {
                           aria-label={`Play preview of ${entry.title}`}
                           className={`grid size-9 place-items-center rounded-full border transition-all ${
                             isTrackPlaying
-                              ? "border-[#00d4a5] bg-[#00d4a5] text-[#062521] shadow-[0_0_12px_rgba(0,212,165,0.4)]"
-                              : "border-white/15 bg-white/5 text-white/80 hover:border-[#00d4a5] hover:text-[#00d4a5]"
+                              ? "border-[#04b093] bg-[#04b093] text-[#062521] shadow-[0_0_12px_rgba(4,176,147,0.4)]"
+                              : "border-white/15 bg-white/5 text-white/80 hover:border-[#04b093] hover:text-[#04b093]"
                           }`}
                         >
                           {isTrackPlaying ? (
@@ -528,7 +528,7 @@ export default function HomepageCharts() {
                 </span>
                 <Link
                   href={selectedChartSlug ? `/charts?chart=${encodeURIComponent(selectedChartSlug)}` : "/charts"}
-                  className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#00d4a5] hover:text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#04b093] hover:text-white transition-colors"
                 >
                   <span>Explore Full Top 100 & Vote</span>
                   <ArrowUpRight size={15} />
@@ -561,7 +561,7 @@ export default function HomepageCharts() {
                 <Link
                   key={item.title}
                   href={item.href}
-                  className="group flex flex-col items-center rounded-xl border border-white/10 bg-[#09120f]/60 p-3 text-center transition-all hover:border-[#00d4a5]/40 hover:bg-[#0c1814]"
+                  className="group flex flex-col items-center rounded-xl border border-white/10 bg-[#09120f]/60 p-3 text-center transition-all hover:border-[#04b093]/40 hover:bg-[#0c1814]"
                 >
                   <div className="relative aspect-square w-16 overflow-hidden rounded-full border border-white/15 bg-black">
                     <Image
@@ -572,7 +572,7 @@ export default function HomepageCharts() {
                       className="object-cover grayscale transition-all duration-300 group-hover:scale-105 group-hover:grayscale-0"
                     />
                   </div>
-                  <span className="mt-2 block text-[0.72rem] font-black uppercase tracking-tight text-white group-hover:text-[#00d4a5]">
+                  <span className="mt-2 block text-[0.72rem] font-black uppercase tracking-tight text-white group-hover:text-[#04b093]">
                     {item.title}
                   </span>
                   <span className="hidden sm:block text-[0.65rem] text-white/50 mt-0.5">

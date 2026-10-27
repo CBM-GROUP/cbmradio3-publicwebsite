@@ -48,7 +48,7 @@ const footerDestinations = [
     detail: "Find your frequency",
     href: "/programs",
     icon: Radio,
-    color: "bg-[#48d4c1]",
+    color: "bg-[#04b093]",
     textColor: "text-[#07100f]",
     detailColor: "text-black/70",
   },
@@ -75,7 +75,7 @@ const footerDestinations = [
     detail: "Moments from CBM",
     href: "/gallery",
     icon: Images,
-    color: "bg-[#48d4c1]",
+    color: "bg-[#04b093]",
     textColor: "text-[#07100f]",
     detailColor: "text-black/70",
   },
@@ -131,7 +131,7 @@ export default function Footer() {
   );
 
   return (
-    <footer className="border-t-4 border-[#48d4c1] bg-[#050505] text-white">
+    <footer className="border-t-4 border-[#04b093] bg-[#050505] text-white">
       <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-8 px-5 py-10 sm:px-8 md:grid-cols-2 lg:grid-cols-12 lg:gap-6 lg:px-12 lg:py-14">
         <section className="lg:col-span-3">
           <Link href="/" aria-label="CBM Radio home" className="inline-flex items-center gap-3">
@@ -170,11 +170,11 @@ export default function Footer() {
         </nav>
 
         <nav aria-label="Site links" className="lg:col-span-2">
-          <h3 className="mb-4 text-sm font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">Explore</h3>
+          <h3 className="mb-4 text-sm font-extrabold uppercase tracking-[0.16em] text-[#04b093]">Explore</h3>
           <ul className="space-y-2.5">
             {primaryNavigation.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="text-sm text-white/85 transition-colors hover:text-[#48d4c1]">
+                <Link href={item.href} className="text-sm text-white/85 transition-colors hover:text-[#04b093]">
                   {item.label}
                 </Link>
               </li>
@@ -183,12 +183,12 @@ export default function Footer() {
         </nav>
 
         <section className="md:col-span-2 lg:col-span-2">
-          <h3 className="mb-4 text-sm font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">Featured programs</h3>
+          <h3 className="mb-4 text-sm font-extrabold uppercase tracking-[0.16em] text-[#04b093]">Featured programs</h3>
           {programs.length > 0 ? (
             <ul className="space-y-2.5">
               {programs.map((program) => (
                 <li key={program.id}>
-                  <Link href="/programs" className="text-sm text-white/85 transition-colors hover:text-[#48d4c1]">
+                  <Link href="/programs" className="text-sm text-white/85 transition-colors hover:text-[#04b093]">
                     {program.title}
                   </Link>
                 </li>
@@ -200,19 +200,19 @@ export default function Footer() {
             </p>
           )}
 
-          <h3 className="mb-3 mt-7 text-sm font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">Contact</h3>
+          <h3 className="mb-3 mt-7 text-sm font-extrabold uppercase tracking-[0.16em] text-[#04b093]">Contact</h3>
           {hasContact ? (
             <address className="space-y-3 text-sm not-italic text-white/85">
-              {contact?.physical_address && <p className="flex gap-2"><FaMapMarkerAlt className="mt-1 shrink-0 text-[#48d4c1]" aria-hidden="true" />{contact.physical_address}</p>}
-              {contact?.business_phone && <a href={"tel:" + contact.business_phone.replace(/[^+\d]/g, "")} className="flex gap-2 break-words hover:text-[#48d4c1]"><FaPhoneAlt className="mt-1 shrink-0 text-[#48d4c1]" aria-hidden="true" />{contact.business_phone}</a>}
-              {contact?.business_email && <a href={"mailto:" + contact.business_email} className="flex gap-2 break-all hover:text-[#48d4c1]"><FaEnvelope className="mt-1 shrink-0 text-[#48d4c1]" aria-hidden="true" />{contact.business_email}</a>}
+              {contact?.physical_address && <p className="flex gap-2"><FaMapMarkerAlt className="mt-1 shrink-0 text-[#04b093]" aria-hidden="true" />{contact.physical_address}</p>}
+              {contact?.business_phone && <a href={"tel:" + contact.business_phone.replace(/[^+\d]/g, "")} className="flex gap-2 break-words hover:text-[#04b093]"><FaPhoneAlt className="mt-1 shrink-0 text-[#04b093]" aria-hidden="true" />{contact.business_phone}</a>}
+              {contact?.business_email && <a href={"mailto:" + contact.business_email} className="flex gap-2 break-all hover:text-[#04b093]"><FaEnvelope className="mt-1 shrink-0 text-[#04b093]" aria-hidden="true" />{contact.business_email}</a>}
             </address>
           ) : (
             <p className="text-sm leading-6 text-white/75" aria-live="polite">
               {loading ? "Loading contact information..." : "Contact information is currently unavailable."}
             </p>
           )}
-          <Link href={contactNavigationItem.href} className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#48d4c1] px-4 py-2 text-xs font-extrabold uppercase tracking-[0.1em] text-[#062521] transition-colors hover:bg-[#6ae3d1]">
+          <Link href={contactNavigationItem.href} className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#04b093] px-4 py-2 text-xs font-extrabold uppercase tracking-[0.1em] text-[#062521] transition-colors hover:bg-[#05c6a5]">
             Contact us <ArrowUpRight size={15} aria-hidden="true" />
           </Link>
         </section>
@@ -220,7 +220,7 @@ export default function Footer() {
 
       <div className="border-t border-white/15">
         <div className="mx-auto flex max-w-[1600px] flex-col gap-4 px-5 py-6 sm:px-8 sm:flex-row sm:items-center sm:justify-between lg:px-12">
-          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">
+          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#04b093]">
             Follow CBM Radio
           </p>
           <div className="flex flex-wrap items-center gap-3" aria-label="Social media">
@@ -241,7 +241,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={"Visit CBM Radio on " + label}
-                    className="grid h-11 w-11 place-items-center rounded-full border border-[#48d4c1]/50 bg-[#48d4c1]/10 text-[#48d4c1] transition-colors hover:border-[#48d4c1] hover:bg-[#48d4c1] hover:text-[#062521]"
+                    className="grid h-11 w-11 place-items-center rounded-full border border-[#04b093]/50 bg-[#04b093]/10 text-[#04b093] transition-colors hover:border-[#04b093] hover:bg-[#04b093] hover:text-[#062521]"
                   >
                     <Icon size={18} aria-hidden="true" />
                   </a>
@@ -256,7 +256,7 @@ export default function Footer() {
                     key={platform}
                     title={platform}
                     aria-label={platform}
-                    className="grid h-11 w-11 place-items-center rounded-full border border-[#48d4c1]/40 bg-[#48d4c1]/10 text-[#48d4c1]"
+                    className="grid h-11 w-11 place-items-center rounded-full border border-[#04b093]/40 bg-[#04b093]/10 text-[#04b093]"
                   >
                     <Icon size={18} aria-hidden="true" />
                   </span>
@@ -272,7 +272,7 @@ export default function Footer() {
           <p>&copy; {new Date().getFullYear()} CBM Radio. All Rights Reserved.</p>
           <nav aria-label="Legal" className="flex flex-wrap gap-x-5 gap-y-2">
             {legalNavigation.map((item) => (
-              <Link key={item.href} href={item.href} className="transition-colors hover:text-[#48d4c1]">
+              <Link key={item.href} href={item.href} className="transition-colors hover:text-[#04b093]">
                 {item.label}
               </Link>
             ))}

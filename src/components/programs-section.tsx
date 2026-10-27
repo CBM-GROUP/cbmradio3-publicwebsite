@@ -46,7 +46,7 @@ export default function ProgramsSection() {
         <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-white/20 pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="bg-[#00d4a5] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
+              <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
                 ORIGINAL ROSTER
               </span>
               <span className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
@@ -87,7 +87,7 @@ export default function ProgramsSection() {
               return (
                 <article
                   key={program.id}
-                  className="group relative border-2 border-white/15 bg-[#0d0d0d] p-6 transition-all duration-200 hover:border-[#00d4a5]"
+                  className="group relative border-2 border-white/15 bg-[#0d0d0d] p-6 transition-all duration-200 hover:border-[#04b093]"
                 >
                   <div className="flex flex-col sm:flex-row gap-6">
                     
@@ -102,7 +102,7 @@ export default function ProgramsSection() {
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                       <div className="absolute top-2 left-2">
-                        <span className="bg-black/90 px-2 py-0.5 text-[0.6rem] font-black uppercase text-[#00d4a5] border border-white/20">
+                        <span className="bg-black/90 px-2 py-0.5 text-[0.6rem] font-black uppercase text-[#04b093] border border-white/20">
                           SHOW 0{idx + 1}
                         </span>
                       </div>
@@ -111,12 +111,12 @@ export default function ProgramsSection() {
                     {/* Show Information */}
                     <div className="flex flex-1 flex-col justify-between">
                       <div>
-                        <div className="flex items-center gap-2 text-[0.65rem] font-black uppercase tracking-wider text-[#00d4a5]">
+                        <div className="flex items-center gap-2 text-[0.65rem] font-black uppercase tracking-wider text-[#04b093]">
                           <Sparkles size={11} />
                           <span>CBM ORIGINAL SHOW</span>
                         </div>
 
-                        <h3 className="mt-2 text-xl font-black uppercase tracking-tight text-white group-hover:text-[#00d4a5] transition-colors">
+                        <h3 className="mt-2 text-xl font-black uppercase tracking-tight text-white group-hover:text-[#04b093] transition-colors">
                           <Link href={`/episodes?program=${encodeURIComponent(program.slug)}`}>
                             {program.title}
                           </Link>
@@ -124,7 +124,7 @@ export default function ProgramsSection() {
 
                         {program.presenter && (
                           <p className="mt-1 flex items-center gap-1.5 text-xs font-bold text-zinc-300">
-                            <Mic2 size={13} className="text-[#00d4a5]" />
+                            <Mic2 size={13} className="text-[#04b093]" />
                             <span>Hosted by {program.presenter}</span>
                           </p>
                         )}
@@ -140,7 +140,7 @@ export default function ProgramsSection() {
                       <div className="mt-5 border-t border-white/10 pt-3 flex items-center justify-between text-xs font-black uppercase">
                         <Link
                           href={`/episodes?program=${encodeURIComponent(program.slug)}`}
-                          className="inline-flex items-center gap-1.5 text-[#00d4a5] hover:text-[#34e2b8] transition"
+                          className="inline-flex items-center gap-1.5 text-[#04b093] hover:text-[#05c6a5] transition"
                         >
                           <Headphones size={13} />
                           <span>Stream Show Episodes</span>
@@ -160,7 +160,7 @@ export default function ProgramsSection() {
         {!loading && programs.length === 0 && (
           <article className="border-2 border-white/20 bg-[#0d0d0d] p-8 sm:p-12">
             <div className="max-w-2xl">
-              <span className="bg-[#00d4a5] px-2.5 py-0.5 text-[0.65rem] font-black uppercase text-black">
+              <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase text-black">
                 PREMIERE SERIES
               </span>
               <h3 className="mt-3 text-2xl font-black uppercase text-white sm:text-3xl">
@@ -171,7 +171,7 @@ export default function ProgramsSection() {
               </p>
               <Link
                 href="/episodes"
-                className="mt-6 inline-flex items-center gap-2 bg-[#00d4a5] px-6 py-3 text-xs font-black uppercase tracking-wider text-black hover:bg-[#34e2b8]"
+                className="mt-6 inline-flex items-center gap-2 bg-[#04b093] px-6 py-3 text-xs font-black uppercase tracking-wider text-black hover:bg-[#05c6a5]"
               >
                 <span>Browse All Episodes</span>
                 <ArrowUpRight size={15} />
@@ -183,7 +183,7 @@ export default function ProgramsSection() {
         {/* Zwart-Style Co-Creation Pitch Banner */}
         <div className="mt-12 border-2 border-white/20 bg-[#0d0d0d] p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <span className="bg-[#00d4a5]/10 px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-[#00d4a5] border border-[#00d4a5]/30">
+            <span className="bg-[#04b093]/10 px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-[#04b093] border border-[#04b093]/30">
               CO-CREATE WITH US
             </span>
             <h4 className="mt-2 text-base sm:text-lg font-black uppercase tracking-tight text-white">

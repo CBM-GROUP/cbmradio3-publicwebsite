@@ -190,7 +190,7 @@ export default function ChartsListing() {
               }}
               className={`min-h-12 shrink-0 border-b-2 px-4 text-[0.68rem] font-extrabold uppercase tracking-[0.14em] transition-colors ${
                 selectedType === type
-                  ? "border-[#48d4c1] text-[#48d4c1]"
+                  ? "border-[#04b093] text-[#04b093]"
                   : "border-transparent text-white/65 hover:text-white"
               }`}
             >
@@ -204,31 +204,31 @@ export default function ChartsListing() {
         <aside className="cbm-card h-fit rounded-lg border border-white/10 bg-black/70 p-4 lg:sticky lg:top-28">
           <label htmlFor="chart-search" className="mb-2 block text-xs font-bold uppercase tracking-[0.13em] text-white/75">Search charts</label>
           <div className="relative mb-5">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#48d4c1]" aria-hidden="true" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#04b093]" aria-hidden="true" />
             <input
               id="chart-search"
               type="search"
               placeholder="Chart name"
               value={chartFilterQuery}
               onChange={(event) => setChartFilterQuery(event.target.value)}
-              className="min-h-10 w-full rounded-md border border-white/15 bg-white/5 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#48d4c1] focus:outline-none focus:ring-1 focus:ring-[#48d4c1]"
+              className="min-h-10 w-full rounded-md border border-white/15 bg-white/5 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#04b093] focus:outline-none focus:ring-1 focus:ring-[#04b093]"
             />
           </div>
 
           <label htmlFor="artist-search" className="mb-2 block text-xs font-bold uppercase tracking-[0.13em] text-white/75">Search songs or artists</label>
           <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#48d4c1]" aria-hidden="true" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#04b093]" aria-hidden="true" />
             <input
               id="artist-search"
               type="search"
               placeholder="Artist, song, album"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              className="min-h-10 w-full rounded-md border border-white/15 bg-white/5 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#48d4c1] focus:outline-none focus:ring-1 focus:ring-[#48d4c1]"
+              className="min-h-10 w-full rounded-md border border-white/15 bg-white/5 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#04b093] focus:outline-none focus:ring-1 focus:ring-[#04b093]"
             />
           </div>
 
-          <h3 className="mb-2 border-b border-white/10 pb-3 text-xs font-extrabold uppercase tracking-[0.16em] text-[#48d4c1]">Charts</h3>
+          <h3 className="mb-2 border-b border-white/10 pb-3 text-xs font-extrabold uppercase tracking-[0.16em] text-[#04b093]">Charts</h3>
           <div className="max-h-[55vh] space-y-1 overflow-y-auto pr-1">
             {visibleCharts.map((chart) => (
               <button
@@ -240,7 +240,7 @@ export default function ChartsListing() {
                 }}
                 className={`flex min-h-10 w-full items-center justify-between rounded-md px-3 text-left text-sm font-semibold transition-colors ${
                   selectedSlug === chart.slug
-                    ? "bg-[#48d4c1] text-[#062521]"
+                    ? "bg-[#04b093] text-[#062521]"
                     : "text-white/75 hover:bg-white/10 hover:text-white"
                 }`}
               >
@@ -252,19 +252,19 @@ export default function ChartsListing() {
           </div>
         </aside>
 
-        <div className="cbm-card min-w-0 rounded-lg border border-white/10 bg-[linear-gradient(180deg,rgba(72,212,193,0.08),rgba(11,16,15,0.96)_20rem)] p-4 sm:p-6 lg:p-8">
-          <div className="mb-8 border-b border-[#48d4c1]/50 pb-5">
-            <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.28em] text-[#48d4c1]">CBM Radio Charts</p>
+        <div className="cbm-card min-w-0 rounded-lg border border-white/10 bg-[linear-gradient(180deg,rgba(4,176,147,0.08),rgba(11,16,15,0.96)_20rem)] p-4 sm:p-6 lg:p-8">
+          <div className="mb-8 border-b border-[#04b093]/50 pb-5">
+            <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.28em] text-[#04b093]">CBM Radio Charts</p>
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="text-3xl font-black tracking-tight text-white sm:text-4xl">{activeChart?.title || "Music Charts"}</h2>
-              <span className="inline-flex items-center gap-1 rounded-full border border-[#48d4c1]/30 bg-[#48d4c1]/10 px-2.5 py-1 text-xs font-bold text-[#48d4c1]">
+              <span className="inline-flex items-center gap-1 rounded-full border border-[#04b093]/30 bg-[#04b093]/10 px-2.5 py-1 text-xs font-bold text-[#04b093]">
                 <Flame className="h-3.5 w-3.5" /> Official
               </span>
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/65">
               {activeChart?.edition_date && (
                 <span className="flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5 text-[#48d4c1]" />
+                  <Calendar className="h-3.5 w-3.5 text-[#04b093]" />
                   Issue: <strong className="text-white/90">{new Date(activeChart.edition_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</strong>
                 </span>
               )}
@@ -289,13 +289,13 @@ export default function ChartsListing() {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-black/20" />
                 <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#48d4c1]/20 px-3 py-1 text-xs font-bold text-[#48d4c1] backdrop-blur-md border border-[#48d4c1]/30">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#04b093]/20 px-3 py-1 text-xs font-bold text-[#04b093] backdrop-blur-md border border-[#04b093]/30">
                       <Trophy className="h-3.5 w-3.5" />
                       Official Countdown
                     </span>
                     {activeChart.edition_date && (
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur-md">
-                        <Calendar className="h-3.5 w-3.5 text-[#48d4c1]" />
+                        <Calendar className="h-3.5 w-3.5 text-[#04b093]" />
                         {new Date(activeChart.edition_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
                       </span>
                     )}
@@ -317,7 +317,7 @@ export default function ChartsListing() {
                     <Image src={artwork.src} alt={`${artwork.title} by ${artwork.artist}`} fill sizes="(max-width: 768px) 100vw, 33vw" unoptimized className="object-cover transition-transform duration-700 group-hover:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/5 to-black/15" />
                     <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
-                      <span className="inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-[#48d4c1] px-2 text-xs font-black text-[#062521]">#{artwork.rank}</span>
+                      <span className="inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-[#04b093] px-2 text-xs font-black text-[#062521]">#{artwork.rank}</span>
                       <h3 className="mt-3 line-clamp-2 text-lg font-extrabold text-white sm:text-xl">{artwork.title}</h3>
                       <p className="mt-1 line-clamp-1 text-sm text-white/75">{artwork.artist}</p>
                     </div>
@@ -329,7 +329,7 @@ export default function ChartsListing() {
                 <Image src={CBMTeamArtwork} alt={activeChart ? `${activeChart.title} chart artwork` : "CBM Radio presenters"} fill sizes="(max-width: 768px) 100vw, 70vw" className="object-cover object-[center_35%]" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-black/10" />
                 <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
-                  <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#48d4c1]">CBM Radio • Gospel Charts</p>
+                  <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#04b093]">CBM Radio • Gospel Charts</p>
                   <h3 className="mt-2 max-w-xl text-2xl font-black text-white sm:text-4xl">The songs moving our community.</h3>
                 </div>
               </>
@@ -610,12 +610,12 @@ export default function ChartsListing() {
 
         {chartLoading ? (
           <div className="py-12 text-center text-zinc-500">
-            <Disc3 className="h-6 w-6 animate-spin mx-auto text-[#48d4c1] mb-2" />
+            <Disc3 className="h-6 w-6 animate-spin mx-auto text-[#04b093] mb-2" />
             Loading tracks…
           </div>
         ) : !activeChart ? (
           <div className="flex min-h-56 flex-col items-center justify-center rounded-lg border border-dashed border-white/20 bg-black/20 px-6 py-10 text-center">
-            <Trophy className="mb-3 h-10 w-10 text-[#48d4c1]/70" aria-hidden="true" />
+            <Trophy className="mb-3 h-10 w-10 text-[#04b093]/70" aria-hidden="true" />
             <h3 className="text-lg font-bold text-white">Charts are temporarily unavailable</h3>
             <p className="mt-2 max-w-md text-sm leading-6 text-white/65">The chart service could not be reached. Please try again later.</p>
           </div>

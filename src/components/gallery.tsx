@@ -88,7 +88,7 @@ export default function Gallery() {
         <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-white/20 pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="bg-[#00d4a5] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
+              <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
                 DARKROOM
               </span>
               <span className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
@@ -126,7 +126,7 @@ export default function Gallery() {
               }}
               role="button"
               tabIndex={0}
-              className="group relative cursor-pointer border-2 border-white/15 bg-[#0d0d0d] overflow-hidden transition-all duration-300 hover:border-[#00d4a5]"
+              className="group relative cursor-pointer border-2 border-white/15 bg-[#0d0d0d] overflow-hidden transition-all duration-300 hover:border-[#04b093]"
             >
               <div className="relative aspect-square w-full overflow-hidden bg-black">
                 <Image
@@ -140,19 +140,19 @@ export default function Gallery() {
 
                 {/* Index Sticker */}
                 <div className="absolute left-3 top-3">
-                  <span className="bg-black/90 px-2 py-0.5 text-[0.62rem] font-black uppercase tracking-wider text-[#00d4a5] border border-white/20">
+                  <span className="bg-black/90 px-2 py-0.5 text-[0.62rem] font-black uppercase tracking-wider text-[#04b093] border border-white/20">
                     FRAME 0{idx + 1}
                   </span>
                 </div>
 
                 {/* Hover Zoom Indicator */}
-                <div className="absolute right-3 top-3 grid size-8 place-items-center bg-[#00d4a5] text-black opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute right-3 top-3 grid size-8 place-items-center bg-[#04b093] text-black opacity-0 group-hover:opacity-100 transition-opacity">
                   <ZoomIn size={14} />
                 </div>
 
                 {/* Bottom Caption Overlay */}
                 <div className="absolute bottom-0 inset-x-0 p-4">
-                  <p className="text-[0.65rem] font-black uppercase tracking-wider text-[#00d4a5]">
+                  <p className="text-[0.65rem] font-black uppercase tracking-wider text-[#04b093]">
                     {item.category || "Studio"}
                   </p>
                   <h4 className="mt-0.5 text-sm font-black uppercase text-white line-clamp-1">
@@ -182,13 +182,13 @@ export default function Gallery() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <span className="text-xs font-black uppercase tracking-wider text-[#00d4a5]">
+              <span className="text-xs font-black uppercase tracking-wider text-[#04b093]">
                 {selectedItem.category || "STUDIO FRAME"}
               </span>
               <button
                 type="button"
                 onClick={() => setSelectedItem(null)}
-                className="grid size-8 place-items-center border border-white/20 text-white hover:border-[#00d4a5] hover:text-[#00d4a5]"
+                className="grid size-8 place-items-center border border-white/20 text-white hover:border-[#04b093] hover:text-[#04b093]"
                 aria-label="Close image preview"
               >
                 <X size={16} />

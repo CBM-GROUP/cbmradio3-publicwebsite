@@ -84,7 +84,7 @@ export default function Header() {
               aria-expanded={isMenuOpen}
               aria-controls="main-navigation"
               onClick={() => setIsMenuOpen((open) => !open)}
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/15 bg-white/5 text-[#00d4a5] transition-all hover:border-[#00d4a5] hover:bg-[#00d4a5]/10 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4a5]"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/15 bg-white/5 text-[#04b093] transition-all hover:border-[#04b093] hover:bg-[#04b093]/10 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#04b093]"
             >
               {isMenuOpen ? <X size={20} strokeWidth={2.5} /> : <Menu size={20} strokeWidth={2.5} />}
             </button>
@@ -92,9 +92,9 @@ export default function Header() {
             <Link
               href="/"
               aria-label="CBM Radio home"
-              className="flex items-center gap-3 transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4a5]"
+              className="flex items-center gap-3 transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#04b093]"
             >
-              <div className="relative h-11 w-11 overflow-hidden rounded-full border border-[#00d4a5]/40 p-0.5 shadow-[0_0_12px_rgba(0,212,165,0.25)]">
+              <div className="relative h-11 w-11 overflow-hidden rounded-full border border-[#04b093]/40 p-0.5 shadow-[0_0_12px_rgba(4,176,147,0.25)]">
                 <Image
                   src={CBMlogo}
                   alt="CBM Radio logo"
@@ -106,7 +106,7 @@ export default function Header() {
               </div>
               <div>
                 <span className="block text-base font-black tracking-tight text-white leading-none">
-                  CBM <span className="text-[#00d4a5]">RADIO</span>
+                  CBM <span className="text-[#04b093]">RADIO</span>
                 </span>
               </div>
             </Link>
@@ -116,7 +116,7 @@ export default function Header() {
           <div className="flex items-center gap-3">
             <Link
               href={contactNavigationItem.href}
-              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[#00d4a5] px-5 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#062521] shadow-[0_4px_16px_rgba(0,212,165,0.25)] transition-all hover:bg-[#48d4c1] hover:scale-105"
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[#04b093] px-5 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#062521] shadow-[0_4px_16px_rgba(4,176,147,0.25)] transition-all hover:bg-[#04b093] hover:scale-105"
             >
               Contact
             </Link>
@@ -139,7 +139,7 @@ export default function Header() {
         <div
           inert={!isMenuOpen}
           aria-hidden={!isMenuOpen}
-          className={`absolute left-4 right-4 top-full mt-3 rounded-2xl border border-[#00d4a5]/25 bg-[#091210]/95 p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.85)] backdrop-blur-2xl transition-all duration-300 sm:left-8 sm:right-8 sm:p-7 ${
+          className={`absolute left-4 right-4 top-full mt-3 rounded-2xl border border-[#04b093]/25 bg-[#091210]/95 p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.85)] backdrop-blur-2xl transition-all duration-300 sm:left-8 sm:right-8 sm:p-7 ${
             isMenuOpen
               ? "opacity-100 translate-y-0 pointer-events-auto"
               : "opacity-0 -translate-y-4 pointer-events-none"
@@ -147,8 +147,8 @@ export default function Header() {
         >
           <div className="flex items-center justify-between border-b border-white/10 pb-4">
             <div className="flex items-center gap-2.5">
-              <span className="h-2 w-2 rounded-full bg-[#00d4a5] shadow-[0_0_8px_#00d4a5]" />
-              <span className="text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+              <span className="h-2 w-2 rounded-full bg-[#04b093] shadow-[0_0_8px_#04b093]" />
+              <span className="text-xs font-black uppercase tracking-[0.2em] text-[#04b093]">
                 Explore CBM Radio
               </span>
             </div>
@@ -188,7 +188,7 @@ export default function Header() {
                     aria-current={isActive ? "page" : undefined}
                     onClick={() => setIsMenuOpen(false)}
                     className={`group flex h-full min-h-32 flex-col justify-between rounded-xl p-5 text-[#07100f] shadow-md transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl ${
-                      isTeal ? "bg-[#00d4a5] hover:bg-[#20e3b6]" : "bg-white hover:bg-neutral-100"
+                      isTeal ? "bg-[#04b093] hover:bg-[#20e3b6]" : "bg-white hover:bg-neutral-100"
                     } ${isActive ? "ring-4 ring-white/50" : ""}`}
                   >
                     <div className="flex items-start justify-between gap-3">
