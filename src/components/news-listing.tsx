@@ -181,7 +181,7 @@ export default function NewsListing() {
     return featuredArticles[0] || latestArticles[0] || articles.results[0] || null;
   }, [featuredArticles, latestArticles, articles.results, isSearchActive]);
 
-  const wireArticles = useMemo(() => {
+  const topStories = useMemo(() => {
     if (isSearchActive || !leadArticle) return [];
     return latestArticles.filter((item) => item.id !== leadArticle.id).slice(0, 4);
   }, [latestArticles, leadArticle, isSearchActive]);
@@ -189,9 +189,9 @@ export default function NewsListing() {
   const promotedIds = useMemo(() => {
     const ids = new Set<number>();
     if (leadArticle) ids.add(leadArticle.id);
-    wireArticles.forEach((a) => ids.add(a.id));
+    topStories.forEach((a) => ids.add(a.id));
     return ids;
-  }, [leadArticle, wireArticles]);
+  }, [leadArticle, topStories]);
 
   // Remaining articles for spotlight duo & archive grid
   const remainingArticles = useMemo(() => {
@@ -217,27 +217,24 @@ export default function NewsListing() {
 
   return (
     <section id="news-content" className="scroll-mt-20 bg-[#04b093] text-black">
-      {/* 01 // The Live Wire Strip With Category Stickers (Pills Replaced) */}
-      <div className="sticky top-16 z-30 border-b-2 border-black bg-black px-4 py-3 text-white shadow-xl sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          {/* Live Wire Indicator + Category Stickers Navigation */}
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
-            <span className="flex shrink-0 items-center gap-2 border-2 border-black bg-[#04b093] px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-black shadow-[2px_2px_0px_0px_#ffffff]">
-              <span className="size-2 animate-ping rounded-full bg-red-600" />
-              <span>LIVE WIRE</span>
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        {/* 01 // Responsive Editorial Category Stickers & Search Deck (NO horizontal scroll) */}
+        <div className="mb-10 flex flex-col gap-6 border-b-2 border-black pb-8 md:flex-row md:items-center md:justify-between">
+          {/* Category Stickers: naturally wrapping flex layout */}
+          <div className="flex flex-col gap-2">
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black/80">
+              Filter Dispatches By Topic
             </span>
-
-            {/* Category Stickers Bar */}
-            <nav aria-label="Live wire categories" className="flex shrink-0 items-center gap-2">
+            <nav aria-label="News categories" className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={() => navigate({ category: null, page: 1 })}
                 aria-pressed={!category}
                 className={
-                  "shrink-0 border-2 px-3.5 py-1.5 text-xs font-black uppercase tracking-wider transition-all " +
+                  "border-2 px-3 py-1.5 text-xs font-black uppercase tracking-wider transition-all " +
                   (!category
-                    ? "border-black bg-[#04b093] text-black shadow-[2px_2px_0px_0px_#ffffff]"
-                    : "border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-[#04b093] hover:text-[#04b093]")
+                    ? "border-black bg-black text-[#04b093] shadow-[2px_2px_0px_0px_#000]"
+                    : "border-black/30 bg-black/10 text-black hover:border-black hover:bg-black hover:text-white")
                 }
               >
                 [ ALL STORIES ]
@@ -252,10 +249,10 @@ export default function NewsListing() {
                     onClick={() => navigate({ category: item.slug, page: 1 })}
                     aria-pressed={isActive}
                     className={
-                      "shrink-0 border-2 px-3.5 py-1.5 text-xs font-black uppercase tracking-wider transition-all " +
+                      "border-2 px-3 py-1.5 text-xs font-black uppercase tracking-wider transition-all " +
                       (isActive
-                        ? "border-black bg-[#04b093] text-black shadow-[2px_2px_0px_0px_#ffffff]"
-                        : "border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-[#04b093] hover:text-[#04b093]")
+                        ? "border-black bg-black text-[#04b093] shadow-[2px_2px_0px_0px_#000]"
+                        : "border-black/30 bg-black/10 text-black hover:border-black hover:bg-black hover:text-white")
                     }
                   >
                     {item.name}
@@ -264,15 +261,15 @@ export default function NewsListing() {
               })}
 
               {categoriesState === "loading" && (
-                <span className="shrink-0 text-xs font-bold uppercase tracking-wider text-zinc-500" aria-live="polite">
+                <span className="text-xs font-bold uppercase tracking-wider text-black/70" aria-live="polite">
                   Loading topics...
                 </span>
               )}
             </nav>
           </div>
 
-          {/* Quick Newsroom Search in the Live Wire Strip */}
-          <form onSubmit={handleSearchSubmit} className="relative w-full shrink-0 lg:w-72">
+          {/* Quick Newsroom Search */}
+          <form onSubmit={handleSearchSubmit} className="relative w-full shrink-0 md:w-72">
             <label htmlFor="news-search" className="sr-only">
               Search news stories
             </label>
@@ -288,7 +285,7 @@ export default function NewsListing() {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="SEARCH STORIES..."
-                className="w-full border-2 border-zinc-700 bg-zinc-900 py-1.5 pl-9 pr-8 text-xs font-bold uppercase tracking-wider text-white placeholder:text-zinc-500 focus:border-[#04b093] focus:outline-none"
+                className="w-full border-2 border-black bg-black py-2 pl-9 pr-8 text-xs font-bold uppercase tracking-wider text-white placeholder:text-zinc-500 shadow-md transition focus:border-white focus:outline-none"
               />
               {searchInput && (
                 <button
@@ -303,9 +300,7 @@ export default function NewsListing() {
             </div>
           </form>
         </div>
-      </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Warning: Invalid Category */}
         {invalidCategory && (
           <div className="mb-8 border-2 border-black bg-black p-4 text-xs font-bold uppercase tracking-wider text-[#04b093] shadow-xl">
@@ -415,26 +410,26 @@ export default function NewsListing() {
               </div>
             </article>
 
-            {/* Right: The Wire Top Stories (5 Cols) */}
+            {/* Right: Top Stories Sidebar (5 Cols) */}
             <aside className="cbm-card flex flex-col justify-between rounded-2xl border-2 border-black bg-black p-6 text-white shadow-2xl sm:p-8 lg:col-span-5">
               <div>
                 <div className="flex items-center justify-between border-b-2 border-zinc-800 pb-4">
                   <span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-[#04b093]">
                     <Flame size={15} />
-                    <span>THE WIRE</span>
+                    <span>TOP STORIES</span>
                   </span>
                   <span className="text-[11px] font-black uppercase tracking-wider text-zinc-400">
-                    TOP DISPATCHES
+                    TRENDING DISPATCHES
                   </span>
                 </div>
 
                 <div className="divide-y divide-zinc-800/80">
-                  {wireArticles.length > 0 ? (
-                    wireArticles.map((story, index) => (
+                  {topStories.length > 0 ? (
+                    topStories.map((story, index) => (
                       <Link
                         key={story.id}
                         href={`/news/${story.slug}`}
-                        className="group/wire flex items-start gap-4 py-4 transition-colors hover:bg-zinc-950/60"
+                        className="group/story flex items-start gap-4 py-4 transition-colors hover:bg-zinc-950/60"
                       >
                         <span className="shrink-0 font-mono text-2xl font-black text-[#04b093]">
                           0{index + 1}
@@ -445,7 +440,7 @@ export default function NewsListing() {
                               {story.category.name}
                             </span>
                           )}
-                          <h3 className="mt-1 line-clamp-2 text-sm font-black uppercase leading-snug tracking-tight text-white transition-colors group-hover/wire:text-[#04b093]">
+                          <h3 className="mt-1 line-clamp-2 text-sm font-black uppercase leading-snug tracking-tight text-white transition-colors group-hover/story:text-[#04b093]">
                             {story.title}
                           </h3>
                           <p className="mt-1.5 flex items-center gap-1.5 text-[11px] font-bold text-zinc-400">
@@ -457,13 +452,13 @@ export default function NewsListing() {
                         </div>
                         <ArrowUpRight
                           size={16}
-                          className="shrink-0 text-zinc-600 transition-colors group-hover/wire:text-[#04b093]"
+                          className="shrink-0 text-zinc-600 transition-colors group-hover/story:text-[#04b093]"
                         />
                       </Link>
                     ))
                   ) : (
                     <div className="py-8 text-center text-xs font-bold text-zinc-500">
-                      Additional wire dispatches will be displayed here as stories are published.
+                      Additional dispatches will be displayed here as stories are published.
                     </div>
                   )}
                 </div>
