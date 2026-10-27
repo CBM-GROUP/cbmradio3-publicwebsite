@@ -16,7 +16,7 @@ export const primaryNavigation: NavigationItem[] = [
 
 export const contactNavigationItem: NavigationItem = {
   label: "Contact Us",
-  href: "/#contact",
+  href: "/contact",
 };
 
 export const legalNavigation: NavigationItem[] = [

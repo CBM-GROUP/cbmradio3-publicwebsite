@@ -1,13 +1,10 @@
 import Header from "@/components/header";
 import HeroSection from "@/components/hero-section";
-import HomepageCharts from "@/components/homepage-charts";
+import EpisodesSection from "@/components/episodes-section";
 import ProgramsSection from "@/components/programs-section";
 import NewsSection from "@/components/news-section";
-import EpisodesSection from "@/components/episodes-section";
 import Gallery from "@/components/gallery";
-import TeamMembers from "@/components/team-members";
 import HomepageAdditions from "@/components/homepage-additions";
-import Contact from "@/components/contact";
 import Footer from "@/components/footer";
 import DynamicPageSections from "@/components/dynamic-page-sections";
 
@@ -16,41 +13,35 @@ export default function Home() {
     <>
       <Header />
       <main className="overflow-hidden bg-[#060a08]">
+        {/* Dynamic Hero Placement */}
         <DynamicPageSections page="home" position="hero" />
-        
-        {/* 1. Cinematic Keynote Hero with Live Frequency Marquee */}
+
+        {/* 1. Cinematic On-Demand Media Hero with Spotlight Episode Preview */}
         <HeroSection />
 
-        {/* 2. Official Music Countdown & Ranked Leaderboard */}
-        <HomepageCharts />
+        {/* Dynamic Top Sections */}
+        <DynamicPageSections page="home" position="top" />
 
-        {/* 3. Broadcast Lineup & Interactive Schedule */}
+        {/* 2. On-Demand Podcast Episodes & Audio Series (Dashboard Releases) */}
+        <EpisodesSection />
+
+        {/* 3. Original Shows & Series Lineup */}
         <ProgramsSection />
 
         {/* 4. Newsroom Dispatches & Community Stories */}
         <NewsSection />
 
-        {/* 5. On-Demand Podcast Episodes & Audio Series */}
-        <EpisodesSection />
-
-        {/* 6. Studio Moments & Behind-the-Scenes Gallery */}
+        {/* 5. Studio Moments & Behind-the-Scenes Gallery */}
         <Gallery />
 
-        {/* Dynamic Top Sections */}
-        <DynamicPageSections page="home" position="top" />
-
-        {/* 7. On-Air Talent & Station Voices */}
-        <TeamMembers limit={6} />
-
+        {/* Dynamic Middle Sections */}
         <DynamicPageSections page="home" position="middle" />
 
-        {/* 8. Community Hub, WhatsApp Hotline & Station Partners */}
+        {/* 6. Community Hub, WhatsApp Network & Brand Partnerships */}
         <HomepageAdditions />
-        
+
+        {/* Dynamic Bottom Sections */}
         <DynamicPageSections page="home" position="bottom" />
-        
-        {/* 9. Broadcast Headquarters & Studio Inquiries */}
-        <Contact />
       </main>
       <Footer />
     </>
