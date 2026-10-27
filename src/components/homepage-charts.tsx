@@ -1,562 +1,541 @@
 "use client";
 
 import {
-  ArrowLeft,
-  ArrowRight,
   ArrowUpRight,
-  Disc3,
   Flame,
-  Headphones,
   Music2,
-  Sparkles,
+  Pause,
+  Play,
   Trophy,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { chartService } from "@/services/chart.service";
 import type { Chart, ChartEntry } from "@/types/chart";
 import RadioShowArtwork from "../../public/cbm_images/radio 2.jpeg";
 import CBMTeamArtwork from "../../public/cbm_images/take 3.jpeg";
 
-type LoadState = "loading" | "ready" | "error";
-
-const chartArtwork = [RadioShowArtwork, CBMTeamArtwork];
-const fallbackChartCategories = ["Top 20 Countdown", "Afrobeats Pulse", "Gospel Praise", "East African Heat"];
+// Curated fallback entries if API returns an empty chart
+const fallbackEntries: ChartEntry[] = [
+  {
+    id: "fb-1",
+    rank: 1,
+    previous_rank: 2,
+    peak_rank: 1,
+    weeks_on_chart: 5,
+    title: "Way Maker",
+    artist: "Sinach",
+    featured_artists: "",
+    cover_image_url:
+      "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop",
+    movement: { status: "up", diff: 1, label: "+1 spot" },
+  },
+  {
+    id: "fb-2",
+    rank: 2,
+    previous_rank: 1,
+    peak_rank: 1,
+    weeks_on_chart: 8,
+    title: "Goodness of God",
+    artist: "CeCe Winans",
+    featured_artists: "",
+    cover_image_url:
+      "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop",
+    movement: { status: "down", diff: 1, label: "-1 spot" },
+  },
+  {
+    id: "fb-3",
+    rank: 3,
+    previous_rank: 4,
+    peak_rank: 3,
+    weeks_on_chart: 4,
+    title: "Jireh",
+    artist: "Elevation Worship",
+    featured_artists: "Maverick City Music",
+    cover_image_url:
+      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&auto=format&fit=crop",
+    movement: { status: "up", diff: 1, label: "+1 spot" },
+  },
+  {
+    id: "fb-4",
+    rank: 4,
+    previous_rank: 3,
+    peak_rank: 2,
+    weeks_on_chart: 6,
+    title: "Trust In God",
+    artist: "Elevation Worship",
+    featured_artists: "",
+    cover_image_url:
+      "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&auto=format&fit=crop",
+    movement: { status: "down", diff: 1, label: "-1 spot" },
+  },
+  {
+    id: "fb-5",
+    rank: 5,
+    previous_rank: null,
+    peak_rank: 5,
+    weeks_on_chart: 1,
+    title: "Holy Forever",
+    artist: "Chris Tomlin",
+    featured_artists: "",
+    cover_image_url:
+      "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=600&auto=format&fit=crop",
+    movement: { status: "new", diff: 0, label: "New Entry" },
+  },
+];
 
 export default function HomepageCharts() {
   const [chart, setChart] = useState<Chart | null>(null);
   const [availableCharts, setAvailableCharts] = useState<Chart[]>([]);
-  const [selectedChartType, setSelectedChartType] = useState(fallbackChartCategories[0]);
-  const [discRotation, setDiscRotation] = useState(0);
-  const [status, setStatus] = useState<LoadState>("loading");
-  const [activePreviewIndex, setActivePreviewIndex] = useState<number | null>(null);
+  const [selectedChartSlug, setSelectedChartSlug] = useState<string>("");
+  const [playingTrackId, setPlayingTrackId] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     let isMounted = true;
 
-    async function loadChart() {
+    async function loadChartData() {
       try {
         const charts = await chartService.getCharts();
         const activeCharts = charts.filter((item) => item.is_active);
         const visibleCharts = activeCharts.length > 0 ? activeCharts : charts;
-        const featured = visibleCharts[0];
-        const details = featured
-          ? await chartService.getChartBySlug(featured.slug)
+
+        // Prioritize charts that have entries
+        const chartWithEntries =
+          visibleCharts.find(
+            (c) =>
+              ((c as unknown as { entry_count?: number }).entry_count ?? 0) > 0 ||
+              (c.entries?.length ?? 0) > 0 ||
+              c.slug === "hot-100",
+          ) ?? visibleCharts[0];
+
+        const initialSlug = chartWithEntries?.slug ?? "";
+        const details = initialSlug
+          ? await chartService.getChartBySlug(initialSlug)
           : null;
 
         if (!isMounted) return;
         setAvailableCharts(visibleCharts);
-        setChart(details ?? featured ?? null);
-        setSelectedChartType(
-          (details ?? featured)?.chart_type ?? fallbackChartCategories[0],
-        );
-        setStatus("ready");
+        setSelectedChartSlug(initialSlug);
+        setChart(details ?? chartWithEntries ?? null);
       } catch (error) {
         console.error("Failed to load homepage chart:", error);
-        if (isMounted) setStatus("error");
       }
     }
 
-    void loadChart();
+    void loadChartData();
     return () => {
       isMounted = false;
     };
   }, []);
 
-  const entries = chart?.entries
-    ?.filter((entry) => entry.rank > 0)
-    .sort((a, b) => a.rank - b.rank)
-    .slice(0, 5) ?? [];
-  const artwork = chart?.cover_image_url || chart?.cover_image || RadioShowArtwork;
-  const availableChartTypes = Array.from(
-    new Set(availableCharts.map((item) => item.chart_type.trim()).filter(Boolean)),
-  );
-  const chartCategories =
-    availableChartTypes.length > 0 ? availableChartTypes : fallbackChartCategories;
-  const selectedChart =
-    availableCharts.find((item) => item.chart_type === selectedChartType) ?? chart;
-  const selectedArtwork =
-    selectedChart?.cover_image_url || selectedChart?.cover_image || artwork;
-
-  function rotateDisc(direction: -1 | 1) {
-    if (chartCategories.length === 0) return;
-    const currentIndex = Math.max(0, chartCategories.indexOf(selectedChartType));
-    const nextIndex =
-      (currentIndex + direction + chartCategories.length) % chartCategories.length;
-    setSelectedChartType(chartCategories[nextIndex]);
-    setDiscRotation((rotation) => rotation + direction * 360);
+  async function handleSelectChart(slug: string) {
+    if (slug === selectedChartSlug) return;
+    setSelectedChartSlug(slug);
+    try {
+      const details = await chartService.getChartBySlug(slug);
+      if (details) {
+        setChart(details);
+      }
+    } catch (e) {
+      console.error(`Failed to load chart ${slug}:`, e);
+    }
   }
 
-  function selectChartType(type: string) {
-    if (type === selectedChartType) return;
-    setSelectedChartType(type);
-    setDiscRotation((rotation) => rotation + 360);
-  }
+  // Ensure entries are never empty
+  const rawEntries = useMemo(() => {
+    const list = chart?.entries?.filter((entry) => entry.rank > 0) ?? [];
+    if (list.length > 0) {
+      return [...list].sort((a, b) => a.rank - b.rank);
+    }
+    return fallbackEntries;
+  }, [chart]);
+
+  const top1 = rawEntries[0] ?? fallbackEntries[0];
+  const leaderboardEntries = rawEntries.slice(1, 5);
+
+  const togglePlay = (entry: ChartEntry) => {
+    if (playingTrackId === entry.id && isPlaying) {
+      audioRef.current?.pause();
+      setIsPlaying(false);
+      setPlayingTrackId(null);
+    } else {
+      if (entry.audio_url && audioRef.current) {
+        audioRef.current.src = entry.audio_url;
+        audioRef.current.play().catch(() => {});
+      }
+      setPlayingTrackId(entry.id);
+      setIsPlaying(true);
+    }
+  };
 
   return (
-    <section id="charts" className="relative border-y border-white/10 bg-[#080d0b] text-white">
-      {/* Subtle Ambient Radial Glow */}
+    <section id="charts" className="relative border-y border-white/10 bg-[#070c0a] py-14 text-white sm:py-20">
+      {/* Background radial ambiance */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[450px] w-full max-w-7xl bg-[radial-gradient(ellipse_at_top,rgba(0,212,165,0.12)_0%,transparent_70%)]"
+        className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,rgba(0,212,165,0.12)_0%,transparent_70%)]"
       />
 
-      {/* Sleek Dark Brand Header Bar */}
-      <div className="border-b border-white/10 bg-[#0c1411]/90 px-5 backdrop-blur-md sm:px-8 lg:px-12">
-        <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-5">
-          <Link href="/charts" className="flex items-center gap-2 text-2xl font-black tracking-[-0.06em] sm:text-3xl">
-            <Disc3 className="text-[#00d4a5]" size={28} />
-            <span>CBM<span className="text-[#00d4a5]">CHARTS</span></span>
-          </Link>
-          <nav aria-label="Chart quick links" className="flex items-center gap-5 text-xs font-extrabold sm:gap-8 sm:text-sm">
-            <Link href="/charts" className="text-[#00d4a5] hover:text-white transition-colors">Top Charts</Link>
-            <Link href="/programs" className="text-white/70 hover:text-[#00d4a5] transition-colors">Broadcasts</Link>
-            <Link href="/episodes" className="text-white/70 hover:text-[#00d4a5] transition-colors">Podcasts</Link>
-            <Link href="/news" className="hidden text-white/70 hover:text-[#00d4a5] sm:inline transition-colors">Newsroom</Link>
-          </nav>
-          <Link
-            href="/charts"
-            className="hidden items-center gap-1.5 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-4 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.15em] text-[#00d4a5] transition-colors hover:bg-[#00d4a5] hover:text-[#062521] sm:inline-flex"
-          >
-            Full Countdown <ArrowUpRight size={13} aria-hidden="true" />
-          </Link>
-        </div>
-      </div>
+      {/* Hidden audio element for previews */}
+      <audio
+        ref={audioRef}
+        onEnded={() => {
+          setIsPlaying(false);
+          setPlayingTrackId(null);
+        }}
+      />
 
-      {/* Category Pills Bar */}
-      <div className="border-b border-white/10 bg-[#09100e]/75 px-5 backdrop-blur-sm sm:px-8 lg:px-12">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 py-3.5">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white/40">
-            <Flame size={14} className="text-[#00d4a5]" />
-            <span>Rankings:</span>
-          </div>
-          <nav aria-label="Music chart genres" className="flex flex-1 gap-2 overflow-x-auto py-1 no-scrollbar">
-            {chartCategories.map((category) => (
-              <button
-                key={category}
-                type="button"
-                onClick={() => selectChartType(category)}
-                aria-pressed={selectedChartType === category}
-                className={`whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-extrabold transition-all duration-200 ${
-                  selectedChartType === category
-                    ? "bg-[#00d4a5] text-[#062521] shadow-[0_0_16px_rgba(0,212,165,0.35)]"
-                    : "border border-white/10 bg-white/[0.04] text-white/70 hover:border-white/25 hover:text-white"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
-
-      {/* Main Interactive Charts Layout */}
-      <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 sm:px-8 sm:py-14 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-12 lg:px-12 lg:py-16">
-        
-        {/* Left Column: Interactive Vinyl Deck & Chart Selector */}
-        <aside className="cbm-card relative overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-b from-[#0e1714] to-[#070b09] p-6 shadow-2xl">
-          <div className="flex items-center justify-between">
-            <p className="text-[0.65rem] font-extrabold uppercase tracking-[0.2em] text-[#00d4a5]">
-              VIRTUAL TURNTABLE
-            </p>
-            <span className="rounded-full bg-white/10 px-2 py-0.5 text-[0.6rem] font-bold text-white/70">
-              33 RPM
-            </span>
-          </div>
-
-          {/* Realistic Grooved Vinyl Record with Center Label */}
-          <div className="relative mx-auto my-6 aspect-square w-44 sm:w-48">
-            {/* Turntable Platter Outer Shadow */}
-            <div className="absolute inset-0 rounded-full bg-black/60 shadow-[0_16px_36px_rgba(0,0,0,0.8)]" />
-
-            {/* Tonearm graphic overlay */}
-            <div className="pointer-events-none absolute -right-2 -top-3 z-20 h-16 w-8 rotate-12 opacity-80" aria-hidden="true">
-              <div className="h-full w-1 bg-gradient-to-b from-zinc-400 via-zinc-200 to-zinc-500 rounded-full shadow-md" />
-              <div className="h-3 w-2.5 bg-teal-400 rounded-sm shadow-sm" />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b border-white/10 pb-8">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+              <Trophy size={14} className="text-[#00d4a5]" />
+              <span>Official Music Countdown</span>
             </div>
+            <h2 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl">
+              The CBM Top Countdown
+            </h2>
+            <p className="mt-2 text-sm text-white/70 max-w-2xl sm:text-base">
+              The biggest gospel and afro-beats anthems trending on radio airplay, online streams, and weekly listener votes across East Africa.
+            </p>
+          </div>
 
-            {/* Spinning Vinyl Body */}
-            <div
-              role="img"
-              aria-label={`Selected chart vinyl: ${selectedChartType}`}
-              className="absolute inset-0 overflow-hidden rounded-full border-[6px] border-[#151d1a] shadow-[0_0_0_2px_rgba(72,212,193,0.4)] transition-transform duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
-              style={{ transform: `rotate(${discRotation}deg)` }}
+          {/* Chart selector tabs & Full Countdown button */}
+          <div className="flex flex-wrap items-center gap-2.5">
+            {availableCharts.length > 0 ? (
+              availableCharts.map((item) => {
+                const isSelected = item.slug === selectedChartSlug;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => handleSelectChart(item.slug)}
+                    aria-pressed={isSelected}
+                    className={`rounded-full px-4 py-2 text-xs font-black uppercase tracking-wider transition-all duration-200 ${
+                      isSelected
+                        ? "bg-[#00d4a5] text-[#062521] shadow-[0_0_16px_rgba(0,212,165,0.35)]"
+                        : "border border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"
+                    }`}
+                  >
+                    {item.title}
+                  </button>
+                );
+              })
+            ) : (
+              <span className="rounded-full bg-[#00d4a5] px-4 py-2 text-xs font-black uppercase tracking-wider text-[#062521]">
+                Gospel Hot 100
+              </span>
+            )}
+
+            <Link
+              href={selectedChartSlug ? `/charts?chart=${encodeURIComponent(selectedChartSlug)}` : "/charts"}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#00d4a5] transition-all hover:bg-[#00d4a5] hover:text-[#062521]"
             >
-              {/* Concentric Vinyl Grooves Pattern */}
-              <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,#111_0%,#090909_40%,#1a1a1a_60%,#050505_100%)]">
-                <div className="absolute inset-0 rounded-full opacity-60 bg-[repeating-radial-gradient(circle,transparent_0_3px,rgba(255,255,255,0.06)_4px_5px)]" />
+              <span>Full 100 Tracks</span>
+              <ArrowUpRight size={14} aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Content Grid: Left #1 Spotlight Card + Right Ranked Leaderboard */}
+        <div className="mt-10 grid gap-8 lg:grid-cols-12 lg:items-start">
+          {/* Left Column: #1 Track Spotlight (5 Cols) */}
+          <div className="lg:col-span-5">
+            <div className="relative isolate overflow-hidden rounded-2xl border border-[#00d4a5]/40 bg-gradient-to-b from-[#0c1814] to-[#070e0b] p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,212,165,0.12)]">
+              {/* Header badge */}
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <div className="flex items-center gap-2">
+                  <span className="grid size-6 place-items-center rounded-full bg-amber-400 text-black font-black text-xs shadow-md">
+                    ★
+                  </span>
+                  <span className="text-xs font-black uppercase tracking-[0.18em] text-amber-300">
+                    Current #1 Anthem
+                  </span>
+                </div>
+                {chart?.edition_date && (
+                  <span className="text-[0.68rem] font-bold text-white/50 uppercase tracking-wider">
+                    Week of {chart.edition_date}
+                  </span>
+                )}
               </div>
 
-              {/* Gloss Light Reflection Sheen */}
-              <div className="absolute inset-0 rounded-full bg-[linear-gradient(135deg,rgba(255,255,255,0.18)_0%,transparent_45%,rgba(255,255,255,0.08)_100%)] pointer-events-none" />
+              {/* Artwork Showcase with Vinyl Sleeve Effect */}
+              <div className="relative mx-auto my-7 aspect-square w-full max-w-[280px] sm:max-w-[320px]">
+                {/* Vinyl Record Peeking Behind Sleeve */}
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 size-44 sm:size-52 rounded-full border-[5px] border-[#181818] bg-[radial-gradient(circle_at_center,#111_0%,#090909_40%,#1a1a1a_60%,#050505_100%)] shadow-2xl transition-transform duration-500 hover:translate-x-7">
+                  <div className="absolute inset-0 m-auto size-16 rounded-full border-2 border-black bg-[#00d4a5] p-1 flex items-center justify-center">
+                    <div className="size-3 rounded-full bg-black" />
+                  </div>
+                </div>
 
-              {/* Center Spindle & Custom Label */}
-              <div className="absolute inset-0 grid place-items-center">
-                <div className="relative size-20 rounded-full border-4 border-black/80 bg-gradient-to-tr from-[#00d4a5] to-[#48d4c1] p-1 shadow-[0_0_15px_rgba(0,212,165,0.5)] overflow-hidden">
+                {/* Main Album Cover Sleeve */}
+                <div className="relative size-full overflow-hidden rounded-xl border border-white/20 bg-black/60 shadow-[0_12px_32px_rgba(0,0,0,0.6)]">
                   <Image
-                    src={selectedArtwork}
-                    alt=""
+                    src={top1.cover_image_url || top1.cover_image || RadioShowArtwork}
+                    alt={`${top1.title} album cover`}
                     fill
-                    sizes="80px"
-                    unoptimized={typeof selectedArtwork === "string"}
-                    className="object-cover opacity-80 mix-blend-multiply"
+                    sizes="(max-width: 640px) 280px, 320px"
+                    className="object-cover transition-transform duration-500 hover:scale-105"
                   />
-                  <div className="absolute inset-0 grid place-items-center">
-                    <span className="text-center text-[0.55rem] font-black uppercase leading-tight tracking-wider text-[#062521] px-1 drop-shadow-sm">
-                      {selectedChartType}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+
+                  {/* Big Rank #01 Stamp */}
+                  <div className="absolute bottom-4 left-4 flex items-center gap-2.5">
+                    <span className="flex size-12 items-center justify-center rounded-xl bg-[#00d4a5] font-black text-2xl text-[#062521] shadow-lg">
+                      #01
+                    </span>
+                    <span className="rounded-full bg-black/60 px-2.5 py-1 text-[0.65rem] font-extrabold uppercase tracking-widest text-[#00d4a5] backdrop-blur-md">
+                      Leader
                     </span>
                   </div>
-                  {/* Center Spindle Hole */}
-                  <div className="absolute inset-0 m-auto size-3 rounded-full bg-black border border-white/30" />
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Spin Turntable Action */}
-          <div className="text-center">
-            <p className="text-xs font-bold text-white/60">
-              Spin or switch chart genre
-            </p>
-            <div className="mt-3 flex items-center justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => rotateDisc(-1)}
-                aria-label="Previous chart"
-                className="grid size-9 place-items-center rounded-full border border-white/20 bg-white/5 text-white transition hover:border-[#00d4a5] hover:bg-[#00d4a5]/10 hover:text-[#00d4a5]"
-              >
-                <ArrowLeft size={16} aria-hidden="true" />
-              </button>
-              <span className="min-w-0 max-w-40 truncate text-center text-xs font-black uppercase tracking-wider text-[#00d4a5]">
-                {selectedChartType}
-              </span>
-              <button
-                type="button"
-                onClick={() => rotateDisc(1)}
-                aria-label="Next chart"
-                className="grid size-9 place-items-center rounded-full border border-white/20 bg-white/5 text-white transition hover:border-[#00d4a5] hover:bg-[#00d4a5]/10 hover:text-[#00d4a5]"
-              >
-                <ArrowRight size={16} aria-hidden="true" />
-              </button>
-            </div>
-          </div>
-
-          {/* Chart Category Quick Buttons */}
-          <div className="mt-5 space-y-1.5 border-t border-white/10 pt-4">
-            {chartCategories.map((category) => (
-              <button
-                key={category}
-                type="button"
-                onClick={() => selectChartType(category)}
-                aria-pressed={selectedChartType === category}
-                className={`flex min-h-10 w-full items-center justify-between rounded-lg px-3.5 text-left text-xs font-bold transition-all ${
-                  selectedChartType === category
-                    ? "bg-[#00d4a5]/15 text-[#00d4a5] border border-[#00d4a5]/30 font-extrabold"
-                    : "text-white/70 hover:bg-white/5 hover:text-white"
-                }`}
-              >
-                <span>{category}</span>
-                <span className="text-sm opacity-60">›</span>
-              </button>
-            ))}
-          </div>
-
-          <Link
-            href={
-              selectedChart
-                ? `/charts?chart=${encodeURIComponent(selectedChart.slug)}`
-                : `/charts?type=${encodeURIComponent(selectedChartType)}`
-            }
-            className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#00d4a5] px-4 text-xs font-extrabold text-[#062521] shadow-[0_6px_20px_rgba(0,212,165,0.2)] transition-all hover:bg-[#48d4c1] hover:shadow-[0_8px_25px_rgba(0,212,165,0.35)]"
-          >
-            Explore Full {selectedChartType} <ArrowUpRight size={15} aria-hidden="true" />
-          </Link>
-        </aside>
-
-        {/* Right Column: Hero Visual Showcase + Ranked Leaderboard */}
-        <div className="min-w-0 space-y-6">
-          
-          {/* Header & Date */}
-          <div className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-4">
-            <div>
-              <p className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-[0.2em] text-[#00d4a5]">
-                <Sparkles size={14} /> The Official East African Charts
-              </p>
-              <h2 className="mt-1.5 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-                The CBM Countdown
-              </h2>
-            </div>
-            {chart?.edition_date && (
-              <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white/70">
-                Week of {chart.edition_date}
-              </span>
-            )}
-          </div>
-
-          {/* Hero Visual Spotlight Card */}
-          <div className="cbm-card relative isolate overflow-hidden rounded-2xl border-2 border-[#00d4a5]/60 bg-[#070e0b] shadow-[0_20px_50px_rgba(0,212,165,0.15)]">
-            <div className="relative min-h-[17rem] overflow-hidden sm:min-h-[22rem]">
-              <Image
-                src={CBMTeamArtwork}
-                alt="The CBM Radio team together"
-                fill
-                sizes="(max-width: 1024px) 100vw, 70vw"
-                className="object-cover object-[center_28%] transition-transform duration-700 hover:scale-[1.03]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#040908]/90 via-[#040908]/40 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#040908] via-transparent to-transparent" />
-
-              <div className="absolute left-5 top-5 max-w-md sm:left-8 sm:top-8">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/20 px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#62e6d4]">
-                  <Trophy size={13} /> SOUNDTRACK OF THE WEEK
-                </span>
-                <h3 className="mt-3 text-2xl font-black leading-tight text-white drop-shadow-md sm:text-4xl">
-                  {chart?.title || "East Africa's Top Trending Frequency"}
+              {/* Track Title, Artist, and Stats */}
+              <div className="space-y-2">
+                <h3 className="text-2xl font-black tracking-tight text-white sm:text-3xl line-clamp-1">
+                  {top1.title}
                 </h3>
-                <p className="mt-2 text-sm text-white/80 line-clamp-2">
-                  {chart?.description || "Ranked each week by community votes, airplay, and streaming pulse."}
+                <p className="text-base font-bold text-[#00d4a5]">
+                  {top1.artist}
+                  {top1.featured_artists ? (
+                    <span className="text-white/60 font-medium"> feat. {top1.featured_artists}</span>
+                  ) : null}
                 </p>
-              </div>
 
-              {/* Inset artwork stamp */}
-              <div className="absolute bottom-5 right-5 h-24 w-20 overflow-hidden rounded-lg border-2 border-white/80 shadow-2xl sm:bottom-7 sm:right-7 sm:h-36 sm:w-28 sm:border-4">
-                <Image
-                  src={artwork}
-                  alt={chart?.title ? `${chart.title} chart artwork` : "Chart artwork"}
-                  fill
-                  sizes="120px"
-                  unoptimized={typeof artwork === "string"}
-                  className="object-cover"
-                />
-              </div>
-
-              <div className="absolute bottom-5 left-5 sm:bottom-7 sm:left-7">
-                <div className="inline-flex items-center gap-2 rounded-xl bg-[#00d4a5] px-4 py-2 font-black text-[#062521] shadow-lg">
-                  <Music2 size={18} />
-                  <span className="text-sm uppercase tracking-wider">OFFICIAL SELECTION</span>
+                {/* Stat pills */}
+                <div className="flex flex-wrap items-center gap-2 pt-2">
+                  <span className="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-semibold text-white/70">
+                    <Flame size={12} className="text-amber-400" />
+                    <span>{top1.weeks_on_chart ?? 4} wks on chart</span>
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-semibold text-white/70">
+                    <Trophy size={12} className="text-[#00d4a5]" />
+                    <span>Peak #{top1.peak_rank ?? 1}</span>
+                  </span>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Ranked Track Countdown Leaderboard */}
-          <div className="cbm-card rounded-2xl border border-white/15 bg-[#0f1714]/80 p-5 sm:p-7 backdrop-blur-xl">
-            <div className="flex items-center justify-between border-b border-white/10 pb-4">
-              <div>
-                <p className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-[0.18em] text-[#00d4a5]">
-                  <Trophy size={14} /> Ranked Leaderboard
-                </p>
-                <h3 className="mt-1 text-xl font-black text-white">
-                  Top Tracks on Repeat
-                </h3>
-              </div>
-              <span className="text-xs font-bold text-white/50">
-                {selectedChartType}
-              </span>
-            </div>
-
-            {status === "loading" && (
-              <p className="py-8 text-center text-sm text-white/60" aria-live="polite">
-                Loading official chart leaderboard...
-              </p>
-            )}
-
-            {status === "error" && (
-              <p className="py-8 text-center text-sm text-white/60">
-                Chart standings are temporarily unavailable.
-              </p>
-            )}
-
-            {status === "ready" && entries.length > 0 && (
-              <ol className="divide-y divide-white/10" aria-label="Official chart rankings">
-                {entries.map((entry, index) => (
-                  <ChartRankRow
-                    key={entry.id}
-                    entry={entry}
-                    index={index}
-                    isPlaying={activePreviewIndex === index}
-                    onTogglePreview={() =>
-                      setActivePreviewIndex(activePreviewIndex === index ? null : index)
-                    }
-                  />
-                ))}
-              </ol>
-            )}
-
-            {status === "ready" && entries.length === 0 && (
-              <div className="py-8 text-center">
-                <p className="text-sm text-white/70">
-                  Countdown tracks are currently being compiled for this category.
-                </p>
-                <Link
-                  href="/charts"
-                  className="mt-3 inline-flex items-center gap-1.5 text-xs font-extrabold text-[#00d4a5] hover:underline"
+              {/* Action Buttons */}
+              <div className="mt-6 flex items-center gap-3 pt-4 border-t border-white/10">
+                <button
+                  type="button"
+                  onClick={() => togglePlay(top1)}
+                  className={`flex flex-1 items-center justify-center gap-2.5 rounded-xl py-3 px-4 text-xs font-black uppercase tracking-wider transition-all duration-200 ${
+                    playingTrackId === top1.id && isPlaying
+                      ? "bg-[#00d4a5] text-[#062521] shadow-[0_0_20px_rgba(0,212,165,0.4)]"
+                      : "bg-[#00d4a5] text-[#062521] hover:bg-[#34e2b8] hover:scale-[1.02]"
+                  }`}
                 >
-                  View all active charts <ArrowUpRight size={14} />
+                  {playingTrackId === top1.id && isPlaying ? (
+                    <>
+                      <Pause size={16} fill="currentColor" />
+                      <span>Pause Preview</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play size={16} fill="currentColor" />
+                      <span>Play Preview</span>
+                    </>
+                  )}
+                </button>
+
+                <Link
+                  href={selectedChartSlug ? `/charts?chart=${encodeURIComponent(selectedChartSlug)}` : "/charts"}
+                  className="grid size-11 shrink-0 place-items-center rounded-xl border border-white/15 bg-white/5 text-white/80 transition-all hover:border-[#00d4a5] hover:text-[#00d4a5]"
+                  aria-label="View full countdown details"
+                >
+                  <ArrowUpRight size={18} />
                 </Link>
               </div>
-            )}
-
-            <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-4">
-              <span className="text-xs text-white/50">
-                Updated weekly based on listener votes & radio spins.
-              </span>
-              <Link
-                href="/charts"
-                className="inline-flex items-center gap-2 text-sm font-extrabold text-[#00d4a5] hover:text-white transition-colors"
-              >
-                <span>View Full Top 20 Countdown</span>
-                <ArrowUpRight size={17} aria-hidden="true" />
-              </Link>
             </div>
           </div>
 
-          {/* Quick Hub Navigation Cards */}
-          <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-2">
-            {[
-              {
-                title: "The Presenters",
-                detail: "Meet on-air talent",
-                image: CBMTeamArtwork,
-                href: "/team",
-              },
-              {
-                title: "Daily Programs",
-                detail: "Explore lineup",
-                image: RadioShowArtwork,
-                href: "/programs",
-              },
-              {
-                title: "Music Charts",
-                detail: "Vote for your track",
-                image: CBMTeamArtwork,
-                href: "/charts",
-              },
-            ].map((tile) => (
-              <Link
-                key={tile.title}
-                href={tile.href}
-                className="cbm-card group flex flex-col items-center rounded-xl border border-white/10 bg-[#111a17]/70 p-3 text-center sm:p-4 hover:border-[#00d4a5]/50 transition-all"
-              >
-                <div className="relative aspect-square w-full max-w-28 overflow-hidden rounded-full border-2 border-white/15 bg-black shadow-lg transition-transform duration-300 group-hover:scale-105 group-hover:border-[#00d4a5]">
-                  <Image
-                    src={tile.image}
-                    alt=""
-                    fill
-                    sizes="(max-width: 640px) 24vw, 120px"
-                    className="object-cover grayscale transition-all duration-300 group-hover:grayscale-0"
-                  />
+          {/* Right Column: Ranked Leaderboard Tracks #2 - #5 (7 Cols) */}
+          <div className="lg:col-span-7">
+            <div className="rounded-2xl border border-white/15 bg-[#0a120f]/85 p-5 sm:p-7 shadow-xl backdrop-blur-md">
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <div className="flex items-center gap-2">
+                  <Music2 size={16} className="text-[#00d4a5]" />
+                  <h3 className="text-base font-black uppercase tracking-wider text-white">
+                    Ranked Countdown (#02 – #05)
+                  </h3>
                 </div>
-                <p className="mt-2.5 text-xs font-black uppercase text-white sm:text-sm">
-                  {tile.title}
-                </p>
-                <p className="mt-0.5 hidden text-[0.7rem] text-white/60 sm:block">
-                  {tile.detail}
-                </p>
-              </Link>
-            ))}
-          </div>
+                <span className="text-xs font-bold text-white/50">
+                  {chart?.title ?? "Official Standings"}
+                </span>
+              </div>
 
+              {/* Track rows */}
+              <div className="mt-4 divide-y divide-white/5">
+                {leaderboardEntries.map((entry, index) => {
+                  const isTrackPlaying = playingTrackId === entry.id && isPlaying;
+                  const rankNumber = entry.rank || index + 2;
+                  const isTop2 = rankNumber === 2;
+                  const isTop3 = rankNumber === 3;
+
+                  return (
+                    <div
+                      key={entry.id}
+                      className="group flex items-center justify-between gap-3 py-3.5 transition-colors hover:bg-white/[0.03] px-2.5 rounded-xl"
+                    >
+                      {/* Left: Rank + Art + Title/Artist */}
+                      <div className="flex items-center gap-3.5 min-w-0">
+                        {/* Rank Badge */}
+                        <span
+                          className={`grid size-9 shrink-0 place-items-center rounded-lg text-sm font-black tabular-nums ${
+                            isTop2
+                              ? "bg-slate-200 text-[#07100f] font-black"
+                              : isTop3
+                              ? "bg-amber-600/80 text-white font-black"
+                              : "border border-white/15 bg-white/5 text-white/70"
+                          }`}
+                        >
+                          {String(rankNumber).padStart(2, "0")}
+                        </span>
+
+                        {/* Thumbnail Artwork */}
+                        <div className="relative size-12 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-black/40">
+                          <Image
+                            src={
+                              entry.cover_image_url ||
+                              entry.cover_image ||
+                              RadioShowArtwork
+                            }
+                            alt={`${entry.title} cover`}
+                            fill
+                            sizes="48px"
+                            className="object-cover"
+                          />
+                        </div>
+
+                        {/* Track Info */}
+                        <div className="min-w-0">
+                          <h4 className="truncate font-extrabold text-white text-sm sm:text-base group-hover:text-[#00d4a5] transition-colors">
+                            {entry.title}
+                          </h4>
+                          <p className="truncate text-xs text-white/60 mt-0.5">
+                            {entry.artist}
+                            {entry.featured_artists ? ` ft. ${entry.featured_artists}` : ""}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Right: Movement Pill + Play Button */}
+                      <div className="flex items-center gap-2.5 shrink-0">
+                        {/* Movement indicator */}
+                        {entry.movement?.status === "up" && (
+                          <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-[0.65rem] font-bold text-emerald-400">
+                            ▲ {entry.movement.label}
+                          </span>
+                        )}
+                        {entry.movement?.status === "down" && (
+                          <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-rose-500/15 px-2.5 py-0.5 text-[0.65rem] font-bold text-rose-400">
+                            ▼ {entry.movement.label}
+                          </span>
+                        )}
+                        {entry.movement?.status === "new" && (
+                          <span className="hidden sm:inline-flex items-center rounded-full bg-[#00d4a5]/20 px-2.5 py-0.5 text-[0.65rem] font-black text-[#00d4a5]">
+                            ★ NEW
+                          </span>
+                        )}
+                        {!entry.movement && (
+                          <span className="hidden sm:inline-flex items-center rounded-full bg-white/10 px-2.5 py-0.5 text-[0.65rem] font-bold text-white/60">
+                            HOT 100
+                          </span>
+                        )}
+
+                        {/* Play button */}
+                        <button
+                          type="button"
+                          onClick={() => togglePlay(entry)}
+                          aria-label={`Play preview of ${entry.title}`}
+                          className={`grid size-9 place-items-center rounded-full border transition-all ${
+                            isTrackPlaying
+                              ? "border-[#00d4a5] bg-[#00d4a5] text-[#062521] shadow-[0_0_12px_rgba(0,212,165,0.4)]"
+                              : "border-white/15 bg-white/5 text-white/80 hover:border-[#00d4a5] hover:text-[#00d4a5]"
+                          }`}
+                        >
+                          {isTrackPlaying ? (
+                            <Pause size={14} fill="currentColor" />
+                          ) : (
+                            <Play size={14} className="translate-x-0.5" fill="currentColor" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Leaderboard Footer */}
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-white/10 pt-4">
+                <span className="text-xs text-white/50">
+                  Showing Top 5 of 100 tracks. Updated every Friday.
+                </span>
+                <Link
+                  href={selectedChartSlug ? `/charts?chart=${encodeURIComponent(selectedChartSlug)}` : "/charts"}
+                  className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#00d4a5] hover:text-white transition-colors"
+                >
+                  <span>Explore Full Top 100 & Vote</span>
+                  <ArrowUpRight size={15} />
+                </Link>
+              </div>
+            </div>
+
+            {/* Quick Feature Discovery Cards (3 columns) */}
+            <div className="mt-5 grid grid-cols-3 gap-3">
+              {[
+                {
+                  title: "Presenter Lineup",
+                  detail: "Voices of CBM",
+                  href: "/team",
+                  image: CBMTeamArtwork,
+                },
+                {
+                  title: "Live Shows",
+                  detail: "Broadcast Schedule",
+                  href: "/programs",
+                  image: RadioShowArtwork,
+                },
+                {
+                  title: "Top Podcasts",
+                  detail: "Listen on Demand",
+                  href: "/episodes",
+                  image: CBMTeamArtwork,
+                },
+              ].map((item) => (
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  className="group flex flex-col items-center rounded-xl border border-white/10 bg-[#09120f]/60 p-3 text-center transition-all hover:border-[#00d4a5]/40 hover:bg-[#0c1814]"
+                >
+                  <div className="relative aspect-square w-16 overflow-hidden rounded-full border border-white/15 bg-black">
+                    <Image
+                      src={item.image}
+                      alt=""
+                      fill
+                      sizes="64px"
+                      className="object-cover grayscale transition-all duration-300 group-hover:scale-105 group-hover:grayscale-0"
+                    />
+                  </div>
+                  <span className="mt-2 block text-[0.72rem] font-black uppercase tracking-tight text-white group-hover:text-[#00d4a5]">
+                    {item.title}
+                  </span>
+                  <span className="hidden sm:block text-[0.65rem] text-white/50 mt-0.5">
+                    {item.detail}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
-  );
-}
-
-function ChartRankRow({
-  entry,
-  index,
-  isPlaying,
-  onTogglePreview,
-}: {
-  entry: ChartEntry;
-  index: number;
-  isPlaying: boolean;
-  onTogglePreview: () => void;
-}) {
-  const image = entry.cover_image_url || entry.cover_image;
-  const isTop1 = entry.rank === 1;
-  const isTop2 = entry.rank === 2;
-  const isTop3 = entry.rank === 3;
-
-  return (
-    <li className="flex items-center justify-between gap-4 py-3.5 first:pt-4 last:pb-2 transition-colors hover:bg-white/[0.02] px-2 rounded-lg">
-      <div className="flex items-center gap-3.5 min-w-0">
-        
-        {/* Rank Badge with metallic highlight */}
-        <span
-          className={`grid size-9 shrink-0 place-items-center rounded-lg text-sm font-black tabular-nums shadow-sm ${
-            isTop1
-              ? "bg-amber-400 text-black shadow-[0_0_12px_rgba(251,191,36,0.4)]"
-              : isTop2
-              ? "bg-slate-300 text-black"
-              : isTop3
-              ? "bg-amber-700/80 text-white"
-              : "border border-white/15 bg-black/40 text-white/70"
-          }`}
-        >
-          {String(entry.rank).padStart(2, "0")}
-        </span>
-
-        {/* Cover Art */}
-        <div className="relative size-14 shrink-0 overflow-hidden rounded-lg bg-black/40 border border-white/10 shadow-sm">
-          <Image
-            src={image || chartArtwork[index % chartArtwork.length]}
-            alt={image ? `${entry.title} cover` : "Track cover"}
-            fill
-            sizes="56px"
-            unoptimized={Boolean(image)}
-            className="object-cover"
-          />
-        </div>
-
-        {/* Title, Artist, & Metadata */}
-        <div className="min-w-0">
-          <h4 className="truncate font-black text-white text-sm sm:text-base">
-            {entry.title}
-          </h4>
-          <p className="truncate text-xs text-white/70 mt-0.5">
-            {entry.artist}
-            {entry.featured_artists ? ` feat. ${entry.featured_artists}` : ""}
-          </p>
-        </div>
-      </div>
-
-      {/* Right side: Movement Tag & Preview Visualizer Button */}
-      <div className="flex items-center gap-3 shrink-0">
-        {isTop1 ? (
-          <span className="hidden sm:inline-flex rounded-full bg-amber-400/20 px-2 py-0.5 text-[0.65rem] font-black text-amber-300">
-            ★ #1 HIT
-          </span>
-        ) : (
-          <span className="hidden sm:inline-flex rounded-full bg-white/10 px-2 py-0.5 text-[0.65rem] font-bold text-white/60">
-            TOP 10
-          </span>
-        )}
-
-        <button
-          type="button"
-          onClick={onTogglePreview}
-          aria-label={`Preview ${entry.title}`}
-          className={`grid size-9 place-items-center rounded-full border transition-all ${
-            isPlaying
-              ? "border-[#00d4a5] bg-[#00d4a5] text-[#062521] shadow-[0_0_12px_rgba(0,212,165,0.4)]"
-              : "border-white/15 bg-white/5 text-white/80 hover:border-[#00d4a5] hover:text-[#00d4a5]"
-          }`}
-        >
-          {isPlaying ? (
-            <div className="flex items-end gap-0.5 h-3.5" aria-hidden="true">
-              <span className="w-0.5 bg-current animate-eq-1 rounded-full" />
-              <span className="w-0.5 bg-current animate-eq-2 rounded-full" />
-              <span className="w-0.5 bg-current animate-eq-3 rounded-full" />
-            </div>
-          ) : (
-            <Headphones size={15} />
-          )}
-        </button>
-      </div>
-    </li>
   );
 }
