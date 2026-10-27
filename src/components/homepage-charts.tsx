@@ -156,6 +156,7 @@ export default function HomepageCharts() {
 
   const top1 = rawEntries[0] ?? fallbackEntries[0];
   const leaderboardEntries = rawEntries.slice(1, 5);
+  const chartHeroArtwork = chart?.cover_image_url || chart?.cover_image || RadioShowArtwork;
 
   const togglePlay = (entry: ChartEntry) => {
     if (playingTrackId === entry.id && isPlaying) {
@@ -239,6 +240,53 @@ export default function HomepageCharts() {
               <span>Full 100 Tracks</span>
               <ArrowUpRight size={14} aria-hidden="true" />
             </Link>
+          </div>
+        </div>
+
+        {/* Chart Hero Image Banner */}
+        <div className="mt-8 cbm-card relative isolate overflow-hidden rounded-2xl border-4 border-[#00d4a5] bg-[#00d4a5] p-1.5 shadow-[0_20px_50px_rgba(0,212,165,0.2)] sm:border-[6px] sm:p-2">
+          <div className="relative min-h-[17rem] overflow-hidden rounded-xl sm:min-h-[22rem] lg:min-h-[26rem]">
+            <Image
+              src={CBMTeamArtwork}
+              alt="The CBM Radio team together"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 1200px"
+              className="object-cover object-[center_28%] transition-transform duration-700 hover:scale-[1.02]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-black/25" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+
+            {/* Overlay Headline */}
+            <div className="absolute left-5 top-5 max-w-sm sm:left-8 sm:top-8 sm:max-w-lg">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/20 px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#78f2d5]">
+                <Music2 size={13} /> Your world. Your frequency.
+              </span>
+              <h3 className="mt-3 text-2xl font-black leading-tight text-white drop-shadow-lg sm:text-4xl lg:text-5xl">
+                {chart?.title || "The voices moving the culture."}
+              </h3>
+              <p className="mt-2 text-xs sm:text-sm text-white/85 line-clamp-2 drop-shadow-md max-w-md">
+                {chart?.description ||
+                  "Ranked each week by community votes, airplay, and streaming pulse across East Africa."}
+              </p>
+            </div>
+
+            {/* Inset chart artwork stamp on bottom right */}
+            <div className="absolute bottom-4 right-4 h-24 w-20 overflow-hidden rounded-lg border-2 border-white shadow-2xl sm:bottom-7 sm:right-7 sm:h-36 sm:w-28 sm:border-4">
+              <Image
+                src={chartHeroArtwork}
+                alt={chart?.title ? `${chart.title} artwork` : "Chart artwork"}
+                fill
+                sizes="120px"
+                unoptimized={typeof chartHeroArtwork === "string"}
+                className="object-cover"
+              />
+            </div>
+
+            {/* Bottom Left Brand Pill */}
+            <div className="absolute bottom-4 left-4 rounded-lg bg-[#00d4a5] px-3.5 py-1.5 text-base font-black tracking-[-0.07em] text-[#062521] shadow-lg sm:bottom-7 sm:left-7 sm:px-5 sm:py-2.5 sm:text-3xl">
+              CBM <span className="font-light tracking-tight text-white">MUSIC</span>
+            </div>
           </div>
         </div>
 
