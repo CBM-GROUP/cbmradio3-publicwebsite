@@ -166,7 +166,7 @@ function ProgramCard({ program, onPlay }: { program: ProgramSummary; onPlay: (me
   const promoMedia = getYouTubeMedia(program.promo_video_url);
 
   return (
-    <article className="cbm-card flex h-full flex-col overflow-hidden rounded-2xl border-2 border-black bg-black text-white shadow-2xl transition-transform duration-300 hover:-translate-y-1">
+    <article className="cbm-card flex h-full flex-col overflow-hidden rounded-2xl border-2 border-black bg-black text-white shadow-2xl">
       <div className="relative aspect-video border-b-2 border-black/80 bg-zinc-900">
         <Image
           src={program.cover_image || Logo}

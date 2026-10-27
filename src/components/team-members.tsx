@@ -152,7 +152,7 @@ export default function TeamMembers({ limit }: { limit?: number }) {
               <button
                 type="button"
                 key={member.id}
-                className="cbm-card group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-2xl border-2 border-black bg-black text-left shadow-xl transition-all hover:-translate-y-1 hover:shadow-2xl"
+                className="cbm-card group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-2xl border-2 border-black bg-black text-left shadow-xl"
                 onClick={() => setSelectedMember(member)}
                 aria-label={`View ${member.name} profile`}
               >

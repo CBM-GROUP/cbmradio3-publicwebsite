@@ -212,7 +212,7 @@ export default function NewsListing() {
 
 function PromotedArticle({ article, label }: { article: ArticleListItem; label: "Featured" | "Latest" }) {
   return (
-    <Link href={"/news/" + article.slug} className="group grid overflow-hidden rounded-2xl border-2 border-black bg-black text-white shadow-2xl transition-transform duration-300 hover:-translate-y-1 sm:grid-cols-2">
+    <Link href={"/news/" + article.slug} className="cbm-card group grid overflow-hidden rounded-2xl border-2 border-black bg-black text-white shadow-2xl sm:grid-cols-2">
       <ArticleImage article={article} />
       <ArticleMetadata article={article} label={label} />
     </Link>
@@ -221,7 +221,7 @@ function PromotedArticle({ article, label }: { article: ArticleListItem; label: 
 
 function ArticleCard({ article }: { article: ArticleListItem }) {
   return (
-    <Link href={"/news/" + article.slug} className="group flex flex-col overflow-hidden rounded-2xl border-2 border-black bg-black text-white shadow-xl transition-transform duration-300 hover:-translate-y-1">
+    <Link href={"/news/" + article.slug} className="cbm-card group flex flex-col overflow-hidden rounded-2xl border-2 border-black bg-black text-white shadow-xl">
       <ArticleImage article={article} />
       <ArticleMetadata article={article} />
     </Link>

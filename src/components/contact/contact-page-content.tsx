@@ -132,7 +132,7 @@ function ContactItem({ icon: Icon, label, value, href, breakWords = false, prese
 }) {
   const valueClass = "mt-3 text-base font-bold leading-relaxed text-zinc-300 " + (breakWords ? "break-all " : "") + (preserveLines ? "whitespace-pre-line" : "");
   return (
-    <article className="rounded-2xl border-2 border-black bg-black p-8 text-white shadow-2xl transition hover:-translate-y-1">
+    <article className="cbm-card rounded-2xl border-2 border-black bg-black p-8 text-white shadow-2xl">
       <div className="flex size-12 items-center justify-center rounded-xl bg-[#04b093] text-black text-xl">
         <Icon aria-hidden="true" />
       </div>
