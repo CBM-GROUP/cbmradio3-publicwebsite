@@ -5,12 +5,13 @@ export interface NavigationItem {
 
 export const primaryNavigation: NavigationItem[] = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Team Members", href: "/team" },
-  { label: "Programs", href: "/programs" },
   { label: "Charts", href: "/charts" },
+  { label: "Shows", href: "/programs" },
+  { label: "Podcasts", href: "/episodes" },
   { label: "News", href: "/news" },
-  { label: "Gallery", href: "/gallery" },
+  { label: "Moments", href: "/gallery" },
+  { label: "Presenters", href: "/team" },
+  { label: "About", href: "/about" },
 ];
 
 export const contactNavigationItem: NavigationItem = {
