@@ -45,7 +45,7 @@ export default function TeamMembers({ limit }: { limit?: number }) {
         {partial && <p className="mb-6 text-sm text-[#f4cf55]" role="status">Some team members could not be loaded. Available profiles are shown.</p>}
         {members.length > 0 && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {members.map((member, index) => (
+            {members.map((member) => (
               <button type="button" key={member.id} className="cbm-card group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg bg-[#111816] text-left" onClick={() => setSelectedMember(member)} aria-label={"View " + member.name + " profile"}>
                 <Image src={member.profileUrl || Logo} alt={member.name} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" unoptimized={Boolean(member.profileUrl)} className="object-cover transition-transform duration-500 group-hover:scale-105" />
                 <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent px-4 pb-4 pt-12 text-base font-bold">{member.name}</span>

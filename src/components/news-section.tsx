@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Clock } from "lucide-react";
+import { ArrowUpRight, Clock, Flame, Newspaper, Radio } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -23,127 +23,250 @@ export default function NewsSection() {
   useEffect(() => {
     let isMounted = true;
 
-    homeService.getFeaturedArticles().then((items) => {
-      if (!isMounted) return;
-      setFeaturedArticles(items);
-      setFeaturedState("ready");
-    }).catch(() => {
-      if (isMounted) setFeaturedState("error");
-    });
+    homeService
+      .getFeaturedArticles()
+      .then((items) => {
+        if (!isMounted) return;
+        setFeaturedArticles(items);
+        setFeaturedState("ready");
+      })
+      .catch(() => {
+        if (isMounted) setFeaturedState("error");
+      });
 
-    homeService.getLatestArticles().then((items) => {
-      if (!isMounted) return;
-      setLatestArticles(items);
-      setLatestState("ready");
-    }).catch(() => {
-      if (isMounted) setLatestState("error");
-    });
+    homeService
+      .getLatestArticles()
+      .then((items) => {
+        if (!isMounted) return;
+        setLatestArticles(items);
+        setLatestState("ready");
+      })
+      .catch(() => {
+        if (isMounted) setLatestState("error");
+      });
 
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const featured = featuredArticles[0];
-  const latest = latestArticles.find((article) => article.id !== featured?.id);
-  const isEmpty = featuredState === "ready" && latestState === "ready" && !featured && !latest;
+  const secondaryStories = latestArticles
+    .filter((article) => article.id !== featured?.id)
+    .slice(0, 3);
+  const isEmpty =
+    featuredState === "ready" &&
+    latestState === "ready" &&
+    !featured &&
+    secondaryStories.length === 0;
 
   return (
-    <section className="border-y border-white/10 bg-[#090d0c] px-4 py-16 text-white sm:px-6 lg:px-8 lg:py-20">
+    <section
+      id="news"
+      className="relative border-y border-white/10 bg-[#070c0a] px-4 py-16 text-white sm:px-6 lg:px-8 lg:py-24"
+    >
+      {/* Background ambient lighting */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-0 top-1/3 -z-10 h-96 w-96 rounded-full bg-[#00d4a5]/5 blur-3xl"
+      />
+
       <div className="mx-auto max-w-7xl">
-      <div className="mb-8 flex items-end justify-between gap-4">
-        <div>
-          <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#48d4c1]">News</p>
-          <h2 className="mt-2 text-3xl font-extrabold text-white">From the newsroom</h2>
-        </div>
-        <Link href="/news" className="font-semibold text-[#48d4c1] hover:text-white">View all news</Link>
-      </div>
-
-      {(featuredState === "loading" || latestState === "loading") && !featured && !latest && (
-        <p className="rounded-lg border border-white/10 bg-white/[0.03] px-5 py-8 text-center text-white/70" aria-live="polite">Loading newsroom updates...</p>
-      )}
-      {(!featured && !latest && featuredState !== "loading" && latestState !== "loading") && (
-        <div className="cbm-card grid overflow-hidden rounded-xl border border-white/10 bg-[#111816] sm:grid-cols-[0.9fr_1.1fr]">
-          <div className="relative min-h-52 sm:min-h-64">
-            <Image
-              src={NewsroomStudioSet}
-              alt="CBM Radio newsroom studio set"
-              fill
-              sizes="(max-width: 640px) 100vw, 42vw"
-              className="object-cover"
-            />
-          </div>
-          <div className="flex flex-col justify-center p-6 sm:p-8">
-            <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#48d4c1]">The CBM newsroom</p>
-            <h3 className="mt-3 text-2xl font-black">Stories from our community.</h3>
-            <p className="mt-3 max-w-lg text-sm leading-6 text-white/70">
-              Find station announcements, fresh perspectives, and the latest from across CBM Radio.
-            </p>
-            <Link href="/news" className="mt-5 inline-flex min-h-11 w-fit items-center gap-2 font-semibold text-[#48d4c1] hover:text-white">
-              Visit the newsroom <ArrowUpRight size={17} aria-hidden="true" />
-            </Link>
-            {(isEmpty || featuredState === "error" || latestState === "error") && (
-              <p className="mt-3 text-xs text-white/45">
-                {isEmpty ? "No published news is available right now." : "Some news updates are temporarily unavailable."}
+        {/* Newsroom Header */}
+        <div className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b border-white/10 pb-6">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="grid size-7 place-items-center rounded-lg bg-[#00d4a5]/10 text-[#00d4a5]">
+                <Newspaper size={16} />
+              </span>
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+                FROM THE CBM NEWSROOM
               </p>
-            )}
+            </div>
+            <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
+              Community Voices & Stories
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
+              Investigative features, arts & culture perspectives, and station dispatches covering our community.
+            </p>
           </div>
-        </div>
-      )}
 
-      {featured && (
-        <ArticleCard article={featured} label="Featured" featured />
-      )}
-      {featuredState === "error" && latest && (
-        <p className="mb-4 text-sm text-zinc-500">Featured news is temporarily unavailable.</p>
-      )}
-
-      {latest && (
-        <div className="mt-8">
-          <p className="mb-3 text-xs font-bold uppercase tracking-wider text-teal-500">Latest</p>
-          <ArticleCard article={latest} label="Latest" />
+          <Link
+            href="/news"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-5 text-sm font-extrabold text-[#00d4a5] transition-all hover:bg-[#00d4a5] hover:text-[#062521]"
+          >
+            All News Stories <ArrowUpRight size={17} aria-hidden="true" />
+          </Link>
         </div>
-      )}
-      {latestState === "error" && featured && (
-        <p className="mt-6 text-sm text-zinc-500">Latest news is temporarily unavailable.</p>
-      )}
+
+        {/* Loading State */}
+        {(featuredState === "loading" || latestState === "loading") &&
+          !featured &&
+          secondaryStories.length === 0 && (
+            <p
+              className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-12 text-center text-white/70"
+              aria-live="polite"
+            >
+              Loading newsroom dispatches...
+            </p>
+          )}
+
+        {/* Fallback when no live news stories */}
+        {!featured &&
+          secondaryStories.length === 0 &&
+          featuredState !== "loading" &&
+          latestState !== "loading" && (
+            <div className="cbm-card grid overflow-hidden rounded-2xl border border-white/15 bg-[#0f1715] sm:grid-cols-[0.9fr_1.1fr]">
+              <div className="relative min-h-60 sm:min-h-72">
+                <Image
+                  src={NewsroomStudioSet}
+                  alt="CBM Radio newsroom studio set"
+                  fill
+                  sizes="(max-width: 640px) 100vw, 45vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent sm:bg-gradient-to-r" />
+              </div>
+              <div className="flex flex-col justify-center p-6 sm:p-10">
+                <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#00d4a5]/10 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+                  <Radio size={13} /> DESK DISPATCH
+                </span>
+                <h3 className="mt-3 text-2xl font-black sm:text-3xl">
+                  Stories That Move Culture Forward
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-zinc-300">
+                  Stay updated on station developments, regional arts and entertainment, and authentic perspectives from our community.
+                </p>
+                <Link
+                  href="/news"
+                  className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 rounded-full bg-[#00d4a5] px-6 text-sm font-extrabold text-[#062521] transition hover:bg-[#48d4c1]"
+                >
+                  Visit The Newsroom <ArrowUpRight size={17} aria-hidden="true" />
+                </Link>
+                {(isEmpty || featuredState === "error" || latestState === "error") && (
+                  <p className="mt-4 text-xs text-white/40">
+                    {isEmpty
+                      ? "Fresh articles are being drafted. Check back shortly."
+                      : "Some news feeds are momentarily offline."}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+        {/* Primary Featured Story Hero Card */}
+        {featured && (
+          <Link
+            href={`/news/${featured.slug}`}
+            className="cbm-card group relative mb-8 grid overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-r from-[#0c1412] to-[#070b0a] shadow-xl hover:border-[#00d4a5]/50 lg:grid-cols-[1.1fr_0.9fr]"
+          >
+            <div className="relative min-h-72 lg:min-h-[22rem]">
+              <Image
+                src={featured.cover_image || NewsroomStudioSet}
+                alt={featured.title}
+                fill
+                sizes="(max-width: 1024px) 100vw, 55vw"
+                unoptimized={Boolean(featured.cover_image)}
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent lg:bg-gradient-to-r" />
+              <div className="absolute left-4 top-4">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/90 px-3 py-1 text-xs font-black uppercase tracking-wider text-white shadow-md">
+                  <Flame size={13} /> TOP STORY
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
+              {featured.category && (
+                <span className="text-xs font-black uppercase tracking-[0.2em] text-[#00d4a5]">
+                  {featured.category.name}
+                </span>
+              )}
+              <h3 className="mt-2 text-2xl font-black text-white sm:text-3xl lg:text-4xl group-hover:text-[#00d4a5] transition-colors leading-tight">
+                {featured.title}
+              </h3>
+
+              <div className="mt-6 flex flex-wrap items-center gap-4 text-xs text-zinc-400 border-t border-white/10 pt-4">
+                {featured.author && (
+                  <span className="font-bold text-white">By {featured.author}</span>
+                )}
+                {(featured.published_at || featured.created_at) && (
+                  <span className="flex items-center gap-1 text-[#00d4a5]">
+                    <Clock size={13} />
+                    <span>{formatTimeAgo(featured.published_at || featured.created_at)}</span>
+                  </span>
+                )}
+                {featured.published_at && (
+                  <span className="text-zinc-500">
+                    {formatPublicationDate(featured.published_at)}
+                  </span>
+                )}
+              </div>
+            </div>
+          </Link>
+        )}
+
+        {/* Secondary Recent Stories Grid */}
+        {secondaryStories.length > 0 && (
+          <div>
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-xs font-extrabold uppercase tracking-wider text-[#00d4a5]">
+                More from the wire
+              </p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {secondaryStories.map((article, index) => {
+                const fallbackImg = index % 2 === 0 ? BrianPortrait : SamuelPortrait;
+
+                return (
+                  <Link
+                    key={article.id}
+                    href={`/news/${article.slug}`}
+                    className="cbm-card group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0d1614]/80 transition-all hover:border-[#00d4a5]/40 hover:bg-[#111c19]"
+                  >
+                    <div className="relative aspect-video w-full overflow-hidden bg-black/40">
+                      <Image
+                        src={article.cover_image || fallbackImg}
+                        alt={article.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        unoptimized={Boolean(article.cover_image)}
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      {article.category && (
+                        <span className="absolute bottom-3 left-3 rounded-full bg-black/60 px-2.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-[#00d4a5] backdrop-blur-sm">
+                          {article.category.name}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex flex-1 flex-col justify-between p-5">
+                      <div>
+                        <h4 className="font-extrabold text-white text-lg group-hover:text-[#00d4a5] transition-colors line-clamp-2">
+                          {article.title}
+                        </h4>
+                      </div>
+
+                      <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3 text-xs text-zinc-400">
+                        <span className="truncate max-w-[140px]">
+                          {article.author ? `By ${article.author}` : "CBM News"}
+                        </span>
+                        {(article.published_at || article.created_at) && (
+                          <span className="flex items-center gap-1 text-[#00d4a5]">
+                            <Clock size={12} />
+                            <span>{formatTimeAgo(article.published_at || article.created_at)}</span>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </section>
-  );
-}
-
-function ArticleCard({ article, label, featured = false }: { article: ArticleSummary; label: string; featured?: boolean }) {
-  return (
-    <Link href={"/news/" + article.slug} className={"cbm-card grid overflow-hidden rounded-lg border border-white/10 bg-[#111816] transition-colors hover:border-[#48d4c1]/50 " + (featured ? "gap-6 lg:grid-cols-2" : "gap-5 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]")}>
-      <div className="relative aspect-video bg-zinc-900">
-        <Image
-          src={article.cover_image || (label === "Featured" ? BrianPortrait : SamuelPortrait)}
-          alt={article.title}
-          fill
-          sizes={featured ? "(max-width: 1024px) 100vw, 50vw" : "(max-width: 640px) 100vw, 34vw"}
-          unoptimized={Boolean(article.cover_image)}
-          className="object-cover"
-        />
-      </div>
-      <div className="flex flex-col justify-center p-5">
-        <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-[#48d4c1]">{label}</span>
-        </div>
-        {article.category && <span className="mt-2 text-xs uppercase text-zinc-500">{article.category.name}</span>}
-        <h3 className={"mt-2 font-bold text-white " + (featured ? "text-3xl" : "text-xl")}>{article.title}</h3>
-        {article.author && <p className="mt-4 text-sm text-zinc-400">By {article.author}</p>}
-        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-400">
-          {(article.published_at || article.created_at) && (
-            <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
-              <Clock size={14} />
-              <span>Uploaded {formatTimeAgo(article.published_at || article.created_at)}</span>
-            </span>
-          )}
-          {article.published_at && (
-            <span className="text-zinc-500">
-              • {formatPublicationDate(article.published_at)}
-            </span>
-          )}
-        </div>
-      </div>
-    </Link>
   );
 }

@@ -1,6 +1,16 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, ArrowUpRight, Music2 } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  Disc3,
+  Flame,
+  Headphones,
+  Music2,
+  Sparkles,
+  Trophy,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -13,7 +23,7 @@ import CBMTeamArtwork from "../../public/cbm_images/take 3.jpeg";
 type LoadState = "loading" | "ready" | "error";
 
 const chartArtwork = [RadioShowArtwork, CBMTeamArtwork];
-const fallbackChartCategories = ["Top charts", "Gospel", "Afrobeats", "Local sounds"];
+const fallbackChartCategories = ["Top 20 Countdown", "Afrobeats Pulse", "Gospel Praise", "East African Heat"];
 
 export default function HomepageCharts() {
   const [chart, setChart] = useState<Chart | null>(null);
@@ -21,6 +31,7 @@ export default function HomepageCharts() {
   const [selectedChartType, setSelectedChartType] = useState(fallbackChartCategories[0]);
   const [discRotation, setDiscRotation] = useState(0);
   const [status, setStatus] = useState<LoadState>("loading");
+  const [activePreviewIndex, setActivePreviewIndex] = useState<number | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -57,7 +68,7 @@ export default function HomepageCharts() {
   const entries = chart?.entries
     ?.filter((entry) => entry.rank > 0)
     .sort((a, b) => a.rank - b.rank)
-    .slice(0, 3) ?? [];
+    .slice(0, 5) ?? [];
   const artwork = chart?.cover_image_url || chart?.cover_image || RadioShowArtwork;
   const availableChartTypes = Array.from(
     new Set(availableCharts.map((item) => item.chart_type.trim()).filter(Boolean)),
@@ -85,256 +96,466 @@ export default function HomepageCharts() {
   }
 
   return (
-    <section id="charts" className="border-y border-white/10 bg-[#101311] text-white">
-      <div className="border-b border-white/10 bg-white px-5 text-[#090d0c] sm:px-8 lg:px-12">
+    <section id="charts" className="relative border-y border-white/10 bg-[#080d0b] text-white">
+      {/* Subtle Ambient Radial Glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[450px] w-full max-w-7xl bg-[radial-gradient(ellipse_at_top,rgba(0,212,165,0.12)_0%,transparent_70%)]"
+      />
+
+      {/* Sleek Dark Brand Header Bar */}
+      <div className="border-b border-white/10 bg-[#0c1411]/90 px-5 backdrop-blur-md sm:px-8 lg:px-12">
         <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-5">
-          <Link href="/charts" className="text-2xl font-black tracking-[-0.08em] sm:text-3xl">
-            CBM<span className="text-[#00d4a5]">CHARTS</span>
+          <Link href="/charts" className="flex items-center gap-2 text-2xl font-black tracking-[-0.06em] sm:text-3xl">
+            <Disc3 className="text-[#00d4a5]" size={28} />
+            <span>CBM<span className="text-[#00d4a5]">CHARTS</span></span>
           </Link>
-          <nav aria-label="Chart links" className="flex items-center gap-5 text-xs font-extrabold sm:gap-9 sm:text-sm">
-            <Link href="/charts" className="hover:text-[#00d4a5]">Charts</Link>
-            <Link href="/programs" className="hover:text-[#00d4a5]">Music</Link>
-            <Link href="/episodes" className="hover:text-[#00d4a5]">Shows</Link>
-            <Link href="/news" className="hidden hover:text-[#00d4a5] sm:inline">News</Link>
+          <nav aria-label="Chart quick links" className="flex items-center gap-5 text-xs font-extrabold sm:gap-8 sm:text-sm">
+            <Link href="/charts" className="text-[#00d4a5] hover:text-white transition-colors">Top Charts</Link>
+            <Link href="/programs" className="text-white/70 hover:text-[#00d4a5] transition-colors">Broadcasts</Link>
+            <Link href="/episodes" className="text-white/70 hover:text-[#00d4a5] transition-colors">Podcasts</Link>
+            <Link href="/news" className="hidden text-white/70 hover:text-[#00d4a5] sm:inline transition-colors">Newsroom</Link>
           </nav>
-          <Link href="/charts" className="hidden text-[0.65rem] font-black uppercase tracking-[0.15em] text-[#111] sm:inline">
-            Explore <ArrowUpRight className="ml-1 inline" size={14} aria-hidden="true" />
+          <Link
+            href="/charts"
+            className="hidden items-center gap-1.5 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/10 px-4 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.15em] text-[#00d4a5] transition-colors hover:bg-[#00d4a5] hover:text-[#062521] sm:inline-flex"
+          >
+            Full Countdown <ArrowUpRight size={13} aria-hidden="true" />
           </Link>
         </div>
       </div>
 
-      <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top,rgba(0,212,165,0.18),transparent_52%)] px-5 sm:px-8 lg:px-12">
-        <nav aria-label="Music chart categories" className="mx-auto flex max-w-7xl gap-7 overflow-x-auto whitespace-nowrap py-4 text-[0.65rem] font-extrabold uppercase tracking-[0.18em] text-white/75 sm:gap-12">
-          {chartCategories.map((category) => (
-            <button
-              key={category}
-              type="button"
-              onClick={() => selectChartType(category)}
-              aria-pressed={selectedChartType === category}
-              className={selectedChartType === category ? "text-[#00d4a5]" : "transition hover:text-[#00d4a5]"}
-            >
-              {category}
-            </button>
-          ))}
-        </nav>
+      {/* Category Pills Bar */}
+      <div className="border-b border-white/10 bg-[#09100e]/75 px-5 backdrop-blur-sm sm:px-8 lg:px-12">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 py-3.5">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white/40">
+            <Flame size={14} className="text-[#00d4a5]" />
+            <span>Rankings:</span>
+          </div>
+          <nav aria-label="Music chart genres" className="flex flex-1 gap-2 overflow-x-auto py-1 no-scrollbar">
+            {chartCategories.map((category) => (
+              <button
+                key={category}
+                type="button"
+                onClick={() => selectChartType(category)}
+                aria-pressed={selectedChartType === category}
+                className={`whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-extrabold transition-all duration-200 ${
+                  selectedChartType === category
+                    ? "bg-[#00d4a5] text-[#062521] shadow-[0_0_16px_rgba(0,212,165,0.35)]"
+                    : "border border-white/10 bg-white/[0.04] text-white/70 hover:border-white/25 hover:text-white"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </nav>
+        </div>
       </div>
 
-      <div className="mx-auto grid max-w-7xl gap-6 px-5 py-8 sm:px-8 sm:py-12 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10 lg:px-12 lg:py-14">
-        <aside className="cbm-card rounded-lg border border-white/10 bg-black p-5">
-          <p className="mb-4 text-[0.65rem] font-extrabold uppercase tracking-[0.2em] text-[#00d4a5]">Explore charts</p>
-          <div>
-            <div className="relative mx-auto my-5 aspect-square w-36 sm:w-40">
-                <div
-                  role="img"
-                  aria-label={`Selected chart type: ${selectedChartType}`}
-                  className="absolute inset-0 overflow-hidden rounded-full border-[5px] border-[#1c2522] shadow-[0_0_0_2px_rgba(72,212,193,0.5),0_12px_28px_rgba(0,0,0,0.55)] transition-transform duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
-                  style={{ transform: `rotate(${discRotation}deg)` }}
-                >
+      {/* Main Interactive Charts Layout */}
+      <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 sm:px-8 sm:py-14 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-12 lg:px-12 lg:py-16">
+        
+        {/* Left Column: Interactive Vinyl Deck & Chart Selector */}
+        <aside className="cbm-card relative overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-b from-[#0e1714] to-[#070b09] p-6 shadow-2xl">
+          <div className="flex items-center justify-between">
+            <p className="text-[0.65rem] font-extrabold uppercase tracking-[0.2em] text-[#00d4a5]">
+              VIRTUAL TURNTABLE
+            </p>
+            <span className="rounded-full bg-white/10 px-2 py-0.5 text-[0.6rem] font-bold text-white/70">
+              33 RPM
+            </span>
+          </div>
+
+          {/* Realistic Grooved Vinyl Record with Center Label */}
+          <div className="relative mx-auto my-6 aspect-square w-44 sm:w-48">
+            {/* Turntable Platter Outer Shadow */}
+            <div className="absolute inset-0 rounded-full bg-black/60 shadow-[0_16px_36px_rgba(0,0,0,0.8)]" />
+
+            {/* Tonearm graphic overlay */}
+            <div className="pointer-events-none absolute -right-2 -top-3 z-20 h-16 w-8 rotate-12 opacity-80" aria-hidden="true">
+              <div className="h-full w-1 bg-gradient-to-b from-zinc-400 via-zinc-200 to-zinc-500 rounded-full shadow-md" />
+              <div className="h-3 w-2.5 bg-teal-400 rounded-sm shadow-sm" />
+            </div>
+
+            {/* Spinning Vinyl Body */}
+            <div
+              role="img"
+              aria-label={`Selected chart vinyl: ${selectedChartType}`}
+              className="absolute inset-0 overflow-hidden rounded-full border-[6px] border-[#151d1a] shadow-[0_0_0_2px_rgba(72,212,193,0.4)] transition-transform duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+              style={{ transform: `rotate(${discRotation}deg)` }}
+            >
+              {/* Concentric Vinyl Grooves Pattern */}
+              <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,#111_0%,#090909_40%,#1a1a1a_60%,#050505_100%)]">
+                <div className="absolute inset-0 rounded-full opacity-60 bg-[repeating-radial-gradient(circle,transparent_0_3px,rgba(255,255,255,0.06)_4px_5px)]" />
+              </div>
+
+              {/* Gloss Light Reflection Sheen */}
+              <div className="absolute inset-0 rounded-full bg-[linear-gradient(135deg,rgba(255,255,255,0.18)_0%,transparent_45%,rgba(255,255,255,0.08)_100%)] pointer-events-none" />
+
+              {/* Center Spindle & Custom Label */}
+              <div className="absolute inset-0 grid place-items-center">
+                <div className="relative size-20 rounded-full border-4 border-black/80 bg-gradient-to-tr from-[#00d4a5] to-[#48d4c1] p-1 shadow-[0_0_15px_rgba(0,212,165,0.5)] overflow-hidden">
                   <Image
                     src={selectedArtwork}
                     alt=""
                     fill
-                    sizes="160px"
+                    sizes="80px"
                     unoptimized={typeof selectedArtwork === "string"}
-                    className="object-cover grayscale"
+                    className="object-cover opacity-80 mix-blend-multiply"
                   />
-                  <div className="absolute inset-0 rounded-full bg-[repeating-radial-gradient(circle,transparent_0_12px,rgba(0,0,0,0.42)_13px_15px)]" />
                   <div className="absolute inset-0 grid place-items-center">
-                    <span className="grid size-14 place-items-center rounded-full border-4 border-black/70 bg-[#48d4c1] px-1 text-center text-[0.48rem] font-black uppercase leading-tight tracking-wide text-[#062521] shadow-[0_0_0_3px_rgba(255,255,255,0.18)]">
+                    <span className="text-center text-[0.55rem] font-black uppercase leading-tight tracking-wider text-[#062521] px-1 drop-shadow-sm">
                       {selectedChartType}
                     </span>
                   </div>
+                  {/* Center Spindle Hole */}
+                  <div className="absolute inset-0 m-auto size-3 rounded-full bg-black border border-white/30" />
                 </div>
+              </div>
             </div>
-            <p className="text-center text-xs font-bold text-white/60" aria-live="polite">
-                Spin to choose a chart
-              </p>
-              <div className="mt-3 flex items-center justify-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => rotateDisc(-1)}
-                  aria-label="Choose previous chart type"
-                  className="grid size-9 place-items-center rounded-full border border-white/15 text-white transition hover:border-[#48d4c1] hover:text-[#48d4c1]"
-                >
-                  <ArrowLeft size={16} aria-hidden="true" />
-                </button>
-                <span className="min-w-0 max-w-36 truncate text-center text-sm font-extrabold text-[#48d4c1]">
-                  {selectedChartType}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => rotateDisc(1)}
-                  aria-label="Choose next chart type"
-                  className="grid size-9 place-items-center rounded-full border border-white/15 text-white transition hover:border-[#48d4c1] hover:text-[#48d4c1]"
-                >
-                  <ArrowRight size={16} aria-hidden="true" />
-                </button>
-              </div>
-              <div className="mt-4 max-h-36 space-y-1 overflow-y-auto">
-                {chartCategories.map((category) => (
-                  <button
-                    key={category}
-                    type="button"
-                    onClick={() => selectChartType(category)}
-                    aria-pressed={selectedChartType === category}
-                    className={`flex min-h-10 w-full items-center justify-between rounded-md px-3 text-left text-sm font-bold transition ${
-                      selectedChartType === category
-                        ? "bg-[#48d4c1]/15 text-[#48d4c1]"
-                        : "text-white/65 hover:bg-white/5 hover:text-white"
-                    }`}
-                  >
-                    {category}<span aria-hidden="true">›</span>
-                  </button>
-                ))}
-              </div>
-              <Link
-                href={
-                  selectedChart
-                    ? `/charts?chart=${encodeURIComponent(selectedChart.slug)}`
-                    : `/charts?type=${encodeURIComponent(selectedChartType)}`
-                }
-                className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[#48d4c1] px-4 text-xs font-extrabold text-[#062521] transition hover:bg-[#6ae3d1]"
-              >
-                Explore {selectedChartType} <ArrowUpRight size={15} aria-hidden="true" />
-              </Link>
           </div>
+
+          {/* Spin Turntable Action */}
+          <div className="text-center">
+            <p className="text-xs font-bold text-white/60">
+              Spin or switch chart genre
+            </p>
+            <div className="mt-3 flex items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => rotateDisc(-1)}
+                aria-label="Previous chart"
+                className="grid size-9 place-items-center rounded-full border border-white/20 bg-white/5 text-white transition hover:border-[#00d4a5] hover:bg-[#00d4a5]/10 hover:text-[#00d4a5]"
+              >
+                <ArrowLeft size={16} aria-hidden="true" />
+              </button>
+              <span className="min-w-0 max-w-40 truncate text-center text-xs font-black uppercase tracking-wider text-[#00d4a5]">
+                {selectedChartType}
+              </span>
+              <button
+                type="button"
+                onClick={() => rotateDisc(1)}
+                aria-label="Next chart"
+                className="grid size-9 place-items-center rounded-full border border-white/20 bg-white/5 text-white transition hover:border-[#00d4a5] hover:bg-[#00d4a5]/10 hover:text-[#00d4a5]"
+              >
+                <ArrowRight size={16} aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+
+          {/* Chart Category Quick Buttons */}
+          <div className="mt-5 space-y-1.5 border-t border-white/10 pt-4">
+            {chartCategories.map((category) => (
+              <button
+                key={category}
+                type="button"
+                onClick={() => selectChartType(category)}
+                aria-pressed={selectedChartType === category}
+                className={`flex min-h-10 w-full items-center justify-between rounded-lg px-3.5 text-left text-xs font-bold transition-all ${
+                  selectedChartType === category
+                    ? "bg-[#00d4a5]/15 text-[#00d4a5] border border-[#00d4a5]/30 font-extrabold"
+                    : "text-white/70 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                <span>{category}</span>
+                <span className="text-sm opacity-60">›</span>
+              </button>
+            ))}
+          </div>
+
+          <Link
+            href={
+              selectedChart
+                ? `/charts?chart=${encodeURIComponent(selectedChart.slug)}`
+                : `/charts?type=${encodeURIComponent(selectedChartType)}`
+            }
+            className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#00d4a5] px-4 text-xs font-extrabold text-[#062521] shadow-[0_6px_20px_rgba(0,212,165,0.2)] transition-all hover:bg-[#48d4c1] hover:shadow-[0_8px_25px_rgba(0,212,165,0.35)]"
+          >
+            Explore Full {selectedChartType} <ArrowUpRight size={15} aria-hidden="true" />
+          </Link>
         </aside>
 
-        <div className="min-w-0">
-          <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+        {/* Right Column: Hero Visual Showcase + Ranked Leaderboard */}
+        <div className="min-w-0 space-y-6">
+          
+          {/* Header & Date */}
+          <div className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-4">
             <div>
-              <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#00d4a5]">Your soundtrack, ranked</p>
-              <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">The CBM Countdown</h2>
+              <p className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-[0.2em] text-[#00d4a5]">
+                <Sparkles size={14} /> The Official East African Charts
+              </p>
+              <h2 className="mt-1.5 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
+                The CBM Countdown
+              </h2>
             </div>
-            {chart?.edition_date && <p className="text-xs font-bold uppercase tracking-wider text-white/50">{chart.edition_date}</p>}
+            {chart?.edition_date && (
+              <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white/70">
+                Week of {chart.edition_date}
+              </span>
+            )}
           </div>
 
-          <div className="cbm-card relative isolate overflow-hidden border-[5px] border-[#00d4a5] bg-[#00d4a5] p-1.5 sm:border-[9px] sm:p-2">
-            <div className="relative min-h-[18rem] overflow-hidden rounded-xl sm:min-h-[25rem]">
+          {/* Hero Visual Spotlight Card */}
+          <div className="cbm-card relative isolate overflow-hidden rounded-2xl border-2 border-[#00d4a5]/60 bg-[#070e0b] shadow-[0_20px_50px_rgba(0,212,165,0.15)]">
+            <div className="relative min-h-[17rem] overflow-hidden sm:min-h-[22rem]">
               <Image
                 src={CBMTeamArtwork}
                 alt="The CBM Radio team together"
                 fill
                 sizes="(max-width: 1024px) 100vw, 70vw"
-                className="object-cover object-[center_30%] transition-transform duration-700 hover:scale-[1.03]"
+                className="object-cover object-[center_28%] transition-transform duration-700 hover:scale-[1.03]"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-transparent to-black/25" />
-              <div className="absolute left-4 top-4 max-w-[15rem] sm:left-8 sm:top-8 sm:max-w-sm">
-                <p className="text-[0.6rem] font-black uppercase tracking-[0.2em] text-[#78f2d5] sm:text-xs">
-                  Your world. Your frequency.
-                </p>
-                <h3 className="mt-2 text-2xl font-black leading-tight text-white drop-shadow-lg sm:text-4xl">
-                  The voices moving the culture.
+              <div className="absolute inset-0 bg-gradient-to-r from-[#040908]/90 via-[#040908]/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#040908] via-transparent to-transparent" />
+
+              <div className="absolute left-5 top-5 max-w-md sm:left-8 sm:top-8">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#00d4a5]/40 bg-[#00d4a5]/20 px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#62e6d4]">
+                  <Trophy size={13} /> SOUNDTRACK OF THE WEEK
+                </span>
+                <h3 className="mt-3 text-2xl font-black leading-tight text-white drop-shadow-md sm:text-4xl">
+                  {chart?.title || "East Africa's Top Trending Frequency"}
                 </h3>
+                <p className="mt-2 text-sm text-white/80 line-clamp-2">
+                  {chart?.description || "Ranked each week by community votes, airplay, and streaming pulse."}
+                </p>
               </div>
-              <div className="absolute bottom-4 right-4 h-28 w-24 overflow-hidden border-4 border-white shadow-2xl sm:bottom-7 sm:right-7 sm:h-48 sm:w-40 sm:border-[6px]">
+
+              {/* Inset artwork stamp */}
+              <div className="absolute bottom-5 right-5 h-24 w-20 overflow-hidden rounded-lg border-2 border-white/80 shadow-2xl sm:bottom-7 sm:right-7 sm:h-36 sm:w-28 sm:border-4">
                 <Image
                   src={artwork}
-                  alt={chart?.title ? `${chart.title} chart artwork` : "My Life My Purpose show with CBM presenters"}
+                  alt={chart?.title ? `${chart.title} chart artwork` : "Chart artwork"}
                   fill
-                  sizes="160px"
+                  sizes="120px"
                   unoptimized={typeof artwork === "string"}
                   className="object-cover"
                 />
               </div>
-              <div className="absolute bottom-4 left-4 rounded-lg bg-[#00d4a5] px-3 py-2 text-lg font-black tracking-[-0.07em] text-black shadow-lg sm:bottom-7 sm:left-7 sm:px-5 sm:py-3 sm:text-4xl">
-                CBM <span className="font-light tracking-tight text-white">MUSIC</span>
+
+              <div className="absolute bottom-5 left-5 sm:bottom-7 sm:left-7">
+                <div className="inline-flex items-center gap-2 rounded-xl bg-[#00d4a5] px-4 py-2 font-black text-[#062521] shadow-lg">
+                  <Music2 size={18} />
+                  <span className="text-sm uppercase tracking-wider">OFFICIAL SELECTION</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-5 grid grid-cols-3 gap-3 sm:gap-5" aria-label="Explore CBM music">
+          {/* Ranked Track Countdown Leaderboard */}
+          <div className="cbm-card rounded-2xl border border-white/15 bg-[#0f1714]/80 p-5 sm:p-7 backdrop-blur-xl">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div>
+                <p className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-[0.18em] text-[#00d4a5]">
+                  <Trophy size={14} /> Ranked Leaderboard
+                </p>
+                <h3 className="mt-1 text-xl font-black text-white">
+                  Top Tracks on Repeat
+                </h3>
+              </div>
+              <span className="text-xs font-bold text-white/50">
+                {selectedChartType}
+              </span>
+            </div>
+
+            {status === "loading" && (
+              <p className="py-8 text-center text-sm text-white/60" aria-live="polite">
+                Loading official chart leaderboard...
+              </p>
+            )}
+
+            {status === "error" && (
+              <p className="py-8 text-center text-sm text-white/60">
+                Chart standings are temporarily unavailable.
+              </p>
+            )}
+
+            {status === "ready" && entries.length > 0 && (
+              <ol className="divide-y divide-white/10" aria-label="Official chart rankings">
+                {entries.map((entry, index) => (
+                  <ChartRankRow
+                    key={entry.id}
+                    entry={entry}
+                    index={index}
+                    isPlaying={activePreviewIndex === index}
+                    onTogglePreview={() =>
+                      setActivePreviewIndex(activePreviewIndex === index ? null : index)
+                    }
+                  />
+                ))}
+              </ol>
+            )}
+
+            {status === "ready" && entries.length === 0 && (
+              <div className="py-8 text-center">
+                <p className="text-sm text-white/70">
+                  Countdown tracks are currently being compiled for this category.
+                </p>
+                <Link
+                  href="/charts"
+                  className="mt-3 inline-flex items-center gap-1.5 text-xs font-extrabold text-[#00d4a5] hover:underline"
+                >
+                  View all active charts <ArrowUpRight size={14} />
+                </Link>
+              </div>
+            )}
+
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-4">
+              <span className="text-xs text-white/50">
+                Updated weekly based on listener votes & radio spins.
+              </span>
+              <Link
+                href="/charts"
+                className="inline-flex items-center gap-2 text-sm font-extrabold text-[#00d4a5] hover:text-white transition-colors"
+              >
+                <span>View Full Top 20 Countdown</span>
+                <ArrowUpRight size={17} aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Quick Hub Navigation Cards */}
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-2">
             {[
-              { title: "The voices", detail: "Meet our presenters", image: CBMTeamArtwork },
-              { title: "On the air", detail: "Discover the shows", image: RadioShowArtwork },
-              { title: "In the mix", detail: "Find your next sound", image: CBMTeamArtwork },
-            ].map((tile, index) => (
+              {
+                title: "The Presenters",
+                detail: "Meet on-air talent",
+                image: CBMTeamArtwork,
+                href: "/team",
+              },
+              {
+                title: "Daily Programs",
+                detail: "Explore lineup",
+                image: RadioShowArtwork,
+                href: "/programs",
+              },
+              {
+                title: "Music Charts",
+                detail: "Vote for your track",
+                image: CBMTeamArtwork,
+                href: "/charts",
+              },
+            ].map((tile) => (
               <Link
                 key={tile.title}
-                href={index === 0 ? "/team" : index === 1 ? "/programs" : "/charts"}
-                className="cbm-card group flex flex-col items-center rounded-2xl border border-white/10 bg-[#111816]/70 px-2 py-4 text-center sm:px-4 sm:py-5"
+                href={tile.href}
+                className="cbm-card group flex flex-col items-center rounded-xl border border-white/10 bg-[#111a17]/70 p-3 text-center sm:p-4 hover:border-[#00d4a5]/50 transition-all"
               >
-                <div className="relative aspect-square w-full max-w-36 overflow-hidden rounded-full border border-white/20 bg-black shadow-[0_10px_28px_rgba(0,0,0,0.35)] transition-colors duration-300 group-hover:border-[#48d4c1]/80 sm:max-w-44">
+                <div className="relative aspect-square w-full max-w-28 overflow-hidden rounded-full border-2 border-white/15 bg-black shadow-lg transition-transform duration-300 group-hover:scale-105 group-hover:border-[#00d4a5]">
                   <Image
                     src={tile.image}
                     alt=""
                     fill
-                    sizes="(max-width: 640px) 28vw, 176px"
-                    className="object-cover grayscale transition duration-500 group-hover:scale-105 group-hover:grayscale-0"
+                    sizes="(max-width: 640px) 24vw, 120px"
+                    className="object-cover grayscale transition-all duration-300 group-hover:grayscale-0"
                   />
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/45 via-transparent to-white/5" />
                 </div>
-                <p className="mt-3 text-[0.65rem] font-black uppercase tracking-wide text-white sm:mt-4 sm:text-sm">{tile.title}</p>
-                <p className="mt-1 hidden text-[0.65rem] text-white/65 sm:block">{tile.detail}</p>
+                <p className="mt-2.5 text-xs font-black uppercase text-white sm:text-sm">
+                  {tile.title}
+                </p>
+                <p className="mt-0.5 hidden text-[0.7rem] text-white/60 sm:block">
+                  {tile.detail}
+                </p>
               </Link>
             ))}
           </div>
 
-          <div className="mt-7 grid gap-5 lg:grid-cols-[minmax(0,1fr)_16rem]">
-            <div className="cbm-card rounded-lg border border-white/10 bg-[#171b19] p-5 sm:p-6">
-              <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
-                <div>
-                  <p className="flex items-center gap-2 text-[0.65rem] font-extrabold uppercase tracking-[0.18em] text-[#00d4a5]">
-                    <Music2 size={14} aria-hidden="true" /> This week
-                  </p>
-                  <h3 className="mt-2 text-xl font-black">{chart?.title || "Top tracks"}</h3>
-                </div>
-                {chart && <span className="text-xs font-bold text-white/50">{chart.chart_type}</span>}
-              </div>
-              {status === "loading" && <p className="py-6 text-sm text-white/65" aria-live="polite">Loading the latest chart...</p>}
-              {status === "error" && <p className="py-6 text-sm text-white/65">The latest chart is temporarily unavailable.</p>}
-              {status === "ready" && entries.length > 0 && (
-                <ol className="divide-y divide-white/10">
-                  {entries.map((entry, index) => <ChartSpotlightEntry key={entry.id} entry={entry} index={index} />)}
-                </ol>
-              )}
-              {status === "ready" && entries.length === 0 && (
-                <p className="py-6 text-sm text-white/65">{chart ? "Track details are coming soon." : "New chart picks are on the way."}</p>
-              )}
-              <Link href="/charts" className="mt-4 inline-flex min-h-10 items-center gap-2 text-sm font-bold text-[#00d4a5] transition-colors hover:text-white">
-                See the full countdown <ArrowUpRight size={17} aria-hidden="true" />
-              </Link>
-            </div>
-            <Link href="/charts" className="cbm-card group relative min-h-64 overflow-hidden rounded-lg border border-white/10 bg-black">
-              <Image src={RadioShowArtwork} alt="My Life My Purpose show with CBM Radio presenters" fill sizes="(max-width: 1024px) 100vw, 250px" className="object-cover transition-transform duration-500 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-5">
-                <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#00d4a5]">Discover your next favorite</p>
-                <p className="mt-2 text-xl font-black">New voices. Fresh sounds.</p>
-                <span className="mt-3 inline-flex items-center gap-2 text-sm font-bold">Explore charts <ArrowUpRight size={16} aria-hidden="true" /></span>
-              </div>
-            </Link>
-          </div>
         </div>
       </div>
     </section>
   );
 }
 
-function ChartSpotlightEntry({ entry, index }: { entry: ChartEntry; index: number }) {
+function ChartRankRow({
+  entry,
+  index,
+  isPlaying,
+  onTogglePreview,
+}: {
+  entry: ChartEntry;
+  index: number;
+  isPlaying: boolean;
+  onTogglePreview: () => void;
+}) {
   const image = entry.cover_image_url || entry.cover_image;
+  const isTop1 = entry.rank === 1;
+  const isTop2 = entry.rank === 2;
+  const isTop3 = entry.rank === 3;
 
   return (
-    <li className="flex items-center gap-4 py-4 first:pt-5 last:pb-0">
-      <span className="w-8 shrink-0 text-2xl font-black tabular-nums text-[#48d4c1]">
-        {String(entry.rank).padStart(2, "0")}
-      </span>
-      <div className="relative size-16 shrink-0 overflow-hidden rounded-md bg-black/30">
-        <Image
-          src={image || chartArtwork[index % chartArtwork.length]}
-          alt={image ? `${entry.title} cover` : "CBM Radio chart presenter"}
-          fill
-          sizes="64px"
-          unoptimized={Boolean(image)}
-          className="object-cover"
-        />
+    <li className="flex items-center justify-between gap-4 py-3.5 first:pt-4 last:pb-2 transition-colors hover:bg-white/[0.02] px-2 rounded-lg">
+      <div className="flex items-center gap-3.5 min-w-0">
+        
+        {/* Rank Badge with metallic highlight */}
+        <span
+          className={`grid size-9 shrink-0 place-items-center rounded-lg text-sm font-black tabular-nums shadow-sm ${
+            isTop1
+              ? "bg-amber-400 text-black shadow-[0_0_12px_rgba(251,191,36,0.4)]"
+              : isTop2
+              ? "bg-slate-300 text-black"
+              : isTop3
+              ? "bg-amber-700/80 text-white"
+              : "border border-white/15 bg-black/40 text-white/70"
+          }`}
+        >
+          {String(entry.rank).padStart(2, "0")}
+        </span>
+
+        {/* Cover Art */}
+        <div className="relative size-14 shrink-0 overflow-hidden rounded-lg bg-black/40 border border-white/10 shadow-sm">
+          <Image
+            src={image || chartArtwork[index % chartArtwork.length]}
+            alt={image ? `${entry.title} cover` : "Track cover"}
+            fill
+            sizes="56px"
+            unoptimized={Boolean(image)}
+            className="object-cover"
+          />
+        </div>
+
+        {/* Title, Artist, & Metadata */}
+        <div className="min-w-0">
+          <h4 className="truncate font-black text-white text-sm sm:text-base">
+            {entry.title}
+          </h4>
+          <p className="truncate text-xs text-white/70 mt-0.5">
+            {entry.artist}
+            {entry.featured_artists ? ` feat. ${entry.featured_artists}` : ""}
+          </p>
+        </div>
       </div>
-      <div className="min-w-0">
-        <h4 className="truncate font-bold text-white">{entry.title}</h4>
-        <p className="mt-1 truncate text-sm text-white/65">
-          {entry.artist}
-          {entry.featured_artists ? ` feat. ${entry.featured_artists}` : ""}
-        </p>
+
+      {/* Right side: Movement Tag & Preview Visualizer Button */}
+      <div className="flex items-center gap-3 shrink-0">
+        {isTop1 ? (
+          <span className="hidden sm:inline-flex rounded-full bg-amber-400/20 px-2 py-0.5 text-[0.65rem] font-black text-amber-300">
+            ★ #1 HIT
+          </span>
+        ) : (
+          <span className="hidden sm:inline-flex rounded-full bg-white/10 px-2 py-0.5 text-[0.65rem] font-bold text-white/60">
+            TOP 10
+          </span>
+        )}
+
+        <button
+          type="button"
+          onClick={onTogglePreview}
+          aria-label={`Preview ${entry.title}`}
+          className={`grid size-9 place-items-center rounded-full border transition-all ${
+            isPlaying
+              ? "border-[#00d4a5] bg-[#00d4a5] text-[#062521] shadow-[0_0_12px_rgba(0,212,165,0.4)]"
+              : "border-white/15 bg-white/5 text-white/80 hover:border-[#00d4a5] hover:text-[#00d4a5]"
+          }`}
+        >
+          {isPlaying ? (
+            <div className="flex items-end gap-0.5 h-3.5" aria-hidden="true">
+              <span className="w-0.5 bg-current animate-eq-1 rounded-full" />
+              <span className="w-0.5 bg-current animate-eq-2 rounded-full" />
+              <span className="w-0.5 bg-current animate-eq-3 rounded-full" />
+            </div>
+          ) : (
+            <Headphones size={15} />
+          )}
+        </button>
       </div>
     </li>
   );

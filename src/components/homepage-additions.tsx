@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -10,8 +10,12 @@ import {
   Headphones,
   Mail,
   Music2,
+  Pause,
+  Play,
   Radio,
   Users,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import type { IconType } from "react-icons";
 import {
@@ -101,6 +105,9 @@ export default function HomepageAdditions() {
   const [contact, setContact] = useState<SiteContact | null>(null);
   const [contactStatus, setContactStatus] = useState<LoadState>("loading");
   const [streamError, setStreamError] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -203,16 +210,62 @@ export default function HomepageAdditions() {
               {streamUrl ? (
                 <>
                   <audio
-                    className="mt-6 w-full"
-                    controls
+                    ref={audioRef}
                     preload="none"
                     src={streamUrl}
                     aria-label="CBM Radio live stream"
-                    onError={() => setStreamError(true)}
-                    onPlaying={() => setStreamError(false)}
-                  >
-                    Your browser does not support audio playback.
-                  </audio>
+                    onError={() => {
+                      setStreamError(true);
+                      setIsPlaying(false);
+                    }}
+                    onPlaying={() => {
+                      setStreamError(false);
+                      setIsPlaying(true);
+                    }}
+                    onPause={() => setIsPlaying(false)}
+                  />
+                  
+                  <div className="mt-6 flex flex-wrap items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!audioRef.current) return;
+                        if (isPlaying) {
+                          audioRef.current.pause();
+                          setIsPlaying(false);
+                        } else {
+                          audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setStreamError(true));
+                        }
+                      }}
+                      className={`inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-sm font-extrabold transition-all ${
+                        isPlaying
+                          ? "bg-red-500 text-white hover:bg-red-600"
+                          : "bg-[#48d4c1] text-[#062521] hover:bg-[#62e6d4]"
+                      }`}
+                    >
+                      {isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
+                      <span>{isPlaying ? "Pause Stream" : "Tune In Now"}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!audioRef.current) return;
+                        audioRef.current.muted = !isMuted;
+                        setIsMuted(!isMuted);
+                      }}
+                      aria-label={isMuted ? "Unmute stream" : "Mute stream"}
+                      className="grid size-11 place-items-center rounded-full border border-white/20 bg-white/5 text-white/80 hover:border-[#48d4c1] hover:text-[#48d4c1] transition-colors"
+                    >
+                      {isMuted ? <VolumeX size={17} /> : <Volume2 size={17} />}
+                    </button>
+
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-white/70">
+                      <span className={`size-2 rounded-full ${isPlaying ? "bg-red-400 animate-ping" : "bg-zinc-500"}`} />
+                      <span>{isPlaying ? "LIVE ON AIR" : "STREAM STANDBY"}</span>
+                    </div>
+                  </div>
+
                   {streamError && (
                     <p className="mt-3 text-sm text-amber-200" role="status">
                       The live stream could not be loaded. Please try again later.
