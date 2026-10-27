@@ -48,8 +48,8 @@ function Tab({
       className={
         "min-h-11 rounded-full px-5 py-2.5 font-semibold outline-none transition focus-visible:ring-2 focus-visible:ring-teal-300 " +
         (selected
-          ? "bg-teal-500 text-black"
-          : "border border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-teal-600")
+          ? "border-2 border-black bg-black text-[#04b093] font-black uppercase tracking-wider shadow-md"
+          : "border-2 border-black/40 bg-black/10 text-black font-bold uppercase tracking-wider hover:bg-black hover:text-white")
       }
     >
       {children}

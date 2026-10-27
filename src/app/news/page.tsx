@@ -7,7 +7,7 @@ import { Suspense } from "react";
 
 function NewsLoadingState() {
   return (
-    <div className="min-h-screen flex items-center justify-center text-zinc-400">
+    <div className="min-h-[50vh] flex items-center justify-center bg-[#04b093] text-sm font-black uppercase tracking-wider text-black">
       Loading news...
     </div>
   );
@@ -17,7 +17,7 @@ export default function NewsPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-zinc-950">
+      <main className="min-h-screen bg-[#04b093] text-black">
         <PageHero
           pageKey="news"
           fallbackTitle="News"

@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ArrowUpRight, Mic2, Users, X } from "lucide-react";
+import { ArrowUpRight, Mic2, X } from "lucide-react";
 import { teamService } from "@/services/team.service";
 import type { TeamMember } from "@/types/team";
 import Logo from "../../public/cbmradio.png";
@@ -45,39 +45,34 @@ export default function TeamMembers({ limit }: { limit?: number }) {
   }, [limit]);
 
   return (
-    <section className="relative border-y border-white/10 bg-[#060a08] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24">
+    <section className="relative bg-[#04b093] px-5 py-16 text-black sm:px-8 sm:py-20 lg:px-12 lg:py-24">
       <div className="mx-auto max-w-7xl">
         
         {/* Header */}
-        <div className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b border-white/10 pb-6">
+        <div className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b-2 border-black pb-6">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="grid size-7 place-items-center rounded-lg bg-[#04b093]/10 text-[#04b093]">
-                <Users size={16} />
-              </span>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#04b093]">
-                ON-AIR VOICES & TALENT
-              </p>
-            </div>
-            <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
+            <span className="inline-block rounded-full bg-black px-4 py-1 text-xs font-black uppercase tracking-wider text-[#04b093]">
+              On-Air Voices & Talent
+            </span>
+            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">
               Meet The Presenters
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
+            <p className="mt-2 max-w-2xl font-bold text-black/80">
               The passionate professionals, cultural curators, and radio personalities behind CBM Radio.
             </p>
           </div>
 
           <Link
-            href="/team"
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#04b093]/40 bg-[#04b093]/10 px-5 text-sm font-extrabold text-[#04b093] transition-all hover:bg-[#04b093] hover:text-[#062521]"
+            href="/programs"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-black bg-black px-5 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black"
           >
-            All Station Members <ArrowUpRight size={17} aria-hidden="true" />
+            Explore Shows <ArrowUpRight size={17} aria-hidden="true" />
           </Link>
         </div>
 
         {status === "loading" && (
           <p
-            className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-12 text-center text-white/70"
+            className="rounded-2xl border-2 border-black bg-black px-5 py-12 text-center font-black uppercase tracking-wider text-[#04b093]"
             aria-live="polite"
           >
             Loading presenter profiles...
@@ -85,19 +80,19 @@ export default function TeamMembers({ limit }: { limit?: number }) {
         )}
 
         {status === "error" && (
-          <p className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-8 text-center text-white/75">
+          <p className="rounded-2xl border-2 border-black bg-black px-5 py-8 text-center font-bold text-white">
             Presenter profiles are temporarily unavailable.
           </p>
         )}
 
         {status === "ready" && members.length === 0 && (
-          <p className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-8 text-center text-white/75">
+          <p className="rounded-2xl border-2 border-black bg-black px-5 py-8 text-center font-bold text-white">
             Presenter profiles will appear here once published.
           </p>
         )}
 
         {partial && (
-          <p className="mb-6 text-sm text-[#f4cf55]" role="status">
+          <p className="mb-6 rounded-2xl border-2 border-black bg-black p-4 text-xs font-bold uppercase tracking-wider text-amber-400" role="status">
             Some team members could not be loaded. Available profiles are shown.
           </p>
         )}
@@ -105,9 +100,9 @@ export default function TeamMembers({ limit }: { limit?: number }) {
         {/* Dynamic Layout Based on Member Count */}
         {members.length === 1 ? (
           /* Single member: Beautifully balanced wide showcase card */
-          <div className="cbm-card relative overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-r from-[#0c1613] to-[#070b09] p-6 sm:p-10 shadow-xl">
+          <div className="cbm-card relative overflow-hidden rounded-2xl border-2 border-black bg-black p-6 sm:p-10 text-white shadow-2xl">
             <div className="grid items-center gap-8 md:grid-cols-[18rem_minmax(0,1fr)]">
-              <div className="relative aspect-square w-full max-w-xs mx-auto overflow-hidden rounded-2xl border-2 border-[#04b093]/40 bg-black/40 shadow-xl">
+              <div className="relative aspect-square w-full max-w-xs mx-auto overflow-hidden rounded-2xl border-2 border-[#04b093] bg-zinc-900 shadow-xl">
                 <Image
                   src={members[0].profileUrl || Logo}
                   alt={members[0].name}
@@ -120,14 +115,14 @@ export default function TeamMembers({ limit }: { limit?: number }) {
 
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#04b093]/15 px-3 py-1 text-xs font-black uppercase tracking-wider text-[#04b093]">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#04b093] px-3.5 py-1 text-xs font-black uppercase tracking-wider text-black">
                     <Mic2 size={13} /> {members[0].role || "Station Presenter"}
                   </span>
                 </div>
-                <h3 className="mt-3 text-3xl font-black text-white sm:text-4xl">
+                <h3 className="mt-3 text-3xl font-black uppercase tracking-tight text-white sm:text-4xl">
                   {members[0].name}
                 </h3>
-                <p className="mt-3 text-sm leading-7 text-zinc-300 max-w-xl">
+                <p className="mt-3 text-sm leading-relaxed text-zinc-300 max-w-xl">
                   {members[0].bio && members[0].bio.trim() !== "Station Staff Member."
                     ? members[0].bio
                     : "Bringing authentic perspectives, great music, and vibrant discussions to the airwaves of CBM Radio."}
@@ -136,15 +131,15 @@ export default function TeamMembers({ limit }: { limit?: number }) {
                   <button
                     type="button"
                     onClick={() => setSelectedMember(members[0])}
-                    className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#04b093] px-6 text-xs font-black uppercase tracking-wider text-[#062521] transition hover:bg-[#04b093]"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-black bg-[#04b093] px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-white hover:text-black"
                   >
                     View Presenter Profile
                   </button>
                   <Link
-                    href="/team"
-                    className="inline-flex min-h-11 items-center gap-2 text-xs font-bold text-white/70 hover:text-[#04b093] transition"
+                    href="/programs"
+                    className="inline-flex min-h-11 items-center gap-2 text-xs font-black uppercase tracking-wider text-[#04b093] hover:underline"
                   >
-                    Explore Full Team Directory <ArrowUpRight size={15} />
+                    Explore Programs <ArrowUpRight size={15} />
                   </Link>
                 </div>
               </div>
@@ -157,7 +152,7 @@ export default function TeamMembers({ limit }: { limit?: number }) {
               <button
                 type="button"
                 key={member.id}
-                className="cbm-card group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-[#0c1411] text-left transition-all hover:border-[#04b093]/50 shadow-md"
+                className="cbm-card group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-2xl border-2 border-black bg-black text-left shadow-xl transition-all hover:-translate-y-1 hover:shadow-2xl"
                 onClick={() => setSelectedMember(member)}
                 aria-label={`View ${member.name} profile`}
               >
@@ -169,13 +164,13 @@ export default function TeamMembers({ limit }: { limit?: number }) {
                   unoptimized={Boolean(member.profileUrl)}
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent p-5 pt-16">
+                <div className="absolute inset-x-0 bottom-0 border-t-2 border-black/80 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-5 pt-16">
                   {member.role && (
                     <span className="block text-[0.65rem] font-black uppercase tracking-wider text-[#04b093]">
                       {member.role}
                     </span>
                   )}
-                  <h4 className="mt-1 text-lg font-black text-white group-hover:text-[#04b093] transition-colors">
+                  <h4 className="mt-1 text-lg font-black uppercase tracking-tight text-white group-hover:text-[#04b093] transition-colors">
                     {member.name}
                   </h4>
                 </div>
@@ -187,10 +182,10 @@ export default function TeamMembers({ limit }: { limit?: number }) {
         {members.length > 1 && (
           <div className="mt-10">
             <Link
-              href="/team"
-              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#04b093]/40 px-6 text-sm font-bold text-[#04b093] transition-colors hover:bg-[#04b093] hover:text-[#062521]"
+              href="/programs"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-black bg-black px-6 text-xs font-black uppercase tracking-wider text-[#04b093] transition-colors hover:bg-white hover:text-black"
             >
-              Meet The Full On-Air Collective <ArrowUpRight size={16} />
+              Explore Our Programs <ArrowUpRight size={16} />
             </Link>
           </div>
         )}
@@ -208,18 +203,18 @@ export default function TeamMembers({ limit }: { limit?: number }) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               onClick={(event) => event.stopPropagation()}
-              className="relative grid w-full max-w-3xl gap-6 overflow-hidden rounded-2xl border border-white/15 bg-[#0a1210] p-6 shadow-2xl md:grid-cols-2 md:p-8"
+              className="relative grid w-full max-w-3xl gap-6 overflow-hidden rounded-2xl border-2 border-black bg-black p-6 text-white shadow-2xl md:grid-cols-2 md:p-8"
             >
               <button
                 type="button"
                 onClick={() => setSelectedMember(null)}
-                className="absolute right-4 top-4 z-10 grid size-9 place-items-center rounded-full bg-black/70 text-white hover:bg-[#04b093] hover:text-[#062521] transition"
+                className="absolute right-4 top-4 z-10 grid size-9 place-items-center rounded-full bg-zinc-800 text-white hover:bg-[#04b093] hover:text-black transition"
                 aria-label="Close profile"
               >
                 <X size={18} />
               </button>
 
-              <div className="relative min-h-72 overflow-hidden rounded-xl bg-zinc-900 border border-white/10">
+              <div className="relative min-h-72 overflow-hidden rounded-xl bg-zinc-900 border-2 border-zinc-800">
                 <Image
                   src={selectedMember.profileUrl || Logo}
                   alt={selectedMember.name}
@@ -234,7 +229,7 @@ export default function TeamMembers({ limit }: { limit?: number }) {
                 <span className="text-xs font-black uppercase tracking-[0.2em] text-[#04b093]">
                   {selectedMember.role}
                 </span>
-                <h3 className="mt-2 text-3xl font-black text-white">
+                <h3 className="mt-2 text-3xl font-black uppercase tracking-tight text-white">
                   {selectedMember.name}
                 </h3>
                 {selectedMember.bio &&

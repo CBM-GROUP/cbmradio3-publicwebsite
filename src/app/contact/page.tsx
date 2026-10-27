@@ -15,7 +15,7 @@ export default function ContactPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-zinc-950">
+      <main className="min-h-screen bg-[#04b093] text-black">
         <PageHero
           pageKey="contact"
           fallbackTitle="Contact Us"

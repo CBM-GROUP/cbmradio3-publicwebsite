@@ -7,7 +7,7 @@ import { Suspense } from "react";
 
 function ProgramsLoadingState() {
   return (
-    <div className="min-h-screen bg-zinc-950 pt-32 text-center text-zinc-400">
+    <div className="min-h-[50vh] bg-[#04b093] pt-32 text-center text-sm font-black uppercase tracking-wider text-black">
       Loading programs...
     </div>
   );
@@ -17,7 +17,7 @@ export default function ProgramsPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-zinc-950">
+      <main className="min-h-screen bg-[#04b093] text-black">
         <PageHero
           pageKey="programs"
           fallbackTitle="Programs"

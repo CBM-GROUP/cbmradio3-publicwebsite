@@ -58,7 +58,7 @@ function isSafeGalleryImage(value: string) {
 
 export default function GalleryPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-zinc-950 pt-32 text-center text-zinc-400">Loading gallery...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#04b093] pt-32 text-center text-xs font-black uppercase tracking-wider text-black">Loading gallery...</div>}>
       <GalleryContent />
     </Suspense>
   );
@@ -133,7 +133,7 @@ function GalleryContent() {
   return (
     <>
       <Header />
-      <main className="min-h-screen overflow-hidden bg-zinc-950 pb-20">
+      <main className="min-h-screen overflow-hidden bg-[#04b093] pb-20 text-black">
         <PageHero
           pageKey="gallery"
           fallbackTitle="CBM Radio Moments"
@@ -146,31 +146,31 @@ function GalleryContent() {
 
         <section id="gallery-content" className="scroll-mt-24">
           <div className="mx-auto max-w-4xl px-6 py-12 text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-teal-500">Inside CBM Radio</p>
-            <h2 className="mt-3 text-3xl font-bold text-white">{section?.title || "Explore Our Gallery"}</h2>
-            {section?.subtitle && <p className="mt-3 text-lg text-teal-300">{section.subtitle}</p>}
-            <p className="mt-5 whitespace-pre-line leading-7 text-zinc-400">
+            <span className="inline-block rounded-full bg-black px-4 py-1 text-xs font-black uppercase tracking-wider text-[#04b093]">Inside CBM Radio</span>
+            <h2 className="mt-4 text-3xl font-black uppercase tracking-tight text-black sm:text-5xl">{section?.title || "Explore Our Gallery"}</h2>
+            {section?.subtitle && <p className="mt-2 text-xs font-bold uppercase tracking-wider text-black/80">{section.subtitle}</p>}
+            <p className="mt-4 whitespace-pre-line font-bold leading-relaxed text-black/80">
               {section?.body || "Explore broadcasts, events, presenters and memorable moments from CBM Radio."}
             </p>
           </div>
 
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             {collectionState === "loading" && (
-              <div className="flex min-h-64 items-center justify-center gap-4 text-zinc-400" aria-live="polite">
-                <Loader2 className="h-8 w-8 animate-spin text-teal-600" aria-hidden="true" />
+              <div className="flex min-h-64 items-center justify-center gap-4 text-black font-black uppercase text-xs" aria-live="polite">
+                <Loader2 className="h-6 w-6 animate-spin text-black" aria-hidden="true" />
                 <p>Loading gallery...</p>
               </div>
             )}
             {collectionState === "error" && (
-              <div className="min-h-64 text-center text-zinc-400" role="alert">
-                <p>The gallery is temporarily unavailable.</p>
-                <button type="button" onClick={() => setRetryVersion((value) => value + 1)} className="mt-4 rounded-lg bg-teal-500 px-5 py-2.5 font-semibold text-black">Retry</button>
+              <div className="min-h-64 text-center text-black font-bold" role="alert">
+                <p className="text-lg">The gallery is temporarily unavailable.</p>
+                <button type="button" onClick={() => setRetryVersion((value) => value + 1)} className="mt-4 rounded-full border-2 border-black bg-black px-6 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black">Retry</button>
               </div>
             )}
             {collectionState === "ready" && gallery.results.length === 0 && (
-              <div className="min-h-64 text-center text-zinc-400">
+              <div className="min-h-64 text-center font-bold text-black">
                 <p>{page > 1 ? "No gallery items are available on this page." : "No gallery items are available yet."}</p>
-                {page > 1 && <button type="button" onClick={() => navigateToPage(1)} className="mt-4 font-semibold text-teal-500 underline">Return to page 1</button>}
+                {page > 1 && <button type="button" onClick={() => navigateToPage(1)} className="mt-4 font-black uppercase text-black underline underline-offset-4">Return to page 1</button>}
               </div>
             )}
 
@@ -184,7 +184,7 @@ function GalleryContent() {
                       variants={itemVariants}
                       key={item.id}
                       onClick={() => setSelectedImage(item)}
-                      className={"group relative overflow-hidden rounded-xl border border-zinc-700/50 bg-zinc-900 text-left transition hover:border-teal-500/50 " + (index % 7 === 0 ? "col-span-2 row-span-2" : "")}
+                      className={"group relative overflow-hidden rounded-2xl border-2 border-black bg-black text-left shadow-xl transition hover:-translate-y-1 hover:shadow-2xl " + (index % 7 === 0 ? "col-span-2 row-span-2" : "")}
                       aria-label={"Open " + (item.title || "gallery image")}
                     >
                       <Image
@@ -197,9 +197,9 @@ function GalleryContent() {
                         loading={index < 4 ? "eager" : "lazy"}
                       />
                       {(item.title || item.caption) && (
-                        <div className="absolute inset-x-0 bottom-0 bg-black/65 p-4 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 group-focus:opacity-100">
-                          {item.title && <h3 className="font-bold text-white">{item.title}</h3>}
-                          {item.caption && <p className="mt-1 line-clamp-2 text-sm text-zinc-300">{item.caption}</p>}
+                        <div className="absolute inset-x-0 bottom-0 bg-black/80 p-4 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 group-focus:opacity-100 border-t-2 border-black">
+                          {item.title && <h3 className="font-black uppercase tracking-tight text-white">{item.title}</h3>}
+                          {item.caption && <p className="mt-1 line-clamp-2 text-xs font-medium text-zinc-300">{item.caption}</p>}
                         </div>
                       )}
                     </motion.button>
@@ -210,9 +210,9 @@ function GalleryContent() {
 
             {collectionState === "ready" && (gallery.previous || gallery.next) && (
               <nav aria-label="Gallery pagination" className="mt-12 flex items-center justify-center gap-4">
-                <button type="button" disabled={!gallery.previous} onClick={() => navigateToPage(Math.max(1, page - 1))} className="rounded-lg border border-zinc-700 px-5 py-2.5 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40">Previous</button>
-                <span className="text-sm text-zinc-400" aria-current="page">Page {page}</span>
-                <button type="button" disabled={!gallery.next} onClick={() => navigateToPage(page + 1)} className="rounded-lg border border-zinc-700 px-5 py-2.5 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40">Next</button>
+                <button type="button" disabled={!gallery.previous} onClick={() => navigateToPage(Math.max(1, page - 1))} className="rounded-full border-2 border-black bg-black px-5 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40">Previous</button>
+                <span className="text-xs font-black uppercase tracking-wider text-black" aria-current="page">Page {page}</span>
+                <button type="button" disabled={!gallery.next} onClick={() => navigateToPage(page + 1)} className="rounded-full border-2 border-black bg-black px-5 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40">Next</button>
               </nav>
             )}
           </div>
@@ -226,10 +226,10 @@ function GalleryContent() {
         {selectedImage && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8" role="dialog" aria-modal="true" aria-label={selectedImage.title || "Gallery image"}>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedImage(null)} className="absolute inset-0 cursor-pointer bg-black/95 backdrop-blur-md" />
-            <button type="button" onClick={() => setSelectedImage(null)} className="absolute right-4 top-4 z-60 rounded-full bg-white/10 p-2 text-white transition hover:bg-teal-500 hover:text-black sm:right-8 sm:top-8" aria-label="Close gallery image"><X size={28} /></button>
-            <motion.figure initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} onClick={(event) => event.stopPropagation()} className="relative z-60 flex h-[80vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-zinc-900 shadow-2xl sm:h-[90vh]">
+            <button type="button" onClick={() => setSelectedImage(null)} className="absolute right-4 top-4 z-60 rounded-full bg-black/60 border border-white/20 p-2 text-white transition hover:bg-[#04b093] hover:text-black sm:right-8 sm:top-8" aria-label="Close gallery image"><X size={28} /></button>
+            <motion.figure initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} onClick={(event) => event.stopPropagation()} className="relative z-60 flex h-[80vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border-2 border-black bg-black shadow-2xl sm:h-[90vh]">
               <div className="relative flex-1"><Image src={selectedImage.image} alt={selectedImage.title || "Expanded CBM Radio moment"} fill sizes="100vw" unoptimized className="object-contain" /></div>
-              {(selectedImage.title || selectedImage.caption) && <figcaption className="bg-black/70 p-4 sm:p-6">{selectedImage.title && <h3 className="text-lg font-bold text-white sm:text-xl">{selectedImage.title}</h3>}{selectedImage.caption && <p className="mt-2 text-sm text-zinc-300 sm:text-base">{selectedImage.caption}</p>}</figcaption>}
+              {(selectedImage.title || selectedImage.caption) && <figcaption className="border-t-2 border-black bg-black/90 p-4 sm:p-6">{selectedImage.title && <h3 className="text-lg font-black uppercase text-white sm:text-xl">{selectedImage.title}</h3>}{selectedImage.caption && <p className="mt-2 text-xs font-medium text-zinc-300 sm:text-sm">{selectedImage.caption}</p>}</figcaption>}
             </motion.figure>
           </div>
         )}

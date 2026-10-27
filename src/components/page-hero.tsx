@@ -73,39 +73,65 @@ export default function PageHero({
       : 65;
   const overlay = Math.min(100, Math.max(0, overlayStrength)) / 100;
 
+  const hasImage = content.mediaType === "image" && Boolean(content.imageUrl);
+
   return (
-    <section className="relative flex min-h-96 items-center overflow-hidden bg-linear-to-r from-zinc-900 to-black px-6 pb-16 pt-32 text-white sm:px-12 lg:px-20">
-      {content.mediaType === "image" && content.imageUrl && (
-        <Image
-          src={content.imageUrl}
-          alt={content.title}
-          fill
-          sizes="100vw"
-          priority
-          unoptimized
-          className={"object-cover " + imagePosition}
-        />
+    <section
+      className={
+        "relative flex min-h-80 items-center overflow-hidden border-b-2 border-black px-6 pb-16 pt-32 sm:px-12 lg:px-20 " +
+        (hasImage ? "bg-black text-white" : "bg-[#04b093] text-black")
+      }
+    >
+      {hasImage && (
+        <>
+          <Image
+            src={content.imageUrl}
+            alt={content.title}
+            fill
+            sizes="100vw"
+            priority
+            unoptimized
+            className={"object-cover " + imagePosition}
+          />
+          <div
+            className="absolute inset-0 bg-black"
+            style={{ opacity: overlay }}
+            aria-hidden="true"
+          />
+        </>
       )}
-      <div
-        className="absolute inset-0 bg-black"
-        style={{ opacity: content.mediaType === "image" ? overlay : 0.2 }}
-        aria-hidden="true"
-      />
       <div className={"relative z-10 mx-auto flex w-full max-w-7xl flex-col " + textAlignment}>
         {content.subtitle && (
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-teal-400">
-            {content.subtitle}
-          </p>
+          <div className="flex items-center gap-2">
+            <span
+              className={
+                "px-2.5 py-0.5 text-xs font-black uppercase tracking-[0.22em] " +
+                (hasImage ? "bg-[#04b093] text-black" : "bg-black text-[#04b093]")
+              }
+            >
+              {content.subtitle}
+            </span>
+          </div>
         )}
-        <h1 className="mt-3 max-w-4xl text-4xl font-extrabold sm:text-5xl lg:text-6xl">
+        <h1
+          className={
+            "mt-3 max-w-4xl text-4xl font-black uppercase tracking-tight sm:text-5xl lg:text-6xl " +
+            (hasImage ? "text-white drop-shadow-md" : "text-black")
+          }
+        >
           {content.title}
         </h1>
         {content.description && (
-          <p className="mt-5 max-w-3xl text-base leading-7 text-zinc-200 sm:text-lg">
+          <p
+            className={
+              "mt-4 max-w-3xl text-sm font-medium leading-relaxed sm:text-base " +
+              (hasImage ? "text-zinc-200" : "text-black/85")
+            }
+          >
             {content.description}
           </p>
         )}
-        <div className="mt-7 flex flex-wrap gap-4">
+        <div className="mt-6 flex flex-wrap gap-4">
           <SafeHeroAction label={content.ctaLabel} url={content.ctaUrl} />
           {content.mediaType === "video" && (
             <SafeHeroAction label="Play video" url={content.videoUrl} />
@@ -257,7 +283,7 @@ function SafeHeroAction({ label, url }: { label: string; url: string }) {
   if (typeof label !== "string" || typeof url !== "string" || !label.trim()) return null;
   const action = parseSafeAction(url);
   if (!action) return null;
-  const className = "rounded-lg bg-teal-500 px-6 py-3 font-semibold text-black transition hover:bg-teal-400";
+  const className = "inline-flex items-center gap-2 border-2 border-black bg-black px-6 py-3 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black shadow-md";
   return action.kind === "external" ? (
     <a href={action.href} target="_blank" rel="noopener noreferrer" className={className}>
       {label}

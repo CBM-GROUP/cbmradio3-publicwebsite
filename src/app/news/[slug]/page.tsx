@@ -90,7 +90,7 @@ export default function ArticlePage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-zinc-950 px-4 pb-20 pt-32 text-zinc-100 sm:px-6 lg:px-8">
+      <main className="min-h-screen bg-[#04b093] px-4 pb-20 pt-32 text-black sm:px-6 lg:px-8">
         {loading && <ArticleState message="Loading article..." />}
         {!loading && failure === "not-found" && (
           <ArticleState message="This article could not be found." />
@@ -121,23 +121,23 @@ function ArticleState({
 }) {
   return (
     <div
-      className="mx-auto flex min-h-[60vh] max-w-4xl flex-col items-center justify-center gap-5 text-center text-zinc-400"
+      className="mx-auto flex min-h-[50vh] max-w-xl flex-col items-center justify-center gap-5 rounded-2xl border-2 border-black bg-black p-8 text-center shadow-2xl"
       role="status"
     >
-      <p className="text-base text-zinc-300">{message}</p>
+      <p className="text-base font-bold text-white">{message}</p>
       <div className="flex flex-wrap justify-center gap-4">
         {retry && (
           <button
             type="button"
             onClick={retry}
-            className="rounded-xl bg-teal-500 px-5 py-2.5 font-semibold text-black transition-all hover:bg-teal-400"
+            className="rounded-full border-2 border-black bg-[#04b093] px-6 py-2.5 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-white hover:text-black"
           >
             Retry
           </button>
         )}
         <Link
           href="/news"
-          className="rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-2.5 font-semibold text-zinc-200 transition-all hover:bg-zinc-800"
+          className="rounded-full border-2 border-zinc-700 bg-zinc-900 px-6 py-2.5 text-xs font-black uppercase tracking-wider text-zinc-200 transition-all hover:border-[#04b093] hover:text-[#04b093]"
         >
           Back to News
         </Link>
@@ -183,19 +183,19 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
   const uploadTimestamp = article.published_at || article.created_at;
 
   return (
-    <article className="mx-auto max-w-4xl">
+    <article className="mx-auto max-w-4xl rounded-2xl border-2 border-black bg-black p-6 sm:p-10 text-white shadow-2xl">
       {/* Navigation & Category Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <Link
           href="/news"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-teal-400 transition-colors hover:text-teal-300"
+          className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-[#04b093] px-4 py-1.5 text-xs font-black uppercase tracking-wider text-black transition-colors hover:bg-white hover:text-black"
         >
           &larr; Back to News
         </Link>
         {article.category && (
           <Link
             href={`/news?category=${encodeURIComponent(article.category.slug)}`}
-            className="inline-flex items-center gap-1.5 rounded-full border border-teal-500/20 bg-teal-500/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-teal-400 transition-colors hover:bg-teal-500/20"
+            className="inline-flex items-center gap-1.5 rounded-full border-2 border-zinc-700 bg-zinc-900 px-4 py-1.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition-colors hover:border-[#04b093]"
           >
             <span>{article.category.name}</span>
           </Link>
@@ -203,15 +203,15 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
       </div>
 
       {/* Main Headline */}
-      <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-white sm:text-5xl sm:leading-tight">
+      <h1 className="mt-6 text-3xl font-black uppercase tracking-tight text-white sm:text-5xl sm:leading-tight">
         {article.title}
       </h1>
 
       {/* Rich Metadata & Metrics Bar */}
-      <div className="mt-6 flex flex-wrap items-center gap-3 border-y border-zinc-800/80 py-4 text-xs text-zinc-400 sm:text-sm">
+      <div className="mt-6 flex flex-wrap items-center gap-3 border-y border-zinc-800 py-4 text-xs font-bold uppercase tracking-wider text-zinc-400">
         {article.author && (
-          <div className="flex items-center gap-1.5 font-semibold text-zinc-200">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-500/20 text-teal-400 text-xs font-bold">
+          <div className="flex items-center gap-1.5 font-bold text-zinc-200">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#04b093] text-black text-xs font-black">
               <User className="h-3.5 w-3.5" />
             </span>
             <span>By {article.author}</span>
@@ -223,10 +223,10 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
         {/* Time Since Uploaded / Published */}
         {uploadTimestamp && (
           <div
-            className="flex items-center gap-1.5 font-medium text-emerald-400"
+            className="flex items-center gap-1.5 font-bold text-[#04b093]"
             title={`Uploaded: ${formatPublicationDateTime(uploadTimestamp)}`}
           >
-            <Clock className="h-4 w-4 shrink-0 text-emerald-400" />
+            <Clock className="h-4 w-4 shrink-0 text-[#04b093]" />
             <span>Uploaded {formatTimeAgo(uploadTimestamp)}</span>
           </div>
         )}
@@ -235,7 +235,7 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
 
         {/* Reading Time */}
         {readingTime && (
-          <div className="flex items-center gap-1.5 rounded-full bg-zinc-900 border border-zinc-800 px-3 py-1 text-xs font-medium text-zinc-300">
+          <div className="flex items-center gap-1.5 rounded-full bg-zinc-900 border border-zinc-700 px-3 py-1 text-xs font-bold text-zinc-300">
             <BookOpen className="h-3.5 w-3.5 text-[#04b093]" />
             <span>{readingTime} min read</span>
           </div>
@@ -252,7 +252,7 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
 
       {/* Social Share Toolbar */}
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-zinc-400">
-        <span className="flex items-center gap-1.5 font-semibold text-zinc-400 uppercase tracking-wider text-[11px]">
+        <span className="flex items-center gap-1.5 font-black uppercase tracking-wider text-[11px] text-zinc-400">
           <Share2 className="h-3.5 w-3.5" />
           Share Story:
         </span>
@@ -264,7 +264,7 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
             )}`}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-1.5 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-colors"
+            className="flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 font-bold uppercase tracking-wider text-xs text-emerald-400 hover:bg-emerald-500/20 transition-colors"
             title="Share via WhatsApp"
           >
             <FaWhatsapp className="h-3.5 w-3.5" />
@@ -278,7 +278,7 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
             )}&url=${encodeURIComponent(currentUrl)}`}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-1.5 font-semibold text-zinc-200 hover:bg-zinc-800 transition-colors"
+            className="flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-1.5 font-bold uppercase tracking-wider text-xs text-zinc-200 hover:bg-zinc-800 transition-colors"
             title="Share on X (Twitter)"
           >
             <FaXTwitter className="h-3.5 w-3.5" />
@@ -292,7 +292,7 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
             )}`}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-1.5 rounded-lg border border-[#04b093]/20 bg-[#04b093]/10 px-3 py-1.5 font-semibold text-[#04b093] hover:bg-[#04b093]/20 transition-colors"
+            className="flex items-center gap-1.5 rounded-lg border border-[#04b093]/40 bg-[#04b093]/10 px-3 py-1.5 font-bold uppercase tracking-wider text-xs text-[#04b093] hover:bg-[#04b093]/20 transition-colors"
             title="Share on Facebook"
           >
             <FaFacebook className="h-3.5 w-3.5" />
@@ -303,7 +303,7 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
           <button
             type="button"
             onClick={handleCopyLink}
-            className="flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-1.5 font-semibold text-zinc-200 hover:bg-zinc-800 transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-1.5 font-bold uppercase tracking-wider text-xs text-zinc-200 hover:bg-zinc-800 transition-colors cursor-pointer"
             title="Copy article link"
           >
             {copied ? (
@@ -314,7 +314,7 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
             ) : (
               <>
                 <Copy className="h-3.5 w-3.5" />
-                <span>Copy Link</span>
+                <span>Copy</span>
               </>
             )}
           </button>
@@ -323,7 +323,7 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
 
       {/* Feature Cover Image */}
       {article.cover_image && (
-        <div className="relative mt-8 aspect-video overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 shadow-2xl">
+        <div className="relative mt-8 aspect-video overflow-hidden rounded-2xl border-2 border-black/80 bg-zinc-900 shadow-2xl">
           <Image
             src={article.cover_image}
             alt={article.title}
@@ -357,13 +357,13 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
       </div>
 
       {/* Article Bottom Sign-off Box */}
-      <div className="mt-16 rounded-2xl border border-zinc-800 bg-gradient-to-b from-zinc-900/60 to-zinc-950 p-6 sm:p-8">
+      <div className="mt-16 rounded-2xl border-2 border-zinc-800 bg-zinc-900/90 p-6 sm:p-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-teal-400">
+            <span className="text-xs font-black uppercase tracking-widest text-[#04b093]">
               CBM Newsroom
             </span>
-            <h4 className="mt-1 text-lg font-bold text-white">
+            <h4 className="mt-1 text-lg font-black uppercase text-white">
               Stay Connected with CBM Radio
             </h4>
             <p className="mt-1 text-xs text-zinc-400">
@@ -372,7 +372,7 @@ function ArticleContent({ article }: { article: ArticleDetail }) {
           </div>
           <Link
             href="/news"
-            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-teal-500 px-5 py-2.5 text-xs font-bold text-black transition-all hover:bg-teal-400 shadow-lg shadow-teal-500/20"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border-2 border-black bg-[#04b093] px-5 py-2.5 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-white hover:text-black shadow-lg"
           >
             <span>Explore More News</span>
             <Sparkles className="h-3.5 w-3.5" />

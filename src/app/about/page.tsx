@@ -65,7 +65,7 @@ export default function AboutPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen overflow-hidden bg-black pb-24">
+      <main className="min-h-screen overflow-hidden bg-[#04b093] pb-24 text-black">
         <PageHero
           pageKey="about"
           fallbackTitle="About Us"
@@ -76,7 +76,7 @@ export default function AboutPage() {
         <DynamicPageSections page="about" position="top" />
 
         <section className="mx-auto grid max-w-7xl items-center gap-10 px-6 py-16 lg:grid-cols-2 lg:gap-16">
-          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative aspect-4/3 overflow-hidden rounded-2xl border border-zinc-700/50 bg-zinc-900 shadow-2xl">
+          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative aspect-4/3 overflow-hidden rounded-2xl border-2 border-black bg-black shadow-2xl">
             <Image
               src={aboutImage}
               alt={about?.title || "CBM Radio team"}
@@ -87,19 +87,19 @@ export default function AboutPage() {
             />
           </motion.div>
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-teal-400">About CBM Radio</p>
-            <h2 className="mt-3 text-3xl font-bold text-white">{about?.title || staticSections.about.title}</h2>
-            {about?.subtitle && <p className="mt-3 text-lg text-teal-300">{about.subtitle}</p>}
-            <p className="mt-5 whitespace-pre-line leading-8 text-zinc-400">{about?.body || staticSections.about.body}</p>
+            <span className="inline-block rounded-full bg-black px-4 py-1 text-xs font-black uppercase tracking-wider text-[#04b093]">About CBM Radio</span>
+            <h2 className="mt-4 text-3xl font-black uppercase tracking-tight text-black sm:text-5xl">{about?.title || staticSections.about.title}</h2>
+            {about?.subtitle && <p className="mt-2 text-xs font-bold uppercase tracking-wider text-black/80">{about.subtitle}</p>}
+            <p className="mt-5 whitespace-pre-line text-base font-bold leading-relaxed text-black/90">{about?.body || staticSections.about.body}</p>
           </div>
         </section>
 
-        <motion.section variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="mx-auto grid max-w-5xl gap-6 px-6 md:grid-cols-3">
+        <motion.section variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="mx-auto grid max-w-6xl gap-6 px-6 md:grid-cols-3">
           {sections.map(({ key, value, fallback }) => (
-            <motion.article key={key} variants={itemVariants} whileHover={{ y: -5 }} className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-lg transition hover:border-zinc-700">
-              <h2 className="text-xl font-semibold text-teal-400">{value?.title || fallback.title}</h2>
-              {value?.subtitle && <p className="mt-2 text-sm text-zinc-300">{value.subtitle}</p>}
-              <p className="mt-3 whitespace-pre-line text-sm leading-7 text-zinc-400">{value?.body || fallback.body}</p>
+            <motion.article key={key} variants={itemVariants} whileHover={{ y: -5 }} className="rounded-2xl border-2 border-black bg-black p-8 shadow-2xl transition hover:shadow-black">
+              <h2 className="text-xl font-black uppercase tracking-tight text-[#04b093]">{value?.title || fallback.title}</h2>
+              {value?.subtitle && <p className="mt-2 text-xs font-bold uppercase tracking-wider text-zinc-400">{value.subtitle}</p>}
+              <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-zinc-300">{value?.body || fallback.body}</p>
             </motion.article>
           ))}
         </motion.section>
