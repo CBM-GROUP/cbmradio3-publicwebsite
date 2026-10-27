@@ -91,55 +91,58 @@ export default function HomepageAdditions() {
   return (
     <section
       id="community"
-      className="relative scroll-mt-20 border-b border-white/10 bg-[#08090a] px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
+      className="relative scroll-mt-20 border-b-2 border-white/20 bg-black px-5 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
     >
       <div className="mx-auto max-w-7xl">
         
-        {/* Header Strip */}
-        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b border-white/10 pb-6">
+        {/* Section Header: Zwart Community Callout */}
+        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-white/20 pb-6">
           <div>
-            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.22em] text-[#00d4a5]">
-              <span>INDEX 06</span>
-              <span className="text-white/20">/</span>
-              <span>CONNECT & COLLABORATE</span>
+            <div className="flex items-center gap-3">
+              <span className="bg-[#00d4a5] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
+                COMMUNITY NETWORK
+              </span>
+              <span className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
+                SLUIT JE AAN // JOIN THE MOVEMENT
+              </span>
             </div>
-            <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-              The CBM Listener & Partner Hub
+            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight sm:text-4xl lg:text-5xl">
+              Be Part of the CBM Collective
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400 sm:text-base">
-              Connect directly with our community on WhatsApp, receive episode dispatch alerts, or discuss brand collaborations.
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-300">
+              Connect directly on WhatsApp, receive episode drop dispatches, or partner with our original productions.
             </p>
           </div>
 
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 border border-white/20 bg-transparent px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition hover:border-[#00d4a5] hover:text-[#00d4a5] w-fit"
+            className="inline-flex items-center gap-2 border-2 border-white bg-transparent px-5 py-2.5 text-xs font-black uppercase tracking-wider text-white transition hover:bg-white hover:text-black w-fit"
           >
             <span>Contact Studio</span>
             <ArrowUpRight size={15} />
           </Link>
         </div>
 
-        {/* 2-Column Broadsheet Panels */}
+        {/* 2-Column High-Impact Panels */}
         <div className="grid gap-8 lg:grid-cols-2">
           
           {/* Panel 1: Community Network & Channels */}
-          <div className="border border-white/10 bg-[#0e1013] p-7 sm:p-10 flex flex-col justify-between">
+          <div className="border-2 border-white/15 bg-[#0d0d0d] p-7 sm:p-10 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <span className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#00d4a5]">
                   <MessageSquare size={14} />
                   <span>COMMUNITY DISPATCH</span>
                 </span>
-                <span className="text-[0.68rem] font-bold uppercase tracking-wider text-zinc-500">
+                <span className="bg-white/10 px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-white">
                   WHATSAPP CHANNEL
                 </span>
               </div>
 
-              <h3 className="mt-6 text-2xl font-black text-white sm:text-3xl">
+              <h3 className="mt-6 text-2xl font-black uppercase tracking-tight text-white sm:text-3xl">
                 Join the CBM WhatsApp Channel
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-zinc-400">
+              <p className="mt-3 text-sm leading-relaxed text-zinc-300">
                 Receive instant notifications when new episodes and interviews drop, participate in community discussions, and share episode reactions directly with our hosts.
               </p>
 
@@ -150,9 +153,9 @@ export default function HomepageAdditions() {
                     href={safeWhatsappUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#25D366] px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-[#20ba5a]"
+                    className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#25D366] px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-[#20ba5a] hover:scale-[1.01]"
                   >
-                    <FaWhatsapp size={18} />
+                    <FaWhatsapp size={19} />
                     <span>Join CBM on WhatsApp</span>
                   </a>
                 ) : (
@@ -160,9 +163,9 @@ export default function HomepageAdditions() {
                     href="https://wa.me/?text=Hello%20CBM%20Radio!"
                     target="_blank"
                     rel="noreferrer"
-                    className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#25D366] px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-[#20ba5a]"
+                    className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#25D366] px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-[#20ba5a] hover:scale-[1.01]"
                   >
-                    <FaWhatsapp size={18} />
+                    <FaWhatsapp size={19} />
                     <span>Join CBM on WhatsApp</span>
                   </a>
                 )}
@@ -173,7 +176,7 @@ export default function HomepageAdditions() {
             <div className="mt-10 border-t border-white/10 pt-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-[0.68rem] font-black uppercase tracking-wider text-zinc-500">
+                  <p className="text-[0.68rem] font-black uppercase tracking-wider text-zinc-400">
                     OFFICIAL STATION CHANNELS
                   </p>
                   <div className="mt-2.5 flex flex-wrap gap-2">
@@ -189,7 +192,7 @@ export default function HomepageAdditions() {
                           rel="noreferrer"
                           aria-label={link.platform_label}
                           title={link.platform_label}
-                          className="grid size-9 place-items-center border border-white/15 bg-white/5 text-zinc-300 transition hover:border-[#00d4a5] hover:text-[#00d4a5]"
+                          className="grid size-9 place-items-center border border-white/20 bg-white/5 text-zinc-300 transition hover:border-[#00d4a5] hover:text-[#00d4a5]"
                         >
                           <Icon size={14} />
                         </a>
@@ -203,7 +206,7 @@ export default function HomepageAdditions() {
                     href={newsletterUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex min-h-10 items-center justify-center gap-1.5 border border-white/20 bg-transparent px-4 text-xs font-bold uppercase tracking-wider text-white hover:border-[#00d4a5] hover:text-[#00d4a5] transition"
+                    className="inline-flex min-h-10 items-center justify-center gap-1.5 border border-white/20 bg-transparent px-4 text-xs font-black uppercase tracking-wider text-white hover:border-[#00d4a5] hover:text-[#00d4a5] transition"
                   >
                     <Mail size={13} />
                     <span>Subscribe</span>
@@ -211,7 +214,7 @@ export default function HomepageAdditions() {
                 ) : (
                   <Link
                     href="/contact"
-                    className="inline-flex min-h-10 items-center justify-center gap-1.5 border border-white/20 bg-transparent px-4 text-xs font-bold uppercase tracking-wider text-white hover:border-[#00d4a5] hover:text-[#00d4a5] transition"
+                    className="inline-flex min-h-10 items-center justify-center gap-1.5 border border-white/20 bg-transparent px-4 text-xs font-black uppercase tracking-wider text-white hover:border-[#00d4a5] hover:text-[#00d4a5] transition"
                   >
                     <Mail size={13} />
                     <span>Contact Us</span>
@@ -221,29 +224,29 @@ export default function HomepageAdditions() {
             </div>
           </div>
 
-          {/* Panel 2: Studio Partnerships & Media Collaborations */}
-          <div className="border border-white/10 bg-[#0e1013] p-7 sm:p-10 flex flex-col justify-between">
+          {/* Panel 2: Brand Partnerships & Sponsorships */}
+          <div className="border-2 border-white/15 bg-[#0d0d0d] p-7 sm:p-10 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <span className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#00d4a5]">
                   <Handshake size={14} />
                   <span>COMMERCIAL & SPONSORSHIPS</span>
                 </span>
-                <span className="text-[0.68rem] font-bold uppercase tracking-wider text-zinc-500">
-                  BRAND PARTNERS
+                <span className="bg-[#00d4a5]/10 px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-[#00d4a5] border border-[#00d4a5]/30">
+                  PARTNERSHIPS
                 </span>
               </div>
 
-              <h3 className="mt-6 text-2xl font-black text-white sm:text-3xl">
+              <h3 className="mt-6 text-2xl font-black uppercase tracking-tight text-white sm:text-3xl">
                 {sponsor?.title || "Sponsor an Original CBM Series"}
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-zinc-400">
+              <p className="mt-3 text-sm leading-relaxed text-zinc-300">
                 {sponsor?.body ||
                   "Connect your brand or organization with engaged listeners across our on-demand podcasts, video episodes, and regional cultural media."}
               </p>
 
               {sponsorImage && (
-                <div className="relative mt-6 aspect-[16/8] w-full overflow-hidden bg-black/60 border border-white/10">
+                <div className="relative mt-6 aspect-[16/8] w-full overflow-hidden bg-black border border-white/20">
                   <Image
                     src={sponsorImage}
                     alt="Sponsorship showcase"
@@ -257,10 +260,10 @@ export default function HomepageAdditions() {
               )}
             </div>
 
-            <div className="mt-8 border-t border-white/10 pt-6 flex flex-wrap items-center justify-between gap-4 text-xs">
+            <div className="mt-8 border-t border-white/10 pt-6 flex flex-wrap items-center justify-between gap-4 text-xs font-black uppercase">
               <Link
                 href="/contact"
-                className="inline-flex min-h-11 items-center gap-2 bg-[#00d4a5] px-6 text-xs font-black uppercase tracking-wider text-[#062521] hover:bg-[#34e2b8] transition"
+                className="inline-flex min-h-11 items-center gap-2 bg-[#00d4a5] px-6 text-xs text-black hover:bg-[#34e2b8] transition"
               >
                 <span>{sponsor?.cta_label || "Explore Partnerships"}</span>
                 <ArrowUpRight size={14} />
@@ -269,7 +272,7 @@ export default function HomepageAdditions() {
               {emailHref && (
                 <a
                   href={emailHref}
-                  className="inline-flex items-center gap-1.5 font-bold text-zinc-400 hover:text-white transition"
+                  className="inline-flex items-center gap-1.5 text-zinc-400 hover:text-white transition"
                 >
                   <Mail size={13} className="text-[#00d4a5]" />
                   <span>Email Production Desk</span>
