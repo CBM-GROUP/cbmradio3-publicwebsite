@@ -125,32 +125,6 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Center: Desktop Navigation Bar (Direct 1-Click Access) */}
-          <nav
-            aria-label="Header quick navigation"
-            className="hidden items-center gap-1 xl:flex"
-          >
-            {primaryNavigation.slice(0, 7).map((item) => {
-              const isActive =
-                pathname === item.href ||
-                (item.href !== "/" && pathname.startsWith(item.href + "/"));
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`rounded-full px-3 py-1.5 text-xs font-black uppercase tracking-wider transition-colors ${
-                    isActive
-                      ? "border border-[#04b093]/40 bg-[#04b093]/15 text-[#04b093]"
-                      : "text-zinc-300 hover:bg-white/10 hover:text-white"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
-
           {/* Right: Contact Button */}
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
