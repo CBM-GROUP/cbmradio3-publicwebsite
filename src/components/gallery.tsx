@@ -3,51 +3,217 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowUpRight, X, ZoomIn } from "lucide-react";
+
 import { galleryService } from "@/services/gallery.service";
 import type { GalleryItem } from "@/types/gallery";
 
-const HOMEPAGE_GALLERY_LIMIT = 6;
+import StudioImage from "../../public/cbm_images/behind-the-scenes-studio.png";
+import OnAirStudio from "../../public/cbm_images/on-air-studio.png";
+import RadioShowArtwork from "../../public/cbm_images/radio 2.jpeg";
+import CBMTeam from "../../public/cbm_images/take 3.jpeg";
+
+const fallbackGalleryItems = [
+  {
+    id: 991,
+    image: StudioImage,
+    title: "Recording 'My Life, My Purpose' in Studio A",
+    category: "Studio Sessions",
+    caption: "CBM hosts in conversation during an original episode recording session.",
+  },
+  {
+    id: 992,
+    image: OnAirStudio,
+    title: "Studio Microphone & Production Desk",
+    category: "Production",
+    caption: "In the studio recording booth capturing inspiring stories and community dialogues.",
+  },
+  {
+    id: 993,
+    image: CBMTeam,
+    title: "The Presenter & Host Collective",
+    category: "Presenters",
+    caption: "Our team of cultural curators, journalists, and podcast creators.",
+  },
+  {
+    id: 994,
+    image: RadioShowArtwork,
+    title: "Sound Design & Audio Engineering",
+    category: "Mastering",
+    caption: "Audio post-production and mastering in the CBM digital studio.",
+  },
+];
 
 export default function Gallery() {
   const [items, setItems] = useState<GalleryItem[]>([]);
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
-  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
   useEffect(() => {
     let isMounted = true;
-    galleryService.getGalleryItems({ page: 1 }).then((response) => {
-      if (!isMounted) return;
-      setItems(
-        response.results
-          .filter((item) => Boolean(item.image))
-          .slice(0, HOMEPAGE_GALLERY_LIMIT),
-      );
-      setStatus("ready");
-    }).catch(() => {
-      if (isMounted) setStatus("error");
-    });
-    return () => { isMounted = false; };
+    galleryService
+      .getGalleryItems({ page: 1 })
+      .then((response) => {
+        if (!isMounted) return;
+        setItems(
+          response.results
+            .filter((item) => Boolean(item.image))
+            .slice(0, 4),
+        );
+      })
+      .catch(() => {});
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
+  useEffect(() => {
+    if (!selectedItem) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedItem(null);
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [selectedItem]);
+
+  const displayList = items.length > 0 ? items : fallbackGalleryItems;
+
   return (
-    <section className="bg-zinc-950 px-6 py-20 text-white">
+    <section
+      id="gallery"
+      className="relative scroll-mt-20 border-b-2 border-black bg-[#04b093] px-5 py-16 text-black sm:px-8 sm:py-20 lg:px-12 lg:py-24"
+    >
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 text-center"><p className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-500">Gallery</p><h2 className="mt-3 text-3xl font-bold">CBM Radio Moments</h2></div>
-        {status === "loading" && <p className="min-h-64 text-center text-zinc-400" aria-live="polite">Loading gallery...</p>}
-        {status === "error" && <p className="min-h-64 text-center text-zinc-400">The gallery is temporarily unavailable.</p>}
-        {status === "ready" && items.length === 0 && <p className="min-h-64 text-center text-zinc-400">No gallery images are available right now.</p>}
-        {items.length > 0 && (
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {items.map((item) => (
-              <button type="button" key={item.id} onClick={() => setSelectedItem(item)} className="overflow-hidden rounded-2xl bg-zinc-800 text-left shadow-sm shadow-gray-400/20 transition duration-300 hover:-translate-y-2 hover:shadow-xl">
-                <div className="relative h-80"><Image src={item.image} alt={item.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" unoptimized className="object-cover" /><div className="absolute inset-x-0 bottom-0 bg-black/60 p-5 backdrop-blur-xs">{item.category && <span className="mb-3 inline-block rounded-full bg-emerald-400 px-3 py-1 text-xs capitalize text-black">{item.category}</span>}<h3 className="text-lg font-bold text-gray-100">{item.title}</h3>{item.caption && <p className="mt-2 text-sm text-gray-300">{item.caption}</p>}</div></div>
-              </button>
-            ))}
+        
+        {/* Section Header: Zwart Visual Studio Archive */}
+        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-black pb-6">
+          <div>
+            <div className="flex items-center gap-3">
+              <span className="bg-black px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
+                DARKROOM
+              </span>
+              <span className="text-xs font-black uppercase tracking-[0.22em] text-black/75">
+                BEHIND THE SCENES
+              </span>
+            </div>
+            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">
+              Inside the Studio Booth & Archives
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-black/80 font-medium">
+              Documentary photography capturing host conversations, guest recordings, and the authentic energy of CBM Radio.
+            </p>
           </div>
-        )}
-        <div className="mt-10 text-center"><Link href="/gallery" className="font-semibold text-emerald-500 hover:text-emerald-400">View the full gallery</Link></div>
+
+          <Link
+            href="/gallery"
+            className="inline-flex items-center gap-2 border-2 border-black bg-black px-5 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black w-fit shadow-md"
+          >
+            <span>Full Gallery</span>
+            <ArrowUpRight size={15} />
+          </Link>
+        </div>
+
+        {/* Visual Archive Grid: 4-up Contact Sheet */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {displayList.map((item, idx) => (
+            <div
+              key={item.id}
+              onClick={() => setSelectedItem(item as GalleryItem)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setSelectedItem(item as GalleryItem);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              className="group relative cursor-pointer border-2 border-black bg-black overflow-hidden shadow-xl transition-all duration-300 hover:scale-[1.02] hover:border-white"
+            >
+              <div className="relative aspect-square w-full overflow-hidden bg-black">
+                <Image
+                  src={item.image}
+                  alt={item.title || "Studio archive frame"}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity" />
+
+                {/* Index Sticker */}
+                <div className="absolute left-3 top-3">
+                  <span className="bg-black/90 px-2 py-0.5 text-[0.62rem] font-black uppercase tracking-wider text-[#04b093] border border-white/20">
+                    FRAME 0{idx + 1}
+                  </span>
+                </div>
+
+                {/* Hover Zoom Indicator */}
+                <div className="absolute right-3 top-3 grid size-8 place-items-center bg-[#04b093] text-black opacity-0 group-hover:opacity-100 transition-opacity">
+                  <ZoomIn size={14} />
+                </div>
+
+                {/* Bottom Caption Overlay */}
+                <div className="absolute bottom-0 inset-x-0 p-4">
+                  <p className="text-[0.65rem] font-black uppercase tracking-wider text-[#04b093]">
+                    {item.category || "Studio"}
+                  </p>
+                  <h4 className="mt-0.5 text-sm font-black uppercase text-white line-clamp-1">
+                    {item.title}
+                  </h4>
+                  <p className="mt-1 text-xs text-zinc-400 line-clamp-2">
+                    {item.caption}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
       </div>
-      {selectedItem && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-5" onClick={() => setSelectedItem(null)}><div className="relative w-full max-w-5xl"><button type="button" onClick={() => setSelectedItem(null)} className="absolute -top-12 right-0 text-3xl text-white" aria-label="Close gallery image">&times;</button><Image src={selectedItem.image} alt={selectedItem.title} width={1200} height={800} unoptimized className="max-h-[85vh] w-full rounded-xl object-contain" /></div></div>}
+
+      {/* Lightbox Dialog Modal */}
+      {selectedItem && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-md"
+          onClick={() => setSelectedItem(null)}
+        >
+          <div
+            className="relative max-w-4xl w-full border-2 border-white/30 bg-[#0d0d0d] p-4 sm:p-6 text-white shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <span className="text-xs font-black uppercase tracking-wider text-[#04b093]">
+                {selectedItem.category || "STUDIO FRAME"}
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedItem(null)}
+                className="grid size-8 place-items-center border border-white/20 text-white hover:border-[#04b093] hover:text-[#04b093]"
+                aria-label="Close image preview"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="relative mt-4 aspect-video w-full overflow-hidden bg-black">
+              <Image
+                src={selectedItem.image}
+                alt={selectedItem.title || "Gallery frame"}
+                fill
+                sizes="(max-width: 1024px) 100vw, 896px"
+                className="object-contain"
+              />
+            </div>
+
+            <div className="mt-4">
+              <h3 className="text-lg font-black uppercase text-white">{selectedItem.title}</h3>
+              {selectedItem.caption && (
+                <p className="mt-1 text-xs text-zinc-400">{selectedItem.caption}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

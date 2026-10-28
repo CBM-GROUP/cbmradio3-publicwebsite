@@ -2,7 +2,17 @@
 
 :root {
   color-scheme: dark;
-  background: #101110;
+  --brand-bg: #04b093;
+  --brand-surface: #03957d;
+  --brand-surface-strong: #027a66;
+  --brand-panel: #038a73;
+  --brand-ink: #000000;
+  --brand-muted: #11362e;
+  --brand-accent: #04b093;
+  --brand-accent-strong: #05c6a5;
+  --brand-accent-soft: rgba(4, 176, 147, 0.15);
+  --brand-border: rgba(0, 0, 0, 0.15);
+  background: var(--brand-bg);
   font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
 }
 
@@ -12,21 +22,186 @@ html {
 
 body {
   min-height: 100%;
-  background: #101110;
+  background: var(--brand-bg);
+  color: var(--brand-ink);
 }
 
 ::selection {
-  background: #2dd4bf;
-  color: #101110;
+  background: var(--brand-accent);
+  color: #0a0908;
 }
 
 :focus-visible {
-  outline: 2px solid #5eead4;
+  outline: 2px solid var(--brand-accent-strong);
   outline-offset: 3px;
+}
+
+.cbm-card {
+  border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.14);
+  border-radius: 1.25rem;
+  box-shadow:
+    0 18px 42px -28px rgba(0, 0, 0, 0.8),
+    0 8px 24px -20px rgba(4, 176, 147, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease;
+}
+
+.cbm-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(4, 176, 147, 0.72);
+  box-shadow:
+    0 28px 56px -30px rgba(0, 0, 0, 0.88),
+    0 14px 32px -18px rgba(4, 176, 147, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.cbm-card:focus-within {
+  border-color: rgba(4, 176, 147, 0.72);
+  box-shadow:
+    0 18px 42px -28px rgba(0, 0, 0, 0.8),
+    0 8px 24px -16px rgba(4, 176, 147, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.cbm-card img {
+  transition: transform 300ms ease;
+}
+
+.cbm-card:hover img {
+  transform: scale(1.04);
+}
+
+/* Broadcast Equalizer Animation */
+@keyframes eq-bounce-1 {
+  0%, 100% { height: 25%; }
+  50% { height: 95%; }
+}
+
+@keyframes eq-bounce-2 {
+  0%, 100% { height: 75%; }
+  50% { height: 30%; }
+}
+
+@keyframes eq-bounce-3 {
+  0%, 100% { height: 40%; }
+  50% { height: 100%; }
+}
+
+@keyframes eq-bounce-4 {
+  0%, 100% { height: 90%; }
+  50% { height: 45%; }
+}
+
+.animate-eq-1 {
+  animation: eq-bounce-1 0.8s ease-in-out infinite;
+}
+
+.animate-eq-2 {
+  animation: eq-bounce-2 0.95s ease-in-out infinite 0.15s;
+}
+
+.animate-eq-3 {
+  animation: eq-bounce-3 0.75s ease-in-out infinite 0.3s;
+}
+
+.animate-eq-4 {
+  animation: eq-bounce-4 0.85s ease-in-out infinite 0.2s;
+}
+
+/* Marquee / News Wire Animation */
+@keyframes marquee-scroll {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 28s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Neon Glow Pulse */
+@keyframes neon-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(4, 176, 147, 0.25), inset 0 0 15px rgba(4, 176, 147, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(4, 176, 147, 0.45), inset 0 0 22px rgba(4, 176, 147, 0.25);
+  }
+}
+
+.neon-glow-card {
+  animation: neon-pulse 3.5s ease-in-out infinite;
+}
+
+/* Charts: playful motion */
+@keyframes chart-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes chart-pop-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes chart-float {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-6px) rotate(6deg); }
+}
+
+.chart-spin {
+  animation: chart-spin 3.2s linear infinite;
+}
+
+.chart-pop-in {
+  animation: chart-pop-in 420ms cubic-bezier(0.22, 1.3, 0.36, 1) both;
+}
+
+.chart-float {
+  animation: chart-float 2.6s ease-in-out infinite;
+}
+
+.chart-vinyl {
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 31%, rgba(255, 255, 255, 0.05) 31.5% 32%, transparent 32.5%),
+    repeating-radial-gradient(circle at 50% 50%, #0b0b0b 0 2px, #171717 2px 4px);
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .chart-spin,
+  .chart-pop-in,
+  .chart-float {
+    animation: none;
+  }
+
+  .cbm-card,
+  .cbm-card img,
+  .animate-eq-1,
+  .animate-eq-2,
+  .animate-eq-3,
+  .animate-eq-4,
+  .animate-marquee,
+  .neon-glow-card {
+    animation: none;
+    transition: none;
+  }
+
+  .cbm-card:hover,
+  .cbm-card:hover img {
+    transform: none;
   }
 }

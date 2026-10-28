@@ -83,7 +83,9 @@ export default function ProfileCard({
               <div className="flex flex-col justify-center py-2 md:py-6 relative text-white w-full md:w-1/2">
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-thin">{name}</h2>
                 <p className="text-emerald-400 font-medium mt-1 mb-3 md:mb-4">{title}</p>
-                <p className="text-zinc-300 leading-relaxed text-sm sm:text-base">{bio}</p>
+                {bio && bio.trim() !== "Station Staff Member." && (
+                  <p className="text-zinc-300 leading-relaxed text-sm sm:text-base">{bio}</p>
+                )}
               </div>
             </div>
 

@@ -142,17 +142,17 @@ export default function EpisodeBrowser() {
   }, [pathname, requestedSlug, router, searchParams, selectedProgram, selectedSlug]);
 
   return (
-    <section className="bg-zinc-950 px-4 py-16 text-white sm:px-6 lg:px-8">
+    <section className="bg-[#04b093] px-4 py-16 text-black sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         {programsState === "loading" && (
-          <p className="min-h-14 text-sm text-zinc-400" aria-live="polite">
+          <p className="min-h-14 text-sm font-bold text-black" aria-live="polite">
             Loading program filters...
           </p>
         )}
         {programsState === "error" && (
-          <div className="flex min-h-14 flex-wrap items-center gap-3 text-sm text-zinc-400" role="alert">
+          <div className="flex min-h-14 flex-wrap items-center gap-3 text-sm text-black" role="alert">
             <span>Program filters are temporarily unavailable. Showing all episodes.</span>
-            <button type="button" onClick={() => setProgramsRetry((value) => value + 1)} className="font-semibold text-teal-400 underline">Retry</button>
+            <button type="button" onClick={() => setProgramsRetry((value) => value + 1)} className="font-black text-black underline">Retry</button>
           </div>
         )}
         {programsState === "ready" && (
@@ -226,15 +226,15 @@ function EpisodeSection({
 }) {
   return (
     <section className="mt-14" aria-labelledby={heading.replaceAll(" ", "-").toLowerCase()}>
-      <h2 id={heading.replaceAll(" ", "-").toLowerCase()} className="text-2xl font-bold sm:text-3xl">{heading}</h2>
-      {state === "loading" && <p className="min-h-48 pt-8 text-zinc-400" aria-live="polite">Loading {heading.toLowerCase()}...</p>}
+      <h2 id={heading.replaceAll(" ", "-").toLowerCase()} className="text-2xl font-black uppercase tracking-tight text-black sm:text-3xl">{heading}</h2>
+      {state === "loading" && <p className="min-h-48 pt-8 font-bold text-black" aria-live="polite">Loading {heading.toLowerCase()}...</p>}
       {state === "error" && (
-        <div className="min-h-48 pt-8 text-zinc-400" role="alert">
+        <div className="min-h-48 pt-8 text-black" role="alert">
           <p>{heading} are temporarily unavailable.</p>
-          <button type="button" onClick={retry} className="mt-4 rounded-lg bg-teal-500 px-5 py-2.5 font-semibold text-black">Retry</button>
+          <button type="button" onClick={retry} className="mt-4 border-2 border-black bg-black px-5 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093]">Retry</button>
         </div>
       )}
-      {state === "ready" && episodes.length === 0 && <p className="min-h-24 pt-6 text-zinc-400">{emptyMessage}</p>}
+      {state === "ready" && episodes.length === 0 && <p className="min-h-24 pt-6 font-medium text-black/80">{emptyMessage}</p>}
       {state === "ready" && episodes.length > 0 && (
         <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {episodes.map((episode) => <EpisodeCard key={episode.id} episode={episode} featured={featured} onPlay={onPlay} />)}
@@ -242,12 +242,12 @@ function EpisodeSection({
       )}
       {state === "ready" && episodes.length > 0 && (canLoadMore || loadMoreState !== "idle") && onLoadMore && (
         <div className="mt-8 text-center">
-          {loadMoreState === "error" && <p className="mb-3 text-sm text-amber-200" role="alert">More episodes could not be loaded.</p>}
+          {loadMoreState === "error" && <p className="mb-3 text-sm text-red-950 font-bold" role="alert">More episodes could not be loaded.</p>}
           <button
             type="button"
             onClick={onLoadMore}
             disabled={loadMoreState === "loading"}
-            className="min-h-11 rounded-lg border border-teal-600 px-6 py-2.5 font-semibold text-teal-300 disabled:cursor-wait disabled:opacity-60"
+            className="min-h-11 border-2 border-black bg-black px-6 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black shadow-md disabled:cursor-wait disabled:opacity-60"
           >
             {loadMoreState === "loading" ? "Loading more episodes..." : loadMoreState === "error" ? "Try Again" : "Load More Episodes"}
           </button>

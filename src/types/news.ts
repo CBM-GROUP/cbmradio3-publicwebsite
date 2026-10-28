@@ -107,9 +107,11 @@ export interface ArticleSummary {
   category: ArticleCategory | null;
   cover_image: string;
   author: string;
+  views_count?: number;
   is_featured: boolean;
   is_published: boolean;
   published_at: string | null;
+  created_at?: string;
 }
 
 export interface ArticleDetail extends ArticleSummary {

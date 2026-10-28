@@ -1,7 +1,17 @@
 "use client";
 
 import axios from "axios";
-import { Clock } from "lucide-react";
+import {
+  BookOpen,
+  Calendar,
+  Check,
+  Clock,
+  Copy,
+  Share2,
+  Sparkles,
+  User,
+} from "lucide-react";
+import { FaFacebook, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -16,7 +26,8 @@ import Footer from "@/components/footer";
 import Header from "@/components/header";
 import {
   estimateArticleReadingTime,
-  formatPublicationDate,
+  formatPublicationDateTime,
+  formatTimeAgo,
 } from "@/lib/article-metadata";
 import NewsService, {
   MalformedArticleResponseError,
@@ -47,33 +58,39 @@ export default function ArticlePage() {
         setFailure("not-found");
         setLoading(false);
       });
-      return () => { isMounted = false; };
+      return () => {
+        isMounted = false;
+      };
     }
 
-    NewsService.getArticleBySlug(slug).then((result) => {
-      if (!isMounted) return;
-      setArticle(result);
-      setLoading(false);
-    }).catch((error: unknown) => {
-      if (!isMounted) return;
-      setArticle(null);
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        setFailure("not-found");
-      } else if (error instanceof MalformedArticleResponseError) {
-        setFailure("malformed");
-      } else {
-        setFailure("request");
-      }
-      setLoading(false);
-    });
+    NewsService.getArticleBySlug(slug)
+      .then((result) => {
+        if (!isMounted) return;
+        setArticle(result);
+        setLoading(false);
+      })
+      .catch((error: unknown) => {
+        if (!isMounted) return;
+        setArticle(null);
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+          setFailure("not-found");
+        } else if (error instanceof MalformedArticleResponseError) {
+          setFailure("malformed");
+        } else {
+          setFailure("request");
+        }
+        setLoading(false);
+      });
 
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [retryVersion, slug]);
 
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-zinc-950 px-4 pb-16 pt-32 text-zinc-100 sm:px-6">
+      <main className="min-h-screen bg-[#04b093] px-3 pb-20 pt-28 text-black sm:px-6 sm:pt-32 lg:px-8">
         {loading && <ArticleState message="Loading article..." />}
         {!loading && failure === "not-found" && (
           <ArticleState message="This article could not be found." />
@@ -103,57 +120,264 @@ function ArticleState({
   retry?: () => void;
 }) {
   return (
-    <div className="mx-auto flex min-h-[60vh] max-w-4xl flex-col items-center justify-center gap-5 text-center text-zinc-400" role="status">
-      <p>{message}</p>
+    <div
+      className="mx-auto flex min-h-[50vh] max-w-xl flex-col items-center justify-center gap-5 rounded-2xl border-2 border-black bg-black p-8 text-center shadow-2xl"
+      role="status"
+    >
+      <p className="text-base font-bold text-white">{message}</p>
       <div className="flex flex-wrap justify-center gap-4">
-        {retry && <button type="button" onClick={retry} className="rounded-lg bg-teal-500 px-5 py-2.5 font-semibold text-black">Retry</button>}
-        <Link href="/news" className="rounded-lg border border-zinc-700 px-5 py-2.5 font-semibold text-teal-500">Back to News</Link>
+        {retry && (
+          <button
+            type="button"
+            onClick={retry}
+            className="rounded-full border-2 border-black bg-[#04b093] px-6 py-2.5 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-white hover:text-black"
+          >
+            Retry
+          </button>
+        )}
+        <Link
+          href="/news"
+          className="rounded-full border-2 border-zinc-700 bg-zinc-900 px-6 py-2.5 text-xs font-black uppercase tracking-wider text-zinc-200 transition-all hover:border-[#04b093] hover:text-[#04b093]"
+        >
+          Back to News
+        </Link>
       </div>
     </div>
   );
 }
 
 function ArticleContent({ article }: { article: ArticleDetail }) {
+  const [copied, setCopied] = useState(false);
+
   const structuredDocument: StructuredArticleDocument | null =
     article.content_schema_version === 1 &&
     isStructuredArticleDocument(article.content_json) &&
     hasRenderableStructuredContent(article.content_json)
       ? article.content_json
       : null;
+
   const readingTime = estimateArticleReadingTime({
     document: structuredDocument,
     body: article.body,
   });
+
   const paragraphs = article.body
     .split(/\r?\n\s*\r?\n/)
     .map((value) => value.trim())
     .filter(Boolean);
 
+  const currentUrl =
+    typeof window !== "undefined"
+      ? window.location.href
+      : `https://cbmradio.com/news/${article.slug}`;
+
+  const handleCopyLink = () => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(currentUrl).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+      }).catch(() => undefined);
+    }
+  };
+
+  const uploadTimestamp = article.published_at || article.created_at;
+
   return (
-    <article className="mx-auto max-w-4xl">
-      <Link href="/news" className="text-sm font-medium text-teal-500 hover:text-teal-400">&larr; Back to News</Link>
-      {article.category && <p className="mt-8 text-sm font-semibold uppercase tracking-[0.25em] text-teal-500">{article.category.name}</p>}
-      <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-5xl">{article.title}</h1>
-      <div className="mt-5 flex flex-wrap gap-4 text-sm text-zinc-400">
-        {article.author && <span>By {article.author}</span>}
-        {article.published_at && <span>{formatPublicationDate(article.published_at)}</span>}
-        {readingTime && <span className="flex items-center gap-1"><Clock size={16} aria-hidden="true" /> {readingTime} min read</span>}
+    <article className="mx-auto max-w-4xl overflow-hidden rounded-2xl border-2 border-black bg-black p-4 text-white shadow-2xl sm:p-8 md:p-10 [overflow-wrap:anywhere]">
+      {/* Navigation & Category Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Link
+          href="/news"
+          className="inline-flex items-center gap-2 border-2 border-black bg-[#04b093] px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-black shadow-[2px_2px_0px_0px_#000] transition-colors hover:bg-white hover:text-black"
+        >
+          &larr; Back to News
+        </Link>
+        {article.category && (
+          <Link
+            href={`/news?category=${encodeURIComponent(article.category.slug)}`}
+            className="inline-flex items-center gap-1.5 border-2 border-zinc-700 bg-zinc-900 px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition-colors hover:border-[#04b093]"
+          >
+            <span>{article.category.name}</span>
+          </Link>
+        )}
       </div>
+
+      {/* Main Headline - Responsive Fluid Typography with Hyphenation & Overflow Wrapping */}
+      <h1 className="mt-6 text-2xl font-black uppercase leading-tight tracking-tight text-white break-words hyphens-auto [overflow-wrap:anywhere] sm:text-3xl sm:leading-tight md:text-4xl md:leading-tight lg:text-5xl lg:leading-[1.1]">
+        {article.title}
+      </h1>
+
+      {/* Rich Metadata & Metrics Bar */}
+      <div className="mt-6 flex flex-wrap items-center gap-2 border-y border-zinc-800 py-3 text-xs font-bold uppercase tracking-wider text-zinc-400 sm:gap-3 sm:py-4">
+        {article.author && (
+          <div className="flex items-center gap-1.5 font-bold text-zinc-200">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#04b093] text-black text-xs font-black">
+              <User className="h-3.5 w-3.5" />
+            </span>
+            <span>By {article.author}</span>
+          </div>
+        )}
+
+        <span className="hidden text-zinc-600 sm:inline">•</span>
+
+        {/* Time Since Uploaded / Published */}
+        {uploadTimestamp && (
+          <div
+            className="flex items-center gap-1.5 font-bold text-[#04b093]"
+            title={`Uploaded: ${formatPublicationDateTime(uploadTimestamp)}`}
+          >
+            <Clock className="h-4 w-4 shrink-0 text-[#04b093]" />
+            <span>Uploaded {formatTimeAgo(uploadTimestamp)}</span>
+          </div>
+        )}
+
+        <span className="hidden text-zinc-600 sm:inline">•</span>
+
+        {/* Reading Time */}
+        {readingTime && (
+          <div className="flex items-center gap-1.5 border border-zinc-700 bg-zinc-900 px-3 py-1 text-xs font-bold text-zinc-300">
+            <BookOpen className="h-3.5 w-3.5 text-[#04b093]" />
+            <span>{readingTime} min read</span>
+          </div>
+        )}
+
+        {/* Exact Date */}
+        {uploadTimestamp && (
+          <div className="ml-auto hidden items-center gap-1.5 text-xs text-zinc-500 md:flex">
+            <Calendar className="h-3.5 w-3.5" />
+            <span>{formatPublicationDateTime(uploadTimestamp)}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Social Share Toolbar */}
+      <div className="mt-4 flex flex-col gap-3 border-b border-zinc-800/80 pb-4 text-xs text-zinc-400 sm:flex-row sm:items-center sm:justify-between">
+        <span className="flex items-center gap-1.5 font-black uppercase tracking-wider text-[11px] text-zinc-400">
+          <Share2 className="h-3.5 w-3.5 text-[#04b093]" />
+          Share Story:
+        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          {/* WhatsApp */}
+          <a
+            href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+              `${article.title} - Read more on CBM Radio: ${currentUrl}`,
+            )}`}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1.5 border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-emerald-400 transition-colors hover:bg-emerald-500/20"
+            title="Share via WhatsApp"
+          >
+            <FaWhatsapp className="h-3.5 w-3.5" />
+            <span>WhatsApp</span>
+          </a>
+
+          {/* X / Twitter */}
+          <a
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+              article.title,
+            )}&url=${encodeURIComponent(currentUrl)}`}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1.5 border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-zinc-200 transition-colors hover:bg-zinc-800"
+            title="Share on X (Twitter)"
+          >
+            <FaXTwitter className="h-3.5 w-3.5" />
+            <span>Post</span>
+          </a>
+
+          {/* Facebook */}
+          <a
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+              currentUrl,
+            )}`}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1.5 border border-[#04b093]/40 bg-[#04b093]/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[#04b093] transition-colors hover:bg-[#04b093]/20"
+            title="Share on Facebook"
+          >
+            <FaFacebook className="h-3.5 w-3.5" />
+            <span>Share</span>
+          </a>
+
+          {/* Copy Link Button */}
+          <button
+            type="button"
+            onClick={handleCopyLink}
+            className="flex cursor-pointer items-center gap-1.5 border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-zinc-200 transition-colors hover:bg-zinc-800"
+            title="Copy article link"
+          >
+            {copied ? (
+              <>
+                <Check className="h-3.5 w-3.5 text-emerald-400" />
+                <span className="text-emerald-400">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-3.5 w-3.5" />
+                <span>Copy</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Feature Cover Image */}
       {article.cover_image && (
-        <div className="relative mt-8 aspect-video overflow-hidden rounded-xl bg-zinc-900">
-          <Image src={article.cover_image} alt={article.title} fill sizes="(max-width: 896px) 100vw, 896px" unoptimized className="object-cover" />
+        <div className="relative mt-8 aspect-video overflow-hidden rounded-2xl border-2 border-black/80 bg-zinc-900 shadow-2xl">
+          <Image
+            src={article.cover_image}
+            alt={article.title}
+            fill
+            sizes="(max-width: 896px) 100vw, 896px"
+            unoptimized
+            className="object-cover"
+            priority
+          />
         </div>
       )}
-      <div className="mt-10">
+
+      {/* Article Body Content */}
+      <div className="mt-8 sm:mt-10">
         {structuredDocument ? (
-          <ArticleRenderer document={structuredDocument} articleTitle={article.title} />
+          <ArticleRenderer
+            document={structuredDocument}
+            articleTitle={article.title}
+          />
         ) : paragraphs.length > 0 ? (
-          <div className="space-y-6 text-base leading-8 text-zinc-300 sm:text-lg">
-            {paragraphs.map((paragraph, index) => <p key={"paragraph-" + index} className="whitespace-pre-line">{paragraph}</p>)}
+          <div className="space-y-6 text-base leading-relaxed text-zinc-300 break-words [overflow-wrap:anywhere] sm:text-lg sm:leading-8">
+            {paragraphs.map((paragraph, index) => (
+              <p key={"paragraph-" + index} className="whitespace-pre-line break-words [overflow-wrap:anywhere] leading-relaxed sm:leading-8">
+                {paragraph}
+              </p>
+            ))}
           </div>
         ) : (
           <p className="text-zinc-400">This article does not have content yet.</p>
         )}
+      </div>
+
+      {/* Article Bottom Sign-off Box */}
+      <div className="mt-12 rounded-2xl border-2 border-zinc-800 bg-zinc-900/90 p-5 sm:mt-16 sm:p-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <span className="border-2 border-black bg-[#04b093] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
+              CBM Newsroom
+            </span>
+            <h4 className="mt-2 text-base font-black uppercase text-white break-words sm:text-lg">
+              Stay Connected with CBM Radio
+            </h4>
+            <p className="mt-1 text-xs leading-relaxed text-zinc-400">
+              Broadcasting gospel anthems, spiritual nourishment, and community news across Uganda and worldwide.
+            </p>
+          </div>
+          <Link
+            href="/news"
+            className="inline-flex shrink-0 items-center justify-center gap-2 border-2 border-black bg-[#04b093] px-5 py-2.5 text-xs font-black uppercase tracking-wider text-black shadow-lg transition-all hover:bg-white hover:text-black"
+          >
+            <span>Explore More News</span>
+            <Sparkles className="h-3.5 w-3.5" />
+          </Link>
+        </div>
       </div>
     </article>
   );

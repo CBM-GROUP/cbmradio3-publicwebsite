@@ -15,7 +15,7 @@ export default function ContactPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-zinc-950">
+      <main className="min-h-screen bg-[#04b093] text-black">
         <PageHero
           pageKey="contact"
           fallbackTitle="Contact Us"
@@ -23,6 +23,7 @@ export default function ContactPage() {
         />
         <DynamicPageSections page="contact" position="top" />
         <ContactPageContent />
+        <DynamicPageSections page="contact" position="middle" />
         <DynamicPageSections page="contact" position="bottom" />
       </main>
       <Footer />
