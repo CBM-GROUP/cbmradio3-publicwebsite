@@ -151,16 +151,16 @@ export default function ChartsListing() {
   if (loading) {
     return (
       <div className="py-24 text-center">
-        <div className="inline-flex items-center gap-3 rounded-full border border-zinc-800 bg-zinc-900/60 px-6 py-3 text-zinc-400">
-          <Disc3 className="h-5 w-5 animate-spin text-amber-500" />
-          <span className="text-sm font-medium">Loading CBM Music Charts…</span>
+        <div className="inline-flex items-center gap-3 rounded-full border-2 border-black bg-black px-6 py-3 text-white shadow-xl">
+          <Disc3 className="h-5 w-5 animate-spin text-[#04b093]" />
+          <span className="text-sm font-bold">Loading CBM Music Charts…</span>
         </div>
       </div>
     );
   }
 
   return (
-    <section className="min-h-screen bg-[#0b100f] text-white">
+    <section className="min-h-screen bg-[#04b093] pb-20 text-black">
       {/* Hidden Audio Player Element */}
       <audio
         ref={audioRef}
@@ -169,32 +169,38 @@ export default function ChartsListing() {
         onPlay={() => setIsPlaying(true)}
       />
 
-      <nav aria-label="Chart categories" className="border-b border-white/10 bg-black">
-        <div className="mx-auto flex max-w-[1800px] gap-2 overflow-x-auto px-4 sm:px-6 lg:px-10">
-          {chartTypeTabs.map((type) => (
-            <button
-              key={type}
-              type="button"
-              onClick={() => {
-                setSelectedType(type);
-                const firstMatch = type === "All charts" ? charts[0] : charts.find((chart) => chart.chart_type === type);
-                if (firstMatch) setSelectedSlug(firstMatch.slug);
-              }}
-              className={`min-h-12 shrink-0 border-b-2 px-4 text-[0.68rem] font-extrabold uppercase tracking-[0.14em] transition-colors ${
-                selectedType === type
-                  ? "border-[#04b093] text-[#04b093]"
-                  : "border-transparent text-white/65 hover:text-white"
-              }`}
-            >
-              {type}
-            </button>
-          ))}
+      <nav aria-label="Chart categories" className="border-b-2 border-black bg-[#04b093] py-4">
+        <div className="mx-auto flex max-w-[1800px] items-center gap-2 overflow-x-auto px-4 sm:px-6 lg:px-10">
+          {chartTypeTabs.map((type) => {
+            const isSelected = selectedType === type;
+            return (
+              <button
+                key={type}
+                type="button"
+                onClick={() => {
+                  setSelectedType(type);
+                  const firstMatch =
+                    type === "All charts"
+                      ? charts[0]
+                      : charts.find((chart) => chart.chart_type === type);
+                  if (firstMatch) setSelectedSlug(firstMatch.slug);
+                }}
+                className={`min-h-10 shrink-0 rounded-full px-5 text-xs font-black uppercase tracking-wider transition-all ${
+                  isSelected
+                    ? "border-2 border-black bg-black text-[#04b093] shadow-md"
+                    : "border-2 border-black/30 bg-black/10 text-black hover:border-black hover:bg-black hover:text-white"
+                }`}
+              >
+                {type}
+              </button>
+            );
+          })}
         </div>
       </nav>
 
       <div className="mx-auto grid max-w-[1800px] gap-5 px-4 py-6 sm:px-6 lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-8 lg:px-10 lg:py-8">
-        <aside className="cbm-card h-fit rounded-lg border border-white/10 bg-black/70 p-4 lg:sticky lg:top-28">
-          <label htmlFor="chart-search" className="mb-2 block text-xs font-bold uppercase tracking-[0.13em] text-white/75">Search charts</label>
+        <aside className="cbm-card h-fit rounded-2xl border-2 border-black bg-black p-5 text-white shadow-2xl lg:sticky lg:top-28">
+          <label htmlFor="chart-search" className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-white/80">Search charts</label>
           <div className="relative mb-5">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#04b093]" aria-hidden="true" />
             <input
@@ -203,11 +209,11 @@ export default function ChartsListing() {
               placeholder="Chart name"
               value={chartFilterQuery}
               onChange={(event) => setChartFilterQuery(event.target.value)}
-              className="min-h-10 w-full rounded-md border border-white/15 bg-white/5 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#04b093] focus:outline-none focus:ring-1 focus:ring-[#04b093]"
+              className="min-h-10 w-full rounded-lg border border-white/20 bg-white/10 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#04b093] focus:outline-none focus:ring-1 focus:ring-[#04b093]"
             />
           </div>
 
-          <label htmlFor="artist-search" className="mb-2 block text-xs font-bold uppercase tracking-[0.13em] text-white/75">Search songs or artists</label>
+          <label htmlFor="artist-search" className="mb-2 block text-xs font-black uppercase tracking-[0.14em] text-white/80">Search songs or artists</label>
           <div className="relative mb-6">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#04b093]" aria-hidden="true" />
             <input
@@ -216,12 +222,12 @@ export default function ChartsListing() {
               placeholder="Artist, song, album"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              className="min-h-10 w-full rounded-md border border-white/15 bg-white/5 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#04b093] focus:outline-none focus:ring-1 focus:ring-[#04b093]"
+              className="min-h-10 w-full rounded-lg border border-white/20 bg-white/10 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#04b093] focus:outline-none focus:ring-1 focus:ring-[#04b093]"
             />
           </div>
 
-          <h3 className="mb-2 border-b border-white/10 pb-3 text-xs font-extrabold uppercase tracking-[0.16em] text-[#04b093]">Charts</h3>
-          <div className="max-h-[55vh] space-y-1 overflow-y-auto pr-1">
+          <h3 className="mb-2 border-b border-white/15 pb-3 text-xs font-extrabold uppercase tracking-[0.16em] text-[#04b093]">Charts</h3>
+          <div className="max-h-[55vh] space-y-1.5 overflow-y-auto pr-1">
             {visibleCharts.map((chart) => (
               <button
                 key={chart.id}
@@ -230,21 +236,21 @@ export default function ChartsListing() {
                   setSelectedType(chart.chart_type);
                   setSelectedSlug(chart.slug);
                 }}
-                className={`flex min-h-10 w-full items-center justify-between rounded-md px-3 text-left text-sm font-semibold transition-colors ${
+                className={`flex min-h-10 w-full items-center justify-between rounded-lg px-3.5 text-left text-sm font-semibold transition-all ${
                   selectedSlug === chart.slug
-                    ? "bg-[#04b093] text-[#062521]"
-                    : "text-white/75 hover:bg-white/10 hover:text-white"
+                    ? "border border-black bg-[#04b093] text-black font-black shadow-md"
+                    : "text-white/80 hover:bg-white/10 hover:text-white"
                 }`}
               >
                 <span className="truncate">{chart.title}</span>
-                {selectedSlug === chart.slug && <span className="ml-2 size-1.5 shrink-0 rounded-full bg-[#062521]" aria-hidden="true" />}
+                {selectedSlug === chart.slug && <span className="ml-2 size-2 shrink-0 rounded-full bg-black" aria-hidden="true" />}
               </button>
             ))}
             {visibleCharts.length === 0 && <p className="px-3 py-5 text-sm text-white/70">{charts.length === 0 ? "Charts are temporarily unavailable." : "No charts match your search."}</p>}
           </div>
         </aside>
 
-        <div className="cbm-card min-w-0 rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(4,176,147,0.06),rgba(9,15,13,0.98)_16rem)] p-4 sm:p-6 lg:p-8">
+        <div className="cbm-card min-w-0 rounded-2xl border-2 border-black bg-gradient-to-b from-[#091210] via-black to-[#060a09] p-4 text-white shadow-2xl sm:p-6 lg:p-8">
           {/* Billboard / Spotify Style Hero Banner Card */}
           <div className="relative mb-8 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#04b093]/15 via-[#070e0c]/90 to-black p-5 sm:p-7 lg:p-8 shadow-2xl backdrop-blur-xl">
             {/* Ambient Background Glow */}
