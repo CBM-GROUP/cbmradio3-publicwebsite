@@ -348,7 +348,7 @@ export default function ChartsListing() {
             })}
           </nav>
 
-          <div className="-mx-4 flex snap-x gap-5 overflow-x-auto px-4 pb-4 pt-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <div className="-mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-6 pt-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
             {visibleCharts.map((chart, idx) => {
               const isSelected = selectedSlug === chart.slug;
               const cover = chartArtworkOf(chart);
@@ -358,37 +358,39 @@ export default function ChartsListing() {
                   type="button"
                   aria-pressed={isSelected}
                   onClick={() => selectChart(chart)}
-                  className={`group w-40 shrink-0 snap-start text-left transition-all duration-300 ease-out sm:w-44 ${
-                    isSelected ? "-translate-y-1 rotate-0" : idx % 2 ? "rotate-2 hover:-translate-y-2 hover:rotate-0" : "-rotate-2 hover:-translate-y-2 hover:rotate-0"
+                  className={`group w-56 sm:w-64 md:w-72 shrink-0 snap-start text-left transition-all duration-300 ease-out ${
+                    isSelected ? "-translate-y-1 rotate-0" : idx % 2 ? "rotate-1 hover:-translate-y-1.5 hover:rotate-0" : "-rotate-1 hover:-translate-y-1.5 hover:rotate-0"
                   }`}
                 >
                   <div
-                    className={`relative aspect-square overflow-hidden rounded-xl border-2 border-black bg-black transition-shadow ${
+                    className={`relative aspect-video overflow-hidden rounded-2xl border-2 border-black bg-black transition-shadow ${
                       isSelected ? "shadow-[6px_6px_0_0_#000] ring-4 ring-white" : "shadow-[4px_4px_0_0_#000] group-hover:shadow-[7px_7px_0_0_#000]"
                     }`}
                   >
                     {cover ? (
-                      <Image src={cover} alt="" fill unoptimized sizes="176px" className="object-cover" />
+                      <Image src={cover} alt="" fill unoptimized sizes="(max-width: 640px) 240px, 300px" className="object-cover object-center" />
                     ) : (
                       <div className="chart-vinyl flex h-full w-full items-center justify-center">
-                        <div className="grid size-14 place-items-center rounded-full bg-[#04b093] text-black">
-                          <Disc3 className="h-7 w-7" />
+                        <div className="grid size-12 place-items-center rounded-full bg-[#04b093] text-black">
+                          <Disc3 className="h-6 w-6" />
                         </div>
                       </div>
                     )}
                     {isSelected && (
-                      <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full border-2 border-black bg-[#04b093] px-2 py-0.5 text-[10px] font-black uppercase">
+                      <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full border-2 border-black bg-[#04b093] px-2.5 py-0.5 text-[10px] font-black uppercase text-black shadow-sm">
                         <span className="flex h-3 items-end gap-0.5" aria-hidden="true">
                           <span className="animate-eq-1 w-0.5 bg-black" />
                           <span className="animate-eq-2 w-0.5 bg-black" />
                           <span className="animate-eq-3 w-0.5 bg-black" />
                         </span>
-                        On
+                        Active
                       </span>
                     )}
                   </div>
-                  <p className="mt-3 truncate text-sm font-black uppercase leading-tight">{chart.title}</p>
-                  <p className="truncate text-[11px] font-bold text-black/60">
+                  <p className="mt-2.5 text-xs sm:text-sm font-black uppercase leading-snug line-clamp-2 break-words" title={chart.title}>
+                    {chart.title}
+                  </p>
+                  <p className="mt-0.5 text-[11px] font-bold text-black/70 truncate">
                     {formatEdition(chart.edition_date) || chart.chart_type.replace(/_/g, " ")}
                   </p>
                 </button>
@@ -404,46 +406,71 @@ export default function ChartsListing() {
 
         {activeChart && (
           <>
-            {/* 02 // Hero: sleeve + vinyl */}
-            <div className="relative mb-12 overflow-hidden rounded-3xl border-2 border-black bg-black p-6 text-white shadow-[8px_8px_0_0_rgba(0,0,0,0.35)] sm:p-8 lg:p-10">
-              <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[#04b093]/25 blur-3xl" />
-              <div className="pointer-events-none absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-amber-400/10 blur-3xl" />
+            {/* 02 // Hero: 16:9 sleeve + sliding vinyl */}
+            <div className="relative mb-12 rounded-3xl border-2 border-black bg-black p-5 sm:p-8 lg:p-10 text-white shadow-[8px_8px_0_0_rgba(0,0,0,0.35)]">
+              {/* Ambient Glows clipped inside card */}
+              <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl" aria-hidden="true">
+                <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[#04b093]/25 blur-3xl" />
+                <div className="absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-amber-400/10 blur-3xl" />
+              </div>
 
-              <div className="relative grid items-center gap-10 lg:grid-cols-[auto_minmax(0,1fr)]">
-                {/* Sleeve with sliding vinyl */}
-                <div className="group relative mx-auto h-56 w-[19rem] sm:h-64 sm:w-[23rem]">
-                  <div
-                    className={`chart-vinyl absolute left-16 top-2 h-52 w-52 rounded-full shadow-2xl transition-transform duration-700 ease-out sm:left-20 sm:h-60 sm:w-60 ${
-                      isPlaying ? "translate-x-20 sm:translate-x-24" : "translate-x-8 group-hover:translate-x-20 sm:group-hover:translate-x-24"
-                    }`}
-                  >
+              <div className="relative z-10 grid items-center gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] xl:grid-cols-[540px_minmax(0,1fr)] lg:gap-10">
+                {/* 16:9 Sleeve with sliding vinyl */}
+                <div className="relative mx-auto flex w-full max-w-[420px] sm:max-w-[480px] md:max-w-[540px] items-center justify-center lg:justify-start">
+                  <div className="group relative w-full pr-8 sm:pr-12 md:pr-16">
+                    {/* Vinyl Disk sliding from behind right edge */}
                     <div
-                      className="chart-spin absolute inset-0 rounded-full"
-                      style={{ animationPlayState: isPlaying ? "running" : "paused" }}
+                      className={`chart-vinyl absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 aspect-square h-[86%] rounded-full shadow-2xl transition-transform duration-700 ease-out z-0 ${
+                        isPlaying
+                          ? "translate-x-7 sm:translate-x-10 md:translate-x-12"
+                          : "translate-x-1 sm:translate-x-2 group-hover:translate-x-7 sm:group-hover:translate-x-10 md:group-hover:translate-x-12"
+                      }`}
                     >
-                      <div className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full border-4 border-black bg-[#04b093] sm:h-24 sm:w-24">
-                        {artworkOf(top1) && (
-                          <Image src={artworkOf(top1)} alt="" fill unoptimized sizes="96px" className="object-cover" />
-                        )}
-                        <span className="absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black" />
+                      <div
+                        className="chart-spin absolute inset-0 rounded-full"
+                        style={{ animationPlayState: isPlaying ? "running" : "paused" }}
+                      >
+                        <div className="absolute left-1/2 top-1/2 h-14 w-14 sm:h-18 sm:w-18 md:h-20 md:w-20 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full border-4 border-black bg-[#04b093]">
+                          {artworkOf(top1) && (
+                            <Image src={artworkOf(top1)} alt="" fill unoptimized sizes="80px" className="object-cover" />
+                          )}
+                          <span className="absolute left-1/2 top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black" />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="absolute left-0 top-0 h-56 w-56 overflow-hidden rounded-2xl border-2 border-white/20 bg-zinc-900 shadow-[0_20px_50px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:-rotate-3 sm:h-64 sm:w-64">
-                    {heroArtwork ? (
-                      <Image src={heroArtwork} alt={activeChart.title} fill priority unoptimized sizes="256px" className="object-cover" />
-                    ) : (
-                      <Image src={CBMTeamArtwork} alt={activeChart.title} fill priority sizes="256px" className="object-cover" />
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    <span className="absolute bottom-3 left-3 rotate-[-4deg] rounded-md border-2 border-black bg-[#04b093] px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-black">
-                      CBM Official
-                    </span>
+
+                    {/* 16:9 Sleeve Outer Jacket */}
+                    <div className="relative z-10 aspect-video w-full overflow-hidden rounded-2xl border-2 border-white/20 bg-zinc-900 shadow-[0_20px_50px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:-rotate-1">
+                      {heroArtwork ? (
+                        <Image
+                          src={heroArtwork}
+                          alt={activeChart.title}
+                          fill
+                          priority
+                          unoptimized
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 500px, 540px"
+                          className="object-cover object-center"
+                        />
+                      ) : (
+                        <Image
+                          src={CBMTeamArtwork}
+                          alt={activeChart.title}
+                          fill
+                          priority
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 500px, 540px"
+                          className="object-cover object-center"
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                      <span className="absolute bottom-3 left-3 rotate-[-3deg] rounded-md border-2 border-black bg-[#04b093] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-black shadow-sm">
+                        CBM Official
+                      </span>
+                    </div>
                   </div>
                 </div>
 
                 {/* Details */}
-                <div className="min-w-0 text-center lg:text-left">
+                <div className="min-w-0 text-center lg:text-left space-y-3">
                   <div className="flex flex-wrap items-center justify-center gap-2 lg:justify-start">
                     <span className="rotate-[-2deg] rounded-full border-2 border-[#04b093] bg-[#04b093]/15 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-[#04b093]">
                       {activeChart.chart_type ? activeChart.chart_type.replace(/_/g, " ") : "Countdown"}
@@ -456,11 +483,13 @@ export default function ChartsListing() {
                     )}
                   </div>
 
-                  <h2 className="mt-4 text-3xl font-black uppercase leading-[0.95] tracking-tight sm:text-5xl xl:text-6xl">
+                  <h2 className="mt-3 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black uppercase leading-tight tracking-tight text-white break-words drop-shadow-sm">
                     {activeChart.title}
                   </h2>
                   {activeChart.description && (
-                    <p className="mx-auto mt-3 max-w-2xl text-sm text-white/65 lg:mx-0">{activeChart.description}</p>
+                    <p className="mx-auto mt-3 max-w-2xl text-xs sm:text-sm text-white/70 lg:mx-0 break-words leading-relaxed">
+                      {activeChart.description}
+                    </p>
                   )}
 
                   <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -548,8 +577,10 @@ export default function ChartsListing() {
                           )}
                         </button>
                         <div className="mt-3 w-full px-1 text-center">
-                          <p className="truncate text-xs font-black uppercase sm:text-sm">{entry.title}</p>
-                          <p className="truncate text-[11px] font-bold text-black/60">{entry.artist}</p>
+                          <p className="text-xs sm:text-sm font-black uppercase leading-tight line-clamp-2 break-words" title={entry.title}>
+                            {entry.title}
+                          </p>
+                          <p className="mt-0.5 truncate text-[11px] font-bold text-black/60">{entry.artist}</p>
                         </div>
                         <div
                           className={`mt-2 flex w-full items-start justify-center rounded-t-xl border-2 border-b-0 border-black pt-2 ${stepHeight} ${RANK_STYLES[entry.rank]}`}
@@ -887,8 +918,10 @@ function TrackRow({ entry, index, total, maxWeeks, isCurrent, isPlaying, expande
 
         {/* Title */}
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-black uppercase sm:text-base">{entry.title}</p>
-          <p className={`truncate text-xs font-semibold sm:text-sm ${isCurrent ? "text-white/70" : "text-black/65"}`}>
+          <p className="text-sm sm:text-base font-black uppercase leading-tight line-clamp-2 break-words" title={entry.title}>
+            {entry.title}
+          </p>
+          <p className={`mt-0.5 text-xs sm:text-sm font-semibold truncate ${isCurrent ? "text-white/70" : "text-black/65"}`}>
             {entry.artist}
             {entry.featured_artists && <span className="opacity-70"> ft. {entry.featured_artists}</span>}
           </p>
