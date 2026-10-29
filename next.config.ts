@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
-const mediaHostname = process.env.MEDIA_HOSTNAME?.trim();
+const mediaHostname = process.env.MEDIA_HOSTNAME?.trim()
+  .replace(/^https?:\/\//i, "")
+  .split("/")[0];
 
 const nextConfig: NextConfig = {
   output: "standalone",
@@ -42,15 +44,6 @@ const nextConfig: NextConfig = {
         ? [{ protocol: "https" as const, hostname: mediaHostname, pathname: "/**" }]
         : []),
     ],
-  },
-  async rewrites() {
-    const backendUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
-    return [
-      {
-        source: "/media/:path*",
-        destination: `${backendUrl}/media/:path*`,
-      },
-    ];
   },
 };
 

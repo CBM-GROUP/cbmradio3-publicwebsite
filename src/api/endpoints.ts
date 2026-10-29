@@ -1,8 +1,5 @@
-const configuredBaseUrl = process.env.NEXT_PUBLIC_API_URL;
-
-if (!configuredBaseUrl) {
-  throw new Error("NEXT_PUBLIC_API_URL is not configured.");
-}
+const configuredBaseUrl =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export const BASE_URL = configuredBaseUrl.replace(/\/$/, "");
 
