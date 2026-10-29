@@ -16,7 +16,7 @@ const getEpisode = cache(async (slug: string) => {
     return await episodeService.getEpisodeBySlug(slug);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 404) return null;
-    throw error;
+    return null;
   }
 });
 
