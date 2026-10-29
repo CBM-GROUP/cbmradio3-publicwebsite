@@ -1024,11 +1024,13 @@ function QuickStat({ label, value, dark }: { label: string; value: number | stri
 }
 
 function StreamLink({ href, label, className, children }: { href: string; label: string; className: string; children: ReactNode }) {
+  const safeHref = /^https?:\/\//i.test(href.trim()) ? href.trim() : "";
+  if (!safeHref) return null;
   return (
     <a
-      href={href}
+      href={safeHref}
       target="_blank"
-      rel="noreferrer"
+      rel="noopener noreferrer"
       className={`inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full border-2 border-black bg-white px-4 text-xs font-black uppercase text-black transition-all hover:-translate-y-0.5 ${className}`}
     >
       {children}
