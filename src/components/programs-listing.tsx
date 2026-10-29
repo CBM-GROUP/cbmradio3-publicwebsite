@@ -131,31 +131,123 @@ export default function ProgramsListing() {
         )}
 
         {state === "loading" && (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-live="polite">
-            {Array.from({ length: 3 }, (_, index) => (
-              <div key={index} className="animate-pulse border border-white/10 bg-black">
-                <div className="aspect-[4/3] bg-zinc-800" />
-                <div className="space-y-3 p-5">
-                  <div className="h-3 w-1/3 bg-zinc-800" />
-                  <div className="h-6 w-3/4 bg-zinc-800" />
-                  <div className="h-3 w-full bg-zinc-800" />
+          <div className="space-y-16" aria-busy="true" aria-live="polite">
+            <section aria-label="Featured show loading">
+              <div className="mb-5">
+                <div className="h-3 w-28 animate-pulse bg-zinc-800" />
+                <div className="mt-3 h-8 w-52 animate-pulse bg-zinc-800" />
+              </div>
+              <div className="grid animate-pulse overflow-hidden border border-white/10 bg-[#111] lg:grid-cols-2">
+                <div className="min-h-64 bg-zinc-800 sm:min-h-80 lg:min-h-[25rem]" />
+                <div className="flex flex-col justify-center gap-5 p-6 sm:p-9 lg:p-10">
+                  <div className="h-3 w-28 bg-zinc-800" />
+                  <div className="h-10 w-3/4 bg-zinc-800" />
+                  <div className="h-4 w-2/3 bg-zinc-800" />
+                  <div className="h-16 w-full max-w-lg bg-zinc-800" />
+                  <div className="h-11 w-40 bg-zinc-800" />
                 </div>
               </div>
-            ))}
+            </section>
+
+            <section aria-label="Show directory loading">
+              <div className="mb-6 border-b border-white/15 pb-5">
+                <div className="h-3 w-32 animate-pulse bg-zinc-800" />
+                <div className="mt-3 h-8 w-40 animate-pulse bg-zinc-800" />
+              </div>
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 3 }, (_, index) => (
+                  <div key={index} className="animate-pulse border border-white/10 bg-black">
+                    <div className="aspect-[4/3] bg-zinc-800" />
+                    <div className="space-y-3 p-5">
+                      <div className="h-3 w-1/3 bg-zinc-800" />
+                      <div className="h-6 w-3/4 bg-zinc-800" />
+                      <div className="h-3 w-full bg-zinc-800" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section aria-label="Presenter list loading">
+              <div className="mb-6 border-b border-white/15 pb-5">
+                <div className="h-3 w-44 animate-pulse bg-zinc-800" />
+                <div className="mt-3 h-8 w-52 animate-pulse bg-zinc-800" />
+              </div>
+              <div className="grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 3 }, (_, index) => (
+                  <div key={index} className="flex min-h-28 animate-pulse items-center gap-4 bg-[#111] p-5">
+                    <div className="size-14 shrink-0 rounded-full bg-zinc-800" />
+                    <div className="flex-1 space-y-3">
+                      <div className="h-4 w-3/4 bg-zinc-800" />
+                      <div className="h-3 w-1/2 bg-zinc-800" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
             <span className="sr-only">Loading shows...</span>
           </div>
         )}
 
         {state === "error" && (
-          <div className="border border-white/10 bg-black px-6 py-16 text-center text-white" role="alert">
-            <p className="text-lg font-bold">Shows are temporarily unavailable.</p>
-            <button
-              type="button"
-              onClick={() => setRetryVersion((value) => value + 1)}
-              className="mt-5 border border-[#04b093] bg-[#04b093] px-6 py-3 text-xs font-black uppercase tracking-wider text-black transition-colors hover:border-white hover:bg-white"
-            >
-              Retry
-            </button>
+          <div className="space-y-16">
+            <section aria-labelledby="featured-show-heading">
+              <div className="mb-5">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#04b093]">On air at CBM</p>
+                <h3 id="featured-show-heading" className="mt-2 text-2xl font-black uppercase tracking-tight sm:text-3xl">
+                  Featured show
+                </h3>
+              </div>
+              <div className="grid overflow-hidden border border-white/10 bg-[#111] lg:grid-cols-2">
+                <div className="relative min-h-56 bg-black sm:min-h-72">
+                  <Image
+                    src="/cbm_images/on-air-studio.png"
+                    alt=""
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 55vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="flex flex-col justify-center p-6 sm:p-9">
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-[#04b093]">CBM original</p>
+                  <p className="mt-3 text-xl font-black uppercase text-white">Shows are temporarily unavailable</p>
+                  <p className="mt-3 text-sm leading-relaxed text-zinc-400">
+                    We couldn&apos;t load the show lineup. Please try again in a moment.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setRetryVersion((value) => value + 1)}
+                    className="mt-6 inline-flex min-h-11 w-fit items-center border border-[#04b093] bg-[#04b093] px-5 py-3 text-xs font-black uppercase tracking-wider text-black transition-colors hover:border-white hover:bg-white"
+                  >
+                    Retry
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <section aria-labelledby="all-shows-heading">
+              <div className="mb-6 border-b border-white/15 pb-5">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#04b093]">Browse the lineup</p>
+                <h3 id="all-shows-heading" className="mt-2 text-2xl font-black uppercase tracking-tight sm:text-3xl">
+                  All shows
+                </h3>
+              </div>
+              <p className="border border-white/10 bg-black px-6 py-10 text-center text-sm font-bold text-zinc-400" role="status">
+                The show directory will appear here when it is available.
+              </p>
+            </section>
+
+            <section aria-labelledby="show-hosts-heading">
+              <div className="mb-6 border-b border-white/15 pb-5">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#04b093]">The people behind the mic</p>
+                <h3 id="show-hosts-heading" className="mt-2 text-2xl font-black uppercase tracking-tight sm:text-3xl">
+                  Meet the voices
+                </h3>
+              </div>
+              <p className="border border-white/10 bg-black px-6 py-8 text-center text-sm font-bold text-zinc-400" role="status">
+                Presenter profiles will appear alongside the show lineup.
+              </p>
+            </section>
           </div>
         )}
 
@@ -238,33 +330,34 @@ export default function ProgramsListing() {
               </section>
             )}
 
-            <section aria-labelledby="listen-more-heading" className="relative isolate flex min-h-72 items-end overflow-hidden border border-white/10 bg-black px-6 py-8 sm:min-h-96 sm:px-10 sm:py-10">
-              <Image
-                src="/cbm_images/on-air-studio.png"
-                alt=""
-                fill
-                sizes="(max-width: 1280px) 100vw, 1280px"
-                className="absolute inset-0 -z-20 object-cover"
-              />
-              <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/75 to-black/20" aria-hidden="true" />
-              <div className="max-w-xl">
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#04b093]">Your world. Your frequency.</p>
-                <h3 id="listen-more-heading" className="mt-3 text-3xl font-black uppercase tracking-tight text-white sm:text-4xl">
-                  The conversation continues
-                </h3>
-                <p className="mt-3 max-w-lg text-sm leading-relaxed text-zinc-300">
-                  Catch up on the voices, ideas, and stories you love with the latest episodes from CBM Radio.
-                </p>
-                <Link
-                  href="/episodes"
-                  className="mt-6 inline-flex min-h-11 items-center gap-2 border border-[#04b093] bg-[#04b093] px-5 py-3 text-xs font-black uppercase tracking-wider text-black transition-colors hover:border-white hover:bg-white"
-                >
-                  Listen to episodes <ArrowUpRight size={15} aria-hidden="true" />
-                </Link>
-              </div>
-            </section>
           </>
         )}
+
+        <section aria-labelledby="listen-more-heading" className="relative isolate mt-16 flex min-h-72 items-end overflow-hidden border border-white/10 bg-black px-6 py-8 sm:min-h-96 sm:px-10 sm:py-10">
+          <Image
+            src="/cbm_images/on-air-studio.png"
+            alt=""
+            fill
+            sizes="(max-width: 1280px) 100vw, 1280px"
+            className="absolute inset-0 -z-20 object-cover"
+          />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/75 to-black/20" aria-hidden="true" />
+          <div className="max-w-xl">
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-[#04b093]">Your world. Your frequency.</p>
+            <h3 id="listen-more-heading" className="mt-3 text-3xl font-black uppercase tracking-tight text-white sm:text-4xl">
+              The conversation continues
+            </h3>
+            <p className="mt-3 max-w-lg text-sm leading-relaxed text-zinc-300">
+              Catch up on the voices, ideas, and stories you love with the latest episodes from CBM Radio.
+            </p>
+            <Link
+              href="/episodes"
+              className="mt-6 inline-flex min-h-11 items-center gap-2 border border-[#04b093] bg-[#04b093] px-5 py-3 text-xs font-black uppercase tracking-wider text-black transition-colors hover:border-white hover:bg-white"
+            >
+              Listen to episodes <ArrowUpRight size={15} aria-hidden="true" />
+            </Link>
+          </div>
+        </section>
 
         {state === "ready" && (programs.previous || programs.next) && (
           <nav aria-label="Show pagination" className="mt-12 flex items-center justify-center gap-4 border-t border-white/10 pt-8">
