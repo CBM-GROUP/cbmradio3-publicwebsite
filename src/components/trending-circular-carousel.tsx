@@ -4,18 +4,10 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Trophy,
-  Music,
-  Newspaper,
   ChevronLeft,
   ChevronRight,
   ArrowUpRight,
   Disc3,
-  Headphones,
-  Flame,
-  Radio,
-  Clock,
-  Sparkles,
 } from "lucide-react";
 
 interface TrendingItem {
@@ -26,9 +18,7 @@ interface TrendingItem {
   schedule: string;
   description: string;
   accent: string;
-  glowColor: string;
   badge: string;
-  icon: typeof Trophy;
   image: string;
   episodesLink: string;
   frequencyTag: string;
@@ -39,48 +29,42 @@ const TRENDING_ITEMS: TrendingItem[] = [
     id: "sports",
     category: "SPORTS",
     title: "CBM Sports Matchday Arena",
-    presenter: "Brian SportsDesk & Team",
-    schedule: "Saturdays & Sundays 2:00 PM – 5:00 PM EAT",
+    presenter: "Sports Desk",
+    schedule: "Fridays 5:00 PM – 6:00 PM",
     description:
       "Electric Premier League commentary, real-time match breakdowns, East African tournament action, and passionate pitch debates.",
     accent: "#eab308", // Golden Yellow
-    glowColor: "rgba(234, 179, 8, 0.45)",
     badge: "HEAD TRENDING IN SPORTS",
-    icon: Trophy,
-    image: "/cbm_images/evening-drive.jpg", // Features the Evening Drive studio image as requested
-    episodesLink: "/episodes?program=cbm-sports-arena",
+    image: "/cbm_images/sports-collections.jpg",
+    episodesLink: "/episodes?program=sports",
     frequencyTag: "FM 92.4 • MATCHDAY LIVE",
   },
   {
     id: "music",
     category: "MUSIC",
-    title: "Urban Pulse & Afrobeats Top 20",
-    presenter: "DJ Innocent & Guest Producers",
-    schedule: "Fridays & Saturdays 7:00 PM – 11:00 PM EAT",
+    title: "Midday Mix & Afrobeats Pulse",
+    presenter: "DJ Bashi",
+    schedule: "Monday – Friday 12:00 PM – 3:00 PM",
     description:
-      "The definitive weekend soundtrack featuring chart-topping Afrobeats, Amapiano, dancehall club anthems, and live studio turntables.",
+      "The definitive high-energy playlist featuring chart-topping Afrobeats, Amapiano, live studio mixes, and listener shoutouts.",
     accent: "#ec4899", // Neon Pink
-    glowColor: "rgba(236, 72, 153, 0.45)",
     badge: "HEAD TRENDING IN MUSIC",
-    icon: Music,
-    image: "/cbm_images/artist-spotlight.png",
-    episodesLink: "/episodes?program=urban-pulse-top-20",
+    image: "/cbm_images/dj-music.jpg",
+    episodesLink: "/episodes?program=midday-mix",
     frequencyTag: "FM 98.1 • HIT COUNTDOWN",
   },
   {
     id: "news",
     category: "NEWS",
-    title: "Prime Headline & Morning Briefing",
-    presenter: "Samuel, Sarah & The Newsroom",
-    schedule: "Monday – Friday 6:00 AM – 10:00 AM EAT",
+    title: "CBM Morning Drive & News Brief",
+    presenter: "Audu & The Newsroom",
+    schedule: "Monday – Friday 4:00 AM – 5:00 AM",
     description:
-      "Crucial investigative news, breaking bulletins, morning traffic alerts, currency reports, and influential leader interviews.",
+      "Crucial investigative news, prime morning headlines, early commuter traffic alerts, and market briefings.",
     accent: "#04b093", // CBM Emerald
-    glowColor: "rgba(4, 176, 147, 0.5)",
     badge: "HEAD TRENDING IN NEWS",
-    icon: Newspaper,
-    image: "/cbm_images/newsroom-studio-set.png",
-    episodesLink: "/episodes?program=the-morning-drive",
+    image: "/cbm_images/the-morning-show.jpg",
+    episodesLink: "/episodes?program=cbm-morning-drive",
     frequencyTag: "FM 88.5 • PRIME DISPATCH",
   },
 ];
@@ -132,33 +116,32 @@ export default function TrendingCircularCarousel() {
         <div className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 border-b-2 border-black pb-6">
           <div>
             <div className="flex flex-wrap items-center gap-2.5">
-              <span className="flex items-center gap-1.5 bg-black px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.22em] text-[#04b093] shadow-md">
-                <Flame size={13} className="text-[#04b093] fill-[#04b093]" />
-                AUTO-ROTATING CHANNELS
+              <span className="rounded-full bg-black px-4 py-1 text-[0.68rem] font-black uppercase tracking-[0.22em] text-[#04b093] shadow-md">
+                HEAD TRENDING CHANNELS
               </span>
-              <span className="bg-black/15 px-2.5 py-0.5 text-xs font-mono font-bold uppercase tracking-wider text-black border border-black/30">
-                CIRCULAR 3D ORBIT • ACTIVE
+              <span className="rounded-full bg-black/15 px-3 py-0.5 text-xs font-mono font-bold uppercase tracking-wider text-black border border-black/30">
+                3D CIRCULAR CAROUSEL
               </span>
             </div>
             <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">
               The Big 3: Sports, Music &amp; News
             </h2>
             <p className="mt-2 max-w-2xl text-xs sm:text-sm font-bold text-black/85 leading-relaxed">
-              These 3 shows auto-rotate continuously by themselves along the circular orbit. Watch each show glide into the center and{" "}
-              <span className="bg-black px-1.5 py-0.5 text-[#04b093] font-black uppercase">
-                push itself in front
+              Watch the 3 flagship pillars cycle along the orbit: as each show arrives at the center, it{" "}
+              <span className="rounded-full bg-black px-2.5 py-0.5 text-[#04b093] font-black uppercase">
+                pushes itself in front
               </span>{" "}
-              with spinning vinyl and live details.
+              into full broadcast spotlight.
             </p>
           </div>
 
-          {/* Navigation Controls */}
+          {/* Navigation Controls with curved buttons */}
           <div className="flex items-center gap-3 self-start sm:self-auto">
-            <div className="flex items-center gap-1 border-2 border-black bg-black p-1 shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+            <div className="flex items-center gap-1 rounded-full border-2 border-black bg-black p-1 shadow-md">
               <button
                 onClick={handlePrev}
                 aria-label="Previous Trending Card"
-                className="flex size-9 items-center justify-center bg-zinc-900 text-white transition hover:bg-[#04b093] hover:text-black cursor-pointer"
+                className="flex size-9 items-center justify-center rounded-full bg-zinc-900 text-white transition-all hover:bg-[#04b093] hover:text-black hover:scale-105 cursor-pointer"
               >
                 <ChevronLeft size={18} />
               </button>
@@ -170,14 +153,14 @@ export default function TrendingCircularCarousel() {
               <button
                 onClick={handleNext}
                 aria-label="Next Trending Card"
-                className="flex size-9 items-center justify-center bg-zinc-900 text-white transition hover:bg-[#04b093] hover:text-black cursor-pointer"
+                className="flex size-9 items-center justify-center rounded-full bg-zinc-900 text-white transition-all hover:bg-[#04b093] hover:text-black hover:scale-105 cursor-pointer"
               >
                 <ChevronRight size={18} />
               </button>
             </div>
 
             {/* Quick Indicator Dots */}
-            <div className="flex items-center gap-2 bg-black/10 px-3 py-2 rounded-full border border-black/20">
+            <div className="flex items-center gap-2 bg-black/10 px-3.5 py-2 rounded-full border border-black/20">
               {TRENDING_ITEMS.map((item, idx) => (
                 <button
                   key={item.id}
@@ -207,9 +190,6 @@ export default function TrendingCircularCarousel() {
             const offset = (idx - currentIndex + 3) % 3;
             const isCenter = offset === 0;
             const isRight = offset === 1;
-            const isLeft = offset === 2;
-
-            const IconComponent = item.icon;
 
             return (
               <div
@@ -221,7 +201,6 @@ export default function TrendingCircularCarousel() {
                     : "z-10 opacity-65 hover:opacity-90"
                 }`}
                 style={{
-                  // Smooth 3D circular transformation that pops the middle card in front!
                   transition: "all 800ms cubic-bezier(0.34, 1.4, 0.64, 1)",
                   transform: isCenter
                     ? "translate3d(0%, -18px, 100px) scale(1.08) rotateY(0deg) rotate(0deg)"
@@ -232,28 +211,27 @@ export default function TrendingCircularCarousel() {
               >
                 {/* 
                   CARD CONTAINER:
-                  When isCenter is true, it pushes forward with dramatic elevation & neon glow 
+                  When isCenter is true, it pushes forward with dramatic elevation & curved styling 
                 */}
                 <div
-                  className={`group relative overflow-hidden rounded-2xl border-4 border-black bg-black p-5 sm:p-7 text-white transition-all duration-500 ${
+                  className={`group relative overflow-hidden rounded-3xl border-4 border-black bg-black p-5 sm:p-7 text-white transition-all duration-500 ${
                     isCenter
                       ? "shadow-[16px_16px_0_0_rgba(0,0,0,1)] ring-4 ring-white/25"
                       : "shadow-[6px_6px_0_0_rgba(0,0,0,0.6)]"
                   }`}
                 >
-                  {/* Neon Aura Backlight for Center Card */}
+                  {/* Ambient Backlight */}
                   <div
-                    className="pointer-events-none absolute -right-20 -top-20 size-56 rounded-full blur-3xl opacity-25 transition-opacity"
+                    className="pointer-events-none absolute -right-20 -top-20 size-56 rounded-full blur-3xl opacity-25"
                     style={{ backgroundColor: item.accent }}
                   />
 
                   {/* Header Row: Category Badge + CD Indicator */}
                   <div className="mb-4 flex items-center justify-between">
                     <span
-                      className="inline-flex items-center gap-1.5 rounded-sm px-3 py-1 text-[0.65rem] font-black uppercase tracking-wider text-black shadow-md font-sans"
+                      className="rounded-full px-3 py-1 text-[0.65rem] font-black uppercase tracking-wider text-black shadow-md font-sans"
                       style={{ backgroundColor: item.accent }}
                     >
-                      <IconComponent size={13} />
                       {item.badge}
                     </span>
 
@@ -267,9 +245,7 @@ export default function TrendingCircularCarousel() {
                   </div>
 
                   {/* Media Visual Showcase Box with Pushing CD Disc */}
-                  <div className="relative mb-5 flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-xl border-2 border-white/20 bg-zinc-950">
-                    
-                    {/* Background Showcase Artwork */}
+                  <div className="relative mb-5 flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-2xl border-2 border-white/20 bg-zinc-950">
                     <Image
                       src={item.image}
                       alt={item.title}
@@ -279,10 +255,7 @@ export default function TrendingCircularCarousel() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
-                    {/* 
-                      COMPACT DISC (CD):
-                      When reaching the center, the CD slides out from behind the sleeve into full view!
-                    */}
+                    {/* Compact Disc */}
                     <div
                       className={`chart-spin absolute top-1/2 aspect-square -translate-y-1/2 rounded-full border border-white/30 shadow-[0_15px_35px_rgba(0,0,0,0.9)] transition-all duration-700 ${
                         isCenter
@@ -297,13 +270,12 @@ export default function TrendingCircularCarousel() {
                         `,
                       }}
                     >
-                      {/* CD Spindle Center Hole */}
                       <div className="absolute left-1/2 top-1/2 flex size-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/60 bg-black">
                         <div className="size-2.5 rounded-full bg-zinc-900 border border-white/80" />
                       </div>
                     </div>
 
-                    {/* Equalizer Wave / Live On-Air Pill on Center Card */}
+                    {/* Frequency pill on Center Card */}
                     {isCenter ? (
                       <div className="absolute bottom-3 left-3 flex items-center gap-2 rounded-full bg-black/90 px-3 py-1 border border-white/20 backdrop-blur-md">
                         <span className="size-2 rounded-full bg-[#04b093] animate-ping" />
@@ -312,7 +284,7 @@ export default function TrendingCircularCarousel() {
                         </span>
                       </div>
                     ) : (
-                      <div className="absolute bottom-2 left-2 rounded bg-black/80 px-2 py-0.5 text-[0.55rem] font-mono text-zinc-400">
+                      <div className="absolute bottom-2 left-2 rounded-full bg-black/80 px-2.5 py-0.5 text-[0.55rem] font-mono text-zinc-400">
                         {item.category}
                       </div>
                     )}
@@ -323,16 +295,10 @@ export default function TrendingCircularCarousel() {
                     {item.title}
                   </h3>
 
-                  {/* Presenter & Airtime Badges */}
-                  <div className="mt-2.5 space-y-1.5 text-xs font-bold text-zinc-300">
-                    <p className="flex items-center gap-1.5">
-                      <Radio size={14} className="text-[#04b093] shrink-0" />
-                      <span className="truncate">Hosted by <strong className="text-white">{item.presenter}</strong></span>
-                    </p>
-                    <p className="flex items-center gap-1.5 text-zinc-400">
-                      <Clock size={14} className="text-[#eab308] shrink-0" />
-                      <span className="truncate">{item.schedule}</span>
-                    </p>
+                  {/* Presenter & Airtime */}
+                  <div className="mt-2.5 space-y-1 text-xs font-bold text-zinc-300">
+                    <p className="truncate">Hosted by <strong className="text-white">{item.presenter}</strong></p>
+                    <p className="text-[#eab308] truncate font-medium">{item.schedule}</p>
                   </div>
 
                   {/* Program Description */}
@@ -340,25 +306,23 @@ export default function TrendingCircularCarousel() {
                     {item.description}
                   </p>
 
-                  {/* Bottom Action Row */}
+                  {/* Bottom Action Row with Nice Curved Button */}
                   <div className="mt-6 flex items-center justify-between border-t border-white/15 pt-3.5">
                     <Link
                       href={item.episodesLink}
                       onClick={(e) => e.stopPropagation()}
-                      className={`inline-flex items-center gap-2 rounded-sm px-4 py-2.5 text-xs font-black uppercase tracking-wider transition-all ${
+                      className={`inline-flex items-center justify-center rounded-full px-6 py-2.5 text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                         isCenter
-                          ? "bg-[#04b093] text-black hover:bg-white shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] font-bold"
-                          : "bg-white/10 text-white hover:bg-[#04b093] hover:text-black"
+                          ? "border border-black bg-[#04b093] text-black hover:bg-white hover:scale-105 shadow-md font-bold"
+                          : "border border-white/20 bg-white/10 text-white hover:bg-[#04b093] hover:text-black hover:border-black"
                       }`}
                     >
-                      <Headphones size={13} />
                       <span>{isCenter ? "Tune In Episodes" : "Bring Forward"}</span>
-                      <ArrowUpRight size={13} />
+                      <ArrowUpRight size={13} className="ml-1" />
                     </Link>
 
                     {isCenter ? (
-                      <span className="flex items-center gap-1.5 text-[0.65rem] font-mono font-bold uppercase text-[#04b093]">
-                        <Sparkles size={12} />
+                      <span className="text-[0.65rem] font-mono font-bold uppercase text-[#04b093]">
                         CENTER STAGE
                       </span>
                     ) : (

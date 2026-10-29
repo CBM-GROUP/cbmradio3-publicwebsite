@@ -5,99 +5,103 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowUpRight, CalendarDays, Headphones, Mic2, Play, Sparkles, Disc3, Trophy } from "lucide-react";
+import { ArrowUpRight, Play } from "lucide-react";
 
 import { programService } from "@/services/program.service";
 import YouTubeDialog from "@/components/media/youtube-dialog";
 import { getYouTubeMedia, type YouTubeMedia } from "@/lib/youtube";
 import type { PaginatedResponse } from "@/types/api";
 import type { ProgramSummary } from "@/types/program";
-import Logo from "../../public/cbmradio.png";
-import BrianPortrait from "../../public/cbm_images/brian.svg";
-import DanielPortrait from "../../public/cbm_images/daniel.svg";
-import SamuelPortrait from "../../public/cbm_images/samuel.svg";
-import InnocentPortrait from "../../public/cbm_images/innocent1.svg";
 
 type RequestState = "loading" | "ready" | "error";
 
-const DEFAULT_PROGRAMS: ProgramSummary[] = [
+// Authentic programs with uploaded cover images
+const INITIAL_PROGRAMS_WITH_IMAGES: ProgramSummary[] = [
   {
-    id: 101,
-    title: "CBM Sports Arena",
-    slug: "cbm-sports-arena",
-    presenter: "Brian SportsDesk & Team",
-    schedule: "Saturdays & Sundays 2:00 PM – 5:00 PM EAT",
-    short_description:
-      "High-octane football, rugby, athletics coverage, match tactical analysis, live scores, and fierce fan debates.",
-    cover_image: "",
+    id: 5,
+    title: "Evening Drive",
+    slug: "evening-drive",
+    short_description: "The premier evening drive-time show with music, interviews, and entertainment.",
+    presenter: "Evening Crew",
+    schedule: "Mon-Fri 6:00-7:00pm",
+    cover_image: "/media/programs/WhatsApp_Image_2026-10-29_at_4_jiwkybz.41.22_PM.jpeg",
     promo_video_url: "",
     display_order: 1,
     is_featured: true,
     is_active: true,
   },
   {
-    id: 102,
-    title: "My Life, My Purpose",
-    slug: "my-life-my-purpose",
-    presenter: "Daniel K.",
-    schedule: "Wednesdays 8:00 PM – 10:00 PM EAT",
-    short_description:
-      "Transformational conversations on career, purpose, personal growth, and community culture with top guest interviews.",
-    cover_image: "",
+    id: 1,
+    title: "CBM Morning Drive",
+    slug: "cbm-morning-drive",
+    short_description: "Prime morning headlines, energetic tunes, and commuter traffic alerts.",
+    presenter: "Audu",
+    schedule: "Mon-Fri 4:00am - 5:00am",
+    cover_image: "/media/programs/The_Morning_Show.jpg",
     promo_video_url: "",
     display_order: 2,
-    is_featured: true,
+    is_featured: false,
     is_active: true,
   },
   {
-    id: 103,
-    title: "The Morning Drive",
-    slug: "the-morning-drive",
-    presenter: "Samuel & Sarah",
-    schedule: "Monday – Friday 6:00 AM – 10:00 AM EAT",
-    short_description:
-      "Wake up with unstoppable energy, breaking headlines, traffic alerts, comedy bits, and the morning playlist.",
-    cover_image: "",
+    id: 4,
+    title: "Sports",
+    slug: "sports",
+    short_description: "Premier match action, sports roundups, live scores, and athlete interviews.",
+    presenter: "Sports Desk",
+    schedule: "Fri 5:00-6:00pm",
+    cover_image: "/media/programs/Sports_Colections.jpg",
     promo_video_url: "",
     display_order: 3,
-    is_featured: true,
+    is_featured: false,
     is_active: true,
   },
   {
-    id: 104,
-    title: "Urban Pulse & Top 20",
-    slug: "urban-pulse-top-20",
-    presenter: "DJ Innocent",
-    schedule: "Fridays 7:00 PM – 11:00 PM EAT",
-    short_description:
-      "The definitive weekend kick-off featuring the top 20 hits, blazing guest mixes, and urban street culture.",
-    cover_image: "",
+    id: 2,
+    title: "Midday Mix",
+    slug: "midday-mix",
+    short_description: "High-energy afternoon playlist, DJ live mixes, and listener shoutouts.",
+    presenter: "DJ Bashi",
+    schedule: "Mon-Fri 12:00-3:00pm",
+    cover_image: "/media/programs/DJ_maddixmusic____ultraeurope_day_2__Photo__abstudiofrance_for_loverrevista.jpg",
     promo_video_url: "",
     display_order: 4,
-    is_featured: true,
+    is_featured: false,
     is_active: true,
   },
   {
-    id: 105,
-    title: "Night Reflections & Soul Lounge",
-    slug: "night-reflections-soul-lounge",
-    presenter: "Grace M.",
-    schedule: "Monday – Thursday 10:00 PM – 1:00 AM EAT",
-    short_description:
-      "Unwind with smooth neo-soul, acoustic gems, late-night open mic confessions, and peaceful late-night vibes.",
-    cover_image: "",
+    id: 3,
+    title: "Businness Today",
+    slug: "businness-today",
+    short_description: "Business updates, economic developments, currency movements, and market trends.",
+    presenter: "Business Team",
+    schedule: "Mon-Fri 3:00-4:00pm",
+    cover_image: "/media/programs/WhatsApp_Image_2026-10-29_at_4.41.22_PM.jpeg",
     promo_video_url: "",
     display_order: 5,
-    is_featured: true,
+    is_featured: false,
+    is_active: true,
+  },
+  {
+    id: 6,
+    title: "Weekly Countdown",
+    slug: "weekly-countdown",
+    short_description: "Top weekly hit tracks, dance floor countdown, and guest chart appearances.",
+    presenter: "Chris",
+    schedule: "Sat-Sun",
+    cover_image: "/media/programs/DJ_maddixmusic____ultraeurope_day_2__Photo__abstudiofrance_for_loverrevista_mM5qTji.jpg",
+    promo_video_url: "",
+    display_order: 6,
+    is_featured: false,
     is_active: true,
   },
 ];
 
-const EMPTY_PROGRAMS: PaginatedResponse<ProgramSummary> = {
-  count: DEFAULT_PROGRAMS.length,
+const INITIAL_RESPONSE: PaginatedResponse<ProgramSummary> = {
+  count: INITIAL_PROGRAMS_WITH_IMAGES.length,
   next: null,
   previous: null,
-  results: DEFAULT_PROGRAMS,
+  results: INITIAL_PROGRAMS_WITH_IMAGES,
 };
 
 function parsePage(value: string | null) {
@@ -111,8 +115,8 @@ export default function ProgramsListing() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const page = parsePage(searchParams.get("page"));
-  const [programs, setPrograms] = useState(EMPTY_PROGRAMS);
-  const [state, setState] = useState<RequestState>("loading");
+  const [programs, setPrograms] = useState(INITIAL_RESPONSE);
+  const [state, setState] = useState<RequestState>("ready");
   const [retryVersion, setRetryVersion] = useState(0);
   const [activePlayer, setActivePlayer] = useState<{
     program: ProgramSummary;
@@ -120,45 +124,50 @@ export default function ProgramsListing() {
     trigger: HTMLButtonElement;
   } | null>(null);
 
-  const rawResults = programs.results.length > 0 ? programs.results : DEFAULT_PROGRAMS;
-  const featuredProgram = rawResults.find((program) => program.is_featured) || rawResults[0];
-  const directoryPrograms = rawResults.filter((program) => program.id !== featuredProgram?.id);
-  const presenters = getPresenters(rawResults);
-  const spotlightProgram = featuredProgram || rawResults[0];
-  const spotlightMedia = spotlightProgram
-    ? getYouTubeMedia(spotlightProgram.promo_video_url)
-    : null;
-
   useEffect(() => {
     let isMounted = true;
-    queueMicrotask(() => {
-      if (isMounted) setState("loading");
-    });
 
     programService
       .getPrograms({ page })
       .then((response) => {
         if (!isMounted) return;
         if (response && response.results && response.results.length > 0) {
-          setPrograms(response);
+          // Strictly filter ONLY programs with genuine background images
+          const withImages = response.results.filter(
+            (p) => Boolean(p.cover_image && p.cover_image.trim() !== "")
+          );
+          if (withImages.length > 0) {
+            setPrograms({
+              ...response,
+              count: withImages.length,
+              results: withImages,
+            });
+          }
         }
         setState("ready");
       })
       .catch((error: unknown) => {
         if (!isMounted) return;
-        if (page > 1 && axios.isAxiosError(error) && error.response?.status === 404) {
-          setPrograms(EMPTY_PROGRAMS);
-          setState("ready");
-        } else {
-          // Fall back to pre-seeded defaults so the page is always vibrant
-          setState("ready");
-        }
+        setState("ready");
       });
 
     return () => {
       isMounted = false;
     };
   }, [page, retryVersion]);
+
+  // CRITICAL REQUIREMENT: Filter ONLY programs that have a valid cover_image in background!
+  const programsWithImages = programs.results.filter(
+    (program) => Boolean(program.cover_image && program.cover_image.trim() !== "")
+  );
+
+  const featuredProgram = programsWithImages.find((p) => p.is_featured) || programsWithImages[0];
+  const directoryPrograms = programsWithImages.filter((p) => p.id !== featuredProgram?.id);
+  const presenters = getPresenters(programsWithImages);
+  const spotlightProgram = featuredProgram || programsWithImages[0];
+  const spotlightMedia = spotlightProgram
+    ? getYouTubeMedia(spotlightProgram.promo_video_url)
+    : null;
 
   const navigateToPage = useCallback(
     (nextPage: number) => {
@@ -185,13 +194,13 @@ export default function ProgramsListing() {
       <div className="mx-auto max-w-7xl">
         
         {/* =========================================================================
-            FEATURED PROGRAM SHOWCASE (Neo-Brutalist Zwart Billboard Card)
+            FEATURED PROGRAM SHOWCASE
             ========================================================================= */}
         {featuredProgram && (
           <section aria-labelledby="featured-show-heading" className="mb-16">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b-2 border-black pb-5">
               <div>
-                <span className="bg-black px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
+                <span className="rounded-full bg-black px-4 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
                   ORIGINAL LINEUP
                 </span>
                 <h3
@@ -203,10 +212,10 @@ export default function ProgramsListing() {
               </div>
               <Link
                 href={`/episodes?program=${encodeURIComponent(featuredProgram.slug)}`}
-                className="inline-flex min-h-10 items-center gap-2 border-2 border-black bg-black px-4 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
+                className="inline-flex min-h-10 items-center gap-2 rounded-full border-2 border-black bg-black px-6 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 shadow-md"
               >
-                <span>Explore show episodes</span>
-                <ArrowUpRight size={15} aria-hidden="true" />
+                <span>Explore episodes</span>
+                <ArrowUpRight size={14} aria-hidden="true" />
               </Link>
             </div>
 
@@ -220,12 +229,13 @@ export default function ProgramsListing() {
         )}
 
         {/* =========================================================================
-            DIRECTORY OF ALL SHOWS
+            EXPLORE THE SHOWS ROSTER
+            (Only cards with background images are displayed)
             ========================================================================= */}
         <section aria-labelledby="all-shows-heading" className="mb-16">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b-2 border-black pb-5">
             <div>
-              <span className="bg-black px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
+              <span className="rounded-full bg-black px-4 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
                 DISC DIRECTORY
               </span>
               <h3
@@ -235,7 +245,7 @@ export default function ProgramsListing() {
                 Explore The Shows Roster
               </h3>
             </div>
-            <span className="border-2 border-black bg-black px-3 py-1.5 text-xs font-mono font-bold uppercase tracking-wider text-white shadow-[3px_3px_0_0_rgba(0,0,0,1)]">
+            <span className="rounded-full border-2 border-black bg-black px-4 py-1.5 text-xs font-mono font-bold uppercase tracking-wider text-white shadow-sm">
               {directoryPrograms.length} {directoryPrograms.length === 1 ? "Program" : "Programs"} On Deck
             </span>
           </div>
@@ -255,11 +265,12 @@ export default function ProgramsListing() {
 
         {/* =========================================================================
             MEET THE PRESENTERS ROSTER
+            (Only presenters with background images are displayed)
             ========================================================================= */}
         {presenters.length > 0 && (
           <section aria-labelledby="show-hosts-heading" className="mb-16">
             <div className="mb-6 border-b-2 border-black pb-5">
-              <span className="bg-black px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
+              <span className="rounded-full bg-black px-4 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
                 ON-AIR VOICES
               </span>
               <h3
@@ -271,46 +282,32 @@ export default function ProgramsListing() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-              {presenters.map((program) => {
-                const avatar =
-                  program.slug.includes("sport")
-                    ? BrianPortrait
-                    : program.slug.includes("purpose")
-                    ? DanielPortrait
-                    : program.slug.includes("morning")
-                    ? SamuelPortrait
-                    : program.slug.includes("urban")
-                    ? InnocentPortrait
-                    : program.cover_image || Logo;
-
-                return (
-                  <Link
-                    key={program.id}
-                    href={`/episodes?program=${encodeURIComponent(program.slug)}`}
-                    className="group flex flex-col items-center gap-3 rounded-xl border-2 border-black bg-black p-4 text-center text-white shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-all hover:-translate-y-1 hover:border-white"
-                  >
-                    <span className="relative block size-20 shrink-0 overflow-hidden rounded-full border-2 border-[#04b093] bg-[#04b093]/10">
-                      <Image
-                        src={avatar}
-                        alt={program.presenter}
-                        fill
-                        sizes="80px"
-                        unoptimized={Boolean(program.cover_image)}
-                        className="object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
+              {presenters.map((program) => (
+                <Link
+                  key={program.id}
+                  href={`/episodes?program=${encodeURIComponent(program.slug)}`}
+                  className="group flex flex-col items-center gap-3 rounded-2xl border-2 border-black bg-black p-4 text-center text-white shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-all hover:-translate-y-1 hover:border-white"
+                >
+                  <span className="relative block size-20 shrink-0 overflow-hidden rounded-full border-2 border-[#04b093] bg-[#04b093]/10">
+                    <Image
+                      src={program.cover_image}
+                      alt={program.presenter}
+                      fill
+                      sizes="80px"
+                      unoptimized
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </span>
+                  <div className="min-w-0 w-full">
+                    <span className="block truncate text-sm font-black uppercase text-white transition-colors group-hover:text-[#04b093]">
+                      {program.presenter}
                     </span>
-                    <div className="min-w-0 w-full">
-                      <span className="block truncate text-sm font-black uppercase text-white transition-colors group-hover:text-[#04b093]">
-                        {program.presenter}
-                      </span>
-                      <span className="mt-1 block truncate text-[0.65rem] font-bold uppercase tracking-wider text-zinc-400">
-                        {program.title}
-                      </span>
-                    </div>
-                    <ArrowUpRight size={14} className="text-[#04b093]" aria-hidden="true" />
-                  </Link>
-                );
-              })}
+                    <span className="mt-1 block truncate text-[0.65rem] font-bold uppercase tracking-wider text-zinc-400">
+                      {program.title}
+                    </span>
+                  </div>
+                </Link>
+              ))}
             </div>
           </section>
         )}
@@ -320,7 +317,7 @@ export default function ProgramsListing() {
             ========================================================================= */}
         <section
           aria-labelledby="listen-more-heading"
-          className="relative isolate mt-16 flex min-h-80 items-end overflow-hidden rounded-2xl border-4 border-black bg-black px-6 py-8 sm:min-h-[26rem] sm:px-10 sm:py-10 text-white shadow-[10px_10px_0_0_rgba(0,0,0,1)]"
+          className="relative isolate mt-16 flex min-h-80 items-end overflow-hidden rounded-3xl border-4 border-black bg-black px-6 py-8 sm:min-h-[26rem] sm:px-10 sm:py-10 text-white shadow-[10px_10px_0_0_rgba(0,0,0,1)]"
         >
           <Image
             src="/cbm_images/behind-the-scenes-studio.png"
@@ -334,7 +331,7 @@ export default function ProgramsListing() {
             aria-hidden="true"
           />
           <div className="max-w-xl">
-            <span className="bg-[#04b093] px-2.5 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
+            <span className="rounded-full bg-[#04b093] px-3.5 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
               INSIDE THE STUDIO
             </span>
             <h3
@@ -356,19 +353,19 @@ export default function ProgramsListing() {
                     trigger: event.currentTarget,
                   })
                 }
-                className="mt-6 inline-flex min-h-11 items-center gap-2 border-2 border-[#04b093] bg-[#04b093] px-6 py-3 text-xs font-black uppercase tracking-wider text-black transition hover:bg-white hover:border-white shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] cursor-pointer"
+                className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-black bg-[#04b093] px-8 py-3 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-white hover:scale-105 shadow-md cursor-pointer"
                 aria-label={"Play promo for " + spotlightProgram.title}
               >
-                <Play size={14} fill="currentColor" aria-hidden="true" />
+                <Play size={13} fill="currentColor" aria-hidden="true" />
                 <span>Watch Studio Promo</span>
               </button>
             ) : (
               <Link
                 href="/episodes"
-                className="mt-6 inline-flex min-h-11 items-center gap-2 border-2 border-[#04b093] bg-[#04b093] px-6 py-3 text-xs font-black uppercase tracking-wider text-black transition hover:bg-white hover:border-white shadow-[4px_4px_0_0_rgba(255,255,255,0.2)]"
+                className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-black bg-[#04b093] px-8 py-3 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-white hover:scale-105 shadow-md"
               >
                 <span>Listen to Episodes</span>
-                <ArrowUpRight size={15} aria-hidden="true" />
+                <ArrowUpRight size={14} aria-hidden="true" />
               </Link>
             )}
           </div>
@@ -384,7 +381,7 @@ export default function ProgramsListing() {
               type="button"
               disabled={!programs.previous}
               onClick={() => navigateToPage(Math.max(1, page - 1))}
-              className="border-2 border-black bg-black px-6 py-3 text-xs font-black uppercase tracking-wider text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40 shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
+              className="rounded-full border-2 border-black bg-black px-6 py-2.5 text-xs font-black uppercase tracking-wider text-white transition-all hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40 shadow-md"
             >
               Previous
             </button>
@@ -398,7 +395,7 @@ export default function ProgramsListing() {
               type="button"
               disabled={!programs.next}
               onClick={() => navigateToPage(page + 1)}
-              className="border-2 border-black bg-black px-6 py-3 text-xs font-black uppercase tracking-wider text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40 shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
+              className="rounded-full border-2 border-black bg-black px-6 py-2.5 text-xs font-black uppercase tracking-wider text-white transition-all hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40 shadow-md"
             >
               Next
             </button>
@@ -427,23 +424,17 @@ function FeaturedProgram({
   onPlay: (media: YouTubeMedia, trigger: HTMLButtonElement) => void;
 }) {
   const promoMedia = getYouTubeMedia(program.promo_video_url);
-  const isSports = program.slug.includes("sport") || program.title.toLowerCase().includes("sport");
-  const fallbackImg = isSports
-    ? BrianPortrait
-    : program.slug.includes("purpose")
-    ? DanielPortrait
-    : Logo;
 
   return (
-    <article className="grid overflow-hidden rounded-2xl border-4 border-black bg-black text-white shadow-[10px_10px_0_0_rgba(0,0,0,1)] lg:grid-cols-[1.15fr_0.85fr]">
-      {/* Artwork with Rotating CD Hint */}
+    <article className="grid overflow-hidden rounded-3xl border-4 border-black bg-black text-white shadow-[10px_10px_0_0_rgba(0,0,0,1)] lg:grid-cols-[1.15fr_0.85fr]">
+      {/* Artwork with clear background */}
       <div className="relative min-h-64 bg-zinc-950 sm:min-h-80 lg:min-h-[24rem] overflow-hidden">
         <Image
-          src={program.cover_image || fallbackImg}
-          alt={program.cover_image ? program.title : "CBM Radio"}
+          src={program.cover_image}
+          alt={program.title}
           fill
           sizes="(max-width: 1024px) 100vw, 55vw"
-          unoptimized={Boolean(program.cover_image)}
+          unoptimized
           className="object-cover"
         />
         <div
@@ -453,20 +444,11 @@ function FeaturedProgram({
         
         {/* Top Floating Badge */}
         <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
-          <span className="inline-flex items-center gap-2 rounded-sm bg-[#04b093] px-3 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.16em] text-black shadow-md">
-            <Sparkles size={12} aria-hidden="true" />
-            {isSports ? "FLAGSHIP SPORTS SERIES" : "FEATURED SHOW"}
+          <span className="inline-flex items-center rounded-full bg-[#04b093] px-3.5 py-1 text-[0.65rem] font-black uppercase tracking-[0.16em] text-black shadow-md">
+            FEATURED SHOW
           </span>
-          <span className="bg-black/90 px-2.5 py-1 text-[0.6rem] font-mono font-bold text-[#04b093] border border-white/20">
-            CBM ORIGINAL
-          </span>
-        </div>
-
-        {/* Bottom spinning vinyl/CD overlay indicator */}
-        <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/80 backdrop-blur-md px-3 py-1.5 border border-white/20 rounded-md">
-          <Disc3 size={16} className="chart-spin text-[#04b093]" />
-          <span className="text-[0.65rem] font-mono font-bold uppercase text-white">
-            COMPACT DISC AUDIO
+          <span className="rounded-full bg-black/90 px-3 py-1 text-[0.6rem] font-mono font-bold text-[#04b093] border border-white/20">
+            CBM BROADCAST
           </span>
         </div>
       </div>
@@ -480,27 +462,21 @@ function FeaturedProgram({
           {program.title}
         </h4>
 
-        <dl className="mt-5 space-y-3 text-sm">
+        <div className="mt-5 space-y-2 text-sm">
           {program.presenter && (
-            <div className="flex items-center gap-2 text-zinc-300">
-              <Mic2 size={15} className="shrink-0 text-[#04b093]" aria-hidden="true" />
-              <dt className="sr-only">Presenter</dt>
-              <dd>
-                Hosted by <strong className="text-white">{program.presenter}</strong>
-              </dd>
-            </div>
+            <p className="text-zinc-300">
+              Hosted by <strong className="text-white">{program.presenter}</strong>
+            </p>
           )}
           {program.schedule && (
-            <div className="flex items-center gap-2 text-zinc-300">
-              <CalendarDays size={15} className="shrink-0 text-[#eab308]" aria-hidden="true" />
-              <dt className="sr-only">Schedule</dt>
-              <dd>{program.schedule}</dd>
-            </div>
+            <p className="text-[#eab308] font-bold">
+              {program.schedule}
+            </p>
           )}
-        </dl>
+        </div>
 
         {program.short_description && (
-          <p className="mt-5 max-w-xl text-sm font-medium leading-relaxed text-zinc-300">
+          <p className="mt-4 max-w-xl text-sm font-medium leading-relaxed text-zinc-300">
             {program.short_description}
           </p>
         )}
@@ -508,20 +484,20 @@ function FeaturedProgram({
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <Link
             href={`/episodes?program=${encodeURIComponent(program.slug)}`}
-            className="inline-flex min-h-11 items-center gap-2 border-2 border-[#04b093] bg-[#04b093] px-6 py-3 text-xs font-black uppercase tracking-wider text-black transition hover:bg-white hover:border-white shadow-[4px_4px_0_0_rgba(255,255,255,0.2)]"
+            className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-black bg-[#04b093] px-8 py-3 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-white hover:scale-105 shadow-md"
           >
             <span>Explore Episodes</span>
-            <ArrowUpRight size={15} aria-hidden="true" />
+            <ArrowUpRight size={14} className="ml-1.5" />
           </Link>
 
           {promoMedia && (
             <button
               type="button"
               onClick={(event) => onPlay(promoMedia, event.currentTarget)}
-              className="inline-flex min-h-11 items-center gap-2 border-2 border-white/30 bg-zinc-900 px-5 py-3 text-xs font-black uppercase tracking-wider text-white transition hover:bg-white hover:text-black hover:border-white cursor-pointer"
+              className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-white/30 bg-zinc-900 px-7 py-3 text-xs font-black uppercase tracking-wider text-white transition-all hover:bg-white hover:text-black hover:scale-105 cursor-pointer"
               aria-label={"Play promo for " + program.title}
             >
-              <Play size={14} className="text-[#04b093]" fill="currentColor" aria-hidden="true" />
+              <Play size={13} className="text-[#04b093] mr-1.5" fill="currentColor" aria-hidden="true" />
               <span>Watch Promo</span>
             </button>
           )}
@@ -540,45 +516,23 @@ function ProgramCard({
 }) {
   const description = program.short_description;
   const promoMedia = getYouTubeMedia(program.promo_video_url);
-  const isSports = program.slug.includes("sport") || program.title.toLowerCase().includes("sport");
-  const fallbackImg = isSports
-    ? BrianPortrait
-    : program.slug.includes("purpose")
-    ? DanielPortrait
-    : program.slug.includes("morning")
-    ? SamuelPortrait
-    : program.slug.includes("urban")
-    ? InnocentPortrait
-    : Logo;
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-xl border-2 border-black bg-black text-white shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-all hover:-translate-y-1 hover:border-white">
-      {/* Card Header & Disc Visual */}
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border-2 border-black bg-black text-white shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-all hover:-translate-y-1 hover:border-white">
+      {/* Card Header with real background image */}
       <div className="relative aspect-[16/10] overflow-hidden bg-zinc-950">
         <Image
-          src={program.cover_image || fallbackImg}
+          src={program.cover_image}
           alt={program.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          unoptimized={Boolean(program.cover_image)}
+          unoptimized
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div
           className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"
           aria-hidden="true"
         />
-
-        {/* Disc badge */}
-        <span className="absolute left-2.5 top-2.5 inline-flex items-center gap-1.5 bg-black/90 px-2.5 py-1 text-[0.6rem] font-mono font-black uppercase tracking-wider text-[#04b093] border border-white/20">
-          <Disc3 size={11} className="chart-spin text-[#04b093]" />
-          <span>CBM DISC</span>
-        </span>
-
-        {isSports && (
-          <span className="absolute right-2.5 top-2.5 inline-flex items-center gap-1 bg-[#eab308] px-2 py-0.5 text-[0.6rem] font-black uppercase text-black">
-            <Trophy size={10} /> SPORTS
-          </span>
-        )}
       </div>
 
       {/* Card Body */}
@@ -587,22 +541,14 @@ function ProgramCard({
           {program.title}
         </h3>
 
-        <dl className="mt-3 space-y-1.5 text-xs font-bold">
+        <div className="mt-3 space-y-1 text-xs font-bold">
           {program.presenter && (
-            <div className="flex items-center gap-2 text-zinc-300">
-              <Mic2 size={13} className="shrink-0 text-[#04b093]" aria-hidden="true" />
-              <dt className="sr-only">Presenter</dt>
-              <dd className="truncate">{program.presenter}</dd>
-            </div>
+            <p className="text-zinc-300 truncate">Hosted by {program.presenter}</p>
           )}
           {program.schedule && (
-            <div className="flex items-center gap-2 text-zinc-400">
-              <CalendarDays size={13} className="shrink-0 text-[#eab308]" aria-hidden="true" />
-              <dt className="sr-only">Schedule</dt>
-              <dd className="line-clamp-1">{program.schedule}</dd>
-            </div>
+            <p className="text-[#eab308] truncate">{program.schedule}</p>
           )}
-        </dl>
+        </div>
 
         {description && (
           <p className="mt-3 line-clamp-2 text-xs font-medium leading-relaxed text-zinc-400">
@@ -613,20 +559,19 @@ function ProgramCard({
         <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-4">
           <Link
             href={`/episodes?program=${encodeURIComponent(program.slug)}`}
-            className="inline-flex items-center gap-1.5 text-xs font-black uppercase text-[#04b093] hover:text-white transition"
+            className="inline-flex items-center justify-center rounded-full border border-black bg-[#04b093] px-5 py-2 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-white hover:scale-105"
           >
-            <Headphones size={13} />
             <span>Episodes</span>
-            <ArrowUpRight size={12} />
+            <ArrowUpRight size={12} className="ml-1" />
           </Link>
 
           {promoMedia && (
             <button
               type="button"
               onClick={(event) => onPlay(promoMedia, event.currentTarget)}
-              className="inline-flex items-center gap-1 bg-white/10 px-2.5 py-1 text-[0.65rem] font-black uppercase text-white hover:bg-white hover:text-black transition"
+              className="inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-4 py-2 text-[0.65rem] font-black uppercase tracking-wider text-white transition-all hover:bg-white hover:text-black"
             >
-              <Play size={10} fill="currentColor" />
+              <Play size={10} fill="currentColor" className="mr-1" />
               <span>Promo</span>
             </button>
           )}
@@ -639,8 +584,9 @@ function ProgramCard({
 function getPresenters(programs: ProgramSummary[]) {
   const uniquePresenters = new Map<string, ProgramSummary>();
   for (const program of programs) {
+    const hasImage = Boolean(program.cover_image && program.cover_image.trim() !== "");
     const presenter = program.presenter?.trim();
-    if (presenter && !uniquePresenters.has(presenter.toLowerCase())) {
+    if (presenter && hasImage && !uniquePresenters.has(presenter.toLowerCase())) {
       uniquePresenters.set(presenter.toLowerCase(), program);
     }
   }
