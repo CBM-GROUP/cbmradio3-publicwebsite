@@ -21,10 +21,14 @@ export async function GET(
     return new NextResponse("Invalid media path", { status: 400 });
   }
 
+  const defaultBackendUrl =
+    process.env.NODE_ENV === "production"
+      ? "https://apicbmradio.cbmgroupco.com"
+      : "http://localhost:8000";
   const backendBase = (
     process.env.BACKEND_API_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
-    "http://localhost:8000"
+    defaultBackendUrl
   ).replace(/\/$/, "");
   const safePath = slug.map((part) => encodeURIComponent(part)).join("/");
   const targetUrl = `${backendBase}/media/${safePath}`;
