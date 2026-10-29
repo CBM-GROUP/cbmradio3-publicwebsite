@@ -164,8 +164,12 @@ export default function HomepageCharts() {
       setIsPlaying(false);
       setPlayingTrackId(null);
     } else {
-      if (entry.audio_url && audioRef.current) {
-        audioRef.current.src = entry.audio_url;
+      const safeAudioUrl =
+        entry.audio_url && /^(https?:\/\/|\/(?!\/))/i.test(entry.audio_url.trim())
+          ? entry.audio_url.trim()
+          : "";
+      if (safeAudioUrl && audioRef.current) {
+        audioRef.current.src = safeAudioUrl;
         audioRef.current.play().catch(() => {});
       }
       setPlayingTrackId(entry.id);
