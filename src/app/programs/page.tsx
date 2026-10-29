@@ -24,6 +24,9 @@ export default function ProgramsPage() {
           fallbackSubtitle="CBM Original Shows"
           fallbackDescription="Meet the voices, ideas, and conversations shaping your day on CBM Radio."
           fallbackImage="/cbm_images/on-air-studio.png"
+          fallbackCtaLabel="Explore the shows"
+          fallbackCtaUrl="#programs-content"
+          fallbackOverlayPosition="center"
         />
         <DynamicPageSections page="programs" position="top" />
         <Suspense fallback={<ProgramsLoadingState />}>

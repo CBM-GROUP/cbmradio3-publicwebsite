@@ -13,6 +13,9 @@ interface PageHeroProps {
   fallbackSubtitle?: string;
   fallbackDescription?: string;
   fallbackImage?: string;
+  fallbackCtaLabel?: string;
+  fallbackCtaUrl?: string;
+  fallbackOverlayPosition?: "left" | "center" | "right";
 }
 
 interface HeroContent {
@@ -32,6 +35,9 @@ export default function PageHero({
   fallbackSubtitle = "",
   fallbackDescription = "",
   fallbackImage = "",
+  fallbackCtaLabel = "",
+  fallbackCtaUrl = "",
+  fallbackOverlayPosition = "left",
 }: PageHeroProps) {
   const [hero, setHero] = useState<PageHeroData | null>(null);
 
@@ -51,19 +57,22 @@ export default function PageHero({
       subtitle: fallbackSubtitle,
       description: fallbackDescription,
       image: fallbackImage,
+      ctaLabel: fallbackCtaLabel,
+      ctaUrl: fallbackCtaUrl,
     }),
-    [fallbackDescription, fallbackImage, fallbackSubtitle, fallbackTitle, hero],
+    [fallbackCtaLabel, fallbackCtaUrl, fallbackDescription, fallbackImage, fallbackSubtitle, fallbackTitle, hero],
   );
+  const overlayPosition = hero?.overlay_position ?? fallbackOverlayPosition;
   const imagePosition =
-    hero?.overlay_position === "left"
+    overlayPosition === "left"
       ? "object-left"
-      : hero?.overlay_position === "right"
+      : overlayPosition === "right"
         ? "object-right"
         : "object-center";
   const textAlignment =
-    hero?.overlay_position === "center"
+    overlayPosition === "center"
       ? "items-center text-center"
-      : hero?.overlay_position === "right"
+      : overlayPosition === "right"
         ? "items-end text-right"
         : "items-start text-left";
   const overlayStrength =
@@ -162,7 +171,7 @@ function isUsableHero(
 
 function resolveHeroContent(
   hero: PageHeroData | null,
-  fallback: { title: string; subtitle: string; description: string; image: string },
+  fallback: { title: string; subtitle: string; description: string; image: string; ctaLabel: string; ctaUrl: string },
 ): HeroContent {
   if (!hero) {
     return {
@@ -172,8 +181,8 @@ function resolveHeroContent(
       mediaType: fallback.image ? "image" : "none",
       imageUrl: fallback.image,
       videoUrl: "",
-      ctaLabel: "",
-      ctaUrl: "",
+      ctaLabel: fallback.ctaLabel,
+      ctaUrl: fallback.ctaUrl,
     };
   }
 
