@@ -1,5 +1,10 @@
+const defaultBaseUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://apicbmradio.cbmgroupco.com"
+    : "http://localhost:8000";
+
 const configuredBaseUrl =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  process.env.NEXT_PUBLIC_API_URL || defaultBaseUrl;
 
 export const BASE_URL = configuredBaseUrl.replace(/\/$/, "");
 

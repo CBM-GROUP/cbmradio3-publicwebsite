@@ -13,6 +13,9 @@ interface PageHeroProps {
   fallbackSubtitle?: string;
   fallbackDescription?: string;
   fallbackImage?: string;
+  fallbackCtaLabel?: string;
+  fallbackCtaUrl?: string;
+  fallbackOverlayPosition?: "left" | "center" | "right";
 }
 
 interface HeroContent {
@@ -32,6 +35,9 @@ export default function PageHero({
   fallbackSubtitle = "",
   fallbackDescription = "",
   fallbackImage = "",
+  fallbackCtaLabel = "",
+  fallbackCtaUrl = "",
+  fallbackOverlayPosition = "left",
 }: PageHeroProps) {
   const [hero, setHero] = useState<PageHeroData | null>(null);
 
@@ -51,26 +57,29 @@ export default function PageHero({
       subtitle: fallbackSubtitle,
       description: fallbackDescription,
       image: fallbackImage,
+      ctaLabel: fallbackCtaLabel,
+      ctaUrl: fallbackCtaUrl,
     }),
-    [fallbackDescription, fallbackImage, fallbackSubtitle, fallbackTitle, hero],
+    [fallbackCtaLabel, fallbackCtaUrl, fallbackDescription, fallbackImage, fallbackSubtitle, fallbackTitle, hero],
   );
+  const overlayPosition = hero?.overlay_position ?? fallbackOverlayPosition;
   const imagePosition =
-    hero?.overlay_position === "left"
+    overlayPosition === "left"
       ? "object-left"
-      : hero?.overlay_position === "right"
+      : overlayPosition === "right"
         ? "object-right"
         : "object-center";
   const textAlignment =
-    hero?.overlay_position === "center"
+    overlayPosition === "center"
       ? "items-center text-center"
-      : hero?.overlay_position === "right"
+      : overlayPosition === "right"
         ? "items-end text-right"
         : "items-start text-left";
   const overlayStrength =
     typeof hero?.overlay_strength === "number" &&
     Number.isFinite(hero.overlay_strength)
       ? hero.overlay_strength
-      : 65;
+      : 70;
   const overlay = Math.min(100, Math.max(0, overlayStrength)) / 100;
 
   const hasImage = content.mediaType === "image" && Boolean(content.imageUrl);
@@ -78,7 +87,7 @@ export default function PageHero({
   return (
     <section
       className={
-        "relative flex min-h-80 items-center overflow-hidden border-b-2 border-black px-6 pb-16 pt-32 sm:px-12 lg:px-20 " +
+        "relative flex min-h-[420px] sm:min-h-[480px] items-center overflow-hidden border-b-2 border-black px-6 pb-16 pt-32 sm:px-12 lg:px-20 " +
         (hasImage ? "bg-black text-white" : "bg-[#04b093] text-black")
       }
     >
@@ -93,19 +102,24 @@ export default function PageHero({
             unoptimized
             className={"object-cover " + imagePosition}
           />
+          {/* Deep Multi-Layer Vignette for 100% Text Visibility */}
           <div
             className="absolute inset-0 bg-black"
             style={{ opacity: overlay }}
             aria-hidden="true"
           />
+          <div
+            className="absolute inset-0 bg-gradient-to-t from-black via-black/75 to-black/40"
+            aria-hidden="true"
+          />
         </>
       )}
-      <div className={"relative z-10 mx-auto flex w-full max-w-7xl flex-col " + textAlignment}>
+      <div className={"relative z-10 mx-auto flex w-full max-w-5xl flex-col " + textAlignment}>
         {content.subtitle && (
           <div className="flex items-center gap-2">
             <span
               className={
-                "px-2.5 py-0.5 text-xs font-black uppercase tracking-[0.22em] " +
+                "rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-[0.22em] shadow-md " +
                 (hasImage ? "bg-[#04b093] text-black" : "bg-black text-[#04b093]")
               }
             >
@@ -115,8 +129,10 @@ export default function PageHero({
         )}
         <h1
           className={
-            "mt-3 max-w-4xl text-4xl font-black uppercase tracking-tight sm:text-5xl lg:text-6xl " +
-            (hasImage ? "text-white drop-shadow-md" : "text-black")
+            "mt-4 max-w-4xl text-4xl font-black uppercase tracking-tight sm:text-6xl lg:text-7xl leading-none " +
+            (hasImage
+              ? "text-white drop-shadow-[0_4px_24px_rgba(0,0,0,1)]"
+              : "text-black")
           }
         >
           {content.title}
@@ -124,14 +140,16 @@ export default function PageHero({
         {content.description && (
           <p
             className={
-              "mt-4 max-w-3xl text-sm font-medium leading-relaxed sm:text-base " +
-              (hasImage ? "text-zinc-200" : "text-black/85")
+              "mt-5 max-w-3xl text-base sm:text-xl font-bold leading-relaxed " +
+              (hasImage
+                ? "text-zinc-100 drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
+                : "text-black/90")
             }
           >
             {content.description}
           </p>
         )}
-        <div className="mt-6 flex flex-wrap gap-4">
+        <div className="mt-8 flex flex-wrap gap-4">
           <SafeHeroAction label={content.ctaLabel} url={content.ctaUrl} />
           {content.mediaType === "video" && (
             <SafeHeroAction label="Play video" url={content.videoUrl} />
@@ -162,7 +180,7 @@ function isUsableHero(
 
 function resolveHeroContent(
   hero: PageHeroData | null,
-  fallback: { title: string; subtitle: string; description: string; image: string },
+  fallback: { title: string; subtitle: string; description: string; image: string; ctaLabel: string; ctaUrl: string },
 ): HeroContent {
   if (!hero) {
     return {
@@ -172,8 +190,8 @@ function resolveHeroContent(
       mediaType: fallback.image ? "image" : "none",
       imageUrl: fallback.image,
       videoUrl: "",
-      ctaLabel: "",
-      ctaUrl: "",
+      ctaLabel: fallback.ctaLabel,
+      ctaUrl: fallback.ctaUrl,
     };
   }
 
@@ -256,11 +274,13 @@ function getSafeWebUrl(value: unknown) {
   }
 }
 
-function parseSafeAction(url: string) {
-  const value = url.trim();
-  if (!value) return null;
-  if ((value.startsWith("/") && !value.startsWith("//")) || value.startsWith("#")) {
+function parseSafeAction(value: unknown) {
+  if (typeof value !== "string" || !value) return null;
+  if (value.startsWith("/") && !value.startsWith("//")) {
     return { href: value, kind: "internal" as const };
+  }
+  if (value.startsWith("#")) {
+    return { href: value, kind: "anchor" as const };
   }
   try {
     const parsed = new URL(value);
@@ -283,7 +303,11 @@ function SafeHeroAction({ label, url }: { label: string; url: string }) {
   if (typeof label !== "string" || typeof url !== "string" || !label.trim()) return null;
   const action = parseSafeAction(url);
   if (!action) return null;
-  const className = "inline-flex items-center gap-2 border-2 border-black bg-black px-6 py-3 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black shadow-md";
+  
+  // Very nice and curved button with smooth hover scale
+  const className =
+    "inline-flex items-center justify-center rounded-full border-2 border-black bg-[#04b093] px-8 py-3.5 text-xs sm:text-sm font-black uppercase tracking-wider text-black shadow-[0_8px_25px_rgba(4,176,147,0.45)] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 cursor-pointer";
+    
   return action.kind === "external" ? (
     <a href={action.href} target="_blank" rel="noopener noreferrer" className={className}>
       {label}
