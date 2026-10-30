@@ -13,12 +13,12 @@ import {
   Menu,
   Newspaper,
   Radio,
+  Sparkles,
   Users,
   X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useEffect, useState, useSyncExternalStore } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useState } from "react";
 
 import CBMlogo from "../../public/cbmradio.png";
 import {
@@ -26,11 +26,11 @@ import {
   primaryNavigation,
 } from "@/data/site-navigation";
 
-const navMeta: Record<string, { icon: LucideIcon; detail: string }> = {
+const navMeta: Record<string, { icon: LucideIcon; detail: string; tag?: string }> = {
   "/": { icon: Home, detail: "Back to the start" },
-  "/charts": { icon: BarChart3, detail: "What's trending now" },
-  "/programs": { icon: Radio, detail: "Lineup & schedules" },
-  "/episodes": { icon: Headphones, detail: "Listen on demand" },
+  "/charts": { icon: BarChart3, detail: "What's trending now", tag: "Top 10" },
+  "/programs": { icon: Radio, detail: "Lineup & schedules", tag: "On Air" },
+  "/episodes": { icon: Headphones, detail: "Listen on demand", tag: "Catch Up" },
   "/news": { icon: Newspaper, detail: "Stories and updates" },
   "/gallery": { icon: Images, detail: "Studio snapshots" },
   "/team": { icon: Users, detail: "Meet the voices" },
@@ -48,12 +48,6 @@ export default function Header() {
     setPrevPathname(pathname);
     setIsMenuOpen(false);
   }
-
-  const mounted = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false,
-  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -81,15 +75,25 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full transition-all duration-300">
-      <div className="mx-auto max-w-7xl px-3 py-2.5 sm:px-6 sm:py-3 lg:px-8">
+      {/* Dimmed Background Backdrop for focus & click-outside close */}
+      <div
+        aria-hidden="true"
+        onClick={() => setIsMenuOpen(false)}
+        className={`fixed inset-0 z-40 bg-black/65 backdrop-blur-sm transition-opacity duration-300 ease-out ${
+          isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      />
+
+      <div className="relative z-50 mx-auto max-w-7xl px-3 py-2.5 sm:px-6 sm:py-3 lg:px-8">
+        {/* Main Navbar Capsule */}
         <div
           className={`relative flex items-center justify-between rounded-2xl border px-3 py-2 transition-all duration-300 sm:px-5 sm:py-2.5 ${
-            isScrolled
-              ? "border-white/15 bg-[#070e0c]/90 shadow-[0_16px_40px_rgba(0,0,0,0.7)] backdrop-blur-xl"
+            isScrolled || isMenuOpen
+              ? "border-white/15 bg-[#070e0c]/95 shadow-[0_16px_40px_rgba(0,0,0,0.7)] backdrop-blur-xl"
               : "border-white/10 bg-[#091210]/75 shadow-[0_8px_30px_rgba(0,0,0,0.4)] backdrop-blur-lg"
           }`}
         >
-          {/* Left: Hamburger Button & Brand Logo */}
+          {/* Left: 3D Hamburger Toggle & Brand Logo */}
           <div className="flex items-center gap-2.5 sm:gap-4">
             <button
               type="button"
@@ -97,9 +101,26 @@ export default function Header() {
               aria-expanded={isMenuOpen}
               aria-controls="main-navigation"
               onClick={() => setIsMenuOpen((open) => !open)}
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/15 bg-white/5 text-[#04b093] transition-all hover:border-[#04b093] hover:bg-[#04b093]/10 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#04b093] sm:h-10 sm:w-10"
+              className={`group flex items-center gap-2 rounded-full border px-2.5 py-1.5 transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#04b093] sm:px-3 sm:py-2 ${
+                isMenuOpen
+                  ? "border-[#04b093] bg-[#04b093] text-black shadow-[0_0_18px_rgba(4,176,147,0.35)] scale-105"
+                  : "border-white/15 bg-white/5 text-[#04b093] hover:border-[#04b093] hover:bg-[#04b093]/15 hover:scale-105"
+              }`}
             >
-              {isMenuOpen ? <X size={19} strokeWidth={2.5} /> : <Menu size={19} strokeWidth={2.5} />}
+              <span
+                className={`inline-block transition-transform duration-300 ${
+                  isMenuOpen ? "rotate-90" : "rotate-0"
+                }`}
+              >
+                {isMenuOpen ? (
+                  <X size={18} strokeWidth={2.6} />
+                ) : (
+                  <Menu size={18} strokeWidth={2.6} />
+                )}
+              </span>
+              <span className="hidden text-xs font-black uppercase tracking-wider sm:inline-block">
+                {isMenuOpen ? "Close" : "Menu"}
+              </span>
             </button>
 
             <Link
@@ -125,8 +146,13 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Right: Contact Button */}
+          {/* Right: Frequency Pulse & Contact Button */}
           <div className="flex items-center gap-2 sm:gap-3">
+            <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/70 md:flex">
+              <span className="size-1.5 animate-pulse rounded-full bg-[#04b093]" />
+              <span className="tracking-wide">98.4 FM Kampala</span>
+            </div>
+
             <Link
               href={contactNavigationItem.href}
               className="inline-flex items-center justify-center rounded-full bg-[#04b093] px-3.5 py-1.5 text-[11px] font-black uppercase tracking-wider text-black shadow-[0_4px_16px_rgba(4,176,147,0.25)] transition-all hover:bg-white hover:text-black hover:scale-105 sm:px-5 sm:py-2 sm:text-xs"
@@ -136,112 +162,141 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Modal Full Navigation Drawer via Portal for Responsive Viewports */}
-        {mounted &&
-          isMenuOpen &&
-          createPortal(
-            <div className="fixed inset-0 z-50 flex items-start justify-center p-3 sm:p-6 sm:pt-20 pt-16">
-              {/* Backdrop */}
+        {/* Hanging 3D Animated Navigation Tray */}
+        <div
+          className={`absolute left-3 right-3 top-full mt-2.5 sm:left-6 sm:right-6 lg:left-8 lg:right-8 [perspective:1400px] transition-all duration-300 ${
+            isMenuOpen ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+        >
+          <div
+            id="main-navigation"
+            role="region"
+            aria-label="Site Navigation"
+            className={`w-full origin-top transform-gpu overflow-hidden rounded-3xl border-2 border-black bg-gradient-to-b from-[#0e1d19]/98 via-[#091411]/98 to-[#050b09]/98 text-white shadow-[0_30px_70px_-10px_rgba(0,0,0,0.9),0_0_40px_rgba(4,176,147,0.18)] backdrop-blur-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              isMenuOpen
+                ? "opacity-100 scale-100 translate-y-0"
+                : "opacity-0 scale-[0.96] -translate-y-3"
+            }`}
+            style={{
+              transformOrigin: "top center",
+              transformStyle: "preserve-3d",
+              transform: isMenuOpen
+                ? "perspective(1400px) rotateX(0deg) translateY(0px) scale(1)"
+                : "perspective(1400px) rotateX(-12deg) translateY(-14px) scale(0.96)",
+            }}
+          >
+            {/* Top Accent Light Bar */}
+            <div className="h-1 w-full bg-gradient-to-r from-transparent via-[#04b093] to-transparent opacity-60" />
+
+            {/* Tray Header Bar */}
+            <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 py-3 sm:px-6 sm:py-3.5">
+              <div className="flex items-center gap-2">
+                <span className="flex items-center gap-1.5 rounded-full border border-[#04b093]/40 bg-[#04b093]/15 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-[#04b093]">
+                  <Sparkles size={11} className="text-[#04b093]" />
+                  <span>Explore CBM Radio</span>
+                </span>
+                <span className="hidden text-[11px] font-medium text-white/50 sm:inline">
+                  Tune in to Gospel, Culture &amp; Music
+                </span>
+              </div>
               <button
                 type="button"
                 aria-label="Close navigation menu"
                 onClick={() => setIsMenuOpen(false)}
-                className="fixed inset-0 z-40 h-full w-full cursor-default bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
-              />
-
-              {/* Responsive Drawer Dialog */}
-              <div
-                role="dialog"
-                aria-modal="true"
-                aria-label="Site Navigation"
-                className="relative z-50 flex max-h-[calc(100dvh-5rem)] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border-2 border-black bg-[#091210]/95 text-white shadow-2xl backdrop-blur-2xl animate-in zoom-in-95 duration-200 sm:max-h-[calc(100dvh-6.5rem)]"
+                className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-bold text-white/70 transition-all hover:border-white/30 hover:bg-white/15 hover:text-white"
               >
-                {/* Drawer Top Header */}
-                <div className="flex shrink-0 items-center justify-between border-b border-white/10 p-3.5 sm:p-5">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex items-center gap-1.5 border border-[#04b093]/40 bg-[#04b093]/15 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-[#04b093]">
-                      <span className="size-1.5 animate-pulse rounded-full bg-[#04b093]" />
-                      <span>EXPLORE CBM RADIO</span>
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    aria-label="Close navigation menu"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="grid size-8 place-items-center rounded-full bg-white/10 text-white/80 transition-colors hover:bg-[#04b093] hover:text-black"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
+                <span>ESC</span>
+                <X size={13} />
+              </button>
+            </div>
 
-                {/* Drawer Scrollable Content Area: Responsive 2-Col on Mobile, 4-Col on Desktop */}
-                <div className="flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-6 no-scrollbar">
-                  <nav
-                    id="main-navigation"
-                    aria-label="Main navigation"
-                    className="grid grid-cols-2 gap-2.5 sm:grid-cols-2 md:grid-cols-4 sm:gap-3.5"
-                  >
-                    {primaryNavigation.map((item, index) => {
-                      const isActive =
-                        pathname === item.href ||
-                        (item.href !== "/" && pathname.startsWith(item.href + "/"));
-                      const Icon = navMeta[item.href]?.icon ?? Home;
-                      const detail = navMeta[item.href]?.detail ?? "";
-                      const isTeal = index % 2 === 0;
+            {/* 3D Tactile Grid of Navigation Tiles */}
+            <div className="max-h-[calc(100dvh-10rem)] overflow-y-auto overscroll-contain p-3.5 sm:p-5 sm:max-h-[calc(100dvh-12rem)]">
+              <nav
+                aria-label="Main navigation items"
+                className="grid grid-cols-2 gap-2.5 sm:grid-cols-2 md:grid-cols-4 sm:gap-3.5"
+              >
+                {primaryNavigation.map((item, index) => {
+                  const isActive =
+                    pathname === item.href ||
+                    (item.href !== "/" && pathname.startsWith(item.href + "/"));
+                  const meta = navMeta[item.href];
+                  const Icon = meta?.icon ?? Home;
+                  const detail = meta?.detail ?? "";
+                  const tag = meta?.tag;
+                  const isTeal = index % 2 === 0;
 
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          aria-current={isActive ? "page" : undefined}
-                          onClick={() => setIsMenuOpen(false)}
-                          className={`group flex min-h-[92px] sm:min-h-[110px] flex-col justify-between rounded-xl border-2 border-black p-3.5 text-[#07100f] shadow-[3px_3px_0px_0px_#000] transition-all duration-200 hover:-translate-y-1 hover:shadow-[5px_5px_0px_0px_#000] sm:p-4 ${
-                            isTeal
-                              ? "bg-[#04b093] hover:bg-white"
-                              : "bg-white hover:bg-[#04b093]"
-                          } ${isActive ? "ring-4 ring-black/80" : ""}`}
-                        >
-                          <div className="flex items-start justify-between gap-2">
-                            <Icon size={20} strokeWidth={2.2} aria-hidden="true" />
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      aria-current={isActive ? "page" : undefined}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={`group relative flex min-h-[96px] sm:min-h-[114px] flex-col justify-between rounded-2xl border-2 border-black p-3.5 text-[#07100f] shadow-[3.5px_3.5px_0px_0px_#000] transition-all duration-200 hover:-translate-y-1 hover:-translate-x-0.5 hover:shadow-[5.5px_5.5px_0px_0px_#000] active:translate-y-0.5 active:translate-x-0.5 active:shadow-[1.5px_1.5px_0px_0px_#000] sm:p-4 ${
+                        isTeal
+                          ? "bg-[#04b093] hover:bg-white"
+                          : "bg-white hover:bg-[#04b093]"
+                      } ${
+                        isActive
+                          ? "ring-4 ring-[#04b093]/40 border-black"
+                          : ""
+                      }`}
+                    >
+                      {/* Top icon and micro badge / arrow */}
+                      <div className="flex items-start justify-between gap-1.5">
+                        <div className="grid size-8 shrink-0 place-items-center rounded-xl bg-black/10 transition-colors group-hover:bg-black/15">
+                          <Icon size={18} strokeWidth={2.4} aria-hidden="true" />
+                        </div>
+                        <div className="flex items-center gap-1">
+                          {tag && (
+                            <span className="rounded-full bg-black/85 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-[#04b093]">
+                              {tag}
+                            </span>
+                          )}
+                          <div className="grid size-6 place-items-center rounded-full bg-black/5 transition-transform duration-200 group-hover:bg-black/15 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
                             <ArrowUpRight
-                              size={15}
-                              strokeWidth={2.2}
-                              className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                              size={13}
+                              strokeWidth={2.6}
                               aria-hidden="true"
                             />
                           </div>
-                          <div>
-                            <span className="block text-xs sm:text-sm md:text-base font-black uppercase tracking-tight leading-tight">
-                              {item.label}
-                            </span>
-                            <span className="mt-0.5 block text-[10px] sm:text-[11px] font-bold text-black/75 line-clamp-1">
-                              {detail}
-                            </span>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </nav>
-                </div>
+                        </div>
+                      </div>
 
-                {/* Drawer Bottom Info Footer */}
-                <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-white/10 bg-black/40 p-3 sm:p-4 text-xs">
-                  <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                    <Radio size={13} className="text-[#04b093]" />
-                    <span>CBM Radio &bull; Gospel &amp; Culture</span>
-                  </div>
-                  <Link
-                    href="/contact"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="text-xs font-black uppercase tracking-wider text-[#04b093] hover:underline"
-                  >
-                    Contact Newsroom &rarr;
-                  </Link>
-                </div>
+                      {/* Bottom title & tagline */}
+                      <div className="mt-2">
+                        <span className="block text-xs sm:text-sm font-black uppercase tracking-tight leading-tight">
+                          {item.label}
+                        </span>
+                        <span className="mt-0.5 block text-[10px] sm:text-[11px] font-semibold text-black/75 line-clamp-1">
+                          {detail}
+                        </span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </nav>
+            </div>
+
+            {/* Tray Bottom Ticker & Quick Links */}
+            <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-white/10 bg-black/45 px-4 py-3 sm:px-6 sm:py-3.5 text-xs">
+              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                <Radio size={13} className="text-[#04b093]" />
+                <span>CBM Radio &bull; 98.4 FM Kampala &bull; 24/7 Digital</span>
               </div>
-            </div>,
-            document.body,
-          )}
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/contact"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-[#04b093] hover:text-white transition-colors"
+                >
+                  <span>Connect with Studio</span>
+                  <ArrowUpRight size={13} />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
   );
