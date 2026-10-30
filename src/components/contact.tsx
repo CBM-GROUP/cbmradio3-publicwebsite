@@ -105,7 +105,7 @@ export default function Contact() {
                 Live Broadcast Center
               </h3>
               <p className="mt-2 text-xs leading-relaxed text-zinc-400">
-                Broadcasting round-the-clock across East Africa and streaming globally on digital frequencies.
+                Broadcasting round-the-clock across East Africa and streaming globally on digital platforms.
               </p>
 
               <div className="mt-6 space-y-4 border-t border-white/10 pt-5 text-sm">

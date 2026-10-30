@@ -22,8 +22,8 @@ export default function ProgramsPage() {
         {/* Top Hero Card with the Evening Drive background image */}
         <PageHero
           pageKey="programs"
-          fallbackTitle="Find your frequency"
-          fallbackSubtitle="CBM Original Shows"
+          fallbackTitle="Original Programs & Shows"
+          fallbackSubtitle="CBM Broadcast Schedule"
           fallbackDescription="Meet the voices, ideas, and conversations shaping your day on CBM Radio."
           fallbackImage="/cbm_images/evening-drive.jpg"
           fallbackCtaLabel="Explore the shows"

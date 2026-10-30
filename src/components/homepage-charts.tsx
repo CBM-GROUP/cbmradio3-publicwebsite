@@ -264,7 +264,7 @@ export default function HomepageCharts() {
             {/* Overlay Headline */}
             <div className="absolute left-5 top-5 max-w-sm sm:left-8 sm:top-8 sm:max-w-lg">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[#04b093]/40 bg-[#04b093]/20 px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#78f2d5]">
-                <Music2 size={13} /> Your world. Your frequency.
+                <Music2 size={13} /> Official Gospel Countdown
               </span>
               <h3 className="mt-3 text-2xl font-black leading-tight text-white drop-shadow-lg sm:text-4xl lg:text-5xl">
                 {chart?.title || "The voices moving the culture."}
