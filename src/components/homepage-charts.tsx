@@ -326,6 +326,7 @@ export default function HomepageCharts() {
                     src={top1.cover_image_url || top1.cover_image || RadioShowArtwork}
                     alt={`${top1.title} album cover`}
                     fill
+                    unoptimized={Boolean(top1.cover_image_url || top1.cover_image)}
                     sizes="(max-width: 640px) 280px, 320px"
                     className="object-cover transition-transform duration-500 hover:scale-105"
                   />
@@ -456,6 +457,7 @@ export default function HomepageCharts() {
                             }
                             alt={`${entry.title} cover`}
                             fill
+                            unoptimized={Boolean(entry.cover_image_url || entry.cover_image)}
                             sizes="48px"
                             className="object-cover"
                           />
