@@ -16,7 +16,7 @@ function ChartsLoadingState() {
 export const metadata = {
   title: "Music Charts | CBM Radio",
   description:
-    "Official Gospel Music Charts & Countdowns — discover the biggest praise, worship, and gospel songs across Africa and worldwide.",
+    "Official Music Charts & Countdowns — discover trending tracks, weekly countdowns, and listener favorites across Africa and worldwide.",
 };
 
 export default function ChartsPage() {
@@ -27,7 +27,7 @@ export default function ChartsPage() {
         <PageHero
           pageKey="charts"
           fallbackTitle="Music Charts"
-          fallbackDescription="Official Gospel Music Charts & Countdowns — discover the biggest praise, worship, and gospel songs across Africa and worldwide."
+          fallbackDescription="Official Music Charts & Countdowns — discover trending tracks, weekly countdowns, and listener favorites across Africa and worldwide."
         />
         <DynamicPageSections page="charts" position="top" />
         <Suspense fallback={<ChartsLoadingState />}>

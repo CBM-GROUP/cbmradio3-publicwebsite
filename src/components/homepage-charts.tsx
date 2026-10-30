@@ -206,7 +206,7 @@ export default function HomepageCharts() {
               The CBM Top Countdown
             </h2>
             <p className="mt-2 text-sm text-white/70 max-w-2xl sm:text-base">
-              The biggest gospel and afro-beats anthems trending on radio airplay, online streams, and weekly listener votes across East Africa.
+              The biggest songs and trending releases across radio airplay, online streams, and weekly listener votes.
             </p>
           </div>
 
@@ -233,7 +233,7 @@ export default function HomepageCharts() {
               })
             ) : (
               <span className="rounded-full bg-[#04b093] px-4 py-2 text-xs font-black uppercase tracking-wider text-[#062521]">
-                Gospel Hot 100
+                {chart?.title || "Top Countdown"}
               </span>
             )}
 
@@ -241,7 +241,7 @@ export default function HomepageCharts() {
               href={selectedChartSlug ? `/charts?chart=${encodeURIComponent(selectedChartSlug)}` : "/charts"}
               className="inline-flex items-center gap-1.5 rounded-full border border-[#04b093]/40 bg-[#04b093]/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-[#04b093] hover:text-[#062521]"
             >
-              <span>Full 100 Tracks</span>
+              <span>Full Countdown</span>
               <ArrowUpRight size={14} aria-hidden="true" />
             </Link>
           </div>
@@ -264,7 +264,7 @@ export default function HomepageCharts() {
             {/* Overlay Headline */}
             <div className="absolute left-5 top-5 max-w-sm sm:left-8 sm:top-8 sm:max-w-lg">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[#04b093]/40 bg-[#04b093]/20 px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#78f2d5]">
-                <Music2 size={13} /> Official Gospel Countdown
+                <Music2 size={13} /> {chart?.title ? `${chart.title} Official Ranking` : "Official Station Countdown"}
               </span>
               <h3 className="mt-3 text-2xl font-black leading-tight text-white drop-shadow-lg sm:text-4xl lg:text-5xl">
                 {chart?.title || "The voices moving the culture."}
