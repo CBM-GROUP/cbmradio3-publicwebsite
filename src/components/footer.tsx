@@ -45,7 +45,7 @@ const socialIcons: Partial<Record<string, IconType>> = {
 const footerDestinations = [
   {
     label: "Programs",
-    detail: "Find your frequency",
+    detail: "Original Shows",
     href: "/programs",
     icon: Radio,
     color: "bg-[#04b093]",

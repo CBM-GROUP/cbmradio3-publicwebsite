@@ -9,7 +9,7 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   title: {
-    default: "CBM Radio | Your world. Your frequency.",
+    default: "CBM Radio | The Heartbeat of Gospel & Inspirational Sound",
     template: "%s | CBM Radio",
   },
   description:

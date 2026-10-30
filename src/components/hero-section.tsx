@@ -109,22 +109,30 @@ export default function HeroSection() {
               </p>
 
               {/* Call-to-Action Bar */}
-              <div className="mt-6 flex flex-wrap items-center gap-4">
+              <div className="mt-6 flex flex-wrap items-center gap-3.5 sm:gap-4">
                 <a
                   href="#episodes"
-                  className="inline-flex min-h-12 items-center gap-2.5 bg-black px-7 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black hover:scale-[1.02] shadow-xl"
+                  className="inline-flex min-h-12 items-center gap-2.5 bg-black px-6 sm:px-7 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black hover:scale-[1.02] shadow-xl"
                 >
                   <Headphones size={16} />
-                  <span>Stream The Crate</span>
+                  <span>Stream Episodes</span>
                 </a>
 
                 <a
                   href="#shows"
-                  className="inline-flex min-h-12 items-center gap-2 border-2 border-black bg-transparent px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-black hover:text-white"
+                  className="inline-flex min-h-12 items-center gap-2 border-2 border-black bg-transparent px-5 sm:px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-black hover:text-white"
                 >
                   <span>Explore Series</span>
                   <ArrowUpRight size={15} />
                 </a>
+
+                <Link
+                  href="/charts"
+                  className="inline-flex min-h-12 items-center gap-2 border-2 border-black bg-white/20 px-5 sm:px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-black hover:text-[#04b093]"
+                >
+                  <span>Music Charts</span>
+                  <ArrowUpRight size={15} />
+                </Link>
               </div>
             </div>
 
@@ -309,17 +317,27 @@ export default function HeroSection() {
               </div>
 
               {/* Leaderboard Footer */}
-              <div className="mt-6 border-t-2 border-white/20 pt-4 flex items-center justify-between text-xs">
+              <div className="mt-6 border-t-2 border-white/20 pt-4 flex flex-wrap items-center justify-between gap-3 text-xs">
                 <span className="text-zinc-400 text-[0.68rem] uppercase font-bold">
                   UPDATED REGULARLY BY CBM EDITORS
                 </span>
-                <Link
-                  href="/episodes"
-                  className="font-black uppercase tracking-wider text-[#04b093] hover:underline flex items-center gap-1"
-                >
-                  <span>Full Charts</span>
-                  <ArrowUpRight size={13} />
-                </Link>
+                <div className="flex items-center gap-3">
+                  <Link
+                    href="/episodes"
+                    className="font-black uppercase tracking-wider text-white hover:text-[#04b093] transition flex items-center gap-1"
+                  >
+                    <span>All Episodes</span>
+                    <ArrowUpRight size={13} />
+                  </Link>
+                  <span className="text-white/20">&bull;</span>
+                  <Link
+                    href="/charts"
+                    className="font-black uppercase tracking-wider text-[#04b093] hover:underline flex items-center gap-1"
+                  >
+                    <span>Charts</span>
+                    <ArrowUpRight size={13} />
+                  </Link>
+                </div>
               </div>
 
             </div>

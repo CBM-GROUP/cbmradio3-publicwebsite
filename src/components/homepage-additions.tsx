@@ -103,7 +103,7 @@ export default function HomepageAdditions() {
                 COMMUNITY NETWORK
               </span>
               <span className="text-xs font-black uppercase tracking-[0.22em] text-black/75">
-                SLUIT JE AAN // JOIN THE MOVEMENT
+                CONNECT // JOIN THE MOVEMENT
               </span>
             </div>
             <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">

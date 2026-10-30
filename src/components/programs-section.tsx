@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 
 import homeService from "@/services/home.service";
+import { programService } from "@/services/program.service";
 import type { ProgramSummary } from "@/types/program";
 
 import DanielPortrait from "../../public/cbm_images/daniel.svg";
@@ -42,129 +43,42 @@ interface ProgramMeta {
   icon: "trophy" | "sparkles" | "radio" | "flame" | "mic";
 }
 
-const FALLBACK_PROGRAMS: (ProgramSummary & { meta: ProgramMeta })[] = [
+const DEFAULT_PROGRAMS: (ProgramSummary & { meta: ProgramMeta })[] = [
   {
-    id: 101,
-    title: "CBM Sports Arena",
-    slug: "cbm-sports-arena",
-    presenter: "Brian SportsDesk & Team",
-    schedule: "Saturdays & Sundays 2:00 PM – 5:00 PM EAT",
+    id: 1,
+    title: "CBM Live Broadcast",
+    slug: "cbm-live-broadcast",
+    presenter: "CBM On-Air Team",
+    schedule: "Daily 24/7 Digital Radio",
     short_description:
-      "High-octane football, rugby, athletics coverage, match tactical analysis, live scores, and fierce fan debates.",
+      "Transformative conversations, inspiring perspectives, and uplifting music moving African sound and culture forward.",
     cover_image: "",
     promo_video_url: "",
     display_order: 1,
     is_featured: true,
     is_active: true,
     meta: {
-      badge: "WEEKEND SPORTS EXTRA",
-      genre: "Sports & Athletics",
-      accent: "#eab308", // Golden Yellow
-      artwork: BrianPortrait,
-      icon: "trophy",
-    },
-  },
-  {
-    id: 102,
-    title: "My Life, My Purpose",
-    slug: "my-life-my-purpose",
-    presenter: "Daniel K.",
-    schedule: "Wednesdays 8:00 PM – 10:00 PM EAT",
-    short_description:
-      "Transformational conversations on career, purpose, personal growth, and community culture with top guest interviews.",
-    cover_image: "",
-    promo_video_url: "",
-    display_order: 2,
-    is_featured: true,
-    is_active: true,
-    meta: {
-      badge: "FLAGSHIP TALK SERIES",
-      genre: "Culture & Leadership",
-      accent: "#04b093", // CBM Emerald
+      badge: "PRIME BROADCAST",
+      genre: "Talk & Sound",
+      accent: "#04b093",
       artwork: DanielPortrait,
       icon: "sparkles",
-    },
-  },
-  {
-    id: 103,
-    title: "The Morning Drive",
-    slug: "the-morning-drive",
-    presenter: "Samuel & Sarah",
-    schedule: "Monday – Friday 6:00 AM – 10:00 AM EAT",
-    short_description:
-      "Wake up with unstoppable energy, breaking headlines, traffic alerts, comedy bits, and the vibrant morning playlist.",
-    cover_image: "",
-    promo_video_url: "",
-    display_order: 3,
-    is_featured: true,
-    is_active: true,
-    meta: {
-      badge: "PRIME BREAKFAST SHOW",
-      genre: "News & Morning Drive",
-      accent: "#f97316", // Warm Orange
-      artwork: SamuelPortrait,
-      icon: "radio",
-    },
-  },
-  {
-    id: 104,
-    title: "Urban Pulse & Top 20",
-    slug: "urban-pulse-top-20",
-    presenter: "DJ Innocent",
-    schedule: "Fridays 7:00 PM – 11:00 PM EAT",
-    short_description:
-      "The definitive weekend kick-off featuring the top 20 hits, blazing guest mixes, and urban street culture.",
-    cover_image: "",
-    promo_video_url: "",
-    display_order: 4,
-    is_featured: true,
-    is_active: true,
-    meta: {
-      badge: "COUNTDOWN & MIX SHOW",
-      genre: "Afrobeats & Urban",
-      accent: "#ec4899", // Neon Pink
-      artwork: InnocentPortrait,
-      icon: "flame",
-    },
-  },
-  {
-    id: 105,
-    title: "Night Reflections & Soul Lounge",
-    slug: "night-reflections-soul-lounge",
-    presenter: "Grace M.",
-    schedule: "Monday – Thursday 10:00 PM – 1:00 AM EAT",
-    short_description:
-      "Unwind with smooth neo-soul, acoustic gems, late-night open mic confessions, and peaceful late-night vibes.",
-    cover_image: "",
-    promo_video_url: "",
-    display_order: 5,
-    is_featured: true,
-    is_active: true,
-    meta: {
-      badge: "LATE NIGHT LOUNGE",
-      genre: "Neo-Soul & Talks",
-      accent: "#8b5cf6", // Purple
-      artwork: StudioImg,
-      icon: "mic",
     },
   },
 ];
 
 // Helper to determine meta for a program
 function resolveProgramMeta(program: ProgramSummary, index: number): ProgramMeta {
-  const titleLower = program.title.toLowerCase();
-  const slugLower = program.slug.toLowerCase();
+  const metaPalette: ProgramMeta[] = [
+    { badge: "FLAGSHIP SERIES", genre: "Culture & Dialogue", accent: "#04b093", artwork: DanielPortrait, icon: "sparkles" },
+    { badge: "PRIME BROADCAST", genre: "Daily Talk & Sound", accent: "#f97316", artwork: SamuelPortrait, icon: "radio" },
+    { badge: "EVENING SHOWCASE", genre: "Conversations & Music", accent: "#8b5cf6", artwork: StudioImg, icon: "mic" },
+    { badge: "STUDIO FRANCHISE", genre: "Voices & Community", accent: "#ec4899", artwork: BehindScenesImg, icon: "flame" },
+    { badge: "WEEKEND SPECIAL", genre: "Curated Showcase", accent: "#eab308", artwork: ArtistSpotlightImg, icon: "trophy" },
+  ];
 
-  if (titleLower.includes("sport") || slugLower.includes("sport")) {
-    return {
-      badge: "WEEKEND SPORTS EXTRA",
-      genre: "Sports & Athletics",
-      accent: "#eab308",
-      artwork: BrianPortrait,
-      icon: "trophy",
-    };
-  }
-  if (titleLower.includes("purpose") || titleLower.includes("life") || slugLower.includes("purpose")) {
+  const titleLower = program.title.toLowerCase();
+  if (titleLower.includes("purpose") || titleLower.includes("life") || titleLower.includes("talk")) {
     return {
       badge: "FLAGSHIP TALK SERIES",
       genre: "Culture & Leadership",
@@ -173,7 +87,7 @@ function resolveProgramMeta(program: ProgramSummary, index: number): ProgramMeta
       icon: "sparkles",
     };
   }
-  if (titleLower.includes("morning") || titleLower.includes("drive") || slugLower.includes("morning")) {
+  if (titleLower.includes("morning") || titleLower.includes("drive")) {
     return {
       badge: "PRIME BREAKFAST SHOW",
       genre: "News & Morning Drive",
@@ -182,57 +96,52 @@ function resolveProgramMeta(program: ProgramSummary, index: number): ProgramMeta
       icon: "radio",
     };
   }
-  if (titleLower.includes("urban") || titleLower.includes("top") || slugLower.includes("urban")) {
+  if (titleLower.includes("kafunda") || titleLower.includes("mix") || titleLower.includes("pulse")) {
     return {
-      badge: "COUNTDOWN & MIX SHOW",
-      genre: "Afrobeats & Urban",
+      badge: "STATION SPECIAL",
+      genre: "Music & Culture",
       accent: "#ec4899",
       artwork: InnocentPortrait,
       icon: "flame",
     };
   }
 
-  // Generic fallbacks based on index
-  const metaPalette: ProgramMeta[] = [
-    { badge: "WEEKEND SPORTS EXTRA", genre: "Sports & Live Match", accent: "#eab308", artwork: BrianPortrait, icon: "trophy" },
-    { badge: "ORIGINAL SERIES", genre: "Talk & Culture", accent: "#04b093", artwork: DanielPortrait, icon: "sparkles" },
-    { badge: "LIVE ON-AIR", genre: "Broadcast & Music", accent: "#f97316", artwork: SamuelPortrait, icon: "radio" },
-    { badge: "STUDIO FRANCHISE", genre: "Entertainment & Mix", accent: "#ec4899", artwork: BehindScenesImg, icon: "flame" },
-    { badge: "EVENING SPECIAL", genre: "Soul & Discourse", accent: "#8b5cf6", artwork: StudioImg, icon: "mic" },
-  ];
-
   return metaPalette[index % metaPalette.length];
 }
 
 export default function ProgramsSection() {
-  const [programs, setPrograms] = useState<(ProgramSummary & { meta: ProgramMeta })[]>(FALLBACK_PROGRAMS);
-  const [activeId, setActiveId] = useState<number>(FALLBACK_PROGRAMS[0].id);
+  const [programs, setPrograms] = useState<(ProgramSummary & { meta: ProgramMeta })[]>(DEFAULT_PROGRAMS);
+  const [activeId, setActiveId] = useState<number>(DEFAULT_PROGRAMS[0].id);
   const [isHovering, setIsHovering] = useState<boolean>(false);
-  const [loading, setLoading] = useState(false);
   const autoRotateTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Fetch API programs and combine with rich metadata
+  // Fetch API programs directly from backend (both featured and all registered programs)
   useEffect(() => {
     let isMounted = true;
-    homeService
-      .getFeaturedPrograms()
-      .then((items) => {
-        if (!isMounted) return;
-        if (items && items.length > 0) {
-          const enriched = items.map((item, idx) => ({
-            ...item,
-            meta: resolveProgramMeta(item, idx),
-          }));
-          setPrograms(enriched);
-          setActiveId((prev) => {
-            const found = enriched.some((p) => p.id === prev);
-            return found ? prev : enriched[0].id;
-          });
+    Promise.allSettled([
+      homeService.getFeaturedPrograms(),
+      programService.getPrograms({ ordering: "display_order" }),
+    ]).then(([featuredRes, allRes]) => {
+      if (!isMounted) return;
+      const featured = featuredRes.status === "fulfilled" ? featuredRes.value : [];
+      const all = allRes.status === "fulfilled" && allRes.value?.results ? allRes.value.results : [];
+
+      const combined = [...featured];
+      for (const p of all) {
+        if (!combined.some((item) => item.id === p.id)) {
+          combined.push(p);
         }
-      })
-      .catch(() => {
-        // Fallbacks already in state
-      });
+      }
+
+      if (combined.length > 0) {
+        const enriched = combined.map((item, idx) => ({
+          ...item,
+          meta: resolveProgramMeta(item, idx),
+        }));
+        setPrograms(enriched);
+        setActiveId(enriched[0].id);
+      }
+    });
 
     return () => {
       isMounted = false;
@@ -241,7 +150,7 @@ export default function ProgramsSection() {
 
   // Active program pointer
   const activeProgram =
-    programs.find((p) => p.id === activeId) || programs[0] || FALLBACK_PROGRAMS[0];
+    programs.find((p) => p.id === activeId) || programs[0] || DEFAULT_PROGRAMS[0];
   const activeIndex = programs.findIndex((p) => p.id === activeProgram.id);
 
   // Auto-rotation when not interacting
@@ -298,11 +207,7 @@ export default function ProgramsSection() {
               Original Shows & Series Roster
             </h2>
             <p className="mt-2 max-w-2xl text-sm font-bold leading-relaxed text-black/85">
-              Point or tap on any program disc below—like the{" "}
-              <span className="bg-black px-1.5 py-0.5 text-white font-black uppercase">
-                Sports Arena
-              </span>{" "}
-              or cultural talk series—to slide out the master CD and explore full broadcast details.
+              Explore CBM Radio&apos;s original shows, talk series, and daily broadcasts. Point or tap on any program disc below to slide out the master CD and explore full broadcast details.
             </p>
           </div>
 

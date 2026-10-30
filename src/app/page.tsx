@@ -1,5 +1,6 @@
 import Header from "@/components/header";
 import HeroSection from "@/components/hero-section";
+import HomepageCharts from "@/components/homepage-charts";
 import EpisodesSection from "@/components/episodes-section";
 import ProgramsSection from "@/components/programs-section";
 import NewsSection from "@/components/news-section";
@@ -23,7 +24,10 @@ export default function Home() {
         {/* Dynamic Top Placement */}
         <DynamicPageSections page="home" position="top" />
 
-        {/* 02 // Episode Archive Crate (On-Demand Filterable Crate) */}
+        {/* 02 // Official Music & Media Charts (General Top Countdowns & Leaderboards) */}
+        <HomepageCharts />
+
+        {/* 03 // Episode Archive Crate (On-Demand Filterable Crate) */}
         <EpisodesSection />
 
         {/* 03 // Original Shows & Series Roster */}

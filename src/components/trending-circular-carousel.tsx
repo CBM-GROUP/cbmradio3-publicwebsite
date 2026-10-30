@@ -9,10 +9,12 @@ import {
   ArrowUpRight,
   Disc3,
 } from "lucide-react";
+import { programService } from "@/services/program.service";
+import type { ProgramSummary } from "@/types/program";
 
-interface TrendingItem {
+export interface TrendingItem {
   id: string;
-  category: "SPORTS" | "MUSIC" | "NEWS";
+  category: string;
   title: string;
   presenter: string;
   schedule: string;
@@ -21,65 +23,142 @@ interface TrendingItem {
   badge: string;
   image: string;
   episodesLink: string;
-  frequencyTag: string;
+  scheduleTag: string;
 }
 
-const TRENDING_ITEMS: TrendingItem[] = [
+const ACCENT_COLORS = ["#04b093", "#eab308", "#ec4899", "#38bdf8", "#a855f7"];
+const FALLBACK_IMAGE = "/cbm_images/the-morning-show.jpg";
+
+const DEFAULT_TRENDING_ITEMS: TrendingItem[] = [
   {
-    id: "sports",
-    category: "SPORTS",
-    title: "CBM Sports Matchday Arena",
-    presenter: "Sports Desk",
-    schedule: "Fridays 5:00 PM – 6:00 PM",
+    id: "morning",
+    category: "NEWS & TALK",
+    title: "CBM Morning Drive",
+    presenter: "Morning Crew",
+    schedule: "Monday – Friday 6:00 AM – 10:00 AM",
     description:
-      "Electric Premier League commentary, real-time match breakdowns, East African tournament action, and passionate pitch debates.",
-    accent: "#eab308", // Golden Yellow
-    badge: "HEAD TRENDING IN SPORTS",
-    image: "/cbm_images/sports-collections.jpg",
-    episodesLink: "/episodes?program=sports",
-    frequencyTag: "FM 92.4 • MATCHDAY LIVE",
+      "Inspirational conversations, prime morning headlines, and early commuter traffic alerts.",
+    accent: "#04b093",
+    badge: "MORNING FLAGSHIP",
+    image: "/cbm_images/the-morning-show.jpg",
+    episodesLink: "/episodes",
+    scheduleTag: "LIVE • WEEKDAY MORNINGS",
   },
   {
     id: "music",
-    category: "MUSIC",
-    title: "Midday Mix & Afrobeats Pulse",
+    category: "MUSIC & CULTURE",
+    title: "Midday Mix & Pulse",
     presenter: "DJ Bashi",
     schedule: "Monday – Friday 12:00 PM – 3:00 PM",
     description:
-      "The definitive high-energy playlist featuring chart-topping Afrobeats, Amapiano, live studio mixes, and listener shoutouts.",
-    accent: "#ec4899", // Neon Pink
-    badge: "HEAD TRENDING IN MUSIC",
+      "The definitive high-energy playlist featuring chart-topping Afrobeats, live studio mixes, and listener shoutouts.",
+    accent: "#ec4899",
+    badge: "AFTERNOON SPOTLIGHT",
     image: "/cbm_images/dj-music.jpg",
-    episodesLink: "/episodes?program=midday-mix",
-    frequencyTag: "FM 98.1 • HIT COUNTDOWN",
+    episodesLink: "/episodes",
+    scheduleTag: "LIVE • MIDDAY BROADCAST",
   },
   {
-    id: "news",
-    category: "NEWS",
-    title: "CBM Morning Drive & News Brief",
-    presenter: "Audu & The Newsroom",
-    schedule: "Monday – Friday 4:00 AM – 5:00 AM",
+    id: "sports",
+    category: "SPORTS",
+    title: "CBM Sports Arena",
+    presenter: "Sports Desk",
+    schedule: "Fridays 5:00 PM – 7:00 PM",
     description:
-      "Crucial investigative news, prime morning headlines, early commuter traffic alerts, and market briefings.",
-    accent: "#04b093", // CBM Emerald
-    badge: "HEAD TRENDING IN NEWS",
-    image: "/cbm_images/the-morning-show.jpg",
-    episodesLink: "/episodes?program=cbm-morning-drive",
-    frequencyTag: "FM 88.5 • PRIME DISPATCH",
+      "Electric match commentary, tournament action, tactical breakdowns, and passionate sports debates.",
+    accent: "#eab308",
+    badge: "WEEKEND SPORTS",
+    image: "/cbm_images/sports-collections.jpg",
+    episodesLink: "/episodes",
+    scheduleTag: "LIVE • MATCHDAY ARENA",
   },
 ];
 
-export default function TrendingCircularCarousel() {
+function mapProgramToTrendingItem(program: ProgramSummary, index: number): TrendingItem {
+  const accent = ACCENT_COLORS[index % ACCENT_COLORS.length];
+  const image =
+    program.cover_image && program.cover_image.trim() !== ""
+      ? program.cover_image
+      : FALLBACK_IMAGE;
+
+  return {
+    id: String(program.id),
+    category: program.is_featured ? "FEATURED" : "ON AIR",
+    title: program.title,
+    presenter: program.presenter || "CBM Voice",
+    schedule: program.schedule || "Daily Broadcast",
+    description:
+      program.short_description ||
+      "Tune into authentic conversations, inspiring music, and community voices on CBM Radio.",
+    accent,
+    badge: program.is_featured ? "HEAD TRENDING SHOW" : "CBM ORIGINAL SHOW",
+    image,
+    episodesLink: `/episodes?program=${encodeURIComponent(program.slug)}`,
+    scheduleTag: program.schedule
+      ? `LIVE • ${program.schedule.toUpperCase()}`
+      : "CBM DIGITAL STREAM",
+  };
+}
+
+interface TrendingCircularCarouselProps {
+  initialPrograms?: ProgramSummary[];
+}
+
+export default function TrendingCircularCarousel({
+  initialPrograms,
+}: TrendingCircularCarouselProps) {
+  const [items, setItems] = useState<TrendingItem[]>(() => {
+    if (initialPrograms && initialPrograms.length > 0) {
+      return initialPrograms.map(mapProgramToTrendingItem);
+    }
+    return DEFAULT_TRENDING_ITEMS;
+  });
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Self-rotating circular timer: automatically rotates every 3.5 seconds
+  // Load programs dynamically from the backend
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadPrograms() {
+      try {
+        let programs = await programService.getFeaturedPrograms();
+        if (!programs || programs.length < 3) {
+          const response = await programService.getPrograms({ ordering: "display_order" });
+          if (response && response.results) {
+            const existingIds = new Set((programs || []).map((p) => p.id));
+            const additional = response.results.filter((p) => !existingIds.has(p.id));
+            programs = [...(programs || []), ...additional];
+          }
+        }
+
+        if (!isMounted) return;
+
+        if (programs && programs.length > 0) {
+          setItems(programs.map(mapProgramToTrendingItem));
+        }
+      } catch {
+        // Retain fallback items on network error
+      }
+    }
+
+    if (!initialPrograms || initialPrograms.length === 0) {
+      loadPrograms();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [initialPrograms]);
+
+  // Self-rotating circular timer: automatically rotates every 4 seconds
   const resetTimer = useCallback(() => {
     if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+    if (items.length <= 1) return;
     autoPlayRef.current = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % TRENDING_ITEMS.length);
-    }, 3500);
-  }, []);
+      setCurrentIndex((prev) => (prev + 1) % items.length);
+    }, 4000);
+  }, [items.length]);
 
   useEffect(() => {
     resetTimer();
@@ -89,12 +168,14 @@ export default function TrendingCircularCarousel() {
   }, [resetTimer]);
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % TRENDING_ITEMS.length);
+    if (items.length === 0) return;
+    setCurrentIndex((prev) => (prev + 1) % items.length);
     resetTimer();
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + TRENDING_ITEMS.length) % TRENDING_ITEMS.length);
+    if (items.length === 0) return;
+    setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
     resetTimer();
   };
 
@@ -102,6 +183,8 @@ export default function TrendingCircularCarousel() {
     setCurrentIndex(idx);
     resetTimer();
   };
+
+  if (items.length === 0) return null;
 
   return (
     <section className="relative overflow-hidden border-b-2 border-black bg-[#04b093] px-4 py-12 text-black sm:px-8 sm:py-16 lg:px-12">
@@ -117,17 +200,17 @@ export default function TrendingCircularCarousel() {
           <div>
             <div className="flex flex-wrap items-center gap-2.5">
               <span className="rounded-full bg-black px-4 py-1 text-[0.68rem] font-black uppercase tracking-[0.22em] text-[#04b093] shadow-md">
-                HEAD TRENDING CHANNELS
+                HEAD TRENDING SHOWS
               </span>
               <span className="rounded-full bg-black/15 px-3 py-0.5 text-xs font-mono font-bold uppercase tracking-wider text-black border border-black/30">
-                3D CIRCULAR CAROUSEL
+                3D ROTATING SHOWCASE
               </span>
             </div>
             <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">
-              The Big 3: Sports, Music &amp; News
+              {items.length === 3 ? "The Big 3: Featured Shows" : "Featured Shows Spotlight"}
             </h2>
             <p className="mt-2 max-w-2xl text-xs sm:text-sm font-bold text-black/85 leading-relaxed">
-              Watch the 3 flagship pillars cycle along the orbit: as each show arrives at the center, it{" "}
+              Watch flagship broadcasts cycle along the orbit: as each show arrives at the center, it{" "}
               <span className="rounded-full bg-black px-2.5 py-0.5 text-[#04b093] font-black uppercase">
                 pushes itself in front
               </span>{" "}
@@ -147,7 +230,7 @@ export default function TrendingCircularCarousel() {
               </button>
 
               <span className="px-3 text-xs font-mono font-bold text-[#04b093]">
-                0{currentIndex + 1} / 03
+                {String(currentIndex + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
               </span>
 
               <button
@@ -161,11 +244,11 @@ export default function TrendingCircularCarousel() {
 
             {/* Quick Indicator Dots */}
             <div className="flex items-center gap-2 bg-black/10 px-3.5 py-2 rounded-full border border-black/20">
-              {TRENDING_ITEMS.map((item, idx) => (
+              {items.map((item, idx) => (
                 <button
                   key={item.id}
                   onClick={() => handleCardClick(idx)}
-                  aria-label={`Jump to ${item.category}`}
+                  aria-label={`Jump to ${item.title}`}
                   className={`h-2.5 rounded-full transition-all cursor-pointer ${
                     currentIndex === idx
                       ? "w-8 bg-black shadow-sm"
@@ -179,34 +262,45 @@ export default function TrendingCircularCarousel() {
 
         {/* =========================================================================
             3D CIRCULAR MOVING CARDS ORBIT
-            Self-rotating every 3.5 seconds; pushes forward into the front at center!
+            Self-rotating every 4 seconds; pushes forward into the front at center!
             ========================================================================= */}
         <div className="relative mx-auto flex min-h-[480px] sm:min-h-[530px] w-full max-w-5xl items-center justify-center [perspective:1400px]">
-          
           {/* Circular Orbit Ground Shadow */}
           <div className="pointer-events-none absolute bottom-4 left-1/2 h-16 w-3/4 -translate-x-1/2 rounded-[50%] bg-black/25 blur-xl" />
 
-          {TRENDING_ITEMS.map((item, idx) => {
-            const offset = (idx - currentIndex + 3) % 3;
+          {items.map((item, idx) => {
+            const offset = (idx - currentIndex + items.length) % items.length;
             const isCenter = offset === 0;
-            const isRight = offset === 1;
+            const isRight = items.length === 2 ? offset === 1 : offset === 1;
+            const isLeft = items.length > 2 && offset === items.length - 1;
+            const isHidden = !isCenter && !isRight && !isLeft;
+
+            let transformStyle = "translate3d(0%, 50px, -200px) scale(0.6) rotateY(0deg)";
+            if (isCenter) {
+              transformStyle =
+                "translate3d(0%, -18px, 100px) scale(1.08) rotateY(0deg) rotate(0deg)";
+            } else if (isRight) {
+              transformStyle =
+                "translate3d(60%, 20px, -90px) scale(0.82) rotateY(-20deg) rotate(3deg)";
+            } else if (isLeft) {
+              transformStyle =
+                "translate3d(-60%, 20px, -90px) scale(0.82) rotateY(20deg) rotate(-3deg)";
+            }
 
             return (
               <div
                 key={item.id}
                 onClick={() => handleCardClick(idx)}
-                className={`absolute w-[88%] sm:w-[430px] cursor-pointer select-none ${
+                className={`absolute w-[88%] sm:w-[430px] cursor-pointer select-none transition-all duration-700 ${
                   isCenter
                     ? "z-30 opacity-100"
+                    : isHidden
+                    ? "z-0 opacity-0 pointer-events-none"
                     : "z-10 opacity-65 hover:opacity-90"
                 }`}
                 style={{
                   transition: "all 800ms cubic-bezier(0.34, 1.4, 0.64, 1)",
-                  transform: isCenter
-                    ? "translate3d(0%, -18px, 100px) scale(1.08) rotateY(0deg) rotate(0deg)"
-                    : isRight
-                    ? "translate3d(60%, 20px, -90px) scale(0.82) rotateY(-20deg) rotate(3deg)"
-                    : "translate3d(-60%, 20px, -90px) scale(0.82) rotateY(20deg) rotate(-3deg)",
+                  transform: transformStyle,
                 }}
               >
                 {/* 
@@ -251,6 +345,7 @@ export default function TrendingCircularCarousel() {
                       alt={item.title}
                       fill
                       sizes="(max-width: 640px) 100vw, 440px"
+                      unoptimized={item.image.startsWith("/media/") || item.image.startsWith("http")}
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
@@ -275,12 +370,12 @@ export default function TrendingCircularCarousel() {
                       </div>
                     </div>
 
-                    {/* Frequency pill on Center Card */}
+                    {/* Live Broadcast schedule tag on Center Card */}
                     {isCenter ? (
                       <div className="absolute bottom-3 left-3 flex items-center gap-2 rounded-full bg-black/90 px-3 py-1 border border-white/20 backdrop-blur-md">
                         <span className="size-2 rounded-full bg-[#04b093] animate-ping" />
                         <span className="text-[0.62rem] font-mono font-bold uppercase text-white tracking-wider">
-                          {item.frequencyTag}
+                          {item.scheduleTag}
                         </span>
                       </div>
                     ) : (
@@ -297,7 +392,9 @@ export default function TrendingCircularCarousel() {
 
                   {/* Presenter & Airtime */}
                   <div className="mt-2.5 space-y-1 text-xs font-bold text-zinc-300">
-                    <p className="truncate">Hosted by <strong className="text-white">{item.presenter}</strong></p>
+                    <p className="truncate">
+                      Hosted by <strong className="text-white">{item.presenter}</strong>
+                    </p>
                     <p className="text-[#eab308] truncate font-medium">{item.schedule}</p>
                   </div>
 
@@ -306,7 +403,7 @@ export default function TrendingCircularCarousel() {
                     {item.description}
                   </p>
 
-                  {/* Bottom Action Row with Nice Curved Button */}
+                  {/* Bottom Action Row with Curved Button */}
                   <div className="mt-6 flex items-center justify-between border-t border-white/15 pt-3.5">
                     <Link
                       href={item.episodesLink}
@@ -331,7 +428,6 @@ export default function TrendingCircularCarousel() {
                       </span>
                     )}
                   </div>
-
                 </div>
               </div>
             );
@@ -342,12 +438,11 @@ export default function TrendingCircularCarousel() {
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs font-mono font-bold text-black/85">
           <span className="flex items-center gap-1.5">
             <span className="size-2 rounded-full bg-black animate-pulse" />
-            Automatic 3D Rotation Active: Cards advance every 3.5s automatically
+            Automatic 3D Rotation Active: Cards advance every 4s automatically
           </span>
           <span className="hidden sm:inline">•</span>
           <span>Click any card to focus immediately</span>
         </div>
-
       </div>
     </section>
   );
