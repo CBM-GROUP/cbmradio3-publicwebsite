@@ -146,13 +146,8 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Right: Frequency Pulse & Contact Button */}
+          {/* Right: Contact Button */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/70 md:flex">
-              <span className="size-1.5 animate-pulse rounded-full bg-[#04b093]" />
-              <span className="tracking-wide">98.4 FM Kampala</span>
-            </div>
-
             <Link
               href={contactNavigationItem.href}
               className="inline-flex items-center justify-center rounded-full bg-[#04b093] px-3.5 py-1.5 text-[11px] font-black uppercase tracking-wider text-black shadow-[0_4px_16px_rgba(4,176,147,0.25)] transition-all hover:bg-white hover:text-black hover:scale-105 sm:px-5 sm:py-2 sm:text-xs"
@@ -282,7 +277,7 @@ export default function Header() {
             <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-white/10 bg-black/45 px-4 py-3 sm:px-6 sm:py-3.5 text-xs">
               <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-zinc-400">
                 <Radio size={13} className="text-[#04b093]" />
-                <span>CBM Radio &bull; 98.4 FM Kampala &bull; 24/7 Digital</span>
+                <span>CBM Radio &bull; Gospel &amp; Culture &bull; 24/7 Digital</span>
               </div>
               <div className="flex items-center gap-3">
                 <Link
