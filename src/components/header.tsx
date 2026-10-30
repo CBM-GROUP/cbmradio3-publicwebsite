@@ -101,7 +101,7 @@ export default function Header() {
               aria-expanded={isMenuOpen}
               aria-controls="main-navigation"
               onClick={() => setIsMenuOpen((open) => !open)}
-              className={`group flex items-center gap-2 rounded-full border px-2.5 py-1.5 transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#04b093] sm:px-3 sm:py-2 ${
+              className={`grid size-9 sm:size-10 place-items-center rounded-full border transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#04b093] ${
                 isMenuOpen
                   ? "border-[#04b093] bg-[#04b093] text-black shadow-[0_0_18px_rgba(4,176,147,0.35)] scale-105"
                   : "border-white/15 bg-white/5 text-[#04b093] hover:border-[#04b093] hover:bg-[#04b093]/15 hover:scale-105"
@@ -117,9 +117,6 @@ export default function Header() {
                 ) : (
                   <Menu size={18} strokeWidth={2.6} />
                 )}
-              </span>
-              <span className="hidden text-xs font-black uppercase tracking-wider sm:inline-block">
-                {isMenuOpen ? "Close" : "Menu"}
               </span>
             </button>
 
