@@ -1,91 +1,252 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, X, ZoomIn } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 
-import { galleryService } from "@/services/gallery.service";
-import type { GalleryItem } from "@/types/gallery";
+// =========================================================================
+// DARKROOM HONEYCOMB CARDS CONFIGURATION
+// Edit cards (title, subtitle, image, link) and center featured item below:
+// =========================================================================
+export interface DarkroomCard {
+  id: string | number;
+  title: string;
+  subtitle?: string;
+  image: string;
+  link: string;
+}
 
-import StudioImage from "../../public/cbm_images/behind-the-scenes-studio.png";
-import OnAirStudio from "../../public/cbm_images/on-air-studio.png";
-import RadioShowArtwork from "../../public/cbm_images/radio 2.jpeg";
-import CBMTeam from "../../public/cbm_images/take 3.jpeg";
-
-const fallbackGalleryItems = [
+export const DARKROOM_CARDS: DarkroomCard[] = [
   {
-    id: 991,
-    image: StudioImage,
-    title: "Recording 'My Life, My Purpose' in Studio A",
-    category: "Studio Sessions",
-    caption: "CBM hosts in conversation during an original episode recording session.",
+    id: 1,
+    title: "STUDIO RECORDINGS",
+    subtitle: "Behind the Mic",
+    image: "/cbm_images/behind-the-scenes-studio.png",
+    link: "/gallery",
   },
   {
-    id: 992,
-    image: OnAirStudio,
-    title: "Studio Microphone & Production Desk",
-    category: "Production",
-    caption: "In the studio recording booth capturing inspiring stories and community dialogues.",
+    id: 2,
+    title: "LIVE ON-AIR",
+    subtitle: "Broadcast Stage",
+    image: "/cbm_images/on-air-studio.png",
+    link: "/gallery",
   },
   {
-    id: 993,
-    image: CBMTeam,
-    title: "The Presenter & Host Collective",
-    category: "Presenters",
-    caption: "Our team of cultural curators, journalists, and podcast creators.",
+    id: 3,
+    title: "CULTURAL VOICES",
+    subtitle: "Host Collective",
+    image: "/cbm_images/take 3.jpeg",
+    link: "/gallery",
   },
   {
-    id: 994,
-    image: RadioShowArtwork,
-    title: "Sound Design & Audio Engineering",
-    category: "Mastering",
-    caption: "Audio post-production and mastering in the CBM digital studio.",
+    id: 4,
+    title: "SOUND DESIGN",
+    subtitle: "Audio Mastering",
+    image: "/cbm_images/radio 2.jpeg",
+    link: "/gallery",
+  },
+  {
+    id: 5,
+    title: "EVENING SESSIONS",
+    subtitle: "Drive Time Show",
+    image: "/cbm_images/evening-drive.jpg",
+    link: "/gallery",
+  },
+  {
+    id: 6,
+    title: "ARTIST SPOTLIGHT",
+    subtitle: "Guest Interviews",
+    image: "/cbm_images/artist-spotlight.png",
+    link: "/gallery",
   },
 ];
 
+export const DARKROOM_CENTER_FEATURE = {
+  id: "center-featured",
+  title: "CBM DARKROOM",
+  subtitle: "VISUAL ARCHIVE",
+  ctaText: "EXPLORE ALL",
+  image: "/cbm_images/newsroom-studio-set.png",
+  link: "/gallery",
+};
+
+const HEX_CLIP_PATH =
+  "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)";
+
+function DecorativeEmptyHex({ className = "" }: { className?: string }) {
+  return (
+    <div
+      aria-hidden="true"
+      className={`pointer-events-none select-none transition-opacity duration-700 ${className}`}
+      style={{
+        width: "var(--hex-size)",
+        height: "var(--hex-h)",
+      }}
+    >
+      <svg
+        viewBox="0 0 100 86.6"
+        className="h-full w-full text-black/25"
+        fill="none"
+      >
+        <polygon
+          points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeDasharray="5 3"
+        />
+      </svg>
+    </div>
+  );
+}
+
 export default function Gallery() {
-  const [items, setItems] = useState<GalleryItem[]>([]);
-  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
+  // Entrance animation observer
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    let isMounted = true;
-    galleryService
-      .getGalleryItems({ page: 1 })
-      .then((response) => {
-        if (!isMounted) return;
-        setItems(
-          response.results
-            .filter((item) => Boolean(item.image))
-            .slice(0, 4),
-        );
-      })
-      .catch(() => {});
-    return () => {
-      isMounted = false;
-    };
+    const node = containerRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    if (!selectedItem) return;
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedItem(null);
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [selectedItem]);
+  const card1 = DARKROOM_CARDS[0]; // Top-Left
+  const card2 = DARKROOM_CARDS[1]; // Top-Right
+  const card3 = DARKROOM_CARDS[2]; // Middle-Left
+  const card4 = DARKROOM_CARDS[3]; // Middle-Right
+  const card5 = DARKROOM_CARDS[4]; // Bottom-Left
+  const card6 = DARKROOM_CARDS[5]; // Bottom-Right
+  const centerCard = DARKROOM_CENTER_FEATURE;
 
-  const displayList = items.length > 0 ? items : fallbackGalleryItems;
+  const renderHexCard = (
+    card: DarkroomCard,
+    delayMs: number,
+    customAria?: string
+  ) => {
+    return (
+      <div
+        className="relative transition-all duration-300"
+        style={{
+          width: "var(--hex-size)",
+          height: "var(--hex-h)",
+          filter: "drop-shadow(0 8px 18px rgba(0, 0, 0, 0.45))",
+        }}
+      >
+        <Link
+          href={card.link || "/gallery"}
+          aria-label={customAria || card.title}
+          className="group relative block h-full w-full overflow-hidden bg-zinc-950 transition-all duration-300 hover:scale-[1.05] hover:brightness-110 hover:z-30 cursor-pointer select-none"
+          style={{
+            clipPath: HEX_CLIP_PATH,
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? "scale(1)" : "scale(0.8)",
+            transition: `opacity 650ms cubic-bezier(0.16, 1, 0.3, 1) ${delayMs}ms, transform 650ms cubic-bezier(0.16, 1, 0.3, 1) ${delayMs}ms, filter 250ms ease`,
+          }}
+        >
+          {/* Hexagon Background Image */}
+          <Image
+            src={card.image}
+            alt={card.title}
+            fill
+            sizes="(max-width: 640px) 120px, (max-width: 1024px) 200px, 240px"
+            className="object-cover object-center transition-transform duration-700 group-hover:scale-110 group-hover:contrast-115"
+          />
+
+          {/* Dark Overlay */}
+          <div className="absolute inset-0 bg-black/60 transition-colors duration-300 group-hover:bg-black/40" />
+
+          {/* Centered Title & Subtitle in White, Uppercase, Light Letter Spacing */}
+          <div className="relative z-10 flex h-full w-full flex-col items-center justify-center p-2.5 sm:p-5 text-center">
+            <h3 className="max-w-[85%] text-[8px] sm:text-xs md:text-sm lg:text-base font-black uppercase tracking-[0.14em] sm:tracking-[0.18em] text-white leading-tight drop-shadow-md transition-all duration-300 group-hover:tracking-[0.2em] group-hover:text-[#04b093] group-hover:scale-105">
+              {card.title}
+            </h3>
+            {card.subtitle && (
+              <p className="mt-1 hidden max-w-[80%] text-[7px] sm:text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-300 drop-shadow sm:block">
+                {card.subtitle}
+              </p>
+            )}
+          </div>
+
+          {/* Soft Rounded-looking Contour Stroke */}
+          <svg
+            viewBox="0 0 100 86.6"
+            className="pointer-events-none absolute inset-0 h-full w-full z-20"
+            fill="none"
+          >
+            <polygon
+              points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3"
+              stroke="rgba(255, 255, 255, 0.25)"
+              strokeWidth="1.5"
+              className="transition-colors duration-300 group-hover:stroke-[#04b093]"
+            />
+          </svg>
+        </Link>
+      </div>
+    );
+  };
 
   return (
     <section
       id="gallery"
-      className="relative scroll-mt-20 border-b-2 border-black bg-[#04b093] px-5 py-16 text-black sm:px-8 sm:py-20 lg:px-12 lg:py-24"
+      className="relative scroll-mt-20 border-b-2 border-black bg-[#04b093] px-4 py-16 text-black sm:px-8 sm:py-20 lg:px-12 lg:py-24 overflow-hidden"
     >
+      {/* Dynamic Honeycomb Responsive Variables */}
+      <style>{`
+        .honeycomb-section {
+          --hex-size: 80px;
+          --hex-gap: 4px;
+          --hex-h: calc(var(--hex-size) * 0.866);
+          --row-overlap: calc(var(--hex-h) * -0.5 + var(--hex-gap));
+          --hex-row-gap: calc(var(--hex-size) * 0.5 + var(--hex-gap));
+        }
+        @media (min-width: 480px) {
+          .honeycomb-section {
+            --hex-size: 102px;
+            --hex-gap: 5px;
+          }
+        }
+        @media (min-width: 640px) {
+          .honeycomb-section {
+            --hex-size: 135px;
+            --hex-gap: 6px;
+          }
+        }
+        @media (min-width: 768px) {
+          .honeycomb-section {
+            --hex-size: 165px;
+            --hex-gap: 7px;
+          }
+        }
+        @media (min-width: 1024px) {
+          .honeycomb-section {
+            --hex-size: 195px;
+            --hex-gap: 8px;
+          }
+        }
+        @media (min-width: 1280px) {
+          .honeycomb-section {
+            --hex-size: 215px;
+            --hex-gap: 8px;
+          }
+        }
+      `}</style>
+
       <div className="mx-auto max-w-7xl">
-        
         {/* Section Header: Zwart Visual Studio Archive */}
-        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-black pb-6">
+        <div className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-black pb-6">
           <div>
             <div className="flex items-center gap-3">
               <span className="rounded-full bg-black px-4 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093] shadow-md">
@@ -112,108 +273,132 @@ export default function Gallery() {
           </Link>
         </div>
 
-        {/* Visual Archive Grid: 4-up Contact Sheet */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {displayList.map((item, idx) => (
-            <div
-              key={item.id}
-              onClick={() => setSelectedItem(item as GalleryItem)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  setSelectedItem(item as GalleryItem);
-                }
-              }}
-              role="button"
-              tabIndex={0}
-              className="group relative cursor-pointer rounded-3xl border-3 border-black bg-black overflow-hidden shadow-[8px_8px_0_0_rgba(0,0,0,1)] hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 transition-all duration-300"
-            >
-              <div className="relative aspect-square w-full overflow-hidden bg-black">
-                <Image
-                  src={item.image}
-                  alt={item.title || "Studio archive frame"}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity" />
+        {/* ======================================================== */}
+        {/* 7-HEXAGON HONEYCOMB FLOWER MATRIX                        */}
+        {/* ======================================================== */}
+        <div
+          ref={containerRef}
+          className="honeycomb-section relative mx-auto my-6 flex flex-col items-center justify-center py-4 select-none"
+        >
+          {/* Optional Outer Lattice Outline (Top Crown) */}
+          <div className="hidden lg:flex justify-center opacity-30 pointer-events-none mb-[calc(var(--hex-h)*-0.5+var(--hex-gap))]">
+            <DecorativeEmptyHex />
+          </div>
 
-                {/* Index Sticker */}
-                <div className="absolute left-3 top-3">
-                  <span className="rounded-full bg-black/90 px-3 py-1 text-[0.62rem] font-black uppercase tracking-wider text-[#04b093] border border-white/20 shadow-md">
-                    FRAME 0{idx + 1}
+          {/* TOP ROW: 2 Hexagons (sitting in gaps above middle row) */}
+          <div
+            className="flex items-center justify-center"
+            style={{ gap: "var(--hex-row-gap)" }}
+          >
+            <DecorativeEmptyHex className="hidden md:block opacity-35" />
+            {renderHexCard(card1, 100)}
+            {renderHexCard(card2, 170)}
+            <DecorativeEmptyHex className="hidden md:block opacity-35" />
+          </div>
+
+          {/* MIDDLE ROW: 3 Hexagons (Middle-Left, Center Featured, Middle-Right) */}
+          <div
+            className="flex items-center justify-center"
+            style={{
+              gap: "var(--hex-row-gap)",
+              marginTop: "var(--row-overlap)",
+            }}
+          >
+            <DecorativeEmptyHex className="hidden lg:block opacity-25" />
+            {renderHexCard(card3, 450)}
+
+            {/* Featured Center Hexagon (Dark, Brand Emblem & CTA) */}
+            <div
+              className="relative transition-all duration-300"
+              style={{
+                width: "var(--hex-size)",
+                height: "var(--hex-h)",
+                filter: "drop-shadow(0 10px 24px rgba(0, 0, 0, 0.6))",
+              }}
+            >
+              <Link
+                href={centerCard.link || "/gallery"}
+                aria-label={centerCard.title}
+                className="group relative block h-full w-full overflow-hidden bg-black transition-all duration-300 hover:scale-[1.06] hover:brightness-110 hover:z-30 cursor-pointer select-none"
+                style={{
+                  clipPath: HEX_CLIP_PATH,
+                  opacity: isVisible ? 1 : 0,
+                  transform: isVisible ? "scale(1)" : "scale(0.8)",
+                  transition:
+                    "opacity 650ms cubic-bezier(0.16, 1, 0.3, 1) 0ms, transform 650ms cubic-bezier(0.16, 1, 0.3, 1) 0ms, filter 250ms ease",
+                }}
+              >
+                {/* Background image preview */}
+                <Image
+                  src={centerCard.image}
+                  alt={centerCard.title}
+                  fill
+                  sizes="(max-width: 640px) 140px, (max-width: 1024px) 220px, 260px"
+                  className="object-cover object-center opacity-40 transition-transform duration-700 group-hover:scale-115 group-hover:opacity-60"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/85 to-black/75" />
+
+                {/* Center Content */}
+                <div className="relative z-10 flex h-full w-full flex-col items-center justify-center p-2.5 sm:p-5 text-center">
+                  <div className="mb-1 sm:mb-2 grid size-6 sm:size-9 md:size-11 place-items-center rounded-full bg-[#04b093] text-black shadow-md transition-transform duration-300 group-hover:scale-110">
+                    <Sparkles size={16} className="fill-black hidden sm:block" />
+                    <span className="sm:hidden text-[8px] font-black">CBM</span>
+                  </div>
+
+                  <span className="text-[6.5px] sm:text-[8px] md:text-[10px] font-black uppercase tracking-[0.25em] text-[#04b093]">
+                    {centerCard.subtitle}
+                  </span>
+
+                  <h3 className="mt-0.5 max-w-[85%] text-[9px] sm:text-sm md:text-base lg:text-lg font-black uppercase tracking-[0.16em] sm:tracking-[0.2em] text-white leading-tight">
+                    {centerCard.title}
+                  </h3>
+
+                  <span className="mt-1 sm:mt-2 inline-flex items-center gap-1 rounded-full border border-[#04b093] bg-[#04b093]/20 px-2 sm:px-3 py-0.5 text-[7px] sm:text-[10px] font-black uppercase tracking-wider text-[#04b093] transition-all duration-300 group-hover:bg-[#04b093] group-hover:text-black">
+                    <span>{centerCard.ctaText}</span>
+                    <ArrowUpRight size={10} />
                   </span>
                 </div>
 
-                {/* Hover Zoom Indicator */}
-                <div className="absolute right-3 top-3 grid size-9 place-items-center rounded-full bg-[#04b093] text-black opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 shadow-lg">
-                  <ZoomIn size={14} />
-                </div>
-
-                {/* Bottom Caption Overlay */}
-                <div className="absolute bottom-0 inset-x-0 p-4">
-                  <p className="text-[0.65rem] font-black uppercase tracking-wider text-[#04b093]">
-                    {item.category || "Studio"}
-                  </p>
-                  <h4 className="mt-0.5 text-sm font-black uppercase text-white line-clamp-1">
-                    {item.title}
-                  </h4>
-                  <p className="mt-1 text-xs text-zinc-400 line-clamp-2">
-                    {item.caption}
-                  </p>
-                </div>
-              </div>
+                {/* Center Hexagon Highlight Stroke */}
+                <svg
+                  viewBox="0 0 100 86.6"
+                  className="pointer-events-none absolute inset-0 h-full w-full z-20"
+                  fill="none"
+                >
+                  <polygon
+                    points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3"
+                    stroke="#04b093"
+                    strokeWidth="2"
+                    className="opacity-75 transition-opacity duration-300 group-hover:opacity-100"
+                  />
+                </svg>
+              </Link>
             </div>
-          ))}
-        </div>
 
-      </div>
+            {renderHexCard(card4, 240)}
+            <DecorativeEmptyHex className="hidden lg:block opacity-25" />
+          </div>
 
-      {/* Lightbox Dialog Modal */}
-      {selectedItem && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-md"
-          onClick={() => setSelectedItem(null)}
-        >
+          {/* BOTTOM ROW: 2 Hexagons (mirroring top) */}
           <div
-            className="relative max-w-4xl w-full border-2 border-white/30 bg-[#0d0d0d] p-4 sm:p-6 text-white shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
+            className="flex items-center justify-center"
+            style={{
+              gap: "var(--hex-row-gap)",
+              marginTop: "var(--row-overlap)",
+            }}
           >
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <span className="text-xs font-black uppercase tracking-wider text-[#04b093]">
-                {selectedItem.category || "STUDIO FRAME"}
-              </span>
-              <button
-                type="button"
-                onClick={() => setSelectedItem(null)}
-                className="grid size-8 place-items-center border border-white/20 text-white hover:border-[#04b093] hover:text-[#04b093]"
-                aria-label="Close image preview"
-              >
-                <X size={16} />
-              </button>
-            </div>
+            <DecorativeEmptyHex className="hidden md:block opacity-35" />
+            {renderHexCard(card5, 380)}
+            {renderHexCard(card6, 310)}
+            <DecorativeEmptyHex className="hidden md:block opacity-35" />
+          </div>
 
-            <div className="relative mt-4 aspect-video w-full overflow-hidden bg-black">
-              <Image
-                src={selectedItem.image}
-                alt={selectedItem.title || "Gallery frame"}
-                fill
-                sizes="(max-width: 1024px) 100vw, 896px"
-                className="object-contain"
-              />
-            </div>
-
-            <div className="mt-4">
-              <h3 className="text-lg font-black uppercase text-white">{selectedItem.title}</h3>
-              {selectedItem.caption && (
-                <p className="mt-1 text-xs text-zinc-400">{selectedItem.caption}</p>
-              )}
-            </div>
+          {/* Optional Outer Lattice Outline (Bottom Root) */}
+          <div className="hidden lg:flex justify-center opacity-30 pointer-events-none mt-[calc(var(--hex-h)*-0.5+var(--hex-gap))]">
+            <DecorativeEmptyHex />
           </div>
         </div>
-      )}
+      </div>
     </section>
   );
 }
