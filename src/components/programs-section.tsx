@@ -217,7 +217,7 @@ export default function ProgramsSection() {
               <button
                 onClick={handlePrev}
                 aria-label="Previous Program Disc"
-                className="flex size-9 items-center justify-center bg-zinc-900 text-white transition hover:bg-[#04b093] hover:text-black cursor-pointer"
+                className="flex size-9 items-center justify-center rounded-full bg-zinc-900 text-white transition-all hover:bg-[#04b093] hover:text-black hover:scale-105 active:scale-95 cursor-pointer"
               >
                 <ChevronLeft size={18} />
               </button>
@@ -227,7 +227,7 @@ export default function ProgramsSection() {
               <button
                 onClick={handleNext}
                 aria-label="Next Program Disc"
-                className="flex size-9 items-center justify-center bg-zinc-900 text-white transition hover:bg-[#04b093] hover:text-black cursor-pointer"
+                className="flex size-9 items-center justify-center rounded-full bg-zinc-900 text-white transition-all hover:bg-[#04b093] hover:text-black hover:scale-105 active:scale-95 cursor-pointer"
               >
                 <ChevronRight size={18} />
               </button>
@@ -235,7 +235,7 @@ export default function ProgramsSection() {
 
             <Link
               href="/programs"
-              className="inline-flex items-center gap-2 border-2 border-black bg-black px-5 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black w-fit shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-black px-6 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 w-fit shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer"
             >
               <span>Full Directory</span>
               <ArrowUpRight size={15} />
@@ -246,7 +246,7 @@ export default function ProgramsSection() {
         {/* =========================================================================
             01 // MASTER SPOTLIGHT SHOWCASE: 3D SLIDING CD & EDITORIAL CONTROL CARD
             ========================================================================= */}
-        <div className="relative mb-12 overflow-hidden rounded-2xl border-4 border-black bg-black p-6 sm:p-10 lg:p-12 text-white shadow-[12px_12px_0_0_rgba(0,0,0,1)]">
+        <div className="relative mb-12 overflow-hidden rounded-3xl border-3 sm:border-4 border-black bg-black p-6 sm:p-10 lg:p-12 text-white shadow-[14px_14px_0_0_rgba(0,0,0,1)] hover:shadow-[18px_18px_0_0_rgba(0,0,0,1)] transition-all duration-300">
           {/* Subtle Ambient Backlights */}
           <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-[#04b093]/20 blur-3xl" />
           <div
@@ -334,7 +334,7 @@ export default function ProgramsSection() {
                   JEWEL CASE / SHOW SLEEVE JACKET
                   Stands in front on the left; the CD slides out from behind it.
                 */}
-                <div className="relative z-20 aspect-square w-[75%] sm:w-[80%] overflow-hidden rounded-xl border-4 border-white/30 bg-zinc-950 shadow-[0_25px_60px_rgba(0,0,0,0.9)] transition-all duration-500 hover:-rotate-1">
+                <div className="relative z-20 aspect-square w-[75%] sm:w-[80%] overflow-hidden rounded-2xl border-4 border-white/30 bg-zinc-950 shadow-[0_25px_60px_rgba(0,0,0,0.9)] transition-all duration-500 hover:-rotate-1">
                   
                   {/* Show Artwork Poster inside Jacket */}
                   <div className="relative h-full w-full">
@@ -463,7 +463,7 @@ export default function ProgramsSection() {
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Link
                   href={`/episodes?program=${encodeURIComponent(activeProgram.slug)}`}
-                  className="inline-flex items-center gap-2 border-2 border-[#04b093] bg-[#04b093] px-6 py-3.5 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-white hover:border-white shadow-[4px_4px_0_0_rgba(255,255,255,0.2)]"
+                  className="inline-flex items-center gap-2 rounded-full border-2 border-[#04b093] bg-[#04b093] px-7 py-3.5 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-white hover:border-white hover:scale-105 active:scale-95 shadow-lg cursor-pointer"
                 >
                   <Headphones size={16} />
                   <span>Stream Show Episodes</span>
@@ -472,7 +472,7 @@ export default function ProgramsSection() {
 
                 <Link
                   href="/programs"
-                  className="inline-flex items-center gap-2 border-2 border-white/30 bg-zinc-900 px-6 py-3.5 text-xs font-black uppercase tracking-wider text-white transition hover:bg-white hover:text-black hover:border-white"
+                  className="inline-flex items-center gap-2 rounded-full border-2 border-white/30 bg-zinc-900 px-7 py-3.5 text-xs font-black uppercase tracking-wider text-white transition-all hover:bg-white hover:text-black hover:border-white hover:scale-105 active:scale-95 cursor-pointer"
                 >
                   <span>All Programmes</span>
                   <ArrowUpRight size={14} />
@@ -512,16 +512,16 @@ export default function ProgramsSection() {
                   key={program.id}
                   onPointerEnter={() => handleSelectProgram(program.id)}
                   onClick={() => handleSelectProgram(program.id)}
-                  className={`group relative cursor-pointer rounded-xl border-2 transition-all duration-300 p-4 ${
+                  className={`group relative cursor-pointer rounded-2xl border-2 sm:border-3 transition-all duration-300 p-4.5 ${
                     isActive
-                      ? "border-black bg-black text-white shadow-[6px_6px_0_0_rgba(0,0,0,1)] scale-[1.03] -translate-y-1.5 z-20"
-                      : "border-black/60 bg-black/80 text-white/90 hover:border-black hover:bg-black hover:scale-[1.02] shadow-[3px_3px_0_0_rgba(0,0,0,0.5)] z-10"
+                      ? "border-black bg-black text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)] scale-[1.03] -translate-y-1.5 z-20 ring-2 ring-[#04b093]/50"
+                      : "border-black/70 bg-black/85 text-white/90 hover:border-black hover:bg-black hover:scale-[1.02] shadow-[4px_4px_0_0_rgba(0,0,0,0.5)] z-10"
                   }`}
                 >
                   {/* Top Bar with Disc No. & Active Pill */}
                   <div className="mb-3 flex items-center justify-between text-[0.62rem] font-mono font-black uppercase">
                     <span
-                      className={`px-2 py-0.5 rounded-sm ${
+                      className={`px-2.5 py-0.5 rounded-full ${
                         isActive ? "bg-[#04b093] text-black" : "bg-zinc-800 text-zinc-300"
                       }`}
                     >
@@ -538,7 +538,7 @@ export default function ProgramsSection() {
                   </div>
 
                   {/* CD Visual Container: Sleeve + Sliding Disc */}
-                  <div className="relative mb-3 flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-lg bg-zinc-950 p-2 border border-white/10">
+                  <div className="relative mb-3 flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-xl bg-zinc-950 p-2 border border-white/10">
                     
                     {/* Compact Disc sliding out */}
                     <div
@@ -562,7 +562,7 @@ export default function ProgramsSection() {
                     </div>
 
                     {/* Mini Jewel Case Sleeve (Front) */}
-                    <div className="relative z-10 aspect-square h-full overflow-hidden rounded border border-white/20 bg-zinc-900 shadow-md">
+                    <div className="relative z-10 aspect-square h-full overflow-hidden rounded-lg border border-white/20 bg-zinc-900 shadow-md">
                       <Image
                         src={artwork}
                         alt={program.title}

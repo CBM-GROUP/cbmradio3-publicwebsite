@@ -54,7 +54,7 @@ export default function NewsSection() {
         <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-black pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="bg-black px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
+              <span className="rounded-full bg-black px-4 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093] shadow-md">
                 THE WIRE
               </span>
               <span className="text-xs font-black uppercase tracking-[0.22em] text-black">
@@ -71,7 +71,7 @@ export default function NewsSection() {
 
           <Link
             href="/news"
-            className="inline-flex items-center gap-2 border-2 border-black bg-black px-5 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black w-fit shadow-xl"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-black px-6 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer w-fit"
           >
             <span>All Articles</span>
             <ArrowUpRight size={15} />
@@ -80,7 +80,7 @@ export default function NewsSection() {
 
         {/* Loading State */}
         {loading && (
-          <div className="border-2 border-black bg-black p-16 text-center text-white">
+          <div className="rounded-3xl border-3 border-black bg-black p-16 text-center text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
             <p className="text-sm font-black uppercase tracking-wider">RETRIEVING DISPATCHES WIRE...</p>
           </div>
         )}
@@ -90,9 +90,9 @@ export default function NewsSection() {
           <div className="grid gap-8 lg:grid-cols-12">
             
             {/* Left: Lead Article Column */}
-            <article className="lg:col-span-7 border-2 border-black bg-black p-6 sm:p-8 flex flex-col justify-between text-white group hover:border-white transition-colors shadow-2xl">
+            <article className="lg:col-span-7 rounded-3xl border-3 border-black bg-black p-6 sm:p-8 flex flex-col justify-between text-white group shadow-[8px_8px_0_0_rgba(0,0,0,1)] hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 transition-all duration-300">
               <div>
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-black border border-white/20">
+                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-black border border-white/20 shadow-md">
                   <Image
                     src={leadArticle.cover_image || NewsroomStudioSet}
                     alt={leadArticle.title}
@@ -105,7 +105,7 @@ export default function NewsSection() {
                   
                   {leadArticle.category && (
                     <div className="absolute left-4 top-4">
-                      <span className="bg-[#04b093] px-3 py-1 text-[0.65rem] font-black uppercase tracking-wider text-black">
+                      <span className="rounded-full bg-[#04b093] px-3.5 py-1 text-[0.65rem] font-black uppercase tracking-wider text-black shadow-md">
                         {leadArticle.category.name}
                       </span>
                     </div>
@@ -136,7 +136,7 @@ export default function NewsSection() {
               <div className="mt-8 border-t border-white/10 pt-4 flex items-center justify-between text-xs font-black uppercase">
                 <Link
                   href={`/news/${leadArticle.slug}`}
-                  className="inline-flex items-center gap-1.5 text-[#04b093] hover:text-[#05c6a5] transition"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#04b093] px-4 py-2 text-black font-black uppercase text-xs hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer"
                 >
                   <span>Read Full Story</span>
                   <ArrowUpRight size={14} />
@@ -149,7 +149,7 @@ export default function NewsSection() {
 
             {/* Right: Billboard Wire Ranked List */}
             <div className="lg:col-span-5 flex flex-col justify-between gap-6">
-              <div className="border-2 border-black bg-black p-6 divide-y divide-white/10 text-white shadow-2xl">
+              <div className="rounded-3xl border-3 border-black bg-black p-6 sm:p-7 divide-y divide-white/10 text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
                 <div className="flex items-center justify-between pb-4">
                   <p className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
                     LATEST WIRE STORIES
@@ -160,7 +160,7 @@ export default function NewsSection() {
                 {secondaryArticles.map((article, idx) => (
                   <article key={article.id} className="py-4 group">
                     <div className="flex items-center justify-between text-[0.65rem] text-zinc-400">
-                      <span className="font-black uppercase tracking-wider text-[#04b093]">
+                      <span className="rounded-full bg-white/10 px-2.5 py-0.5 font-black uppercase tracking-wider text-[#04b093]">
                         {article.category?.name || "WIRE"}
                       </span>
                       {(article.published_at || article.created_at) && (
@@ -182,7 +182,7 @@ export default function NewsSection() {
                     <div className="mt-2 text-right">
                       <Link
                         href={`/news/${article.slug}`}
-                        className="inline-flex items-center gap-1 text-[0.68rem] font-black uppercase text-zinc-400 hover:text-white transition"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-[0.68rem] font-black uppercase text-zinc-300 hover:text-black hover:bg-[#04b093] hover:border-[#04b093] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
                       >
                         <span>Read</span>
                         <ArrowUpRight size={11} />
@@ -199,7 +199,7 @@ export default function NewsSection() {
               </div>
 
               {/* Billboard Wire Footer Callout */}
-              <div className="border-2 border-black bg-black p-5 flex items-center justify-between text-white shadow-2xl">
+              <div className="rounded-2xl border-3 border-black bg-black p-5 flex items-center justify-between text-white shadow-[6px_6px_0_0_rgba(0,0,0,1)]">
                 <div>
                   <h5 className="text-xs font-black uppercase tracking-wider text-white">
                     Cultural Perspectives & Essays
@@ -210,7 +210,7 @@ export default function NewsSection() {
                 </div>
                 <Link
                   href="/news"
-                  className="text-xs font-black uppercase tracking-wider text-[#04b093] hover:underline"
+                  className="rounded-full bg-[#04b093] px-4 py-1.5 text-xs font-black uppercase tracking-wider text-black hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer"
                 >
                   All Wire &rarr;
                 </Link>

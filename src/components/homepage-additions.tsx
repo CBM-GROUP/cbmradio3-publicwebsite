@@ -99,7 +99,7 @@ export default function HomepageAdditions() {
         <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-black pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="bg-black px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
+              <span className="rounded-full bg-black px-4 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093] shadow-md">
                 COMMUNITY NETWORK
               </span>
               <span className="text-xs font-black uppercase tracking-[0.22em] text-black/75">
@@ -116,7 +116,7 @@ export default function HomepageAdditions() {
 
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 border-2 border-black bg-black px-5 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black w-fit shadow-md"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-black px-6 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer w-fit"
           >
             <span>Contact Studio</span>
             <ArrowUpRight size={15} />
@@ -127,14 +127,14 @@ export default function HomepageAdditions() {
         <div className="grid gap-8 lg:grid-cols-2">
           
           {/* Panel 1: Community Network & Channels */}
-          <div className="border-2 border-black bg-black p-7 sm:p-10 flex flex-col justify-between text-white shadow-2xl">
+          <div className="rounded-3xl border-3 border-black bg-black p-7 sm:p-10 flex flex-col justify-between text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)] hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] transition-all duration-300">
             <div>
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <span className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#04b093]">
                   <MessageSquare size={14} />
                   <span>COMMUNITY DISPATCH</span>
                 </span>
-                <span className="bg-white/10 px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-white">
+                <span className="rounded-full bg-white/10 px-3 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-white">
                   WHATSAPP CHANNEL
                 </span>
               </div>
@@ -153,7 +153,7 @@ export default function HomepageAdditions() {
                     href={safeWhatsappUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#25D366] px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-[#20ba5a] hover:scale-[1.01]"
+                    className="flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-[#25D366] px-7 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-[#20ba5a] hover:scale-105 active:scale-95 shadow-lg cursor-pointer"
                   >
                     <FaWhatsapp size={19} />
                     <span>Join CBM on WhatsApp</span>
@@ -163,7 +163,7 @@ export default function HomepageAdditions() {
                     href="https://wa.me/?text=Hello%20CBM%20Radio!"
                     target="_blank"
                     rel="noreferrer"
-                    className="flex min-h-12 w-full items-center justify-center gap-2.5 bg-[#25D366] px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-[#20ba5a] hover:scale-[1.01]"
+                    className="flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-[#25D366] px-7 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-[#20ba5a] hover:scale-105 active:scale-95 shadow-lg cursor-pointer"
                   >
                     <FaWhatsapp size={19} />
                     <span>Join CBM on WhatsApp</span>
@@ -192,7 +192,7 @@ export default function HomepageAdditions() {
                           rel="noreferrer"
                           aria-label={link.platform_label}
                           title={link.platform_label}
-                          className="grid size-9 place-items-center border border-white/20 bg-white/5 text-zinc-300 transition hover:border-[#04b093] hover:text-[#04b093]"
+                          className="grid size-10 place-items-center rounded-full border border-white/20 bg-white/5 text-zinc-300 transition-all hover:border-[#04b093] hover:text-[#04b093] hover:scale-110 active:scale-95 shadow-md"
                         >
                           <Icon size={14} />
                         </a>
@@ -206,7 +206,7 @@ export default function HomepageAdditions() {
                     href={newsletterUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex min-h-10 items-center justify-center gap-1.5 border border-white/20 bg-transparent px-4 text-xs font-black uppercase tracking-wider text-white hover:border-[#04b093] hover:text-[#04b093] transition"
+                    className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 text-xs font-black uppercase tracking-wider text-white hover:border-[#04b093] hover:text-[#04b093] hover:bg-white/10 hover:scale-105 active:scale-95 transition-all cursor-pointer"
                   >
                     <Mail size={13} />
                     <span>Subscribe</span>
@@ -214,7 +214,7 @@ export default function HomepageAdditions() {
                 ) : (
                   <Link
                     href="/contact"
-                    className="inline-flex min-h-10 items-center justify-center gap-1.5 border border-white/20 bg-transparent px-4 text-xs font-black uppercase tracking-wider text-white hover:border-[#04b093] hover:text-[#04b093] transition"
+                    className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 text-xs font-black uppercase tracking-wider text-white hover:border-[#04b093] hover:text-[#04b093] hover:bg-white/10 hover:scale-105 active:scale-95 transition-all cursor-pointer"
                   >
                     <Mail size={13} />
                     <span>Contact Us</span>
@@ -225,14 +225,14 @@ export default function HomepageAdditions() {
           </div>
 
           {/* Panel 2: Brand Partnerships & Sponsorships */}
-          <div className="border-2 border-black bg-black p-7 sm:p-10 flex flex-col justify-between text-white shadow-2xl">
+          <div className="rounded-3xl border-3 border-black bg-black p-7 sm:p-10 flex flex-col justify-between text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)] hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] transition-all duration-300">
             <div>
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <span className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#04b093]">
                   <Handshake size={14} />
                   <span>COMMERCIAL & SPONSORSHIPS</span>
                 </span>
-                <span className="bg-[#04b093]/10 px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-[#04b093] border border-[#04b093]/30">
+                <span className="rounded-full bg-[#04b093]/10 px-3 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-[#04b093] border border-[#04b093]/30">
                   PARTNERSHIPS
                 </span>
               </div>
@@ -246,7 +246,7 @@ export default function HomepageAdditions() {
               </p>
 
               {sponsorImage && (
-                <div className="relative mt-6 aspect-[16/8] w-full overflow-hidden bg-black border border-white/20">
+                <div className="relative mt-6 aspect-[16/8] w-full overflow-hidden rounded-2xl bg-black border border-white/20 shadow-md">
                   <Image
                     src={sponsorImage}
                     alt="Sponsorship showcase"
@@ -263,7 +263,7 @@ export default function HomepageAdditions() {
             <div className="mt-8 border-t border-white/10 pt-6 flex flex-wrap items-center justify-between gap-4 text-xs font-black uppercase">
               <Link
                 href="/contact"
-                className="inline-flex min-h-11 items-center gap-2 bg-[#04b093] px-6 text-xs text-black hover:bg-[#05c6a5] transition"
+                className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#04b093] px-7 text-xs font-black uppercase text-black hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer"
               >
                 <span>{sponsor?.cta_label || "Explore Partnerships"}</span>
                 <ArrowUpRight size={14} />
@@ -272,7 +272,7 @@ export default function HomepageAdditions() {
               {emailHref && (
                 <a
                   href={emailHref}
-                  className="inline-flex items-center gap-1.5 text-zinc-400 hover:text-white transition"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-zinc-300 hover:text-white hover:border-white hover:scale-105 active:scale-95 transition-all cursor-pointer"
                 >
                   <Mail size={13} className="text-[#04b093]" />
                   <span>Email Production Desk</span>

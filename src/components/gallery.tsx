@@ -88,7 +88,7 @@ export default function Gallery() {
         <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-black pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="bg-black px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
+              <span className="rounded-full bg-black px-4 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093] shadow-md">
                 DARKROOM
               </span>
               <span className="text-xs font-black uppercase tracking-[0.22em] text-black/75">
@@ -105,7 +105,7 @@ export default function Gallery() {
 
           <Link
             href="/gallery"
-            className="inline-flex items-center gap-2 border-2 border-black bg-black px-5 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black w-fit shadow-md"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-black px-6 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer w-fit"
           >
             <span>Full Gallery</span>
             <ArrowUpRight size={15} />
@@ -126,7 +126,7 @@ export default function Gallery() {
               }}
               role="button"
               tabIndex={0}
-              className="group relative cursor-pointer border-2 border-black bg-black overflow-hidden shadow-xl transition-all duration-300 hover:scale-[1.02] hover:border-white"
+              className="group relative cursor-pointer rounded-3xl border-3 border-black bg-black overflow-hidden shadow-[8px_8px_0_0_rgba(0,0,0,1)] hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 transition-all duration-300"
             >
               <div className="relative aspect-square w-full overflow-hidden bg-black">
                 <Image
@@ -140,13 +140,13 @@ export default function Gallery() {
 
                 {/* Index Sticker */}
                 <div className="absolute left-3 top-3">
-                  <span className="bg-black/90 px-2 py-0.5 text-[0.62rem] font-black uppercase tracking-wider text-[#04b093] border border-white/20">
+                  <span className="rounded-full bg-black/90 px-3 py-1 text-[0.62rem] font-black uppercase tracking-wider text-[#04b093] border border-white/20 shadow-md">
                     FRAME 0{idx + 1}
                   </span>
                 </div>
 
                 {/* Hover Zoom Indicator */}
-                <div className="absolute right-3 top-3 grid size-8 place-items-center bg-[#04b093] text-black opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute right-3 top-3 grid size-9 place-items-center rounded-full bg-[#04b093] text-black opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 shadow-lg">
                   <ZoomIn size={14} />
                 </div>
 

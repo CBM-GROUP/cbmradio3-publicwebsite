@@ -112,7 +112,7 @@ export default function HeroSection() {
               <div className="mt-6 flex flex-wrap items-center gap-3.5 sm:gap-4">
                 <a
                   href="#episodes"
-                  className="inline-flex min-h-12 items-center gap-2.5 bg-black px-6 sm:px-7 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black hover:scale-[1.02] shadow-xl"
+                  className="inline-flex min-h-12 items-center gap-2.5 rounded-full bg-black px-7 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer"
                 >
                   <Headphones size={16} />
                   <span>Stream Episodes</span>
@@ -120,7 +120,7 @@ export default function HeroSection() {
 
                 <a
                   href="#shows"
-                  className="inline-flex min-h-12 items-center gap-2 border-2 border-black bg-transparent px-5 sm:px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-black hover:text-white"
+                  className="inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-black bg-transparent px-6 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-black hover:text-white hover:scale-105 active:scale-95 cursor-pointer"
                 >
                   <span>Explore Series</span>
                   <ArrowUpRight size={15} />
@@ -128,7 +128,7 @@ export default function HeroSection() {
 
                 <Link
                   href="/charts"
-                  className="inline-flex min-h-12 items-center gap-2 border-2 border-black bg-white/20 px-5 sm:px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-black hover:text-[#04b093]"
+                  className="inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-black bg-white/30 px-6 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-black hover:text-[#04b093] hover:scale-105 active:scale-95 cursor-pointer"
                 >
                   <span>Music Charts</span>
                   <ArrowUpRight size={15} />
@@ -137,8 +137,8 @@ export default function HeroSection() {
             </div>
 
             {/* Spotlight Video Tile (The Zwart/Billboard Lead Media Card) */}
-            <div className="mt-10 border-2 border-black bg-black p-4 text-white shadow-2xl">
-              <div className="group relative aspect-video w-full overflow-hidden bg-black">
+            <div className="mt-10 rounded-3xl border-3 sm:border-4 border-black bg-black p-5 sm:p-7 text-white shadow-[12px_12px_0_0_rgba(0,0,0,1)] hover:shadow-[16px_16px_0_0_rgba(0,0,0,1)] transition-all duration-300">
+              <div className="group relative aspect-video w-full overflow-hidden rounded-2xl bg-black border border-white/10">
                 <Image
                   src={
                     activeEpisode?.cover_image ||
@@ -156,7 +156,7 @@ export default function HeroSection() {
 
                 {/* Top Badge */}
                 <div className="absolute left-3 top-3">
-                  <span className="bg-black/90 px-3 py-1 text-[0.62rem] font-black uppercase tracking-widest text-[#04b093] border border-white/20">
+                  <span className="rounded-full bg-black/90 px-3.5 py-1 text-[0.62rem] font-black uppercase tracking-widest text-[#04b093] border border-white/20">
                     ★ NOW FEATURED // {activeEpisode?.program_title || "ORIGINAL SERIES"}
                   </span>
                 </div>
@@ -167,14 +167,14 @@ export default function HeroSection() {
                     type="button"
                     onClick={() => playEpisode(activeEpisode, true)}
                     aria-label={`Play ${activeEpisode.title}`}
-                    className="absolute inset-0 m-auto grid size-16 place-items-center bg-[#04b093] text-black shadow-2xl transition hover:scale-110 hover:bg-[#05c6a5]"
+                    className="absolute inset-0 m-auto grid size-16 place-items-center rounded-full bg-[#04b093] text-black shadow-2xl transition-all hover:scale-110 active:scale-95 hover:bg-white cursor-pointer"
                   >
                     <Play size={24} className="ml-1 fill-black" />
                   </button>
                 ) : (
                   <a
                     href="#episodes"
-                    className="absolute inset-0 m-auto grid size-16 place-items-center bg-[#04b093] text-black shadow-2xl transition hover:scale-110 hover:bg-[#05c6a5]"
+                    className="absolute inset-0 m-auto grid size-16 place-items-center rounded-full bg-[#04b093] text-black shadow-2xl transition-all hover:scale-110 active:scale-95 hover:bg-white cursor-pointer"
                   >
                     <Play size={24} className="ml-1 fill-black" />
                   </a>
@@ -196,7 +196,7 @@ export default function HeroSection() {
                   <button
                     type="button"
                     onClick={() => playEpisode(activeEpisode, true)}
-                    className="inline-flex items-center gap-1.5 self-start sm:self-auto bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] hover:bg-[#04b093] hover:text-black transition shrink-0"
+                    className="inline-flex items-center gap-2 self-start sm:self-auto rounded-full bg-white/10 px-5 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] hover:bg-[#04b093] hover:text-black transition-all hover:scale-105 active:scale-95 shrink-0 cursor-pointer"
                   >
                     <Play size={12} className="fill-current" />
                     <span>Watch / Listen</span>
@@ -208,7 +208,7 @@ export default function HeroSection() {
 
           {/* Right Column (5 cols): The Billboard Hot Drops Leaderboard */}
           <div className="lg:col-span-5 flex flex-col justify-between">
-            <div className="border-2 border-black bg-black p-5 sm:p-7 text-white shadow-2xl">
+            <div className="rounded-3xl border-3 sm:border-4 border-black bg-black p-6 sm:p-8 text-white shadow-[12px_12px_0_0_rgba(0,0,0,1)] hover:shadow-[16px_16px_0_0_rgba(0,0,0,1)] transition-all duration-300 flex flex-col justify-between">
               
               {/* Leaderboard Header */}
               <div className="flex items-center justify-between border-b-2 border-white/20 pb-4">
@@ -218,7 +218,7 @@ export default function HeroSection() {
                     Billboard Hot Drops
                   </h3>
                 </div>
-                <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-black">
+                <span className="rounded-full bg-[#04b093] px-3.5 py-1 text-[0.65rem] font-black uppercase tracking-wider text-black shadow-sm">
                   TOP RELEASES
                 </span>
               </div>
@@ -232,8 +232,8 @@ export default function HeroSection() {
                     <article
                       key={ep.id}
                       onClick={() => setSelectedIndex(idx)}
-                      className={`group flex items-center justify-between gap-4 py-4 cursor-pointer transition-colors ${
-                        isSelected ? "bg-white/[0.08]" : "hover:bg-white/[0.03]"
+                      className={`group flex items-center justify-between gap-4 rounded-2xl p-3 sm:p-3.5 my-1.5 cursor-pointer transition-all duration-200 ${
+                        isSelected ? "bg-white/10 ring-1 ring-white/15 shadow-md" : "hover:bg-white/5"
                       }`}
                     >
                       <div className="flex items-center gap-4 min-w-0">
@@ -251,7 +251,7 @@ export default function HeroSection() {
                         </span>
 
                         {/* Thumbnail with hover play overlay */}
-                        <div className="relative size-14 shrink-0 overflow-hidden bg-black border border-white/20">
+                        <div className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-black border border-white/20 shadow-md">
                           <Image
                             src={
                               ep.cover_image ||
@@ -271,7 +271,7 @@ export default function HeroSection() {
                               playEpisode(ep, true);
                             }}
                             aria-label={`Play ${ep.title}`}
-                            className="absolute inset-0 m-auto grid size-7 place-items-center bg-[#04b093] text-black opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="absolute inset-0 m-auto grid size-8 place-items-center rounded-full bg-[#04b093] text-black opacity-0 group-hover:opacity-100 transition-all hover:scale-110 active:scale-95 shadow-lg"
                           >
                             <Play size={12} className="ml-0.5 fill-black" />
                           </button>
@@ -301,7 +301,7 @@ export default function HeroSection() {
                           playEpisode(ep, true);
                         }}
                         aria-label={`Stream ${ep.title}`}
-                        className="grid size-8 place-items-center border border-white/20 text-zinc-400 group-hover:border-[#04b093] group-hover:bg-[#04b093] group-hover:text-black transition shrink-0"
+                        className="grid size-8 place-items-center rounded-full bg-white/10 border border-white/20 text-zinc-400 group-hover:border-[#04b093] group-hover:bg-[#04b093] group-hover:text-black group-hover:scale-110 active:scale-95 transition-all shrink-0 cursor-pointer"
                       >
                         <Play size={12} className="ml-0.5 fill-current" />
                       </button>
