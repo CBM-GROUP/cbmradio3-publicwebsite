@@ -19,6 +19,7 @@ import StudioImage from "../../public/cbm_images/behind-the-scenes-studio.png";
 
 // =========================================================================
 // TOP 6 TRENDING ARTISTS CONFIGURATION
+// Colors alternate between White (#ffffff) and CBM Brand Theme Teal (#04b093).
 // Edit week label, artist names, images, colors, links & widths below:
 // =========================================================================
 export const TRENDING_WEEK_LABEL = "Week of October 27, 2026 LEADERBOARD";
@@ -28,6 +29,8 @@ export interface TrendingArtist {
   name: string;
   image: string;
   color: string;
+  textColor?: string;
+  strokeColor?: string;
   link: string;
   widthPercent: number; // Width % on desktop (ranks shrink: 100% down to 62%)
 }
@@ -37,7 +40,9 @@ export const TOP_TRENDING_ARTISTS: TrendingArtist[] = [
     rank: 1,
     name: "Amani Sound",
     image: "/artists/artist-1.jpg",
-    color: "#ec4899", // Solid Pink
+    color: "#ffffff", // 1st: Solid White
+    textColor: "#000000",
+    strokeColor: "rgba(0, 0, 0, 0.9)",
     link: "#",
     widthPercent: 100,
   },
@@ -45,7 +50,9 @@ export const TOP_TRENDING_ARTISTS: TrendingArtist[] = [
     rank: 2,
     name: "Kalonzo Vibe",
     image: "/artists/artist-2.jpg",
-    color: "#10b981", // Solid Green
+    color: "#04b093", // 2nd: CBM Company Theme Teal
+    textColor: "#000000",
+    strokeColor: "rgba(0, 0, 0, 0.9)",
     link: "#",
     widthPercent: 92,
   },
@@ -53,7 +60,9 @@ export const TOP_TRENDING_ARTISTS: TrendingArtist[] = [
     rank: 3,
     name: "Zion Echoes",
     image: "/artists/artist-3.jpg",
-    color: "#8b5cf6", // Solid Purple
+    color: "#ffffff", // 3rd: Solid White
+    textColor: "#000000",
+    strokeColor: "rgba(0, 0, 0, 0.9)",
     link: "#",
     widthPercent: 85,
   },
@@ -61,7 +70,9 @@ export const TOP_TRENDING_ARTISTS: TrendingArtist[] = [
     rank: 4,
     name: "Grace Tribe",
     image: "/artists/artist-4.jpg",
-    color: "#84cc16", // Solid Light Green
+    color: "#04b093", // 4th: CBM Company Theme Teal
+    textColor: "#000000",
+    strokeColor: "rgba(0, 0, 0, 0.9)",
     link: "#",
     widthPercent: 78,
   },
@@ -69,7 +80,9 @@ export const TOP_TRENDING_ARTISTS: TrendingArtist[] = [
     rank: 5,
     name: "Sauti Soul",
     image: "/artists/artist-5.jpg",
-    color: "#0284c7", // Solid Blue
+    color: "#ffffff", // 5th: Solid White
+    textColor: "#000000",
+    strokeColor: "rgba(0, 0, 0, 0.9)",
     link: "#",
     widthPercent: 70,
   },
@@ -77,7 +90,9 @@ export const TOP_TRENDING_ARTISTS: TrendingArtist[] = [
     rank: 6,
     name: "David & Choir",
     image: "/artists/artist-6.jpg",
-    color: "#64748b", // Solid Grey
+    color: "#04b093", // 6th: CBM Company Theme Teal
+    textColor: "#000000",
+    strokeColor: "rgba(0, 0, 0, 0.9)",
     link: "#",
     widthPercent: 62,
   },
@@ -309,12 +324,15 @@ export default function HeroSection() {
               {/* 6 Horizontal Bars Stacked Vertically */}
               <div className="my-5 flex flex-col gap-2.5 sm:gap-3">
                 {TOP_TRENDING_ARTISTS.map((artist, idx) => {
+                  const textColor = artist.textColor || "#000000";
+                  const strokeColor = artist.strokeColor || "rgba(0, 0, 0, 0.9)";
+
                   return (
                     <a
                       key={artist.rank}
                       href={artist.link || "#"}
                       aria-label={`${artist.name} - Rank ${artist.rank}`}
-                      className="group relative flex h-13 sm:h-15 items-center justify-between overflow-hidden rounded-xl sm:rounded-2xl w-full sm:w-[var(--desktop-width)] transition-all duration-300 hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] cursor-pointer shadow-md select-none"
+                      className="group relative flex h-13 sm:h-15 items-center justify-between overflow-hidden rounded-xl sm:rounded-2xl w-full sm:w-[var(--desktop-width)] transition-all duration-300 hover:scale-[1.02] hover:brightness-105 active:scale-[0.98] cursor-pointer shadow-md select-none"
                       style={
                         {
                           backgroundColor: artist.color,
@@ -331,9 +349,12 @@ export default function HeroSection() {
                         } as React.CSSProperties
                       }
                     >
-                      {/* Left: Artist Name in Bold White */}
+                      {/* Left: Artist Name in Bold */}
                       <div className="relative z-20 flex items-center min-w-0 pl-4 sm:pl-5 py-3">
-                        <span className="text-xs sm:text-sm md:text-base font-black uppercase tracking-wider text-white truncate drop-shadow-sm">
+                        <span
+                          className="text-xs sm:text-sm md:text-base font-black uppercase tracking-wider truncate"
+                          style={{ color: textColor }}
+                        >
                           {artist.name}
                         </span>
                       </div>
@@ -348,22 +369,24 @@ export default function HeroSection() {
                         />
 
                         {/* Color overlay with mix-blend-multiply in bar's solid color */}
-                        <div
-                          className="absolute inset-0 mix-blend-multiply opacity-90 transition-opacity group-hover:opacity-100"
-                          style={{ backgroundColor: artist.color }}
-                        />
-
-                        {/* Second color overlay with mix-blend-color for vibrant color matching */}
-                        <div
-                          className="absolute inset-0 mix-blend-color opacity-85"
-                          style={{ backgroundColor: artist.color }}
-                        />
+                        {artist.color !== "#ffffff" && (
+                          <>
+                            <div
+                              className="absolute inset-0 mix-blend-multiply opacity-90 transition-opacity group-hover:opacity-100"
+                              style={{ backgroundColor: artist.color }}
+                            />
+                            <div
+                              className="absolute inset-0 mix-blend-color opacity-85"
+                              style={{ backgroundColor: artist.color }}
+                            />
+                          </>
+                        )}
 
                         {/* Horizontal gradient fading seamlessly into the solid bar */}
                         <div
                           className="absolute inset-0"
                           style={{
-                            background: `linear-gradient(to right, ${artist.color} 0%, ${artist.color} 15%, transparent 75%)`,
+                            background: `linear-gradient(to right, ${artist.color} 0%, ${artist.color} 20%, transparent 80%)`,
                           }}
                         />
                       </div>
@@ -373,9 +396,8 @@ export default function HeroSection() {
                         <span
                           className="text-3xl sm:text-4xl md:text-5xl font-black italic tracking-tighter select-none leading-none"
                           style={{
-                            WebkitTextStroke: "1.5px rgba(255, 255, 255, 0.95)",
+                            WebkitTextStroke: `1.5px ${strokeColor}`,
                             color: "transparent",
-                            textShadow: "0 2px 8px rgba(0,0,0,0.3)",
                           }}
                         >
                           {artist.rank}
