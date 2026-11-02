@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowUpRight, X, Camera } from "lucide-react";
 
 // =========================================================================
-// 📸 STATION PHOTO PRINTS CONFIGURATION
+// 📸 STATION PHOTO PRINTS CONFIGURATION (EXACTLY 4 PHOTO PRINTS)
 // Easily swap in your own photos by changing `imageUrl` to any file inside
 // `cbmradio3-publicwebsite/public/` (for example: `/cbm_images/my-photo.jpg`)
 // =========================================================================
@@ -20,7 +20,6 @@ export interface PhotoPrintItem {
   storySlug: string;
   storyExcerpt: string;
   date: string;
-  hideOnMobile?: boolean; // For mobile: show 3 prints as requested
   desktop: {
     left: string;
     top: string;
@@ -51,16 +50,16 @@ export const STATION_PHOTO_PRINTS: PhotoPrintItem[] = [
     date: "OCT 2026",
     desktop: {
       left: "4%",
-      top: "14%",
-      width: "44%",
+      top: "12%",
+      width: "43%",
       rotation: -12,
       zIndex: 10,
       depth: 16,
     },
     mobile: {
-      left: "4%",
-      top: "8%",
-      width: "55%",
+      left: "3%",
+      top: "6%",
+      width: "50%",
       rotation: -10,
       zIndex: 10,
     },
@@ -76,17 +75,17 @@ export const STATION_PHOTO_PRINTS: PhotoPrintItem[] = [
     storyExcerpt: "An impromptu roundtable sharing untold stories, faith reflections, and grassroot music rhythms.",
     date: "OCT 2026",
     desktop: {
-      left: "32%",
+      left: "34%",
       top: "4%",
       width: "42%",
-      rotation: 3,
+      rotation: 4,
       zIndex: 15,
       depth: 12,
     },
     mobile: {
-      left: "38%",
-      top: "12%",
-      width: "56%",
+      left: "46%",
+      top: "8%",
+      width: "50%",
       rotation: 5,
       zIndex: 15,
     },
@@ -102,18 +101,18 @@ export const STATION_PHOTO_PRINTS: PhotoPrintItem[] = [
     storyExcerpt: "The red tally lamp goes live as the mid-day cultural journal dispatches across Kenya and syndication.",
     date: "NOV 2026",
     desktop: {
-      left: "48%",
-      top: "36%",
+      left: "49%",
+      top: "38%",
       width: "45%",
       rotation: 9,
       zIndex: 25,
       depth: 22,
     },
     mobile: {
-      left: "18%",
+      left: "44%",
       top: "48%",
-      width: "64%",
-      rotation: 2,
+      width: "52%",
+      rotation: 7,
       zIndex: 25,
     },
   },
@@ -127,21 +126,20 @@ export const STATION_PHOTO_PRINTS: PhotoPrintItem[] = [
     storySlug: "artist-spotlight",
     storyExcerpt: "Under the warm studio lamps, emerging gospel musicians break down their new single chord by chord.",
     date: "NOV 2026",
-    hideOnMobile: true, // Only 3 prints on mobile as requested
     desktop: {
-      left: "14%",
-      top: "50%",
+      left: "12%",
+      top: "48%",
       width: "43%",
       rotation: -5,
       zIndex: 20,
       depth: 18,
     },
     mobile: {
-      left: "10%",
-      top: "52%",
+      left: "4%",
+      top: "46%",
       width: "50%",
-      rotation: -4,
-      zIndex: 12,
+      rotation: -5,
+      zIndex: 18,
     },
   },
 ];
@@ -324,16 +322,7 @@ export default function StationDispatchesFlatLay() {
 
         {/* =========================================================================
             RIGHT COLUMN (DESKTOP) / BOTTOM (MOBILE):
-            TOP-DOWN FLAT LAY OF PRINTED PHOTOS ON A WARM WALNUT WOOD TABLE
-            - Background: Rich brown walnut wood table with visible grain & vignette
-            - Soft diagonal window light patches & shadows
-            - 3 to 4 instant-print photos (Polaroid style) scattered & overlapping
-            - 1 blank white card peeking out from underneath
-            - Decorative props:
-              - 2 brass film canisters labelled "ISO" (1 on mobile)
-              - Short strip of dark film negative with sprocket holes at top edge
-              - Dried rose / botanical stem at right edge
-            - Interactive lift, tilt, parallax & modal zoom
+            TOP-DOWN FLAT LAY OF 4 PRINTED PHOTOS ON A WARM WALNUT WOOD TABLE
             ========================================================================= */}
         <div className="lg:col-span-7">
           
@@ -414,9 +403,8 @@ export default function StationDispatchesFlatLay() {
             {/* =================================================================
                 DECORATIVE PROPS:
                 1. Strip of Dark Film Negative with Sprocket Holes (Top edge)
-                2. 2 Brass Film Canisters labelled "ISO" (2 on desktop, 1 on mobile)
-                3. Dried Rose / Botanical Stem (Right edge, hidden on narrow mobile)
-                4. Blank White Card peeking out from underneath
+                2. 2 Brass Film Canisters labelled "ISO"
+                3. Dried Rose / Botanical Leaf Stem (Right edge)
                 ================================================================= */}
 
             {/* PROP 1: Dark Film Negative Strip (Top Edge, partly cut off) */}
@@ -462,27 +450,7 @@ export default function StationDispatchesFlatLay() {
               </div>
             </div>
 
-            {/* PROP 2: Blank White Card Peeking Out From Underneath */}
-            <div
-              className="absolute left-[6%] sm:left-[10%] top-[34%] z-6 w-32 sm:w-44 h-44 sm:h-56 rounded-md bg-[#faf7ef] pointer-events-none shadow-[0_12px_24px_rgba(0,0,0,0.65)] border border-[#d8d0bf] rotate-[-15deg] transition-transform duration-500"
-              style={{
-                transform: `rotate(-15deg) translate(${mouseOffset.x * 10}px, ${mouseOffset.y * 10}px)`,
-              }}
-              aria-hidden="true"
-            >
-              <div className="p-2.5 sm:p-3">
-                <div className="h-28 sm:h-36 w-full rounded border border-dashed border-[#b3a894] bg-[#f0ebd9]/60 flex items-center justify-center">
-                  <span className="font-mono text-[0.5rem] sm:text-[0.55rem] font-bold text-[#8c7f6b] uppercase tracking-widest rotate-[-10deg]">
-                    [ TEST PRINT // CBM ]
-                  </span>
-                </div>
-                <div className="mt-2.5 font-mono text-[0.5rem] sm:text-[0.55rem] text-[#695d4b]">
-                  REC // 35MM LEADER
-                </div>
-              </div>
-            </div>
-
-            {/* PROP 3: Brass Film Canister 1 (Top Left, labelled "ISO 400") */}
+            {/* PROP 2: Brass Film Canister 1 (Top Left, labelled "ISO 400") */}
             <div
               className="absolute left-[2%] top-[2%] sm:top-[4%] z-7 w-11 sm:w-16 h-18 sm:h-24 pointer-events-none transition-transform duration-500"
               style={{
@@ -491,21 +459,18 @@ export default function StationDispatchesFlatLay() {
               }}
               aria-hidden="true"
             >
-              {/* Cylindrical Brass Body */}
               <div
                 className="w-full h-full rounded-lg relative overflow-hidden border border-[#594212]"
                 style={{
                   background: "linear-gradient(90deg, #6e4e11 0%, #d4af37 28%, #fae69e 55%, #aa820a 78%, #4a340b 100%)",
                 }}
               >
-                {/* Knurled Top Cap */}
                 <div
                   className="h-3 sm:h-4 w-full border-b border-[#3b2b0a]"
                   style={{
                     background: "linear-gradient(90deg, #443009 0%, #aa820a 35%, #ffd700 65%, #3b2a09 100%)",
                   }}
                 />
-                {/* ISO Label Stamp */}
                 <div className="absolute inset-x-0 top-5 sm:top-6 text-center">
                   <div className="inline-block bg-black/85 px-1 py-0.5 rounded text-[0.45rem] sm:text-[0.58rem] font-mono font-black text-[#d4af37] tracking-widest">
                     ISO 400
@@ -517,7 +482,7 @@ export default function StationDispatchesFlatLay() {
               </div>
             </div>
 
-            {/* PROP 4: Brass Film Canister 2 (Bottom Left, labelled "ISO 800", hidden on mobile) */}
+            {/* PROP 3: Brass Film Canister 2 (Bottom Left, labelled "ISO 800", hidden on narrow mobile) */}
             <div
               className="hidden sm:block absolute left-[2%] bottom-[-2%] z-7 w-14 h-22 pointer-events-none transition-transform duration-500"
               style={{
@@ -541,7 +506,7 @@ export default function StationDispatchesFlatLay() {
               </div>
             </div>
 
-            {/* PROP 5: Dried Rose / Botanical Leaf Stem (Right edge, hidden on mobile) */}
+            {/* PROP 4: Dried Rose / Botanical Leaf Stem (Right edge, hidden on narrow mobile) */}
             <div
               className="hidden sm:block absolute -right-4 sm:-right-6 top-[22%] sm:top-[28%] z-8 w-24 sm:w-32 h-52 sm:h-64 pointer-events-none transition-transform duration-500"
               style={{
@@ -551,7 +516,6 @@ export default function StationDispatchesFlatLay() {
               aria-hidden="true"
             >
               <svg viewBox="0 0 100 220" className="w-full h-full block">
-                {/* Stem */}
                 <path
                   d="M 50,220 C 45,160 55,100 48,35"
                   fill="none"
@@ -559,7 +523,6 @@ export default function StationDispatchesFlatLay() {
                   strokeWidth="2.5"
                   strokeLinecap="round"
                 />
-                {/* Dried leaves */}
                 <path
                   d="M 49,150 C 30,140 22,120 32,112 C 42,108 48,130 49,150 Z"
                   fill="#61553c"
@@ -578,7 +541,6 @@ export default function StationDispatchesFlatLay() {
                   stroke="#423624"
                   strokeWidth="0.8"
                 />
-                {/* Dried Rose Bud / Petals */}
                 <g transform="translate(48, 30)">
                   <path
                     d="M 0,5 C -12,0 -16,-18 -4,-24 C 6,-30 18,-18 10,-4 Z"
@@ -598,10 +560,11 @@ export default function StationDispatchesFlatLay() {
             </div>
 
             {/* =================================================================
-                THE INSTANT-PRINT PHOTOS (POLAROID STYLE)
-                Scattered, overlapping, rotating between -12° and +9°
-                Thick bottom white border with handwritten caption
-                Hover straightens, lifts, deepens shadow & glows teal!
+                EXACTLY 4 INSTANT-PRINT PHOTOS (POLAROID STYLE)
+                1. Behind the Mic
+                2. Culture
+                3. Dispatch #12
+                4. Stories
                 ================================================================= */}
             {STATION_PHOTO_PRINTS.map((photo, index) => {
               const isHovered = hoveredId === photo.id;
@@ -619,8 +582,8 @@ export default function StationDispatchesFlatLay() {
                   onMouseEnter={() => setHoveredId(photo.id)}
                   onMouseLeave={() => setHoveredId(null)}
                   className={`absolute cursor-pointer transition-all duration-300 group/photo ${
-                    photo.hideOnMobile ? "hidden sm:block" : ""
-                  } ${isHovered ? "z-50" : ""}`}
+                    isHovered ? "z-50" : ""
+                  }`}
                   style={{
                     left: photo.desktop.left,
                     top: photo.desktop.top,
