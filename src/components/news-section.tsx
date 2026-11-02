@@ -10,6 +10,7 @@ import homeService from "@/services/home.service";
 import type { ArticleSummary } from "@/types/news";
 
 import NewsroomStudioSet from "../../public/cbm_images/newsroom-studio-set.png";
+import HowYourShowGoesLive from "@/components/how-your-show-goes-live";
 
 export default function NewsSection() {
   const [featuredArticles, setFeaturedArticles] = useState<ArticleSummary[]>([]);
@@ -78,7 +79,12 @@ export default function NewsSection() {
           </Link>
         </div>
 
-        {/* Loading State */}
+                {/* Broadcast Onboarding Pipeline: Vintage Film Reel Live Countdown */}
+        <div className="mb-12">
+          <HowYourShowGoesLive />
+        </div>
+
+{/* Loading State */}
         {loading && (
           <div className="rounded-3xl border-3 border-black bg-black p-16 text-center text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
             <p className="text-sm font-black uppercase tracking-wider">RETRIEVING DISPATCHES WIRE...</p>

@@ -1,105 +1,124 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Radio, Mic, Sparkles, Send, CheckCircle2 } from "lucide-react";
+import { ArrowUpRight, Radio, Mic, Send, CheckCircle2, Sparkles, Volume2 } from "lucide-react";
 
 // =========================================================================
-// COUNTDOWN STEPS CONFIGURATION
-// 4 Frames: "3", "2", "1", "TODAY"
+// 4 COUNTDOWN STAGES CONFIGURATION
+// Exactly matching user specifications:
+// 3 = PITCH: Send us your original show concept.
+// 2 = REVIEW: Our team reviews your idea and audio sample.
+// 1 = PILOT: Record a pilot episode with our studio.
+// TODAY = LIVE ON CBM RADIO: Your show goes on air.
 // =========================================================================
-interface CountdownFrame {
+interface StageConfig {
   id: number;
-  count: string;
-  phase: string;
-  title: string;
-  description: string;
-  tag: string;
+  badge: string;
+  name: string;
+  tagline: string;
+  detail: string;
+  subtext: string;
   icon: typeof Mic;
-  timeEstimate: string;
 }
 
-const COUNTDOWN_FRAMES: CountdownFrame[] = [
+const STAGES: StageConfig[] = [
+  {
+    id: 0,
+    badge: "3",
+    name: "PITCH",
+    tagline: "Send us your original show concept.",
+    detail: "Submit your format treatment, musical genre or talk premise, and creative vision to our programming board.",
+    subtext: "STAGE 01 // CONCEPT SUBMISSION",
+    icon: Send,
+  },
   {
     id: 1,
-    count: "3",
-    phase: "PITCH",
-    title: "Send Us Your Original Show Concept",
-    description:
-      "Submit your initial treatment, format outline, musical or spoken-word style, and creative vision to our station board.",
-    tag: "STAGE 01 // SUBMISSION",
-    icon: Send,
-    timeEstimate: "STEP 01",
+    badge: "2",
+    name: "REVIEW",
+    tagline: "Our team reviews your idea and audio sample.",
+    detail: "Our production team evaluates broadcast rhythm, voice tone, audience relevance, and 3-minute sample demo tape.",
+    subtext: "STAGE 02 // CURATION & FEEDBACK",
+    icon: CheckCircle2,
   },
   {
     id: 2,
-    count: "2",
-    phase: "REVIEW",
-    title: "Our Team Reviews Your Idea & Audio Sample",
-    description:
-      "Our station producers evaluate your creative hook, host dynamics, cultural resonance, and 3-minute sample demo tape.",
-    tag: "STAGE 02 // CURATION",
-    icon: CheckCircle2,
-    timeEstimate: "STEP 02",
+    badge: "1",
+    name: "PILOT",
+    tagline: "Record a pilot episode with our studio.",
+    detail: "Step into CBM Studio or provide mastered audio stems for professional sound-checks, sweepers, and station sound engineering.",
+    subtext: "STAGE 03 // STUDIO PRODUCTION",
+    icon: Mic,
   },
   {
     id: 3,
-    count: "1",
-    phase: "PILOT",
-    title: "Record a Pilot Episode with Our Studio",
-    description:
-      "Step into the CBM Radio booth or submit stem recordings for professional audio mixing, jingle beds, and mastering.",
-    tag: "STAGE 03 // PRODUCTION",
-    icon: Mic,
-    timeEstimate: "STEP 03",
-  },
-  {
-    id: 4,
-    count: "TODAY",
-    phase: "LIVE ON CBM RADIO",
-    title: "Your Show Goes Live on the Airwaves",
-    description:
-      "Your premiere broadcast hits the live FM stream, syndication airwaves, and lands permanently in our on-demand episode crate.",
-    tag: "STAGE 04 // TRANSMISSION",
+    badge: "TODAY",
+    name: "LIVE ON CBM RADIO",
+    tagline: "Your show goes on air.",
+    detail: "Your premiere broadcast hits live FM & streaming airwaves, with permanent on-demand syndication in the station crate.",
+    subtext: "STAGE 04 // LIVE BROADCAST TRANSMISSION",
     icon: Radio,
-    timeEstimate: "ON AIR NOW",
   },
 ];
 
 export default function HowYourShowGoesLive() {
-  const [activeFrame, setActiveFrame] = useState<number>(0);
+  const [activeStage, setActiveStage] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isTodayPausedFlash, setIsTodayPausedFlash] = useState<boolean>(false);
+  const [isReducedMotion, setIsReducedMotion] = useState<boolean>(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 8-second projector rotation cycle (each frame lights up for ~2 seconds in turn)
+  // Check reduced motion preference
   useEffect(() => {
-    if (isPaused) return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setIsReducedMotion(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
-    const interval = setInterval(() => {
-      setActiveFrame((prev) => (prev + 1) % COUNTDOWN_FRAMES.length);
-    }, 2000);
+  // Synchronized countdown cycle:
+  // 3 (2s) -> 2 (2s) -> 1 (2s) -> TODAY (pauses for 2s with soft glow and flash) -> loops back
+  useEffect(() => {
+    if (isPaused || isReducedMotion) {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      return;
+    }
 
-    return () => clearInterval(interval);
-  }, [isPaused]);
+    const duration = activeStage === 3 ? 2400 : 1800;
+    if (activeStage === 3) {
+      setIsTodayPausedFlash(true);
+    } else {
+      setIsTodayPausedFlash(false);
+    }
+
+    timerRef.current = setTimeout(() => {
+      setActiveStage((prev) => (prev + 1) % STAGES.length);
+      setIsTodayPausedFlash(false);
+    }, duration);
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [activeStage, isPaused, isReducedMotion]);
 
   return (
-    <section
-      id="how-your-show-goes-live"
-      aria-label="How Your Show Goes Live"
-      className="group/section relative scroll-mt-20 border-b-2 border-black bg-[#060c18] px-4 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24 overflow-hidden"
+    <div
+      aria-label="How Your Show Goes Live - Vintage Film Reel Poster Animation"
+      className="group/poster relative rounded-3xl border-3 border-black bg-[#ece8de] text-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] overflow-hidden transition-all duration-300"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       {/* =========================================================================
-          01 // CSS ANIMATIONS & GPU-ACCELERATED KEYFRAMES
-          - Vintage Film Reel Continuous Rotation
-          - Authentic 35mm Sprocket Perforation Continuous Motion
-          - Cinema Projector 24fps Light Flicker & Grain
-          - Academy Leader Countdown Crosshair Radar Sweep
-          - Hover Pause & Prefers-Reduced-Motion Handling
+          STYLES & ANIMATIONS
+          - Vintage Film Reel continuous rotation (in sync with strip motion)
+          - Sprocket hole crawling animation
+          - Subtle film flicker & grain
+          - Pause on hover & prefers-reduced-motion
           ========================================================================= */}
       <style>{`
-        /* Continuous Film Reel Rotation (in sync with strip motion) */
-        @keyframes reel-spin {
+        /* Continuous steady reel rotation */
+        @keyframes reel-rotate {
           from {
             transform: rotate(0deg);
           }
@@ -108,475 +127,941 @@ export default function HowYourShowGoesLive() {
           }
         }
 
-        /* Continuous Sprocket Hole Crawl (Horizontal) */
-        @keyframes sprocket-crawl-h {
+        /* Sprocket holes forward crawl */
+        @keyframes sprockets-flow {
           0% {
-            background-position: 0px 0px;
+            stroke-dashoffset: 0;
           }
           100% {
-            background-position: 48px 0px;
+            stroke-dashoffset: -32;
           }
         }
 
-        /* Continuous Sprocket Hole Crawl (Vertical for Mobile) */
-        @keyframes sprocket-crawl-v {
-          0% {
-            background-position: 0px 0px;
-          }
-          100% {
-            background-position: 0px 48px;
-          }
+        /* Projector bulb flicker & grain pulse */
+        @keyframes cinema-flicker {
+          0%, 100% { opacity: 1; filter: contrast(100%) brightness(100%); }
+          15% { opacity: 0.94; filter: contrast(105%) brightness(108%); }
+          35% { opacity: 0.98; filter: contrast(98%) brightness(96%); }
+          65% { opacity: 0.92; filter: contrast(106%) brightness(105%); }
+          85% { opacity: 0.99; filter: contrast(100%) brightness(99%); }
         }
 
-        /* Vintage 24fps Projector Bulb Flicker & Grain */
-        @keyframes projector-flicker {
+        /* Radar sweep for Academy Leader crosshair rings */
+        @keyframes radar-hand {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        /* Soft glow flash when TODAY reaches bottom */
+        @keyframes today-flash {
           0%, 100% {
-            opacity: 0.98;
-            filter: brightness(1) contrast(1);
+            filter: drop-shadow(0 0 16px rgba(4, 176, 147, 0.4)) drop-shadow(0 0 32px rgba(235, 170, 40, 0.35));
           }
-          20% {
-            opacity: 0.92;
-            filter: brightness(1.07) contrast(1.04);
-          }
-          40% {
-            opacity: 0.99;
-            filter: brightness(0.96) contrast(0.98);
-          }
-          60% {
-            opacity: 0.94;
-            filter: brightness(1.04) contrast(1.02);
-          }
-          80% {
-            opacity: 1;
-            filter: brightness(0.98) contrast(1);
+          50% {
+            filter: drop-shadow(0 0 30px rgba(4, 176, 147, 0.8)) drop-shadow(0 0 55px rgba(255, 220, 100, 0.7));
           }
         }
 
-        /* Academy Leader Target Radar Sweep */
-        @keyframes radar-sweep {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        /* Subtle Cinema Film Grain Simulation */
-        @keyframes grain-drift {
-          0%, 100% { transform: translate(0, 0); }
-          25% { transform: translate(-2%, 2%); }
-          50% { transform: translate(2%, -1%); }
-          75% { transform: translate(-1%, -2%); }
-        }
-
-        .animate-reel-spin {
-          animation: reel-spin 10s linear infinite;
-          transform-origin: center center;
+        .animate-reel {
+          animation: reel-rotate 14s linear infinite;
+          transform-origin: 85px 65px;
           will-change: transform;
         }
 
-        .animate-projector-flicker {
-          animation: projector-flicker 0.22s infinite;
+        .animate-sprockets {
+          animation: sprockets-flow 1.5s linear infinite;
         }
 
-        .animate-radar-sweep {
-          animation: radar-sweep 2s linear infinite;
+        .animate-flicker {
+          animation: cinema-flicker 0.28s infinite;
+        }
+
+        .animate-radar {
+          animation: radar-hand 1.8s linear infinite;
           transform-origin: center center;
         }
 
-        /* Authentic 35mm Cinema Sprocket Holes (Rounded Rectangles with Inner Punch) */
-        .cinema-sprocket-h {
-          background-image: 
-            radial-gradient(ellipse at center, #ffffff 45%, #e2e8f0 55%, transparent 60%);
-          background-size: 24px 14px;
-          background-repeat: repeat-x;
-          animation: sprocket-crawl-h 1.2s linear infinite;
+        .animate-today-glow {
+          animation: today-flash 1.2s ease-in-out infinite alternate;
         }
 
-        .cinema-sprocket-v {
-          background-image: 
-            radial-gradient(ellipse at center, #ffffff 45%, #e2e8f0 55%, transparent 60%);
-          background-size: 14px 24px;
-          background-repeat: repeat-y;
-          animation: sprocket-crawl-v 1.2s linear infinite;
-        }
-
-        /* Pause all motion on container hover */
-        .group\\/section:hover .animate-reel-spin,
-        .group\\/section:hover .cinema-sprocket-h,
-        .group\\/section:hover .cinema-sprocket-v,
-        .group\\/section:hover .animate-radar-sweep {
+        /* Pause all animations on poster hover */
+        .group\\/poster:hover .animate-reel,
+        .group\\/poster:hover .animate-sprockets,
+        .group\\/poster:hover .animate-radar {
           animation-play-state: paused !important;
         }
 
-        /* Accessibility: Disable motion for users with reduced motion preferences */
+        /* Accessibility: prefers-reduced-motion */
         @media (prefers-reduced-motion: reduce) {
-          .animate-reel-spin,
-          .animate-projector-flicker,
-          .animate-radar-sweep,
-          .cinema-sprocket-h,
-          .cinema-sprocket-v {
+          .animate-reel,
+          .animate-sprockets,
+          .animate-flicker,
+          .animate-radar,
+          .animate-today-glow {
             animation: none !important;
           }
         }
       `}</style>
 
-      {/* Ambient Deep Navy / Teal Projector Lens Flare */}
+      {/* Aged Paper Vignette & Film Grain Overlay */}
       <div
-        className="pointer-events-none absolute -left-36 top-1/4 h-[550px] w-[550px] rounded-full bg-[#04b093]/10 blur-[140px]"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute -right-36 bottom-1/4 h-[550px] w-[550px] rounded-full bg-[#04b093]/15 blur-[150px]"
+        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_50%_45%,rgba(247,244,236,0.92)_0%,rgba(235,229,218,0.85)_55%,rgba(209,200,183,0.92)_100%)]"
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto max-w-7xl">
-        {/* =========================================================================
-            02 // SECTION HEADER
-            - Small monospace label above heading
-            - Big bold uppercase heading
-            - One-line description under the heading
-            ========================================================================= */}
-        <div className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-zinc-800 pb-8">
+      {/* Decorative Vintage Poster Inner Hairline Border & Registration Marks */}
+      <div
+        className="pointer-events-none absolute inset-3 rounded-2xl border border-[#a89d87]/45"
+        aria-hidden="true"
+      >
+        <div className="absolute left-2 top-2 font-mono text-[0.55rem] font-black uppercase tracking-[0.2em] text-[#786d58]">
+          + CBM ARCHIVE // 35MM LEADER
+        </div>
+        <div className="absolute right-2 top-2 font-mono text-[0.55rem] font-black uppercase tracking-[0.2em] text-[#786d58]">
+          EMULSION SPEED: 24 FPS +
+        </div>
+        <div className="absolute right-2 bottom-2 font-mono text-[0.55rem] font-black uppercase tracking-[0.2em] text-[#786d58]">
+          TRANSMISSION COUNTDOWN // 04
+        </div>
+        <div className="absolute left-2 bottom-2 font-mono text-[0.55rem] font-black uppercase tracking-[0.2em] text-[#786d58]">
+          SOUNDTRACK OPTICAL HEAD
+        </div>
+      </div>
+
+      {/* Main Content Layout */}
+      <div className="relative z-10 p-6 sm:p-8 lg:p-10">
+        
+        {/* Poster Top Bar: Title & Onboarding Hook */}
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-[#302a22]/15 pb-4">
           <div>
-            {/* Small Monospace Label Above Heading */}
-            <div className="flex items-center gap-2.5">
-              <span className="font-mono text-[0.7rem] font-bold uppercase tracking-[0.25em] text-[#04b093] bg-black/60 px-3 py-1 border border-[#04b093]/40 rounded-full shadow-[0_0_12px_rgba(4,176,147,0.25)] flex items-center gap-2">
-                <span className="inline-block size-1.5 rounded-full bg-[#04b093] animate-pulse" />
-                BROADCAST PIPELINE // AIRWAVES COUNTDOWN
+            <div className="flex items-center gap-2">
+              <span className="rounded-full bg-black px-3 py-0.5 font-mono text-[0.62rem] font-black uppercase tracking-[0.22em] text-[#04b093]">
+                AIRWAVES COUNTDOWN
+              </span>
+              <span className="font-mono text-[0.68rem] font-black uppercase tracking-wider text-[#635745]">
+                ORIGINAL SHOW ONBOARDING
               </span>
             </div>
-
-            {/* Section Heading */}
-            <h2 className="mt-4 text-3xl font-black uppercase tracking-tight text-white sm:text-4xl lg:text-5xl">
+            <h3 className="mt-1 text-2xl font-black uppercase tracking-tight text-[#1a1714] sm:text-3xl">
               HOW YOUR SHOW GOES LIVE
-            </h2>
-
-            {/* One-Line Description Under Heading */}
-            <p className="mt-2 text-sm sm:text-base font-medium leading-relaxed text-zinc-300 max-w-2xl">
-              From initial concept to on-air transmission—the four-stage countdown to launching your original show on CBM Radio.
+            </h3>
+            <p className="mt-0.5 text-xs font-semibold text-[#5a4e3e]">
+              From initial concept to on-air transmission — the four-stage countdown to launching your voice on CBM Radio.
             </p>
           </div>
 
-          {/* Action Pitch Button */}
           <div className="flex items-center gap-3">
+            <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-black/20 bg-white/70 px-3 py-1 font-mono text-[0.65rem] font-bold uppercase tracking-wider text-black shadow-sm">
+              <span className="size-2 rounded-full bg-[#04b093] animate-pulse" />
+              {isPaused ? "PAUSED (HOVERING)" : `NOW COUNTING: [ ${STAGES[activeStage].badge} ]`}
+            </span>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 rounded-full border-2 border-[#04b093] bg-[#04b093] px-6 py-2.5 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-white hover:border-white hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(4,176,147,0.35)] cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-full border-2 border-black bg-black px-4 py-1.5 text-xs font-black uppercase tracking-wider text-[#04b093] shadow-[3px_3px_0_0_rgba(0,0,0,1)] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 cursor-pointer"
             >
-              <span>Submit Show Pitch</span>
-              <ArrowUpRight size={15} />
-            </Link>
-          </div>
-        </div>
-
-        {/* =========================================================================
-            03 // VINTAGE FILM REEL & FILM STRIP VISUAL STAGE
-            - Film Reel (SVG) at top-left rotating continuously
-            - Black film strip coming out of the reel, with white sprocket holes along both edges
-            - Curving across the section into 4 Countdown Frames
-            ========================================================================= */}
-        <div className="relative rounded-3xl border-2 border-zinc-800/90 bg-[#080f1e] p-4 sm:p-6 lg:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.85)]">
-          
-          {/* Top Cinema Metadata Bar */}
-          <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800 pb-5">
-            <div className="flex items-center gap-3">
-              <span className="flex size-3 rounded-full bg-red-500 animate-ping" />
-              <span className="font-mono text-xs font-bold tracking-widest text-zinc-400 uppercase">
-                35MM STUDIO REEL // ACADEMY LEADER COUNTDOWN
-              </span>
-            </div>
-            <div className="flex items-center gap-2 text-xs font-mono text-[#04b093] bg-black/60 px-3 py-1 rounded-full border border-zinc-800">
-              <span className="text-zinc-400">PROJECTOR BEAM:</span>
-              <span className="font-bold text-white uppercase">
-                {isPaused ? "PAUSED ON HOVER" : `FRAME ${activeFrame + 1} ACTIVE (2S INTERVAL)`}
-              </span>
-            </div>
-          </div>
-
-          {/* Reel + Curving Film Strip Ribbon Flow */}
-          <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
-            
-            {/* -------------------------------------------------------------
-                A) VINTAGE 35MM FILM REEL (SVG) AT TOP-LEFT
-                Rotates smoothly in sync with the film strip
-                ------------------------------------------------------------- */}
-            <div className="flex flex-col items-center shrink-0">
-              <div className="relative flex items-center justify-center p-2">
-                {/* Cinema Projector Backlight Glow */}
-                <div className="absolute inset-0 rounded-full bg-[#04b093]/20 blur-xl" />
-
-                {/* Film Reel SVG with 6 Cinema Spoke Cutouts & Wound Film */}
-                <svg
-                  className="animate-reel-spin relative z-10 size-36 sm:size-44 lg:size-48 drop-shadow-[0_12px_28px_rgba(0,0,0,0.95)]"
-                  viewBox="0 0 200 200"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  role="img"
-                  aria-label="Vintage Rotating 35mm Cinema Film Reel"
-                >
-                  {/* Outer Rim Flange */}
-                  <circle cx="100" cy="100" r="95" stroke="#1f293d" strokeWidth="6" fill="#0d1424" />
-                  <circle cx="100" cy="100" r="92" stroke="#04b093" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.6" />
-
-                  {/* Wound Film Layer between reel flanges */}
-                  <circle cx="100" cy="100" r="76" fill="#090d16" stroke="#2a3b5c" strokeWidth="2" />
-                  <circle cx="100" cy="100" r="74" stroke="#04b093" strokeWidth="0.8" opacity="0.3" strokeDasharray="4 2" />
-
-                  {/* 6 Cinema Reel Spokes and Flange Cutouts */}
-                  {[0, 60, 120, 180, 240, 300].map((deg) => (
-                    <g key={deg} transform={`rotate(${deg} 100 100)`}>
-                      <path
-                        d="M 88,40 C 94,36 106,36 112,40 L 118,65 C 108,68 92,68 82,65 Z"
-                        fill="#05080f"
-                        stroke="#04b093"
-                        strokeWidth="1.2"
-                        opacity="0.85"
-                      />
-                      {/* Perimeter Rivets on Flange */}
-                      <circle cx="100" cy="18" r="2.5" fill="#04b093" opacity="0.8" />
-                    </g>
-                  ))}
-
-                  {/* Inner Hub Flange */}
-                  <circle cx="100" cy="100" r="32" fill="#131b2e" stroke="#04b093" strokeWidth="2.5" />
-                  
-                  {/* 3 Center Drive Spindle Holes */}
-                  <circle cx="100" cy="100" r="14" fill="#060c18" stroke="#ffffff" strokeWidth="1.5" />
-                  <circle cx="100" cy="85" r="3.5" fill="#ffffff" />
-                  <circle cx="87" cy="107" r="3.5" fill="#ffffff" />
-                  <circle cx="113" cy="107" r="3.5" fill="#ffffff" />
-                </svg>
-
-                {/* Fixed Center Spindle Axle Cap */}
-                <div className="absolute z-20 size-7 rounded-full bg-black border-2 border-[#04b093] shadow-[0_0_12px_#04b093] flex items-center justify-center pointer-events-none">
-                  <div className="size-2 rounded-full bg-white" />
-                </div>
-              </div>
-
-              {/* Reel Meta Caption */}
-              <div className="mt-3 text-center">
-                <span className="block font-mono text-[0.68rem] font-bold text-zinc-400 uppercase tracking-widest">
-                  MASTER FEED REEL
-                </span>
-                <span className="text-[0.62rem] font-mono text-[#04b093]">
-                  24 FPS // OPTICAL SOUND
-                </span>
-              </div>
-            </div>
-
-            {/* -------------------------------------------------------------
-                B) FILM STRIP RUNNING & CURVING ACROSS THE SECTION
-                - Black film strip with white sprocket holes along both edges
-                - Seamless continuous loop motion
-                - Desktop: Horizontal film track with top & bottom sprocket holes
-                - Mobile: Vertical stacked film strip with side sprocket rails
-                ------------------------------------------------------------- */}
-            <div className="relative w-full flex-1 overflow-hidden">
-              
-              {/* Outer Film Strip Casing */}
-              <div className="relative rounded-2xl bg-black border-2 border-zinc-800 shadow-[inset_0_2px_20px_rgba(0,0,0,0.95)]">
-                
-                {/* TOP SPROCKET HOLES TRACK (Desktop & Tablet) */}
-                <div
-                  className="hidden md:block h-6 w-full border-b border-zinc-800/80 bg-zinc-950 cinema-sprocket-h"
-                  aria-hidden="true"
-                />
-
-                {/* FILM STRIP INTERIOR: 4 COUNTDOWN FRAMES */}
-                <div className="relative p-3 sm:p-5 md:p-6">
-                  
-                  {/* Mobile Left & Right Sprocket Rails */}
-                  <div className="block md:hidden absolute left-1 top-0 bottom-0 w-3.5 cinema-sprocket-v opacity-60 pointer-events-none" />
-                  <div className="block md:hidden absolute right-1 top-0 bottom-0 w-3.5 cinema-sprocket-v opacity-60 pointer-events-none" />
-
-                  {/* 4 Movie Countdown Frames */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 sm:gap-6 px-4 md:px-0">
-                    {COUNTDOWN_FRAMES.map((frame, idx) => {
-                      const isCurrent = activeFrame === idx;
-                      const isToday = frame.count === "TODAY";
-                      const IconComponent = frame.icon;
-
-                      return (
-                        <div
-                          key={frame.id}
-                          onClick={() => setActiveFrame(idx)}
-                          className={`group/frame relative cursor-pointer rounded-2xl border-2 transition-all duration-500 p-5 overflow-hidden ${
-                            isCurrent
-                              ? isToday
-                                ? "border-[#04b093] bg-gradient-to-b from-[#0a2628] via-[#051719] to-[#030e12] shadow-[0_0_40px_rgba(4,176,147,0.55)] scale-[1.03] -translate-y-1.5 z-20 ring-2 ring-[#04b093]"
-                                : "border-[#04b093]/80 bg-gradient-to-b from-[#0f2130] via-[#091522] to-[#060e18] shadow-[0_0_28px_rgba(4,176,147,0.35)] scale-[1.02] -translate-y-1 z-20 ring-1 ring-[#04b093]/80"
-                              : "border-zinc-800/90 bg-[#090e18]/90 text-zinc-300 hover:border-zinc-700 hover:bg-[#0c1424] hover:scale-[1.01] z-10"
-                          }`}
-                        >
-                          {/* Subtle Vintage Projector Grain / Flicker Overlay when illuminated */}
-                          {isCurrent && (
-                            <div className="animate-projector-flicker pointer-events-none absolute inset-0 bg-[#04b093]/8 mix-blend-screen" />
-                          )}
-
-                          {/* Film Frame Header: Stage Tag & Time Marker */}
-                          <div className="mb-4 flex items-center justify-between">
-                            <span
-                              className={`font-mono text-[0.62rem] font-bold tracking-wider uppercase px-2 py-0.5 rounded ${
-                                isCurrent
-                                  ? isToday
-                                    ? "bg-[#04b093] text-black font-black"
-                                    : "bg-[#04b093]/20 text-[#04b093] border border-[#04b093]/40"
-                                  : "bg-zinc-800/80 text-zinc-400"
-                              }`}
-                            >
-                              {frame.tag}
-                            </span>
-                            <span
-                              className={`text-[0.62rem] font-mono font-bold ${
-                                isCurrent ? "text-[#04b093]" : "text-zinc-500"
-                              }`}
-                            >
-                              {frame.timeEstimate}
-                            </span>
-                          </div>
-
-                          {/* ==============================================================
-                              MOVIE COUNTDOWN VISUAL: SMPTE / ACADEMY LEADER TARGET
-                              Concentric circles + crosshairs + big countdown number
-                              ============================================================== */}
-                          <div className="relative my-4 flex items-center justify-center">
-                            <div
-                              className={`relative flex items-center justify-center size-28 sm:size-32 rounded-full border-2 transition-all duration-500 ${
-                                isCurrent
-                                  ? isToday
-                                    ? "border-[#04b093] bg-black/95 shadow-[0_0_30px_rgba(4,176,147,0.7)]"
-                                    : "border-[#04b093]/80 bg-black/85 shadow-[0_0_18px_rgba(4,176,147,0.4)]"
-                                  : "border-zinc-800 bg-zinc-950"
-                              }`}
-                            >
-                              {/* Academy Leader Concentric Dashed Ring */}
-                              <div
-                                className={`absolute size-[86%] rounded-full border border-dashed transition-colors duration-500 ${
-                                  isCurrent ? "border-[#04b093]/60" : "border-zinc-800"
-                                }`}
-                              />
-
-                              {/* Leader Crosshairs (Horizontal & Vertical Target Lines) */}
-                              <div
-                                className={`absolute h-full w-[1px] transition-colors duration-500 ${
-                                  isCurrent ? "bg-[#04b093]/40" : "bg-zinc-800"
-                                }`}
-                              />
-                              <div
-                                className={`absolute w-full h-[1px] transition-colors duration-500 ${
-                                  isCurrent ? "bg-[#04b093]/40" : "bg-zinc-800"
-                                }`}
-                              />
-
-                              {/* Radar Sweep Needle when illuminated */}
-                              {isCurrent && (
-                                <div className="animate-radar-sweep absolute size-full rounded-full pointer-events-none">
-                                  <div className="h-1/2 w-[2px] bg-gradient-to-t from-[#04b093] to-transparent mx-auto" />
-                                </div>
-                              )}
-
-                              {/* THE BIG COUNTDOWN DIGIT / WORD */}
-                              <span
-                                className={`relative z-10 font-black tracking-tighter transition-all duration-300 ${
-                                  isToday
-                                    ? "text-2xl sm:text-3xl uppercase font-mono tracking-tight"
-                                    : "text-5xl sm:text-6xl font-mono"
-                                } ${
-                                  isCurrent
-                                    ? isToday
-                                      ? "text-[#04b093] drop-shadow-[0_0_15px_rgba(4,176,147,0.95)]"
-                                      : "text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.8)]"
-                                    : "text-zinc-600"
-                                }`}
-                              >
-                                {frame.count}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* ==============================================================
-                              FRAME METADATA: PHASE, TITLE & DESCRIPTION
-                              ============================================================== */}
-                          <div className="mt-3 text-left">
-                            {/* Phase Header */}
-                            <div className="flex items-center gap-2 mb-1.5">
-                              <IconComponent
-                                size={14}
-                                className={isCurrent ? "text-[#04b093]" : "text-zinc-500"}
-                              />
-                              <h3
-                                className={`text-xs font-black uppercase tracking-[0.2em] font-mono ${
-                                  isCurrent
-                                    ? isToday
-                                      ? "text-[#04b093]"
-                                      : "text-white"
-                                    : "text-zinc-400"
-                                }`}
-                              >
-                                {frame.phase}
-                              </h3>
-                            </div>
-
-                            {/* Title */}
-                            <h4
-                              className={`text-sm sm:text-base font-bold leading-snug line-clamp-2 transition-colors ${
-                                isCurrent ? "text-white" : "text-zinc-300"
-                              }`}
-                            >
-                              {frame.title}
-                            </h4>
-
-                            {/* Short Description */}
-                            <p className="mt-2 text-xs leading-relaxed text-zinc-400 font-medium">
-                              {frame.description}
-                            </p>
-                          </div>
-
-                          {/* Frame Bottom Status Marker */}
-                          <div className="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-[0.62rem] font-mono">
-                            <span className={isCurrent ? "text-[#04b093] font-bold" : "text-zinc-500"}>
-                              {isCurrent ? "● PROJECTOR ILLUMINATED" : "○ TAP TO FOCUS"}
-                            </span>
-                            <span className="text-zinc-500">FRAME 0{idx + 1}</span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* BOTTOM SPROCKET HOLES TRACK (Desktop & Tablet) */}
-                <div
-                  className="hidden md:block h-6 w-full border-t border-zinc-800/80 bg-zinc-950 cinema-sprocket-h"
-                  aria-hidden="true"
-                />
-              </div>
-            </div>
-
-          </div>
-
-          {/* Bottom Stage Footer Info / Pitch Guidelines */}
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-zinc-800 pt-6 text-xs text-zinc-400 font-medium">
-            <div className="flex items-center gap-2">
-              <Sparkles size={15} className="text-[#04b093]" />
-              <span>
-                Have a podcast, DJ mix, faith series, or cultural talk show? Broadcast live with CBM Radio.
-              </span>
-            </div>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-1.5 font-bold text-[#04b093] hover:text-white transition-colors uppercase tracking-wider font-mono text-[0.72rem]"
-            >
-              <span>Review Show Guidelines</span>
+              <span>Pitch Your Show</span>
               <ArrowUpRight size={13} />
             </Link>
           </div>
+        </div>
+
+        {/* Poster Body: Grid with 4 Steps on Left and Vintage Film-Reel Stage on Right */}
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
+          
+          {/* =========================================================================
+              LEFT COLUMN: 4 STEP DESCRIPTIONS ALIGNED WITH EACH FRAME
+              3 = PITCH: Send us your original show concept.
+              2 = REVIEW: Our team reviews your idea and audio sample.
+              1 = PILOT: Record a pilot episode with our studio.
+              TODAY = LIVE ON CBM RADIO: Your show goes on air.
+              ========================================================================= */}
+          <div className="lg:col-span-5 flex flex-col justify-between gap-3.5 order-2 lg:order-1">
+            {STAGES.map((stage, idx) => {
+              const isActive = activeStage === idx;
+              const isToday = stage.badge === "TODAY";
+              const Icon = stage.icon;
+
+              return (
+                <button
+                  key={stage.id}
+                  type="button"
+                  onClick={() => {
+                    setActiveStage(idx);
+                    setIsPaused(true);
+                  }}
+                  className={`group/card text-left rounded-2xl border-2 transition-all duration-300 p-3.5 sm:p-4 cursor-pointer relative overflow-hidden ${
+                    isActive
+                      ? "border-black bg-white shadow-[5px_5px_0_0_rgba(0,0,0,1)] translate-x-1"
+                      : "border-black/25 bg-black/[0.03] hover:border-black/60 hover:bg-white/50 hover:translate-x-0.5"
+                  }`}
+                >
+                  {/* Subtle stage indicator strip on active */}
+                  {isActive && (
+                    <div
+                      className={`absolute top-0 left-0 bottom-0 w-1.5 ${
+                        isToday ? "bg-[#04b093]" : "bg-black"
+                      }`}
+                    />
+                  )}
+
+                  <div className="flex items-start gap-3.5">
+                    {/* Badge circle styled like vintage film leader countdown stamp */}
+                    <div
+                      className={`flex shrink-0 items-center justify-center rounded-xl font-mono font-black transition-all ${
+                        isToday
+                          ? isActive
+                            ? "bg-[#04b093] text-black ring-2 ring-black px-2.5 h-10 text-xs shadow-md"
+                            : "bg-black text-[#04b093] px-2.5 h-10 text-[0.7rem]"
+                          : isActive
+                          ? "bg-black text-[#04b093] size-10 text-base shadow-md"
+                          : "bg-black/15 text-black size-10 text-sm border border-black/20"
+                      }`}
+                    >
+                      {stage.badge}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-mono text-[0.62rem] font-bold uppercase tracking-widest text-[#726450]">
+                          {stage.subtext}
+                        </span>
+                        {isActive && (
+                          <span className="inline-flex items-center gap-1 font-mono text-[0.58rem] font-black uppercase text-[#04b093] bg-black px-2 py-0.5 rounded-full">
+                            <span className="size-1 rounded-full bg-[#04b093] animate-ping" />
+                            ACTIVE
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="mt-0.5 flex items-baseline gap-1.5">
+                        <h4 className="text-sm sm:text-base font-black uppercase tracking-tight text-black">
+                          <span className="font-mono text-xs sm:text-sm text-[#726450] mr-1">{stage.badge} =</span>
+                          {stage.name}:
+                        </h4>
+                        <span className="text-xs sm:text-sm font-bold text-black/90 truncate">
+                          {stage.tagline}
+                        </span>
+                      </div>
+
+                      <p className="mt-1 text-xs text-[#524638] leading-relaxed line-clamp-2">
+                        {stage.detail}
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+
+            {/* Quick Helper Note */}
+            <div className="mt-1 flex items-center justify-between px-2 pt-1 font-mono text-[0.62rem] text-[#6e604d]">
+              <span>* Click any stage or hover to inspect details</span>
+              <span>100% INDEPENDENT AIRWAVES</span>
+            </div>
+          </div>
+
+          {/* =========================================================================
+              RIGHT COLUMN: VINTAGE FILM-REEL & S-CURVE ANIMATED POSTER CANVAS
+              - Top-Left: Large silver-grey metal film reel, tilted & partly cut off
+              - Black film strip leaving reel, curling in 3D S-curve toward bottom-right
+              - Strip expands wider (perspective 3D coming toward viewer)
+              - White rounded sprocket holes along both edges
+              - 4 Frames: "3", "2", "1", "TODAY"
+              ========================================================================= */}
+          <div className="lg:col-span-7 relative order-1 lg:order-2 flex items-center justify-center">
+            
+            {/* The SVG Cinematic Poster Stage */}
+            <div className="relative w-full aspect-[16/11] max-h-[500px] rounded-2xl bg-[#f2ede2] border-2 border-black/30 shadow-inner overflow-hidden select-none">
+              
+              {/* Soft Vignette Inside Canvas */}
+              <div
+                className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_40%_40%,transparent_40%,rgba(195,183,163,0.5)_95%)]"
+                aria-hidden="true"
+              />
+
+              {/* Live Projector Light Beam Pulse on Canvas */}
+              <div
+                className={`pointer-events-none absolute -right-10 -bottom-10 h-72 w-72 rounded-full bg-[#04b093]/15 blur-3xl transition-opacity duration-700 ${
+                  activeStage === 3 ? "opacity-100 scale-125" : "opacity-35 scale-100"
+                }`}
+                aria-hidden="true"
+              />
+
+              <svg
+                viewBox="0 0 960 620"
+                className="relative z-10 w-full h-full block"
+                preserveAspectRatio="xMidYMid meet"
+              >
+                <defs>
+                  {/* Metallic Bevel Gradient for Reel Rim */}
+                  <linearGradient id="metalRimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#2c3038" />
+                    <stop offset="25%" stopColor="#cfd4dc" />
+                    <stop offset="50%" stopColor="#8d939c" />
+                    <stop offset="75%" stopColor="#f4f6f8" />
+                    <stop offset="100%" stopColor="#41464e" />
+                  </linearGradient>
+
+                  {/* Brushed Metal Hub Gradient */}
+                  <radialGradient id="hubGrad" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#ffffff" />
+                    <stop offset="35%" stopColor="#bcc1c9" />
+                    <stop offset="70%" stopColor="#636974" />
+                    <stop offset="100%" stopColor="#2e333b" />
+                  </radialGradient>
+
+                  {/* Wound Celluloid Film Spool Gradient */}
+                  <radialGradient id="woundFilmGrad" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#221c17" />
+                    <stop offset="65%" stopColor="#15120f" />
+                    <stop offset="100%" stopColor="#080706" />
+                  </radialGradient>
+
+                  {/* Dark Photographic Sepia Frame Base Gradient */}
+                  <linearGradient id="sepiaFrameBase" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#30261e" />
+                    <stop offset="50%" stopColor="#221a14" />
+                    <stop offset="100%" stopColor="#14100c" />
+                  </linearGradient>
+
+                  {/* Today Gold-Teal Highlight Gradient */}
+                  <linearGradient id="todayFrameGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#382d20" />
+                    <stop offset="60%" stopColor="#201a14" />
+                    <stop offset="100%" stopColor="#0b1b17" />
+                  </linearGradient>
+
+                  {/* Drop Shadow for the 3D Film Strip */}
+                  <filter id="stripShadow" x="-20%" y="-20%" width="150%" height="150%">
+                    <feDropShadow dx="0" dy="16" stdDeviation="14" floodColor="#1e1812" floodOpacity="0.45" />
+                  </filter>
+
+                  {/* Soft projector glow filter */}
+                  <filter id="projectorGlow" x="-30%" y="-30%" width="160%" height="160%">
+                    <feGaussianBlur stdDeviation="8" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+
+                {/* =================================================================
+                    01 // THE 3D S-CURVE BLACK FILM STRIP
+                    Leaves reel around (160, 160), sweeps to (880, 560)
+                    Wider as it reaches the bottom (perspective effect)
+                    ================================================================= */}
+                {/* 3D Drop Shadow Polygon */}
+                <path
+                  d="M 160,195 C 290,205 380,240 480,315 C 590,395 700,470 820,530 L 920,580 L 870,640 L 760,570 C 650,510 540,430 440,355 C 340,285 240,245 160,235 Z"
+                  fill="#1f1812"
+                  opacity="0.25"
+                  filter="blur(10px)"
+                />
+
+                {/* Main Black Celluloid Film Strip Body (Expanding Perspective Polygon) */}
+                <path
+                  d="M 155,170 C 285,185 375,225 470,295 C 585,380 690,455 810,515 L 900,560 L 850,620 L 750,555 C 635,495 530,420 430,340 C 330,265 235,225 155,210 Z"
+                  fill="#151413"
+                  stroke="#38332c"
+                  strokeWidth="1.5"
+                  className="filter drop-shadow-[0_12px_16px_rgba(20,15,10,0.35)]"
+                />
+
+                {/* Upper Sprocket Rail Guide Line & Sprocket Holes (Forward Continuous Crawl) */}
+                <path
+                  d="M 155,178 C 285,193 375,233 470,303 C 585,388 690,463 810,523 L 900,568"
+                  fill="none"
+                  stroke="#ffffff"
+                  strokeWidth="5"
+                  strokeDasharray="9, 9"
+                  strokeLinecap="round"
+                  className="animate-sprockets opacity-90"
+                />
+
+                {/* Lower Sprocket Rail Guide Line & Sprocket Holes (Forward Continuous Crawl) */}
+                <path
+                  d="M 155,202 C 235,217 330,257 430,332 C 530,412 635,487 750,547 L 850,612"
+                  fill="none"
+                  stroke="#ffffff"
+                  strokeWidth="8"
+                  strokeDasharray="12, 12"
+                  strokeLinecap="round"
+                  className="animate-sprockets opacity-90"
+                />
+
+                {/* Optical Audio Track Stripe (Authentic 35mm Feature) */}
+                <path
+                  d="M 155,185 C 285,200 375,240 470,310 C 585,395 690,470 810,530 L 900,575"
+                  fill="none"
+                  stroke="#04b093"
+                  strokeWidth="1.2"
+                  strokeOpacity="0.4"
+                  strokeDasharray="2, 4"
+                />
+
+                {/* =================================================================
+                    02 // THE 4 COUNTDOWN FRAMES ON THE FILM STRIP
+                    In order from reel downward:
+                    1. "3": Smallest & furthest away
+                    2. "2": Circular film-leader ring around it
+                    3. "1": Thin circle with crosshair lines (classic Academy Leader)
+                    4. "TODAY": Largest at bottom, quadrants with crosshairs & bold serif
+                    ================================================================= */}
+
+                {/* -------------------------------------------------------------
+                    FRAME 1 = "3" (PITCH)
+                    Coordinates: x=245, y=198, angle=18deg, scale ~0.68
+                    ------------------------------------------------------------- */}
+                <g
+                  transform="translate(245, 198) rotate(18) scale(0.68)"
+                  className={`cursor-pointer transition-transform duration-500 ${
+                    activeStage === 0 ? "scale-[0.78]" : "opacity-85"
+                  }`}
+                  onClick={() => {
+                    setActiveStage(0);
+                    setIsPaused(true);
+                  }}
+                >
+                  {/* Outer Frame Border */}
+                  <rect
+                    x="-42"
+                    y="-30"
+                    width="84"
+                    height="60"
+                    rx="3"
+                    fill="url(#sepiaFrameBase)"
+                    stroke={activeStage === 0 ? "#04b093" : "#625343"}
+                    strokeWidth={activeStage === 0 ? "3" : "1.5"}
+                    className={activeStage === 0 ? "animate-flicker" : ""}
+                  />
+                  {/* Sepia Vignette Inner Box */}
+                  <rect x="-38" y="-26" width="76" height="52" fill="#1b1510" opacity="0.6" />
+                  
+                  {/* Subtle Grain / Film Border lines */}
+                  <line x1="-36" y1="-26" x2="-36" y2="26" stroke="#4a3e32" strokeWidth="0.8" />
+                  <line x1="36" y1="-26" x2="36" y2="26" stroke="#4a3e32" strokeWidth="0.8" />
+
+                  {/* Big Black/Dark Sepia Number "3" */}
+                  <text
+                    x="0"
+                    y="11"
+                    textAnchor="middle"
+                    fill={activeStage === 0 ? "#ffffff" : "#c4b5a2"}
+                    fontFamily="serif"
+                    fontWeight="900"
+                    fontSize="34"
+                    letterSpacing="1"
+                  >
+                    3
+                  </text>
+
+                  {/* Stage Label */}
+                  <text
+                    x="0"
+                    y="22"
+                    textAnchor="middle"
+                    fill={activeStage === 0 ? "#04b093" : "#80705e"}
+                    fontFamily="monospace"
+                    fontWeight="bold"
+                    fontSize="7"
+                    letterSpacing="1.5"
+                  >
+                    PITCH
+                  </text>
+                </g>
+
+                {/* -------------------------------------------------------------
+                    FRAME 2 = "2" (REVIEW)
+                    Coordinates: x=395, y=258, angle=30deg, scale ~0.88
+                    Circular film-leader ring around the "2"
+                    ------------------------------------------------------------- */}
+                <g
+                  transform="translate(395, 258) rotate(30) scale(0.88)"
+                  className={`cursor-pointer transition-transform duration-500 ${
+                    activeStage === 1 ? "scale-[0.98]" : "opacity-85"
+                  }`}
+                  onClick={() => {
+                    setActiveStage(1);
+                    setIsPaused(true);
+                  }}
+                >
+                  {/* Outer Frame Border */}
+                  <rect
+                    x="-50"
+                    y="-36"
+                    width="100"
+                    height="72"
+                    rx="4"
+                    fill="url(#sepiaFrameBase)"
+                    stroke={activeStage === 1 ? "#04b093" : "#6e5d4b"}
+                    strokeWidth={activeStage === 1 ? "3.5" : "1.8"}
+                    className={activeStage === 1 ? "animate-flicker" : ""}
+                  />
+                  <rect x="-45" y="-31" width="90" height="62" fill="#1b1510" opacity="0.6" />
+
+                  {/* Circular Film-Leader Ring */}
+                  <circle
+                    cx="0"
+                    cy="0"
+                    r="23"
+                    fill="none"
+                    stroke={activeStage === 1 ? "#04b093" : "#8a7863"}
+                    strokeWidth="2.5"
+                    strokeDasharray="6, 3"
+                  />
+                  <circle
+                    cx="0"
+                    cy="0"
+                    r="27"
+                    fill="none"
+                    stroke="#594b3c"
+                    strokeWidth="1"
+                    strokeOpacity="0.7"
+                  />
+
+                  {/* Big Number "2" inside Ring */}
+                  <text
+                    x="0"
+                    y="11"
+                    textAnchor="middle"
+                    fill={activeStage === 1 ? "#ffffff" : "#ded1be"}
+                    fontFamily="serif"
+                    fontWeight="900"
+                    fontSize="36"
+                  >
+                    2
+                  </text>
+
+                  {/* Subtitle */}
+                  <text
+                    x="0"
+                    y="-23"
+                    textAnchor="middle"
+                    fill={activeStage === 1 ? "#04b093" : "#80705e"}
+                    fontFamily="monospace"
+                    fontWeight="bold"
+                    fontSize="7"
+                    letterSpacing="1.8"
+                  >
+                    REVIEW
+                  </text>
+                </g>
+
+                {/* -------------------------------------------------------------
+                    FRAME 3 = "1" (PILOT)
+                    Coordinates: x=580, y=378, angle=36deg, scale ~1.12
+                    Bigger "1" inside thin circle with crosshair lines
+                    ------------------------------------------------------------- */}
+                <g
+                  transform="translate(580, 378) rotate(36) scale(1.12)"
+                  className={`cursor-pointer transition-transform duration-500 ${
+                    activeStage === 2 ? "scale-[1.22]" : "opacity-90"
+                  }`}
+                  onClick={() => {
+                    setActiveStage(2);
+                    setIsPaused(true);
+                  }}
+                >
+                  {/* Outer Frame Border */}
+                  <rect
+                    x="-58"
+                    y="-42"
+                    width="116"
+                    height="84"
+                    rx="5"
+                    fill="url(#sepiaFrameBase)"
+                    stroke={activeStage === 2 ? "#04b093" : "#7d6b56"}
+                    strokeWidth={activeStage === 2 ? "4" : "2"}
+                    className={activeStage === 2 ? "animate-flicker" : ""}
+                  />
+                  <rect x="-52" y="-36" width="104" height="72" fill="#18130e" opacity="0.65" />
+
+                  {/* Classic Academy Leader Crosshair Lines */}
+                  <line x1="-50" y1="0" x2="50" y2="0" stroke="#72614e" strokeWidth="1" strokeDasharray="3, 3" />
+                  <line x1="0" y1="-34" x2="0" y2="34" stroke="#72614e" strokeWidth="1" strokeDasharray="3, 3" />
+
+                  {/* Thin Circle with Crosshair Lines */}
+                  <circle
+                    cx="0"
+                    cy="0"
+                    r="27"
+                    fill="none"
+                    stroke={activeStage === 2 ? "#04b093" : "#9e8c75"}
+                    strokeWidth="2"
+                  />
+                  <circle
+                    cx="0"
+                    cy="0"
+                    r="31"
+                    fill="none"
+                    stroke="#504336"
+                    strokeWidth="1"
+                    strokeDasharray="4, 4"
+                  />
+
+                  {/* Radar sweep indicator when active */}
+                  {activeStage === 2 && (
+                    <line
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="-27"
+                      stroke="#04b093"
+                      strokeWidth="2"
+                      className="animate-radar"
+                    />
+                  )}
+
+                  {/* Bigger "1" inside Circle */}
+                  <text
+                    x="0"
+                    y="13"
+                    textAnchor="middle"
+                    fill={activeStage === 2 ? "#ffffff" : "#ede2d2"}
+                    fontFamily="serif"
+                    fontWeight="900"
+                    fontSize="42"
+                  >
+                    1
+                  </text>
+
+                  {/* Subtitle */}
+                  <text
+                    x="0"
+                    y="29"
+                    textAnchor="middle"
+                    fill={activeStage === 2 ? "#04b093" : "#8c7c6a"}
+                    fontFamily="monospace"
+                    fontWeight="bold"
+                    fontSize="7.5"
+                    letterSpacing="2"
+                  >
+                    PILOT
+                  </text>
+                </g>
+
+                {/* -------------------------------------------------------------
+                    FRAME 4 = "TODAY" (LIVE ON CBM RADIO)
+                    Coordinates: x=800, y=525, angle=38deg, scale ~1.45
+                    Largest frame at bottom, blank sepia divided by crosshair lines,
+                    with "TODAY" in bold dark serif capitals across the middle,
+                    and subtitle underneath. Pauses with soft glow and flash!
+                    ------------------------------------------------------------- */}
+                <g
+                  transform="translate(800, 525) rotate(38) scale(1.45)"
+                  className={`cursor-pointer transition-all duration-700 ${
+                    activeStage === 3
+                      ? "scale-[1.58] animate-today-glow"
+                      : "opacity-95"
+                  }`}
+                  onClick={() => {
+                    setActiveStage(3);
+                    setIsPaused(true);
+                  }}
+                >
+                  {/* Outer Frame with Glow and Flash */}
+                  <rect
+                    x="-68"
+                    y="-48"
+                    width="136"
+                    height="96"
+                    rx="6"
+                    fill="url(#todayFrameGrad)"
+                    stroke={activeStage === 3 ? "#04b093" : "#99856f"}
+                    strokeWidth={activeStage === 3 ? "4.5" : "2.5"}
+                    className={activeStage === 3 ? "animate-flicker" : ""}
+                  />
+
+                  {/* Frame Divided into Quadrants by Thin Crosshairs Lines */}
+                  <rect x="-62" y="-42" width="124" height="84" fill="#13110d" opacity="0.6" />
+                  
+                  {/* Horizontal Crosshair Line */}
+                  <line
+                    x1="-62"
+                    y1="0"
+                    x2="62"
+                    y2="0"
+                    stroke={activeStage === 3 ? "#04b093" : "#6b5c4b"}
+                    strokeWidth="1.2"
+                    strokeOpacity="0.8"
+                  />
+                  {/* Vertical Crosshair Line */}
+                  <line
+                    x1="0"
+                    y1="-42"
+                    x2="0"
+                    y2="42"
+                    stroke={activeStage === 3 ? "#04b093" : "#6b5c4b"}
+                    strokeWidth="1.2"
+                    strokeOpacity="0.8"
+                  />
+
+                  {/* Concentric Countdown Rings */}
+                  <circle
+                    cx="0"
+                    cy="0"
+                    r="34"
+                    fill="none"
+                    stroke={activeStage === 3 ? "#04b093" : "#5a4d3e"}
+                    strokeWidth="1.2"
+                    strokeDasharray="4, 3"
+                  />
+                  <circle
+                    cx="0"
+                    cy="0"
+                    r="38"
+                    fill="none"
+                    stroke="#42372c"
+                    strokeWidth="0.8"
+                  />
+
+                  {/* "TODAY" in Bold Dark Serif Capitals across the middle */}
+                  <text
+                    x="0"
+                    y="7"
+                    textAnchor="middle"
+                    fill={activeStage === 3 ? "#ffffff" : "#f5eee3"}
+                    fontFamily="serif"
+                    fontWeight="900"
+                    fontSize="27"
+                    letterSpacing="3"
+                    className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                  >
+                    TODAY
+                  </text>
+
+                  {/* Small Subtitle Underneath */}
+                  <text
+                    x="0"
+                    y="22"
+                    textAnchor="middle"
+                    fill={activeStage === 3 ? "#04b093" : "#a89985"}
+                    fontFamily="monospace"
+                    fontWeight="900"
+                    fontSize="6.5"
+                    letterSpacing="1.8"
+                  >
+                    LIVE ON CBM RADIO
+                  </text>
+
+                  {/* Transmission ON-AIR badge when active */}
+                  {activeStage === 3 && (
+                    <g transform="translate(0, -26)">
+                      <rect
+                        x="-30"
+                        y="-8"
+                        width="60"
+                        height="14"
+                        rx="7"
+                        fill="#04b093"
+                        stroke="#000000"
+                        strokeWidth="1"
+                      />
+                      <text
+                        x="0"
+                        y="2.5"
+                        textAnchor="middle"
+                        fill="#000000"
+                        fontFamily="monospace"
+                        fontWeight="900"
+                        fontSize="6.5"
+                        letterSpacing="1.2"
+                      >
+                        ON AIR NOW
+                      </text>
+                    </g>
+                  )}
+                </g>
+
+                {/* =================================================================
+                    03 // TOP-LEFT: LARGE SILVER-GREY METAL FILM REEL
+                    Tilted in perspective & partly cut off by top-left edge
+                    Centre hub with 6 big oval cut-out holes, 3D rim and shadow
+                    Slowly & steadily rotating in sync with strip speed
+                    ================================================================= */}
+                {/* Reel Cast Shadow on Paper */}
+                <circle
+                  cx="85"
+                  cy="65"
+                  r="165"
+                  fill="#2a231b"
+                  opacity="0.3"
+                  filter="blur(16px)"
+                />
+
+                {/* Rotating Reel Assembly */}
+                <g className="animate-reel">
+                  {/* Coiled Film Bulk visible behind flange */}
+                  <circle cx="85" cy="65" r="148" fill="url(#woundFilmGrad)" />
+                  <circle cx="85" cy="65" r="142" fill="none" stroke="#2a221a" strokeWidth="6" strokeDasharray="5, 3" />
+                  <circle cx="85" cy="65" r="128" fill="none" stroke="#1d1712" strokeWidth="5" strokeDasharray="4, 4" />
+                  <circle cx="85" cy="65" r="114" fill="none" stroke="#251e17" strokeWidth="4" strokeDasharray="3, 3" />
+
+                  {/* Outer Metallic Flange Rim with 3D Bevel */}
+                  <circle
+                    cx="85"
+                    cy="65"
+                    r="155"
+                    fill="none"
+                    stroke="url(#metalRimGrad)"
+                    strokeWidth="16"
+                  />
+                  <circle
+                    cx="85"
+                    cy="65"
+                    r="163"
+                    fill="none"
+                    stroke="#1c1f24"
+                    strokeWidth="2"
+                  />
+                  <circle
+                    cx="85"
+                    cy="65"
+                    r="147"
+                    fill="none"
+                    stroke="#23272e"
+                    strokeWidth="2"
+                  />
+
+                  {/* Outer Rim Silver Rivet Studs (12 around the edge) */}
+                  {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg) => {
+                    const rad = (deg * Math.PI) / 180;
+                    const rx = 85 + 155 * Math.cos(rad);
+                    const ry = 65 + 155 * Math.sin(rad);
+                    return (
+                      <circle
+                        key={deg}
+                        cx={rx}
+                        cy={ry}
+                        r="2.5"
+                        fill="#e9ecf0"
+                        stroke="#383c44"
+                        strokeWidth="1"
+                      />
+                    );
+                  })}
+
+                  {/* 6 BIG OVAL CUT-OUT HOLES (60-degree increments) */}
+                  {[0, 60, 120, 180, 240, 300].map((deg) => {
+                    const rad = (deg * Math.PI) / 180;
+                    const cx = 85 + 84 * Math.cos(rad);
+                    const cy = 65 + 84 * Math.sin(rad);
+                    return (
+                      <g key={deg} transform={`rotate(${deg}, 85, 65)`}>
+                        {/* Oval Cutout Drop Shadow */}
+                        <ellipse
+                          cx={85 + 84}
+                          cy={65}
+                          rx="34"
+                          ry="22"
+                          fill="#0e0c0a"
+                          stroke="#1a1e24"
+                          strokeWidth="2.5"
+                        />
+                        {/* 3D Bevel Highlight Rim on Oval */}
+                        <ellipse
+                          cx={85 + 84}
+                          cy={65}
+                          rx="36"
+                          ry="24"
+                          fill="none"
+                          stroke="url(#metalRimGrad)"
+                          strokeWidth="2.5"
+                          strokeOpacity="0.85"
+                        />
+                      </g>
+                    );
+                  })}
+
+                  {/* Center Metallic Spindle Hub */}
+                  <circle
+                    cx="85"
+                    cy="65"
+                    r="44"
+                    fill="url(#hubGrad)"
+                    stroke="#1e2229"
+                    strokeWidth="3"
+                  />
+                  <circle
+                    cx="85"
+                    cy="65"
+                    r="38"
+                    fill="none"
+                    stroke="#ffffff"
+                    strokeWidth="1.5"
+                    strokeOpacity="0.6"
+                  />
+                  
+                  {/* Axle Spindle Notch & Keyway */}
+                  <circle cx="85" cy="65" r="16" fill="#111317" stroke="#484f5c" strokeWidth="2" />
+                  <rect x="82" y="47" width="6" height="8" rx="1" fill="#111317" />
+                  
+                  {/* 3 Hub Mounting Screws */}
+                  {[0, 120, 240].map((deg) => {
+                    const rad = (deg * Math.PI) / 180;
+                    const sx = 85 + 28 * Math.cos(rad);
+                    const sy = 65 + 28 * Math.sin(rad);
+                    return (
+                      <circle
+                        key={deg}
+                        cx={sx}
+                        cy={sy}
+                        r="2.5"
+                        fill="#cfd4dc"
+                        stroke="#1c1f24"
+                        strokeWidth="0.8"
+                      />
+                    );
+                  })}
+                </g>
+
+                {/* Where the film leaves the reel: Lower-right reel tangential roll guide */}
+                <circle cx="168" cy="184" r="7" fill="#69717d" stroke="#1c1f24" strokeWidth="1.5" />
+                <circle cx="168" cy="184" r="2" fill="#e9ecf0" />
+              </svg>
+
+              {/* Bottom Right Live Indicator Stamp */}
+              <div className="absolute right-3 bottom-3 z-20 flex items-center gap-2 rounded-lg border border-black/30 bg-black/80 px-2.5 py-1 font-mono text-[0.62rem] font-bold text-white shadow-md backdrop-blur-sm">
+                <span className="size-1.5 rounded-full bg-[#04b093] animate-ping" />
+                <span className="text-[#04b093]">35MM REEL SIMULATOR</span>
+                <span className="text-zinc-400">| 24 FPS</span>
+              </div>
+            </div>
+
+          </div>
 
         </div>
+
+        {/* Poster Footer Action Row */}
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[#302a22]/15 pt-5">
+          <div className="flex items-center gap-3 text-xs text-[#5c503f]">
+            <span className="font-mono text-[0.65rem] font-black uppercase text-black bg-[#d9d0be] px-2.5 py-0.5 rounded">
+              BROADCAST CRITERIA
+            </span>
+            <span className="font-medium">
+              Open to East African podcasters, DJs, gospel storytellers, youth hosts & journalists.
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Link
+              href="/shows"
+              className="font-mono text-xs font-black uppercase tracking-wider text-black hover:text-[#04b093] transition-colors underline underline-offset-4"
+            >
+              Browse Existing Shows
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-1.5 rounded-full border-2 border-black bg-[#04b093] px-5 py-2 text-xs font-black uppercase tracking-wider text-black shadow-[3px_3px_0_0_rgba(0,0,0,1)] transition-all hover:bg-white hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              <span>Submit Concept</span>
+              <ArrowUpRight size={14} />
+            </Link>
+          </div>
+        </div>
+
       </div>
-    </section>
+    </div>
   );
 }
