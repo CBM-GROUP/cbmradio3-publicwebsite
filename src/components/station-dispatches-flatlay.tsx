@@ -296,9 +296,7 @@ export default function StationDispatchesFlatLay() {
               <ArrowUpRight size={16} />
             </Link>
 
-            <span className="font-mono text-[0.7rem] uppercase tracking-wider text-zinc-400">
-              * Tap any photo to inspect
-            </span>
+            
           </div>
         </div>
 
