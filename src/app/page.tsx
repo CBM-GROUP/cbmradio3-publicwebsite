@@ -4,6 +4,7 @@ import HomepageCharts from "@/components/homepage-charts";
 import EpisodesSection from "@/components/episodes-section";
 import ProgramsSection from "@/components/programs-section";
 import NewsSection from "@/components/news-section";
+import HowYourShowGoesLive from "@/components/how-your-show-goes-live";
 import Gallery from "@/components/gallery";
 import HomepageAdditions from "@/components/homepage-additions";
 import Footer from "@/components/footer";
@@ -35,6 +36,9 @@ export default function Home() {
 
         {/* 04 // Newsroom Dispatches & Journal */}
         <NewsSection />
+
+        {/* 05 // Broadcast Onboarding Pipeline: How Your Show Goes Live */}
+        <HowYourShowGoesLive />
 
         {/* 05 // Studio Darkroom Visual Archive */}
         <Gallery />

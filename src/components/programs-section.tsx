@@ -9,7 +9,6 @@ import {
   Mic2,
   Sparkles,
   Radio,
-  Disc3,
   Play,
   Volume2,
   ChevronLeft,
@@ -203,9 +202,7 @@ export default function ProgramsSection() {
               <span className="bg-black px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.22em] text-[#04b093] shadow-md">
                 ROTATING SHOW CRATE
               </span>
-              <span className="text-xs font-black uppercase tracking-[0.22em] text-black">
-                SELECTABLE VINYL & CD SHOWCASE
-              </span>
+              
             </div>
             <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">
               Original Shows & Series Roster
@@ -374,17 +371,7 @@ export default function ProgramsSection() {
             Points directly at any CD disc (e.g. Sports Arena) to immediately pop it out!
             ========================================================================= */}
         <div className="mb-10">
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Disc3 size={18} className="animate-spin text-black" style={{ animationDuration: "5s" }} />
-              <h3 className="text-sm font-black uppercase tracking-[0.2em] text-black">
-                CD RACK SELECTOR — HOVER OR TAP ANY DISC TO BRING IT OUT
-              </h3>
-            </div>
-            <span className="hidden sm:inline-block text-xs font-bold text-black/75">
-              Tip: Hovering immediately activates that programme
-            </span>
-          </div>
+          
 
           {/* Horizontal CD Disc Selector Deck */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
