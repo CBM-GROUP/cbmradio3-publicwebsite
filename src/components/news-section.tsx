@@ -10,7 +10,7 @@ import homeService from "@/services/home.service";
 import type { ArticleSummary } from "@/types/news";
 
 import NewsroomStudioSet from "../../public/cbm_images/newsroom-studio-set.png";
-import HowYourShowGoesLive from "@/components/how-your-show-goes-live";
+import StationDispatchesFlatLay from "@/components/station-dispatches-flatlay";
 
 export default function NewsSection() {
   const [featuredArticles, setFeaturedArticles] = useState<ArticleSummary[]>([]);
@@ -51,40 +51,30 @@ export default function NewsSection() {
     >
       <div className="mx-auto max-w-7xl">
         
-        {/* Section Header: Billboard Broadsheet Wire */}
-        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-black pb-6">
-          <div>
+              {/* Stories, Culture & Station Dispatches: Top-Down Flat Lay on Walnut Wood Table */}
+        <StationDispatchesFlatLay />
+
+        {/* Live Articles & Dispatches Wire */}
+        <div id="dispatches-wire" className="mt-14 pt-8 border-t-2 border-black/30">
+          <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">
               <span className="rounded-full bg-black px-4 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093] shadow-md">
                 THE WIRE
               </span>
               <span className="text-xs font-black uppercase tracking-[0.22em] text-black">
-                DISPATCHES & CULTURAL JOURNALISM
+                FULL EDITORIAL ARTICLES & RELEASES
               </span>
             </div>
-            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">
-              Stories, Culture & Station Dispatches
-            </h2>
-            <p className="mt-2 max-w-2xl text-sm font-semibold leading-relaxed text-black/85">
-              In-depth features on East African creators, arts, faith perspectives, and station developments.
-            </p>
+            <Link
+              href="/news"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-black px-5 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 shadow-[3px_3px_0_0_rgba(0,0,0,1)] cursor-pointer w-fit"
+            >
+              <span>All Wire Articles</span>
+              <ArrowUpRight size={14} />
+            </Link>
           </div>
-
-          <Link
-            href="/news"
-            className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-black px-6 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer w-fit"
-          >
-            <span>All Articles</span>
-            <ArrowUpRight size={15} />
-          </Link>
-        </div>
-
-                {/* Broadcast Onboarding Pipeline: Vintage Film Reel Live Countdown */}
-        <div className="mb-12">
-          <HowYourShowGoesLive />
-        </div>
-
-{/* Loading State */}
+  
+  {/* Loading State */}
         {loading && (
           <div className="rounded-3xl border-3 border-black bg-black p-16 text-center text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
             <p className="text-sm font-black uppercase tracking-wider">RETRIEVING DISPATCHES WIRE...</p>
@@ -225,6 +215,7 @@ export default function NewsSection() {
 
           </div>
         )}
+        </div>
 
       </div>
     </section>
