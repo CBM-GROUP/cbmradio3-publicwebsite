@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -9,7 +9,6 @@ import {
   Headphones,
   Play,
   Sparkles,
-  TrendingUp,
 } from "lucide-react";
 
 import homeService from "@/services/home.service";
@@ -17,13 +16,95 @@ import { useEpisodePlayerStore } from "@/store/episodePlayerStore";
 import type { EpisodeSummary } from "@/types/program";
 
 import StudioImage from "../../public/cbm_images/behind-the-scenes-studio.png";
-import DanielPortrait from "../../public/cbm_images/daniel.svg";
+
+// =========================================================================
+// TOP 6 TRENDING ARTISTS CONFIGURATION
+// Colors alternate between White (#ffffff) and CBM Brand Theme Teal (#04b093).
+// Edit week label, artist names, images, colors, links & widths below:
+// =========================================================================
+export const TRENDING_WEEK_LABEL = "Week of October 27, 2026 LEADERBOARD";
+
+export interface TrendingArtist {
+  rank: number;
+  name: string;
+  image: string;
+  color: string;
+  textColor?: string;
+  strokeColor?: string;
+  link: string;
+  widthPercent: number; // Width % on desktop (ranks shrink: 100% down to 62%)
+}
+
+export const TOP_TRENDING_ARTISTS: TrendingArtist[] = [
+  {
+    rank: 1,
+    name: "Amani Sound",
+    image: "/artists/artist-1.jpg",
+    color: "#ffffff", // 1st: Solid White
+    textColor: "#000000",
+    strokeColor: "rgba(0, 0, 0, 0.9)",
+    link: "#",
+    widthPercent: 100,
+  },
+  {
+    rank: 2,
+    name: "Kalonzo Vibe",
+    image: "/artists/artist-2.jpg",
+    color: "#04b093", // 2nd: CBM Company Theme Teal
+    textColor: "#000000",
+    strokeColor: "rgba(0, 0, 0, 0.9)",
+    link: "#",
+    widthPercent: 92,
+  },
+  {
+    rank: 3,
+    name: "Zion Echoes",
+    image: "/artists/artist-3.jpg",
+    color: "#ffffff", // 3rd: Solid White
+    textColor: "#000000",
+    strokeColor: "rgba(0, 0, 0, 0.9)",
+    link: "#",
+    widthPercent: 85,
+  },
+  {
+    rank: 4,
+    name: "Grace Tribe",
+    image: "/artists/artist-4.jpg",
+    color: "#04b093", // 4th: CBM Company Theme Teal
+    textColor: "#000000",
+    strokeColor: "rgba(0, 0, 0, 0.9)",
+    link: "#",
+    widthPercent: 78,
+  },
+  {
+    rank: 5,
+    name: "Sauti Soul",
+    image: "/artists/artist-5.jpg",
+    color: "#ffffff", // 5th: Solid White
+    textColor: "#000000",
+    strokeColor: "rgba(0, 0, 0, 0.9)",
+    link: "#",
+    widthPercent: 70,
+  },
+  {
+    rank: 6,
+    name: "David & Choir",
+    image: "/artists/artist-6.jpg",
+    color: "#04b093", // 6th: CBM Company Theme Teal
+    textColor: "#000000",
+    strokeColor: "rgba(0, 0, 0, 0.9)",
+    link: "#",
+    widthPercent: 62,
+  },
+];
 
 export default function HeroSection() {
   const [episodes, setEpisodes] = useState<EpisodeSummary[]>([]);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
   const { playEpisode } = useEpisodePlayerStore();
+
+  // Scroll observer for staggered slide-in animation
+  const leaderboardRef = useRef<HTMLDivElement>(null);
+  const [isLeaderboardVisible, setIsLeaderboardVisible] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -44,7 +125,25 @@ export default function HeroSection() {
     };
   }, []);
 
-  const activeEpisode = episodes[selectedIndex] || null;
+  useEffect(() => {
+    const node = leaderboardRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsLeaderboardVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  const activeEpisode = episodes[0] || null;
 
   return (
     <section className="relative border-b-2 border-black bg-[#04b093] text-black">
@@ -112,7 +211,7 @@ export default function HeroSection() {
               <div className="mt-6 flex flex-wrap items-center gap-3.5 sm:gap-4">
                 <a
                   href="#episodes"
-                  className="inline-flex min-h-12 items-center gap-2.5 bg-black px-6 sm:px-7 text-xs font-black uppercase tracking-wider text-[#04b093] transition hover:bg-white hover:text-black hover:scale-[1.02] shadow-xl"
+                  className="inline-flex min-h-12 items-center gap-2.5 rounded-full bg-black px-7 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer"
                 >
                   <Headphones size={16} />
                   <span>Stream Episodes</span>
@@ -120,7 +219,7 @@ export default function HeroSection() {
 
                 <a
                   href="#shows"
-                  className="inline-flex min-h-12 items-center gap-2 border-2 border-black bg-transparent px-5 sm:px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-black hover:text-white"
+                  className="inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-black bg-transparent px-6 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-black hover:text-white hover:scale-105 active:scale-95 cursor-pointer"
                 >
                   <span>Explore Series</span>
                   <ArrowUpRight size={15} />
@@ -128,17 +227,17 @@ export default function HeroSection() {
 
                 <Link
                   href="/charts"
-                  className="inline-flex min-h-12 items-center gap-2 border-2 border-black bg-white/20 px-5 sm:px-6 text-xs font-black uppercase tracking-wider text-black transition hover:bg-black hover:text-[#04b093]"
+                  className="inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-black/30 bg-black/5 px-6 text-xs font-black uppercase tracking-wider text-black transition-all hover:bg-black hover:text-[#04b093] hover:scale-105 active:scale-95 cursor-pointer"
                 >
-                  <span>Music Charts</span>
+                  <span>Official Charts</span>
                   <ArrowUpRight size={15} />
                 </Link>
               </div>
             </div>
 
             {/* Spotlight Video Tile (The Zwart/Billboard Lead Media Card) */}
-            <div className="mt-10 border-2 border-black bg-black p-4 text-white shadow-2xl">
-              <div className="group relative aspect-video w-full overflow-hidden bg-black">
+            <div className="mt-10 rounded-3xl border-3 sm:border-4 border-black bg-black p-5 sm:p-7 text-white shadow-[12px_12px_0_0_rgba(0,0,0,1)] hover:shadow-[16px_16px_0_0_rgba(0,0,0,1)] transition-all duration-300">
+              <div className="group relative aspect-video w-full overflow-hidden rounded-2xl bg-black border border-white/10">
                 <Image
                   src={
                     activeEpisode?.cover_image ||
@@ -156,7 +255,7 @@ export default function HeroSection() {
 
                 {/* Top Badge */}
                 <div className="absolute left-3 top-3">
-                  <span className="bg-black/90 px-3 py-1 text-[0.62rem] font-black uppercase tracking-widest text-[#04b093] border border-white/20">
+                  <span className="rounded-full bg-black/90 px-3.5 py-1 text-[0.62rem] font-black uppercase tracking-widest text-[#04b093] border border-white/20">
                     ★ NOW FEATURED // {activeEpisode?.program_title || "ORIGINAL SERIES"}
                   </span>
                 </div>
@@ -167,14 +266,14 @@ export default function HeroSection() {
                     type="button"
                     onClick={() => playEpisode(activeEpisode, true)}
                     aria-label={`Play ${activeEpisode.title}`}
-                    className="absolute inset-0 m-auto grid size-16 place-items-center bg-[#04b093] text-black shadow-2xl transition hover:scale-110 hover:bg-[#05c6a5]"
+                    className="absolute inset-0 m-auto grid size-16 place-items-center rounded-full bg-[#04b093] text-black shadow-2xl transition-all hover:scale-110 active:scale-95 hover:bg-white cursor-pointer"
                   >
                     <Play size={24} className="ml-1 fill-black" />
                   </button>
                 ) : (
                   <a
                     href="#episodes"
-                    className="absolute inset-0 m-auto grid size-16 place-items-center bg-[#04b093] text-black shadow-2xl transition hover:scale-110 hover:bg-[#05c6a5]"
+                    className="absolute inset-0 m-auto grid size-16 place-items-center rounded-full bg-[#04b093] text-black shadow-2xl transition-all hover:scale-110 active:scale-95 hover:bg-white cursor-pointer"
                   >
                     <Play size={24} className="ml-1 fill-black" />
                   </a>
@@ -196,7 +295,7 @@ export default function HeroSection() {
                   <button
                     type="button"
                     onClick={() => playEpisode(activeEpisode, true)}
-                    className="inline-flex items-center gap-1.5 self-start sm:self-auto bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] hover:bg-[#04b093] hover:text-black transition shrink-0"
+                    className="inline-flex items-center gap-2 self-start sm:self-auto rounded-full bg-white/10 px-5 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] hover:bg-[#04b093] hover:text-black transition-all hover:scale-105 active:scale-95 shrink-0 cursor-pointer"
                   >
                     <Play size={12} className="fill-current" />
                     <span>Watch / Listen</span>
@@ -206,138 +305,121 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Right Column (5 cols): The Billboard Hot Drops Leaderboard */}
+          {/* Right Column (5 cols): Top 6 Trending Artists Leaderboard */}
           <div className="lg:col-span-5 flex flex-col justify-between">
-            <div className="border-2 border-black bg-black p-5 sm:p-7 text-white shadow-2xl">
-              
-              {/* Leaderboard Header */}
-              <div className="flex items-center justify-between border-b-2 border-white/20 pb-4">
-                <div className="flex items-center gap-2 text-white">
-                  <TrendingUp size={18} className="text-[#04b093]" />
-                  <h3 className="text-base sm:text-lg font-black uppercase tracking-tight">
-                    Billboard Hot Drops
-                  </h3>
-                </div>
-                <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-black">
-                  TOP RELEASES
-                </span>
+            <div
+              ref={leaderboardRef}
+              className="rounded-3xl border-3 sm:border-4 border-black bg-black p-5 sm:p-7 text-white shadow-[12px_12px_0_0_rgba(0,0,0,1)] hover:shadow-[16px_16px_0_0_rgba(0,0,0,1)] transition-all duration-300 flex flex-col justify-between"
+            >
+              {/* Section Header */}
+              <div className="border-b-2 border-white/20 pb-4">
+                <p className="text-[0.62rem] sm:text-xs font-black uppercase tracking-[0.25em] text-[#04b093]">
+                  {TRENDING_WEEK_LABEL}
+                </p>
+                <h3 className="mt-1 text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
+                  Top 6 Trending Artists
+                </h3>
               </div>
 
-              {/* Hot Drops List */}
-              <div className="mt-4 divide-y divide-white/10">
-                {episodes.map((ep, idx) => {
-                  const isSelected = selectedIndex === idx;
+              {/* 6 Horizontal Bars Stacked Vertically */}
+              <div className="my-5 flex flex-col gap-2.5 sm:gap-3">
+                {TOP_TRENDING_ARTISTS.map((artist, idx) => {
+                  const textColor = artist.textColor || "#000000";
+                  const strokeColor = artist.strokeColor || "rgba(0, 0, 0, 0.9)";
 
                   return (
-                    <article
-                      key={ep.id}
-                      onClick={() => setSelectedIndex(idx)}
-                      className={`group flex items-center justify-between gap-4 py-4 cursor-pointer transition-colors ${
-                        isSelected ? "bg-white/[0.08]" : "hover:bg-white/[0.03]"
-                      }`}
+                    <a
+                      key={artist.rank}
+                      href={artist.link || "#"}
+                      aria-label={`${artist.name} - Rank ${artist.rank}`}
+                      className="group relative flex h-13 sm:h-15 items-center justify-between overflow-hidden rounded-xl sm:rounded-2xl w-full sm:w-[var(--desktop-width)] transition-all duration-300 hover:scale-[1.02] hover:brightness-105 active:scale-[0.98] cursor-pointer shadow-md select-none"
+                      style={
+                        {
+                          backgroundColor: artist.color,
+                          "--desktop-width": `${artist.widthPercent}%`,
+                          opacity: isLeaderboardVisible ? 1 : 0,
+                          transform: isLeaderboardVisible
+                            ? "translateX(0)"
+                            : "translateX(-45px)",
+                          transition: `transform 550ms cubic-bezier(0.16, 1, 0.3, 1) ${
+                            idx * 90
+                          }ms, opacity 550ms ease ${
+                            idx * 90
+                          }ms, filter 200ms ease, scale 200ms ease`,
+                        } as React.CSSProperties
+                      }
                     >
-                      <div className="flex items-center gap-4 min-w-0">
-                        {/* Billboard Rank Numeral */}
+                      {/* Left: Artist Name in Bold */}
+                      <div className="relative z-20 flex items-center min-w-0 pl-4 sm:pl-5 py-3">
                         <span
-                          className={`text-2xl sm:text-3xl font-black tabular-nums tracking-tighter ${
-                            idx === 0
-                              ? "text-[#04b093]"
-                              : isSelected
-                              ? "text-white"
-                              : "text-zinc-500 group-hover:text-white"
-                          }`}
+                          className="text-xs sm:text-sm md:text-base font-black uppercase tracking-wider truncate"
+                          style={{ color: textColor }}
                         >
-                          0{idx + 1}
+                          {artist.name}
                         </span>
-
-                        {/* Thumbnail with hover play overlay */}
-                        <div className="relative size-14 shrink-0 overflow-hidden bg-black border border-white/20">
-                          <Image
-                            src={
-                              ep.cover_image ||
-                              ep.external_cover_image_url ||
-                              DanielPortrait
-                            }
-                            alt={ep.title}
-                            fill
-                            sizes="56px"
-                            unoptimized={Boolean(ep.cover_image)}
-                            className="object-cover"
-                          />
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              playEpisode(ep, true);
-                            }}
-                            aria-label={`Play ${ep.title}`}
-                            className="absolute inset-0 m-auto grid size-7 place-items-center bg-[#04b093] text-black opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <Play size={12} className="ml-0.5 fill-black" />
-                          </button>
-                        </div>
-
-                        {/* Track Info */}
-                        <div className="min-w-0">
-                          <p className="text-[0.65rem] font-black uppercase tracking-wider text-[#04b093] truncate">
-                            {ep.program_title}
-                          </p>
-                          <h4 className="mt-0.5 text-xs sm:text-sm font-black uppercase text-white truncate max-w-xs group-hover:text-[#04b093] transition-colors">
-                            {ep.title}
-                          </h4>
-                          {ep.publish_date && (
-                            <p className="text-[0.65rem] text-zinc-400">
-                              {ep.publish_date}
-                            </p>
-                          )}
-                        </div>
                       </div>
 
-                      {/* Play action icon */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          playEpisode(ep, true);
-                        }}
-                        aria-label={`Stream ${ep.title}`}
-                        className="grid size-8 place-items-center border border-white/20 text-zinc-400 group-hover:border-[#04b093] group-hover:bg-[#04b093] group-hover:text-black transition shrink-0"
-                      >
-                        <Play size={12} className="ml-0.5 fill-current" />
-                      </button>
-                    </article>
+                      {/* Right: Cropped close-up of artist's eyes/face with color tint & gradient fade */}
+                      <div className="absolute right-0 top-0 bottom-0 w-28 sm:w-36 md:w-44 overflow-hidden pointer-events-none z-10">
+                        {/* Base Image */}
+                        <img
+                          src={artist.image}
+                          alt={artist.name}
+                          className="h-full w-full object-cover object-center grayscale contrast-125 transition-transform duration-500 group-hover:scale-105"
+                        />
+
+                        {/* Color overlay with mix-blend-multiply in bar's solid color */}
+                        {artist.color !== "#ffffff" && (
+                          <>
+                            <div
+                              className="absolute inset-0 mix-blend-multiply opacity-90 transition-opacity group-hover:opacity-100"
+                              style={{ backgroundColor: artist.color }}
+                            />
+                            <div
+                              className="absolute inset-0 mix-blend-color opacity-85"
+                              style={{ backgroundColor: artist.color }}
+                            />
+                          </>
+                        )}
+
+                        {/* Horizontal gradient fading seamlessly into the solid bar */}
+                        <div
+                          className="absolute inset-0"
+                          style={{
+                            background: `linear-gradient(to right, ${artist.color} 0%, ${artist.color} 20%, transparent 80%)`,
+                          }}
+                        />
+                      </div>
+
+                      {/* Far Right: Large Outlined Rank Number */}
+                      <div className="relative z-20 pr-3 sm:pr-4 flex items-center justify-end shrink-0">
+                        <span
+                          className="text-3xl sm:text-4xl md:text-5xl font-black italic tracking-tighter select-none leading-none"
+                          style={{
+                            WebkitTextStroke: `1.5px ${strokeColor}`,
+                            color: "transparent",
+                          }}
+                        >
+                          {artist.rank}
+                        </span>
+                      </div>
+                    </a>
                   );
                 })}
-
-                {episodes.length === 0 && (
-                  <p className="py-8 text-center text-xs text-zinc-500 uppercase tracking-wider">
-                    Loading Hot Drops...
-                  </p>
-                )}
               </div>
 
               {/* Leaderboard Footer */}
-              <div className="mt-6 border-t-2 border-white/20 pt-4 flex flex-wrap items-center justify-between gap-3 text-xs">
-                <span className="text-zinc-400 text-[0.68rem] uppercase font-bold">
-                  UPDATED REGULARLY BY CBM EDITORS
+              <div className="border-t-2 border-white/20 pt-4 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <span className="text-zinc-400 text-[0.68rem] uppercase font-bold tracking-wider">
+                  OFFICIAL AIRPLAY & STREAMING METRICS
                 </span>
-                <div className="flex items-center gap-3">
-                  <Link
-                    href="/episodes"
-                    className="font-black uppercase tracking-wider text-white hover:text-[#04b093] transition flex items-center gap-1"
-                  >
-                    <span>All Episodes</span>
-                    <ArrowUpRight size={13} />
-                  </Link>
-                  <span className="text-white/20">&bull;</span>
-                  <Link
-                    href="/charts"
-                    className="font-black uppercase tracking-wider text-[#04b093] hover:underline flex items-center gap-1"
-                  >
-                    <span>Charts</span>
-                    <ArrowUpRight size={13} />
-                  </Link>
-                </div>
+                <Link
+                  href="/charts"
+                  className="font-black uppercase tracking-wider text-[#04b093] hover:underline flex items-center gap-1"
+                >
+                  <span>Full Leaderboard</span>
+                  <ArrowUpRight size={13} />
+                </Link>
               </div>
 
             </div>

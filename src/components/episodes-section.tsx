@@ -96,7 +96,7 @@ export default function EpisodesSection() {
         <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between border-b-2 border-black pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="bg-black px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
+              <span className="rounded-full bg-black px-4 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093] shadow-md">
                 THE HOT CRATE
               </span>
               <span className="text-xs font-black uppercase tracking-[0.22em] text-black">
@@ -154,12 +154,12 @@ export default function EpisodesSection() {
               {filteredEpisodes.length} {filteredEpisodes.length === 1 ? "release" : "releases"} found
             </span>
 
-            <div className="flex items-center border-2 border-black bg-black">
+            <div className="flex items-center rounded-full border-2 border-black bg-black p-0.5 shadow-md">
               <button
                 type="button"
                 onClick={() => setViewMode("grid")}
                 aria-label="Grid layout"
-                className={`p-2 transition ${
+                className={`rounded-full p-2 transition ${
                   viewMode === "grid"
                     ? "bg-[#04b093] text-black"
                     : "text-zinc-400 hover:text-white"
@@ -171,7 +171,7 @@ export default function EpisodesSection() {
                 type="button"
                 onClick={() => setViewMode("list")}
                 aria-label="List layout"
-                className={`p-2 transition ${
+                className={`rounded-full p-2 transition ${
                   viewMode === "list"
                     ? "bg-[#04b093] text-black"
                     : "text-zinc-400 hover:text-white"
@@ -194,10 +194,10 @@ export default function EpisodesSection() {
             <button
               type="button"
               onClick={() => setSelectedProgramId("all")}
-              className={`px-3.5 py-1.5 text-xs font-black uppercase tracking-wider transition ${
+              className={`rounded-full px-4 py-2 text-xs font-black uppercase tracking-wider transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer ${
                 selectedProgramId === "all"
-                  ? "bg-black text-[#04b093] shadow-md"
-                  : "border-2 border-black bg-transparent text-black hover:bg-black hover:text-white"
+                  ? "border-2 border-black bg-black text-[#04b093] shadow-md"
+                  : "border-2 border-black bg-white/20 text-black hover:bg-black hover:text-white"
               }`}
             >
               All Series ({episodes.length})
@@ -209,10 +209,10 @@ export default function EpisodesSection() {
                   key={prog.id}
                   type="button"
                   onClick={() => setSelectedProgramId(prog.id)}
-                  className={`px-3.5 py-1.5 text-xs font-black uppercase tracking-wider transition ${
+                  className={`rounded-full px-4 py-2 text-xs font-black uppercase tracking-wider transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer ${
                     selectedProgramId === prog.id
-                      ? "bg-black text-[#04b093] shadow-md"
-                      : "border-2 border-black bg-transparent text-black hover:bg-black hover:text-white"
+                      ? "border-2 border-black bg-black text-[#04b093] shadow-md"
+                      : "border-2 border-black bg-white/20 text-black hover:bg-black hover:text-white"
                   }`}
                 >
                   {prog.title} {count > 0 && `(${count})`}
@@ -255,11 +255,11 @@ export default function EpisodesSection() {
               return (
                 <article
                   key={episode.id}
-                  className="group flex flex-col justify-between border-2 border-black bg-black p-5 text-white transition-all duration-200 hover:border-white shadow-2xl"
+                  className="group flex flex-col justify-between rounded-3xl border-3 border-black bg-black p-5 sm:p-6 text-white transition-all duration-300 hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 shadow-[8px_8px_0_0_rgba(0,0,0,1)]"
                 >
                   <div>
                     {/* Media Thumbnail */}
-                    <div className="relative aspect-[16/10] w-full overflow-hidden bg-black border border-white/15">
+                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-black border border-white/15">
                       <Image
                         src={
                           episode.cover_image ||
@@ -276,11 +276,11 @@ export default function EpisodesSection() {
 
                       {/* Rank / Track Identifier Badge */}
                       <div className="absolute left-3 top-3 flex items-center gap-2">
-                        <span className="bg-black/90 px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-white border border-white/20">
+                        <span className="rounded-full bg-black/90 px-3 py-0.5 text-[0.65rem] font-black uppercase tracking-wider text-white border border-white/20">
                           #{idx + 1}
                         </span>
                         {idx === 0 && (
-                          <span className="bg-[#04b093] px-2 py-0.5 text-[0.62rem] font-black uppercase tracking-wider text-black">
+                          <span className="rounded-full bg-[#04b093] px-2.5 py-0.5 text-[0.62rem] font-black uppercase tracking-wider text-black shadow-sm">
                             HOT
                           </span>
                         )}
@@ -291,7 +291,7 @@ export default function EpisodesSection() {
                         type="button"
                         onClick={() => playEpisode(episode, true)}
                         aria-label={`Play ${episode.title}`}
-                        className="absolute inset-0 m-auto grid size-12 place-items-center bg-[#04b093] text-black opacity-0 transition-opacity group-hover:opacity-100 hover:scale-105"
+                        className="absolute inset-0 m-auto grid size-14 place-items-center rounded-full bg-[#04b093] text-black opacity-0 transition-all duration-300 group-hover:opacity-100 hover:scale-110 active:scale-95 shadow-2xl cursor-pointer"
                       >
                         <Play size={18} className="ml-0.5 fill-black" />
                       </button>
@@ -329,7 +329,7 @@ export default function EpisodesSection() {
                     <button
                       type="button"
                       onClick={() => playEpisode(episode, true)}
-                      className="inline-flex items-center gap-1.5 text-[#04b093] hover:text-[#05c6a5] transition"
+                      className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] hover:bg-[#04b093] hover:text-black hover:scale-105 active:scale-95 transition-all cursor-pointer"
                     >
                       <Play size={12} className="fill-current" />
                       <span>Stream Master</span>
@@ -340,7 +340,7 @@ export default function EpisodesSection() {
                         type="button"
                         onClick={() => handleCopyLink(episode)}
                         aria-label="Copy link"
-                        className="text-zinc-400 hover:text-[#04b093] transition"
+                        className="grid size-8 place-items-center rounded-full bg-white/10 text-zinc-400 hover:text-[#04b093] hover:bg-white/20 hover:scale-105 active:scale-95 transition-all cursor-pointer"
                       >
                         {copiedId === episode.id ? (
                           <span className="text-[0.68rem] text-[#04b093]">Copied!</span>
@@ -351,7 +351,7 @@ export default function EpisodesSection() {
 
                       <Link
                         href={`/episodes/${encodeURIComponent(episode.slug)}`}
-                        className="inline-flex items-center gap-1 text-zinc-400 hover:text-white transition"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3.5 py-2 text-xs font-black uppercase tracking-wider text-zinc-300 hover:bg-white hover:text-black hover:scale-105 active:scale-95 transition-all cursor-pointer"
                       >
                         <span>Details</span>
                         <ArrowUpRight size={13} />
@@ -366,7 +366,7 @@ export default function EpisodesSection() {
 
         {/* VIEW MODE 2: BILLBOARD CHART LIST VIEW */}
         {!loading && displayList.length > 0 && viewMode === "list" && (
-          <div className="border-2 border-black bg-black text-white divide-y divide-white/10 shadow-2xl">
+          <div className="rounded-3xl border-3 border-black bg-black text-white divide-y divide-white/10 shadow-[10px_10px_0_0_rgba(0,0,0,1)] overflow-hidden">
             
             {/* Table Header */}
             <div className="hidden sm:grid grid-cols-12 gap-4 p-4 text-[0.68rem] font-black uppercase tracking-wider text-zinc-400 border-b border-white/15 bg-black">

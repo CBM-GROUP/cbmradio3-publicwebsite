@@ -236,7 +236,7 @@ export default function HomepageCharts() {
     >
       <div className="mx-auto max-w-7xl">
         {/* Master Billboard Showcase Container */}
-        <div className="relative overflow-hidden border-2 border-black bg-black p-6 text-white shadow-2xl sm:p-10">
+        <div className="relative overflow-hidden rounded-3xl border-3 border-black bg-black p-6 text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)] sm:p-10">
           {/* Subtle Ambient Backlights */}
           <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[#04b093]/15 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-20 -left-20 h-72 w-72 rounded-full bg-amber-500/10 blur-3xl" />
@@ -245,7 +245,7 @@ export default function HomepageCharts() {
           <div className="relative z-10 flex flex-col gap-5 border-b border-white/15 pb-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="flex items-center gap-2.5">
-                <span className="bg-[#04b093] px-2.5 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black">
+                <span className="rounded-full bg-[#04b093] px-3.5 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black shadow-md">
                   OFFICIAL COUNTDOWN
                 </span>
                 <span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-[0.2em] text-[#04b093]">
@@ -292,7 +292,7 @@ export default function HomepageCharts() {
                     ? `/charts?chart=${encodeURIComponent(selectedChartSlug)}`
                     : "/charts"
                 }
-                className="inline-flex items-center gap-1.5 rounded-full bg-[#04b093] px-4 py-2 text-xs font-black uppercase tracking-wider text-black shadow-lg transition hover:scale-105 hover:bg-white hover:text-black"
+                className="inline-flex items-center gap-2 rounded-full bg-[#04b093] px-5 py-2.5 text-xs font-black uppercase tracking-wider text-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] transition-all hover:scale-105 hover:bg-white hover:text-black active:scale-95 cursor-pointer"
               >
                 <span>Full Chart</span>
                 <ArrowUpRight size={14} />

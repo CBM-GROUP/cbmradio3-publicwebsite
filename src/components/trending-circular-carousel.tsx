@@ -196,25 +196,18 @@ export default function TrendingCircularCarousel({
 
       <div className="relative z-10 mx-auto max-w-7xl">
         {/* Header Ribbon */}
-        <div className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 border-b-2 border-black pb-6">
+        <div className="mb-12 sm:mb-16 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 border-b-2 border-black pb-6">
           <div>
             <div className="flex flex-wrap items-center gap-2.5">
               <span className="rounded-full bg-black px-4 py-1 text-[0.68rem] font-black uppercase tracking-[0.22em] text-[#04b093] shadow-md">
                 HEAD TRENDING SHOWS
-              </span>
-              <span className="rounded-full bg-black/15 px-3 py-0.5 text-xs font-mono font-bold uppercase tracking-wider text-black border border-black/30">
-                3D ROTATING SHOWCASE
               </span>
             </div>
             <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">
               {items.length === 3 ? "The Big 3: Featured Shows" : "Featured Shows Spotlight"}
             </h2>
             <p className="mt-2 max-w-2xl text-xs sm:text-sm font-bold text-black/85 leading-relaxed">
-              Watch flagship broadcasts cycle along the orbit: as each show arrives at the center, it{" "}
-              <span className="rounded-full bg-black px-2.5 py-0.5 text-[#04b093] font-black uppercase">
-                pushes itself in front
-              </span>{" "}
-              into full broadcast spotlight.
+              Explore our flagship broadcasts cycling into the spotlight across sports, music, and news.
             </p>
           </div>
 
@@ -264,7 +257,7 @@ export default function TrendingCircularCarousel({
             3D CIRCULAR MOVING CARDS ORBIT
             Self-rotating every 4 seconds; pushes forward into the front at center!
             ========================================================================= */}
-        <div className="relative mx-auto flex min-h-[480px] sm:min-h-[530px] w-full max-w-5xl items-center justify-center [perspective:1400px]">
+        <div className="relative mx-auto mt-6 sm:mt-10 flex min-h-[540px] sm:min-h-[600px] w-full max-w-5xl items-center justify-center [perspective:1400px] pt-4 sm:pt-6 pb-6">
           {/* Circular Orbit Ground Shadow */}
           <div className="pointer-events-none absolute bottom-4 left-1/2 h-16 w-3/4 -translate-x-1/2 rounded-[50%] bg-black/25 blur-xl" />
 
@@ -278,13 +271,13 @@ export default function TrendingCircularCarousel({
             let transformStyle = "translate3d(0%, 50px, -200px) scale(0.6) rotateY(0deg)";
             if (isCenter) {
               transformStyle =
-                "translate3d(0%, -18px, 100px) scale(1.08) rotateY(0deg) rotate(0deg)";
+                "translate3d(0%, 10px, 100px) scale(1.06) rotateY(0deg) rotate(0deg)";
             } else if (isRight) {
               transformStyle =
-                "translate3d(60%, 20px, -90px) scale(0.82) rotateY(-20deg) rotate(3deg)";
+                "translate3d(60%, 36px, -90px) scale(0.82) rotateY(-20deg) rotate(3deg)";
             } else if (isLeft) {
               transformStyle =
-                "translate3d(-60%, 20px, -90px) scale(0.82) rotateY(20deg) rotate(-3deg)";
+                "translate3d(-60%, 36px, -90px) scale(0.82) rotateY(20deg) rotate(-3deg)";
             }
 
             return (
@@ -432,16 +425,6 @@ export default function TrendingCircularCarousel({
               </div>
             );
           })}
-        </div>
-
-        {/* Orbit Footer Caption */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs font-mono font-bold text-black/85">
-          <span className="flex items-center gap-1.5">
-            <span className="size-2 rounded-full bg-black animate-pulse" />
-            Automatic 3D Rotation Active: Cards advance every 4s automatically
-          </span>
-          <span className="hidden sm:inline">•</span>
-          <span>Click any card to focus immediately</span>
         </div>
       </div>
     </section>
