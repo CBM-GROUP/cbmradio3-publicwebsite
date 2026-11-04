@@ -279,6 +279,7 @@ export default function ProgramsSection() {
                     ? `Hosted by ${activeProgram.presenter} • ${activeProgram.meta.genre}`
                     : `Original Broadcast • ${activeProgram.meta.genre}`
                 }
+                coverImage={activeProgram.cover_image || activeProgram.meta.artwork}
                 streamUrl={STREAM_URL}
               />
             </div>
@@ -286,45 +287,69 @@ export default function ProgramsSection() {
             <div className="lg:col-span-6 flex flex-col justify-between">
               <div>
                 
-                {/* Badge Header Row */}
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <span
-                    className="px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-black shadow-md rounded-sm"
-                    style={{ backgroundColor: activeProgram.meta.accent }}
-                  >
-                    {activeProgram.meta.badge}
-                  </span>
+                {/* Header Row: Program Art Jacket + Badges & Title */}
+                <div className="flex flex-col sm:flex-row gap-5 items-start">
                   
-                  <span className="border border-white/20 bg-white/10 px-2.5 py-1 text-[0.65rem] font-black uppercase tracking-wider text-zinc-300">
-                    DISC #{String(activeIndex + 1).padStart(2, "0")} OF {programs.length}
-                  </span>
+                  {/* Featured Program Art Jacket */}
+                  <div className="group relative size-28 sm:size-32 md:size-36 shrink-0 overflow-hidden rounded-2xl border-2 border-white/25 bg-zinc-900 shadow-[6px_6px_0_0_rgba(0,0,0,0.8)]">
+                    <Image
+                      src={activeProgram.cover_image || activeProgram.meta.artwork}
+                      alt={activeProgram.title}
+                      fill
+                      sizes="(max-width: 640px) 112px, 144px"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      unoptimized={Boolean(activeProgram.cover_image)}
+                      priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                    <span className="absolute bottom-1.5 left-1.5 border border-black bg-[#04b093] px-2 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-black">
+                      Show Art
+                    </span>
+                  </div>
 
-                  <span className="flex items-center gap-1.5 text-[0.65rem] font-black uppercase text-[#04b093]">
-                    <span className="size-2 rounded-full bg-[#04b093]" />
-                    ACTIVE SHOW
-                  </span>
-                </div>
+                  {/* Program Metadata Column */}
+                  <div className="flex-1 min-w-0">
+                    {/* Badge Header Row */}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span
+                        className="px-2.5 py-0.5 text-[0.62rem] font-black uppercase tracking-[0.2em] text-black shadow-md rounded-sm"
+                        style={{ backgroundColor: activeProgram.meta.accent }}
+                      >
+                        {activeProgram.meta.badge}
+                      </span>
+                      
+                      <span className="border border-white/20 bg-white/10 px-2.5 py-0.5 text-[0.62rem] font-black uppercase tracking-wider text-zinc-300">
+                        DISC #{String(activeIndex + 1).padStart(2, "0")} OF {programs.length}
+                      </span>
 
-                {/* Main Program Title */}
-                <h3 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-white leading-none">
-                  {activeProgram.title}
-                </h3>
-
-                {/* Host & Schedule Badges */}
-                <div className="mt-4 flex flex-wrap gap-4 text-xs font-bold text-zinc-300">
-                  {activeProgram.presenter && (
-                    <div className="flex items-center gap-1.5 bg-zinc-900/90 border border-white/15 px-3 py-1.5 rounded-md">
-                      <Mic2 size={14} className="text-[#04b093]" />
-                      <span>Hosted by <strong className="text-white">{activeProgram.presenter}</strong></span>
+                      <span className="flex items-center gap-1 text-[0.62rem] font-black uppercase text-[#04b093]">
+                        <span className="size-1.5 rounded-full bg-[#04b093] animate-ping" />
+                        ACTIVE SHOW
+                      </span>
                     </div>
-                  )}
 
-                  {activeProgram.schedule && (
-                    <div className="flex items-center gap-1.5 bg-zinc-900/90 border border-white/15 px-3 py-1.5 rounded-md">
-                      <Clock size={14} className="text-[#eab308]" />
-                      <span>{activeProgram.schedule}</span>
+                    {/* Main Program Title */}
+                    <h3 className="mt-2.5 text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-white leading-tight">
+                      {activeProgram.title}
+                    </h3>
+
+                    {/* Host & Schedule Badges */}
+                    <div className="mt-3 flex flex-wrap gap-2 text-xs font-bold text-zinc-300">
+                      {activeProgram.presenter && (
+                        <div className="flex items-center gap-1.5 bg-zinc-900/90 border border-white/15 px-2.5 py-1 rounded-md text-[11px]">
+                          <Mic2 size={13} className="text-[#04b093]" />
+                          <span>Hosted by <strong className="text-white">{activeProgram.presenter}</strong></span>
+                        </div>
+                      )}
+
+                      {activeProgram.schedule && (
+                        <div className="flex items-center gap-1.5 bg-zinc-900/90 border border-white/15 px-2.5 py-1 rounded-md text-[11px]">
+                          <Clock size={13} className="text-[#eab308]" />
+                          <span>{activeProgram.schedule}</span>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
 
                 {/* Program Description */}
