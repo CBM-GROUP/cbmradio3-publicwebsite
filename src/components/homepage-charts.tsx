@@ -16,75 +16,6 @@ import { chartService } from "@/services/chart.service";
 import type { Chart, ChartEntry } from "@/types/chart";
 import RadioShowArtwork from "../../public/cbm_images/radio 2.jpeg";
 
-// Curated fallback entries if API returns an empty chart
-const fallbackEntries: ChartEntry[] = [
-  {
-    id: "fb-1",
-    rank: 1,
-    previous_rank: 2,
-    peak_rank: 1,
-    weeks_on_chart: 5,
-    title: "Higher Frequency",
-    artist: "CBM Featured Artist",
-    featured_artists: "",
-    cover_image_url:
-      "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop",
-    movement: { status: "up", diff: 1, label: "+1 spot" },
-  },
-  {
-    id: "fb-2",
-    rank: 2,
-    previous_rank: 1,
-    peak_rank: 1,
-    weeks_on_chart: 8,
-    title: "Morning Sun",
-    artist: "East African Collective",
-    featured_artists: "",
-    cover_image_url:
-      "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop",
-    movement: { status: "down", diff: 1, label: "-1 spot" },
-  },
-  {
-    id: "fb-3",
-    rank: 3,
-    previous_rank: 4,
-    peak_rank: 3,
-    weeks_on_chart: 4,
-    title: "Grace Notes",
-    artist: "Sound Tribe",
-    featured_artists: "Trevor",
-    cover_image_url:
-      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&auto=format&fit=crop",
-    movement: { status: "up", diff: 1, label: "+1 spot" },
-  },
-  {
-    id: "fb-4",
-    rank: 4,
-    previous_rank: 3,
-    peak_rank: 2,
-    weeks_on_chart: 6,
-    title: "City Lights",
-    artist: "Acoustic Soul",
-    featured_artists: "",
-    cover_image_url:
-      "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&auto=format&fit=crop",
-    movement: { status: "down", diff: 1, label: "-1 spot" },
-  },
-  {
-    id: "fb-5",
-    rank: 5,
-    previous_rank: null,
-    peak_rank: 5,
-    weeks_on_chart: 1,
-    title: "Alive & Free",
-    artist: "Faith & Harmony",
-    featured_artists: "",
-    cover_image_url:
-      "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=600&auto=format&fit=crop",
-    movement: { status: "new", diff: 0, label: "New Entry" },
-  },
-];
-
 function getAirplayTier(rank: number): { label: string; badgeClass: string } {
   switch (rank) {
     case 1:
@@ -179,9 +110,8 @@ export default function HomepageCharts() {
         const chartWithEntries =
           visibleCharts.find(
             (c) =>
-              ((c as unknown as { entry_count?: number }).entry_count ?? 0) > 0 ||
-              (c.entries?.length ?? 0) > 0 ||
-              c.slug === "hot-100",
+              (c.entry_count ?? c.entries_count ?? 0) > 0 ||
+              (c.entries?.length ?? 0) > 0,
           ) ?? visibleCharts[0];
 
         const initialSlug = chartWithEntries?.slug ?? "";
@@ -217,16 +147,13 @@ export default function HomepageCharts() {
     }
   }
 
-  // Ensure entries are never empty
+  // Real entries only from live backend
   const rawEntries = useMemo(() => {
     const list = chart?.entries?.filter((entry) => entry.rank > 0) ?? [];
-    if (list.length > 0) {
-      return [...list].sort((a, b) => a.rank - b.rank);
-    }
-    return fallbackEntries;
+    return [...list].sort((a, b) => a.rank - b.rank);
   }, [chart]);
 
-  const top1 = rawEntries[0] ?? fallbackEntries[0];
+  const top1 = rawEntries[0] ?? null;
   const leaderboardEntries = rawEntries.slice(1, 5);
 
   return (
@@ -316,9 +243,41 @@ export default function HomepageCharts() {
           </div>
 
           {/* Pure Ranking Layout */}
-          <div className="relative z-10 mt-6 space-y-4">
-            {/* #01 The Market Leader Champion Podium */}
-            <div className="group relative overflow-hidden rounded-2xl border-2 border-[#04b093]/70 bg-gradient-to-r from-zinc-950 via-zinc-900 to-black p-5 shadow-2xl transition-all hover:border-[#04b093] sm:p-7">
+          {!top1 ? (
+            <div className="relative z-10 mt-6 rounded-2xl border-2 border-dashed border-white/20 bg-zinc-950/60 p-10 text-center backdrop-blur-md">
+              <div className="mx-auto mb-3 grid size-12 place-items-center rounded-full bg-[#04b093]/20 text-[#04b093]">
+                <Sparkles size={24} />
+              </div>
+              <h3 className="text-lg font-black uppercase tracking-tight text-white sm:text-xl">
+                Official Rankings In Curation
+              </h3>
+              <p className="mx-auto mt-2 max-w-md text-xs sm:text-sm font-medium text-zinc-400">
+                Track entries for{" "}
+                <span className="text-white font-bold">{chart?.title || "this chart"}</span>{" "}
+                are being compiled and vetted for the upcoming broadcast edition.
+              </p>
+              {availableCharts.some((c) => (c.entry_count ?? c.entries_count ?? 0) > 0) && (
+                <div className="mt-5 flex items-center justify-center gap-3">
+                  {availableCharts
+                    .filter((c) => (c.entry_count ?? c.entries_count ?? 0) > 0)
+                    .map((c) => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => handleSelectChart(c.slug)}
+                        className="inline-flex items-center gap-2 rounded-full bg-[#04b093] px-5 py-2 text-xs font-black uppercase text-black hover:bg-white transition-all shadow-md"
+                      >
+                        <span>View {c.title} (#1 - #{c.entry_count ?? c.entries_count})</span>
+                        <ArrowUpRight size={14} />
+                      </button>
+                    ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="relative z-10 mt-6 space-y-4">
+              {/* #01 The Market Leader Champion Podium */}
+              <div className="group relative overflow-hidden rounded-2xl border-2 border-[#04b093]/70 bg-gradient-to-r from-zinc-950 via-zinc-900 to-black p-5 shadow-2xl transition-all hover:border-[#04b093] sm:p-7">
               <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-[#04b093]/10 to-transparent pointer-events-none" />
 
               <div className="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
@@ -572,6 +531,7 @@ export default function HomepageCharts() {
               </Link>
             </div>
           </div>
+        )}
         </div>
       </div>
     </section>

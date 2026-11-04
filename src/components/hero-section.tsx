@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -12,8 +12,12 @@ import {
 } from "lucide-react";
 
 import homeService from "@/services/home.service";
+import { pageSectionService } from "@/services/page-section.service";
+import { chartService } from "@/services/chart.service";
 import { useEpisodePlayerStore } from "@/store/episodePlayerStore";
 import type { EpisodeSummary } from "@/types/program";
+import type { PageSection } from "@/types/hero";
+import type { Chart } from "@/types/chart";
 
 import StudioImage from "../../public/cbm_images/behind-the-scenes-studio.png";
 
@@ -35,71 +39,10 @@ export interface TrendingArtist {
   widthPercent: number; // Width % on desktop (ranks shrink: 100% down to 62%)
 }
 
-export const TOP_TRENDING_ARTISTS: TrendingArtist[] = [
-  {
-    rank: 1,
-    name: "Amani Sound",
-    image: "/artists/artist-1.jpg",
-    color: "#ffffff", // 1st: Solid White
-    textColor: "#000000",
-    strokeColor: "rgba(0, 0, 0, 0.9)",
-    link: "#",
-    widthPercent: 100,
-  },
-  {
-    rank: 2,
-    name: "Kalonzo Vibe",
-    image: "/artists/artist-2.jpg",
-    color: "#04b093", // 2nd: CBM Company Theme Teal
-    textColor: "#000000",
-    strokeColor: "rgba(0, 0, 0, 0.9)",
-    link: "#",
-    widthPercent: 92,
-  },
-  {
-    rank: 3,
-    name: "Zion Echoes",
-    image: "/artists/artist-3.jpg",
-    color: "#ffffff", // 3rd: Solid White
-    textColor: "#000000",
-    strokeColor: "rgba(0, 0, 0, 0.9)",
-    link: "#",
-    widthPercent: 85,
-  },
-  {
-    rank: 4,
-    name: "Grace Tribe",
-    image: "/artists/artist-4.jpg",
-    color: "#04b093", // 4th: CBM Company Theme Teal
-    textColor: "#000000",
-    strokeColor: "rgba(0, 0, 0, 0.9)",
-    link: "#",
-    widthPercent: 78,
-  },
-  {
-    rank: 5,
-    name: "Sauti Soul",
-    image: "/artists/artist-5.jpg",
-    color: "#ffffff", // 5th: Solid White
-    textColor: "#000000",
-    strokeColor: "rgba(0, 0, 0, 0.9)",
-    link: "#",
-    widthPercent: 70,
-  },
-  {
-    rank: 6,
-    name: "David & Choir",
-    image: "/artists/artist-6.jpg",
-    color: "#04b093", // 6th: CBM Company Theme Teal
-    textColor: "#000000",
-    strokeColor: "rgba(0, 0, 0, 0.9)",
-    link: "#",
-    widthPercent: 62,
-  },
-];
-
 export default function HeroSection() {
   const [episodes, setEpisodes] = useState<EpisodeSummary[]>([]);
+  const [heroSection, setHeroSection] = useState<PageSection | null>(null);
+  const [chart, setChart] = useState<Chart | null>(null);
   const { playEpisode } = useEpisodePlayerStore();
 
   // Scroll observer for staggered slide-in animation
@@ -112,12 +55,42 @@ export default function HeroSection() {
     Promise.allSettled([
       homeService.getFeaturedEpisodes(),
       homeService.getLatestEpisodes(),
-    ]).then(([featuredRes, latestRes]) => {
+      pageSectionService.getSectionsForPage("home", "hero"),
+      chartService.getCharts(),
+    ]).then(async ([featuredRes, latestRes, heroRes, chartsRes]) => {
       if (!isMounted) return;
+
       const featured = featuredRes.status === "fulfilled" ? featuredRes.value : [];
       const latest = latestRes.status === "fulfilled" ? latestRes.value : [];
       const combined = [...featured, ...latest.filter((l) => !featured.some((f) => f.id === l.id))];
       setEpisodes(combined.slice(0, 5));
+
+      if (heroRes.status === "fulfilled" && Array.isArray(heroRes.value) && heroRes.value.length > 0) {
+        setHeroSection(heroRes.value[0]);
+      }
+
+      if (chartsRes.status === "fulfilled" && Array.isArray(chartsRes.value) && chartsRes.value.length > 0) {
+        const activeCharts = chartsRes.value.filter((c) => c.is_active);
+        const targetChart =
+          activeCharts.find(
+            (c) =>
+              (c.entry_count ?? c.entries_count ?? 0) > 0 ||
+              (c.entries?.length ?? 0) > 0,
+          ) ||
+          activeCharts[0] ||
+          chartsRes.value[0];
+
+        if (targetChart?.slug) {
+          try {
+            const chartDetails = await chartService.getChartBySlug(targetChart.slug);
+            if (isMounted && chartDetails) {
+              setChart(chartDetails);
+            }
+          } catch {
+            // Keep empty
+          }
+        }
+      }
     });
 
     return () => {
@@ -144,6 +117,54 @@ export default function HeroSection() {
   }, []);
 
   const activeEpisode = episodes[0] || null;
+
+  // Dynamic Leaderboard Items mapped from Dashboard Chart
+  const leaderboardItems: TrendingArtist[] = useMemo(() => {
+    if (chart && Array.isArray(chart.entries) && chart.entries.length > 0) {
+      const widthPercents = [100, 92, 85, 78, 70, 62];
+      return chart.entries.slice(0, 6).map((entry, idx) => {
+        const isTeal = idx % 2 === 1;
+        const entryImage =
+          entry.cover_image ||
+          entry.cover_image_url ||
+          `/artists/artist-${(idx % 6) + 1}.jpg`;
+        const link =
+          entry.spotify_url ||
+          entry.apple_music_url ||
+          entry.youtube_url ||
+          entry.audio_url ||
+          "/charts";
+
+        return {
+          rank: entry.rank || idx + 1,
+          name: entry.artist ? `${entry.title} — ${entry.artist}` : entry.title,
+          image: entryImage,
+          color: isTeal ? "#04b093" : "#ffffff",
+          textColor: "#000000",
+          strokeColor: "rgba(0, 0, 0, 0.9)",
+          link,
+          widthPercent: widthPercents[idx] || 60,
+        };
+      });
+    }
+    return [];
+  }, [chart]);
+
+  const leaderboardLabel = chart
+    ? chart.edition_date
+      ? `EDITION: ${chart.edition_date} // ${chart.title.toUpperCase()}`
+      : `${chart.title.toUpperCase()} // LEADERBOARD`
+    : "OFFICIAL MUSIC LEADERBOARD";
+
+  const heroHeadline =
+    heroSection?.title || "Moving African Sound, Culture & Faith Forward.";
+  const heroSubtitle =
+    heroSection?.subtitle || "CBM ORIGINAL BROADCAST";
+  const heroBody =
+    heroSection?.body ||
+    "Authentic dialogue, transformative conversations, and community-powered stories created for the people who shape culture every day. Stream every episode on demand.";
+  const heroCtaLabel = heroSection?.cta_label;
+  const heroCtaUrl = heroSection?.cta_url;
 
   return (
     <section className="relative border-b-2 border-black bg-[#04b093] text-black">
@@ -193,29 +214,41 @@ export default function HeroSection() {
                 </span>
                 <span className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-black flex items-center gap-1.5">
                   <Sparkles size={12} />
-                  <span>CBM ORIGINAL BROADCAST</span>
+                  <span>{heroSubtitle}</span>
                 </span>
               </div>
 
               {/* Massive Billboard Headline */}
               <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.98] text-black">
-                Moving African Sound, Culture & Faith Forward.
+                {heroHeadline}
               </h1>
 
               {/* Lead Deck */}
               <p className="mt-5 max-w-xl text-sm sm:text-base leading-relaxed text-black/85 font-semibold">
-                Authentic dialogue, transformative conversations, and community-powered stories created for the people who shape culture every day. Stream every episode on demand.
+                {heroBody}
               </p>
 
               {/* Call-to-Action Bar */}
               <div className="mt-6 flex flex-wrap items-center gap-3.5 sm:gap-4">
-                <a
-                  href="#episodes"
-                  className="inline-flex min-h-12 items-center gap-2.5 rounded-full bg-black px-7 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer"
-                >
-                  <Headphones size={16} />
-                  <span>Stream Episodes</span>
-                </a>
+                {heroCtaLabel && heroCtaUrl ? (
+                  <a
+                    href={heroCtaUrl}
+                    target={heroCtaUrl.startsWith("http") ? "_blank" : undefined}
+                    rel={heroCtaUrl.startsWith("http") ? "noopener noreferrer" : undefined}
+                    className="inline-flex min-h-12 items-center gap-2.5 rounded-full bg-black px-7 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer"
+                  >
+                    <span>{heroCtaLabel}</span>
+                    <ArrowUpRight size={15} />
+                  </a>
+                ) : (
+                  <a
+                    href="#episodes"
+                    className="inline-flex min-h-12 items-center gap-2.5 rounded-full bg-black px-7 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer"
+                  >
+                    <Headphones size={16} />
+                    <span>Stream Episodes</span>
+                  </a>
+                )}
 
                 <a
                   href="#shows"
@@ -314,7 +347,7 @@ export default function HeroSection() {
               {/* Section Header */}
               <div className="border-b-2 border-white/20 pb-4">
                 <p className="text-[0.62rem] sm:text-xs font-black uppercase tracking-[0.25em] text-[#04b093]">
-                  {TRENDING_WEEK_LABEL}
+                  {leaderboardLabel}
                 </p>
                 <h3 className="mt-1 text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
                   Top 6 Trending Artists
@@ -322,91 +355,106 @@ export default function HeroSection() {
               </div>
 
               {/* 6 Horizontal Bars Stacked Vertically */}
-              <div className="my-5 flex flex-col gap-2.5 sm:gap-3">
-                {TOP_TRENDING_ARTISTS.map((artist, idx) => {
-                  const textColor = artist.textColor || "#000000";
-                  const strokeColor = artist.strokeColor || "rgba(0, 0, 0, 0.9)";
+              {leaderboardItems.length > 0 ? (
+                <div className="my-5 flex flex-col gap-2.5 sm:gap-3">
+                  {leaderboardItems.map((artist, idx) => {
+                    const textColor = artist.textColor || "#000000";
+                    const strokeColor = artist.strokeColor || "rgba(0, 0, 0, 0.9)";
 
-                  return (
-                    <a
-                      key={artist.rank}
-                      href={artist.link || "#"}
-                      aria-label={`${artist.name} - Rank ${artist.rank}`}
-                      className="group relative flex h-13 sm:h-15 items-center justify-between overflow-hidden rounded-xl sm:rounded-2xl w-full sm:w-[var(--desktop-width)] transition-all duration-300 hover:scale-[1.02] hover:brightness-105 active:scale-[0.98] cursor-pointer shadow-md select-none"
-                      style={
-                        {
-                          backgroundColor: artist.color,
-                          "--desktop-width": `${artist.widthPercent}%`,
-                          opacity: isLeaderboardVisible ? 1 : 0,
-                          transform: isLeaderboardVisible
-                            ? "translateX(0)"
-                            : "translateX(-45px)",
-                          transition: `transform 550ms cubic-bezier(0.16, 1, 0.3, 1) ${
-                            idx * 90
-                          }ms, opacity 550ms ease ${
-                            idx * 90
-                          }ms, filter 200ms ease, scale 200ms ease`,
-                        } as React.CSSProperties
-                      }
-                    >
-                      {/* Left: Artist Name in Bold */}
-                      <div className="relative z-20 flex items-center min-w-0 pl-4 sm:pl-5 py-3">
-                        <span
-                          className="text-xs sm:text-sm md:text-base font-black uppercase tracking-wider truncate"
-                          style={{ color: textColor }}
-                        >
-                          {artist.name}
-                        </span>
-                      </div>
+                    return (
+                      <a
+                        key={artist.rank}
+                        href={artist.link || "#"}
+                        aria-label={`${artist.name} - Rank ${artist.rank}`}
+                        className="group relative flex h-13 sm:h-15 items-center justify-between overflow-hidden rounded-xl sm:rounded-2xl w-full sm:w-[var(--desktop-width)] transition-all duration-300 hover:scale-[1.02] hover:brightness-105 active:scale-[0.98] cursor-pointer shadow-md select-none"
+                        style={
+                          {
+                            backgroundColor: artist.color,
+                            "--desktop-width": `${artist.widthPercent}%`,
+                            opacity: isLeaderboardVisible ? 1 : 0,
+                            transform: isLeaderboardVisible
+                              ? "translateX(0)"
+                              : "translateX(-45px)",
+                            transition: `transform 550ms cubic-bezier(0.16, 1, 0.3, 1) ${
+                              idx * 90
+                            }ms, opacity 550ms ease ${
+                              idx * 90
+                            }ms, filter 200ms ease, scale 200ms ease`,
+                          } as React.CSSProperties
+                        }
+                      >
+                        {/* Left: Artist Name in Bold */}
+                        <div className="relative z-20 flex items-center min-w-0 pl-4 sm:pl-5 py-3">
+                          <span
+                            className="text-xs sm:text-sm md:text-base font-black uppercase tracking-wider truncate"
+                            style={{ color: textColor }}
+                          >
+                            {artist.name}
+                          </span>
+                        </div>
 
-                      {/* Right: Cropped close-up of artist's eyes/face with color tint & gradient fade */}
-                      <div className="absolute right-0 top-0 bottom-0 w-28 sm:w-36 md:w-44 overflow-hidden pointer-events-none z-10">
-                        {/* Base Image */}
-                        <img
-                          src={artist.image}
-                          alt={artist.name}
-                          className="h-full w-full object-cover object-center grayscale contrast-125 transition-transform duration-500 group-hover:scale-105"
-                        />
+                        {/* Right: Cropped close-up of artist's eyes/face with color tint & gradient fade */}
+                        <div className="absolute right-0 top-0 bottom-0 w-28 sm:w-36 md:w-44 overflow-hidden pointer-events-none z-10">
+                          {/* Base Image */}
+                          <img
+                            src={artist.image}
+                            alt={artist.name}
+                            className="h-full w-full object-cover object-center grayscale contrast-125 transition-transform duration-500 group-hover:scale-105"
+                          />
 
-                        {/* Color overlay with mix-blend-multiply in bar's solid color */}
-                        {artist.color !== "#ffffff" && (
-                          <>
-                            <div
-                              className="absolute inset-0 mix-blend-multiply opacity-90 transition-opacity group-hover:opacity-100"
-                              style={{ backgroundColor: artist.color }}
-                            />
-                            <div
-                              className="absolute inset-0 mix-blend-color opacity-85"
-                              style={{ backgroundColor: artist.color }}
-                            />
-                          </>
-                        )}
+                          {/* Color overlay with mix-blend-multiply in bar's solid color */}
+                          {artist.color !== "#ffffff" && (
+                            <>
+                              <div
+                                className="absolute inset-0 mix-blend-multiply opacity-90 transition-opacity group-hover:opacity-100"
+                                style={{ backgroundColor: artist.color }}
+                              />
+                              <div
+                                className="absolute inset-0 mix-blend-color opacity-85"
+                                style={{ backgroundColor: artist.color }}
+                              />
+                            </>
+                          )}
 
-                        {/* Horizontal gradient fading seamlessly into the solid bar */}
-                        <div
-                          className="absolute inset-0"
-                          style={{
-                            background: `linear-gradient(to right, ${artist.color} 0%, ${artist.color} 20%, transparent 80%)`,
-                          }}
-                        />
-                      </div>
+                          {/* Horizontal gradient fading seamlessly into the solid bar */}
+                          <div
+                            className="absolute inset-0"
+                            style={{
+                              background: `linear-gradient(to right, ${artist.color} 0%, ${artist.color} 20%, transparent 80%)`,
+                            }}
+                          />
+                        </div>
 
-                      {/* Far Right: Large Outlined Rank Number */}
-                      <div className="relative z-20 pr-3 sm:pr-4 flex items-center justify-end shrink-0">
-                        <span
-                          className="text-3xl sm:text-4xl md:text-5xl font-black italic tracking-tighter select-none leading-none"
-                          style={{
-                            WebkitTextStroke: `1.5px ${strokeColor}`,
-                            color: "transparent",
-                          }}
-                        >
-                          {artist.rank}
-                        </span>
-                      </div>
-                    </a>
-                  );
-                })}
-              </div>
+                        {/* Far Right: Large Outlined Rank Number */}
+                        <div className="relative z-20 pr-3 sm:pr-4 flex items-center justify-end shrink-0">
+                          <span
+                            className="text-3xl sm:text-4xl md:text-5xl font-black italic tracking-tighter select-none leading-none"
+                            style={{
+                              WebkitTextStroke: `1.5px ${strokeColor}`,
+                              color: "transparent",
+                            }}
+                          >
+                            {artist.rank}
+                          </span>
+                        </div>
+                      </a>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="my-8 rounded-2xl border-2 border-dashed border-white/20 p-6 text-center">
+                  <p className="text-sm font-bold text-zinc-300">
+                    Leaderboard edition is currently being compiled.
+                  </p>
+                  <Link
+                    href="/charts"
+                    className="mt-3 inline-flex items-center gap-1.5 text-xs font-black uppercase text-[#04b093] hover:underline"
+                  >
+                    <span>Explore Official Charts</span>
+                    <ArrowUpRight size={13} />
+                  </Link>
+                </div>
+              )}
 
               {/* Leaderboard Footer */}
               <div className="border-t-2 border-white/20 pt-4 flex flex-wrap items-center justify-between gap-3 text-xs">

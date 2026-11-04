@@ -627,17 +627,8 @@ export default function TheWireSection() {
     <section
       id="the-wire"
       aria-label="The Wire - Full Editorial Articles & Releases"
-      className="relative scroll-mt-20 border-t-2 border-black bg-[#060c18] px-4 py-16 text-white sm:px-8 sm:py-20 lg:px-12 lg:py-24"
+      className="relative scroll-mt-20 border-t-2 border-black bg-[#04b093] px-4 py-16 text-black sm:px-8 sm:py-20 lg:px-12 lg:py-24"
     >
-      {/* Ambient background flares */}
-      <div
-        className="pointer-events-none absolute left-1/4 top-10 h-96 w-96 rounded-full bg-[#04b093]/10 blur-[130px]"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute right-1/4 bottom-20 h-96 w-96 rounded-full bg-[#04b093]/10 blur-[140px]"
-        aria-hidden="true"
-      />
 
       <style>{`
         /* Seamless Continuous Live Ticker */
@@ -713,22 +704,22 @@ export default function TheWireSection() {
             - Small Monospace Label: "THE WIRE"
             - Heading (bold uppercase): "FULL EDITORIAL ARTICLES & RELEASES"
             ========================================================================= */}
-        <div className="mb-10 flex flex-col gap-4 border-b-2 border-zinc-800 pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mb-10 flex flex-col gap-4 border-b-2 border-black pb-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="flex items-center gap-2.5">
-              <span className="rounded-full bg-black px-3.5 py-1 font-mono text-[0.65rem] font-black uppercase tracking-[0.25em] text-[#04b093] border border-[#04b093]/40 shadow-sm">
+              <span className="rounded-full bg-black px-3.5 py-1 font-mono text-[0.65rem] font-black uppercase tracking-[0.25em] text-[#04b093] border border-black shadow-sm">
                 THE WIRE
               </span>
-              <span className="font-mono text-xs font-bold uppercase tracking-wider text-zinc-400">
+              <span className="font-mono text-xs font-bold uppercase tracking-wider text-black/80">
                 DISPATCHES & EDITORIAL JOURNALISM
               </span>
             </div>
-            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-white sm:text-4xl lg:text-5xl">
+            <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">
               FULL EDITORIAL ARTICLES & RELEASES
             </h2>
           </div>
 
-          <p className="max-w-md text-xs sm:text-sm font-medium text-zinc-400 leading-relaxed">
+          <p className="max-w-md text-xs sm:text-sm font-bold text-black/80 leading-relaxed">
             In-depth reporting, music underground essays, athletic diaries, and official station communiqués across East Africa.
           </p>
         </div>
@@ -742,7 +733,7 @@ export default function TheWireSection() {
           {/* Main Large Featured Card */}
           <article
             onClick={() => openArticle(featuredArticle)}
-            className="group lg:col-span-7 flex flex-col justify-between rounded-3xl border-3 border-black bg-[#0a1222] p-6 sm:p-8 text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)] transition-all duration-300 hover:-translate-y-1 hover:border-[#04b093] hover:shadow-[12px_12px_0_0_rgba(4,176,147,0.3)] cursor-pointer"
+            className="group lg:col-span-7 flex flex-col justify-between rounded-3xl border-3 border-black bg-black p-6 sm:p-8 text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)] transition-all duration-300 hover:-translate-y-1 hover:border-black hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] cursor-pointer"
           >
             <div>
               {/* Cover Image */}
@@ -822,7 +813,7 @@ export default function TheWireSection() {
               <article
                 key={sec.id}
                 onClick={() => openArticle(sec)}
-                className="group flex flex-col justify-between rounded-3xl border-3 border-black bg-[#0a1222] p-6 text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)] transition-all duration-300 hover:-translate-y-1 hover:border-[#04b093] hover:shadow-[12px_12px_0_0_rgba(4,176,147,0.3)] cursor-pointer"
+                className="group flex flex-col justify-between rounded-3xl border-3 border-black bg-black p-6 text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)] transition-all duration-300 hover:-translate-y-1 hover:border-black hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] cursor-pointer"
               >
                 <div className="flex gap-4">
                   <div className="relative size-24 sm:size-28 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-black">
@@ -872,7 +863,7 @@ export default function TheWireSection() {
             All, Sports, Culture, Music, Station News, Press Releases
             Active tab is teal, smooth filtering
             ========================================================================= */}
-        <div className="mb-8 flex items-center justify-between border-b border-zinc-800 pb-4">
+        <div className="mb-8 flex items-center justify-between border-b-2 border-black pb-4">
           <div className="flex overflow-x-auto no-scrollbar gap-2 py-1 max-w-full">
             {CATEGORIES.map((cat) => {
               const isActive = activeCategory === cat;
@@ -886,8 +877,8 @@ export default function TheWireSection() {
                   }}
                   className={`rounded-full px-4 py-2 font-mono text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer shrink-0 ${
                     isActive
-                      ? "border-2 border-black bg-[#04b093] text-black shadow-[3px_3px_0_0_rgba(0,0,0,1)] scale-105"
-                      : "border border-white/15 bg-[#0a1222] text-zinc-300 hover:border-white/40 hover:bg-white/10 hover:text-white"
+                      ? "border-2 border-black bg-black text-[#04b093] shadow-[3px_3px_0_0_rgba(0,0,0,1)] scale-105"
+                      : "border-2 border-black/30 bg-black/10 text-black hover:border-black hover:bg-black hover:text-white"
                   }`}
                 >
                   {cat}
@@ -896,7 +887,7 @@ export default function TheWireSection() {
             })}
           </div>
 
-          <span className="hidden md:inline-block font-mono text-xs text-zinc-400">
+          <span className="hidden md:inline-block font-mono text-xs font-bold text-black/80">
             SHOWING: {filteredArticles.length} DISPATCHES
           </span>
         </div>
@@ -910,7 +901,7 @@ export default function TheWireSection() {
             <article
               key={article.id}
               onClick={() => openArticle(article)}
-              className="group flex flex-col justify-between rounded-3xl border-3 border-black bg-[#0a1222] p-5 text-white shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-all duration-300 hover:-translate-y-1.5 hover:border-[#04b093] hover:shadow-[10px_10px_0_0_rgba(4,176,147,0.25)] cursor-pointer"
+              className="group flex flex-col justify-between rounded-3xl border-3 border-black bg-black p-5 text-white shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-all duration-300 hover:-translate-y-1.5 hover:border-black hover:shadow-[10px_10px_0_0_rgba(0,0,0,1)] cursor-pointer"
             >
               <div>
                 {/* Thumbnail Image */}
@@ -969,7 +960,7 @@ export default function TheWireSection() {
             <button
               type="button"
               onClick={() => setVisibleCount((prev) => prev + 6)}
-              className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-white px-8 py-3 font-mono text-xs font-black uppercase tracking-wider text-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-[#04b093] hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-black px-8 py-3 font-mono text-xs font-black uppercase tracking-wider text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:bg-white hover:text-black hover:scale-105 active:scale-95 transition-all cursor-pointer"
             >
               <span>Load More Dispatches</span>
               <ChevronRight size={14} />
@@ -985,7 +976,7 @@ export default function TheWireSection() {
         <div className="mt-16 grid gap-8 lg:grid-cols-12">
           
           {/* Left Column: PRESS RELEASES Wire Feed List */}
-          <div className="lg:col-span-7 flex flex-col justify-between rounded-3xl border-3 border-black bg-[#0a1222] p-6 sm:p-8 text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
+          <div className="lg:col-span-7 flex flex-col justify-between rounded-3xl border-3 border-black bg-black p-6 sm:p-8 text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
             <div>
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <div className="flex items-center gap-2">
@@ -1050,7 +1041,7 @@ export default function TheWireSection() {
           <div className="lg:col-span-5 flex flex-col gap-6">
             
             {/* MOST READ Numbered Top 5 */}
-            <div className="rounded-3xl border-3 border-black bg-[#0a1222] p-6 text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
+            <div className="rounded-3xl border-3 border-black bg-black p-6 text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <h3 className="text-lg font-black uppercase tracking-tight text-white flex items-center gap-2">
                   <span className="size-2 rounded-full bg-[#04b093]" />
@@ -1083,7 +1074,7 @@ export default function TheWireSection() {
             </div>
 
             {/* Newsletter Box */}
-            <div className="rounded-3xl border-3 border-black bg-gradient-to-br from-[#0c192d] to-[#040810] p-6 text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
+            <div className="rounded-3xl border-3 border-black bg-black p-6 text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
               <div className="flex items-center gap-2 text-[#04b093]">
                 <Mail size={16} />
                 <span className="font-mono text-[0.65rem] font-black uppercase tracking-[0.2em]">
@@ -1136,10 +1127,10 @@ export default function TheWireSection() {
         {/* =========================================================================
             07 // MEDIA CONTACT BOX: PRESS EMAIL & MEDIA KIT LINK
             ========================================================================= */}
-        <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border-2 border-zinc-800 bg-black/60 p-5 font-mono text-xs">
+        <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border-2 border-black bg-black p-5 font-mono text-xs text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
           <div className="flex items-center gap-3">
             <Radio size={16} className="text-[#04b093]" />
-            <span className="text-zinc-400">NEWSROOM & PRESS ACCREDITATION:</span>
+            <span className="text-zinc-300">NEWSROOM & PRESS ACCREDITATION:</span>
             <a
               href="mailto:press@cbmradio.com"
               className="font-bold text-white hover:text-[#04b093] underline underline-offset-4"
@@ -1155,7 +1146,7 @@ export default function TheWireSection() {
                 e.preventDefault();
                 alert("Downloading CBM Radio Official Media Kit & Brand Assets (PDF)");
               }}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#04b093] bg-[#04b093]/10 px-4 py-1.5 font-black uppercase text-[#04b093] hover:bg-[#04b093] hover:text-black transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full border-2 border-black bg-[#04b093] px-4 py-1.5 font-black uppercase text-black hover:bg-white hover:text-black transition-colors"
             >
               <span>Media Kit (2026)</span>
               <Download size={12} />
@@ -1179,7 +1170,7 @@ export default function TheWireSection() {
           onScroll={handleArticleScroll}
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 overflow-y-auto bg-[#060c18] text-white animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 overflow-y-auto bg-black text-white animate-in fade-in duration-200"
         >
           {/* Top Sticky Reading Progress Bar */}
           <div className="sticky top-0 z-50 h-1.5 w-full bg-zinc-800">
@@ -1190,7 +1181,7 @@ export default function TheWireSection() {
           </div>
 
           {/* Top Sticky Navigation Bar */}
-          <div className="sticky top-1.5 z-40 border-b border-zinc-800 bg-[#060c18]/95 px-4 py-3.5 backdrop-blur-md sm:px-8">
+          <div className="sticky top-1.5 z-40 border-b border-zinc-800 bg-black/95 px-4 py-3.5 backdrop-blur-md sm:px-8">
             <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
               <button
                 type="button"
@@ -1306,7 +1297,7 @@ export default function TheWireSection() {
 
                   {/* Bullet List */}
                   {activeArticle.content.bulletList && (
-                    <div className="mt-8 rounded-2xl border border-zinc-800 bg-[#0a1222] p-6">
+                    <div className="mt-8 rounded-2xl border-2 border-black bg-black p-6">
                       <h4 className="font-mono text-xs font-black uppercase tracking-widest text-[#04b093]">
                         {activeArticle.content.bulletListTitle || "Key Observations:"}
                       </h4>
@@ -1332,7 +1323,7 @@ export default function TheWireSection() {
                   {/* Comment List */}
                   <div className="mt-6 space-y-4">
                     {articleComments[activeArticle.id]?.map((c) => (
-                      <div key={c.id} className="rounded-2xl border border-zinc-800 bg-[#0a1222] p-4">
+                      <div key={c.id} className="rounded-2xl border-2 border-black bg-black p-4">
                         <div className="flex items-center justify-between text-xs text-zinc-400 font-mono">
                           <span className="font-bold text-white">{c.author}</span>
                           <span>{c.time}</span>
@@ -1352,7 +1343,7 @@ export default function TheWireSection() {
               <aside className="lg:col-span-4 flex flex-col gap-8">
                 
                 {/* SHARE TO Buttons */}
-                <div className="rounded-3xl border-2 border-zinc-800 bg-[#0a1222] p-6 text-white shadow-lg">
+                <div className="rounded-3xl border-2 border-black bg-black p-6 text-white shadow-lg">
                   <h4 className="font-mono text-xs font-black uppercase tracking-[0.2em] text-[#04b093] flex items-center gap-2">
                     <Share2 size={14} />
                     <span>SHARE THIS DISPATCH</span>
@@ -1427,7 +1418,7 @@ export default function TheWireSection() {
                 </div>
 
                 {/* RELATED ARTICLES (5 rows) */}
-                <div className="rounded-3xl border-2 border-zinc-800 bg-[#0a1222] p-6 text-white shadow-lg">
+                <div className="rounded-3xl border-2 border-black bg-black p-6 text-white shadow-lg">
                   <h4 className="font-mono text-xs font-black uppercase tracking-[0.2em] text-[#04b093] pb-3 border-b border-white/10">
                     RELATED ARTICLES
                   </h4>
@@ -1472,7 +1463,7 @@ export default function TheWireSection() {
               - Shares Count
               - "Write a comment..." Input + Send Button
               ========================================================================= */}
-          <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-800 bg-[#060c18]/95 px-4 py-3 backdrop-blur-md sm:px-8">
+          <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-800 bg-black/95 px-4 py-3 backdrop-blur-md sm:px-8">
             <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4">
               
               {/* Interaction Stats & Like Button */}

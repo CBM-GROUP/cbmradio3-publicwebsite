@@ -154,13 +154,18 @@ export default function StationDispatchesFlatLay() {
 
   // Trigger entrance drops on mount
   useEffect(() => {
-    setIsLoaded(true);
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 10);
 
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     setIsReducedMotion(mq.matches);
     const handler = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
     mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
+    return () => {
+      clearTimeout(timer);
+      mq.removeEventListener("change", handler);
+    };
   }, []);
 
   // Parallax tracking when mouse moves over container
@@ -181,7 +186,7 @@ export default function StationDispatchesFlatLay() {
     <section
       id="station-dispatches"
       aria-label="Stories, Culture & Station Dispatches"
-      className="relative rounded-3xl border-3 border-black bg-[#060c18] text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)] overflow-hidden"
+      className="relative rounded-3xl border-3 border-black bg-black text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)] overflow-hidden"
     >
       {/* =========================================================================
           CSS KEYFRAMES:
@@ -479,7 +484,7 @@ export default function StationDispatchesFlatLay() {
               </h3>
 
               <p className="mt-1 font-serif italic text-base text-[#614e38]">
-                "{activeModalPrint.handwrittenNote}"
+                &ldquo;{activeModalPrint.handwrittenNote}&rdquo;
               </p>
 
               <p className="mt-3 text-sm font-medium leading-relaxed text-zinc-800">

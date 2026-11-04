@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Sparkles } from "lucide-react";
+
+import { galleryService } from "@/services/gallery.service";
+import type { GalleryItem } from "@/types/gallery";
+import type { PageSection } from "@/types/hero";
 
 // =========================================================================
 // DARKROOM HONEYCOMB CARDS CONFIGURATION
@@ -104,6 +108,34 @@ export default function Gallery() {
   // Entrance animation observer
   const containerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
+  const [gallerySection, setGallerySection] = useState<PageSection | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    Promise.allSettled([
+      galleryService.getGalleryItems({ page: 1 }),
+      galleryService.getGallerySection(),
+    ]).then(([itemsRes, sectionRes]) => {
+      if (!isMounted) return;
+
+      if (
+        itemsRes.status === "fulfilled" &&
+        itemsRes.value?.results &&
+        itemsRes.value.results.length > 0
+      ) {
+        setGalleryItems(itemsRes.value.results);
+      }
+      if (sectionRes.status === "fulfilled" && sectionRes.value) {
+        setGallerySection(sectionRes.value);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     const node = containerRef.current;
@@ -123,13 +155,51 @@ export default function Gallery() {
     return () => observer.disconnect();
   }, []);
 
-  const card1 = DARKROOM_CARDS[0]; // Top-Left
-  const card2 = DARKROOM_CARDS[1]; // Top-Right
-  const card3 = DARKROOM_CARDS[2]; // Middle-Left
-  const card4 = DARKROOM_CARDS[3]; // Middle-Right
-  const card5 = DARKROOM_CARDS[4]; // Bottom-Left
-  const card6 = DARKROOM_CARDS[5]; // Bottom-Right
-  const centerCard = DARKROOM_CENTER_FEATURE;
+  const cards: DarkroomCard[] = useMemo(() => {
+    if (galleryItems.length === 0) return DARKROOM_CARDS;
+
+    const dynamicCards: DarkroomCard[] = galleryItems.map((item, idx) => ({
+      id: item.id,
+      title: (item.title || item.caption || `PHOTO ${idx + 1}`).toUpperCase(),
+      subtitle: (item.category || "CBM STUDIO").toUpperCase(),
+      image:
+        item.image ||
+        item.external_image_url ||
+        DARKROOM_CARDS[idx % DARKROOM_CARDS.length].image,
+      link: "/gallery",
+    }));
+
+    // Pad up to 6 cards using fallback cards if fewer than 6 items exist
+    const result: DarkroomCard[] = [...dynamicCards.slice(0, 6)];
+    for (let i = result.length; i < 6; i++) {
+      result.push(DARKROOM_CARDS[i]);
+    }
+    return result;
+  }, [galleryItems]);
+
+  const card1 = cards[0]; // Top-Left
+  const card2 = cards[1]; // Top-Right
+  const card3 = cards[2]; // Middle-Left
+  const card4 = cards[3]; // Middle-Right
+  const card5 = cards[4]; // Bottom-Left
+  const card6 = cards[5]; // Bottom-Right
+
+  const centerCard = useMemo(() => {
+    if (gallerySection) {
+      return {
+        id: "center-featured",
+        title: (gallerySection.title || "CBM DARKROOM").toUpperCase(),
+        subtitle: (gallerySection.subtitle || "VISUAL ARCHIVE").toUpperCase(),
+        ctaText: (gallerySection.cta_label || "EXPLORE ALL").toUpperCase(),
+        image:
+          gallerySection.image ||
+          gallerySection.external_image_url ||
+          DARKROOM_CENTER_FEATURE.image,
+        link: gallerySection.cta_url || "/gallery",
+      };
+    }
+    return DARKROOM_CENTER_FEATURE;
+  }, [gallerySection]);
 
   const renderHexCard = (
     card: DarkroomCard,
@@ -162,6 +232,7 @@ export default function Gallery() {
             alt={card.title}
             fill
             sizes="(max-width: 640px) 120px, (max-width: 1024px) 200px, 240px"
+            unoptimized
             className="object-cover object-center transition-transform duration-700 group-hover:scale-110 group-hover:contrast-115"
           />
 
@@ -334,6 +405,7 @@ export default function Gallery() {
                   alt={centerCard.title}
                   fill
                   sizes="(max-width: 640px) 140px, (max-width: 1024px) 220px, 260px"
+                  unoptimized
                   className="object-cover object-center opacity-40 transition-transform duration-700 group-hover:scale-115 group-hover:opacity-60"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/85 to-black/75" />
