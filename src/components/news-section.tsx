@@ -134,8 +134,8 @@ export default function NewsSection() {
 
   return (
     <section
-      id="the-wire"
-      aria-label="The Wire - Broadcast Newsroom & Dispatches"
+      id="news-articles"
+      aria-label="Latest News and Featured Articles"
       className="relative scroll-mt-20 border-b-2 border-black bg-[#04b093] px-4 py-16 text-black sm:px-8 sm:py-20 lg:px-12 lg:py-24"
     >
       <style>{`
@@ -177,7 +177,7 @@ export default function NewsSection() {
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-black opacity-75" />
                 <span className="relative inline-flex size-2 rounded-full bg-black" />
               </span>
-              <span>LIVE WIRE</span>
+              <span>LIVE NEWS WIRE</span>
             </div>
 
             {/* Seamless Scrolling Headlines from Backend */}
@@ -205,27 +205,27 @@ export default function NewsSection() {
           <div>
             <div className="flex items-center gap-2.5">
               <span className="rounded-full border border-black bg-black px-3.5 py-1 font-mono text-[0.65rem] font-black uppercase tracking-[0.25em] text-[#04b093] shadow-sm">
-                THE WIRE
+                NEWS &amp; ARTICLES
               </span>
               <span className="font-mono text-xs font-bold uppercase tracking-wider text-black/80">
-                DISPATCHES & EDITORIAL JOURNALISM
+                CBM RADIO NEWSROOM
               </span>
             </div>
             <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">
-              BROADCAST DISPATCHES & THE WIRE
+              LATEST NEWS &amp; ARTICLES
             </h2>
           </div>
 
           <div className="flex flex-col items-start gap-3 sm:items-end">
             <p className="max-w-md text-xs font-bold leading-relaxed text-black/80 sm:text-sm">
               In-depth reporting, community coverage, faith perspectives, and
-              official station communiqués across East Africa.
+              official station announcements across East Africa.
             </p>
             <Link
               href="/news"
               className="inline-flex items-center gap-1.5 font-mono text-xs font-black uppercase tracking-wider text-black hover:text-black/70 hover:underline"
             >
-              <span>Browse Full Archive</span>
+              <span>View All News &amp; Articles</span>
               <ArrowUpRight className="size-3.5" />
             </Link>
           </div>
@@ -269,7 +269,7 @@ export default function NewsSection() {
                       </span>
                     )}
                     <span className="rounded-full border border-white/20 bg-black/80 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-md">
-                      LEAD DISPATCH
+                      FEATURED ARTICLE
                     </span>
                   </div>
                 </div>
@@ -313,7 +313,7 @@ export default function NewsSection() {
               {/* Action Link Footer */}
               <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
                 <span className="inline-flex items-center gap-2 font-mono text-xs font-black uppercase tracking-wider text-[#04b093] transition-transform group-hover:translate-x-1 sm:text-sm">
-                  <span>Read Full Dispatch</span>
+                  <span>Read Full Article</span>
                   <ArrowUpRight className="size-4" />
                 </span>
                 <span className="font-mono text-xs text-zinc-500">
@@ -333,7 +333,7 @@ export default function NewsSection() {
                     <span className="absolute inline-flex size-full animate-ping rounded-full bg-black opacity-75" />
                     <span className="relative inline-flex size-2 rounded-full bg-black" />
                   </span>
-                  <span>LATEST TRANSMISSIONS</span>
+                  <span>LATEST ARTICLES &amp; UPDATES</span>
                 </div>
                 <span className="text-black/70">RADIO WIRE // 104.2 FM</span>
               </div>
@@ -394,7 +394,7 @@ export default function NewsSection() {
                     {/* Bottom Link Cue */}
                     <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-2.5 font-mono text-[11px] text-[#04b093]">
                       <span className="uppercase tracking-wider group-hover:underline">
-                        Read Dispatch
+                        Read Article
                       </span>
                       <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </div>
@@ -422,11 +422,11 @@ export default function NewsSection() {
             <div className="flex items-center gap-2">
               <span className="size-2 rounded-full bg-[#04b093]" />
               <span className="font-mono text-xs font-black uppercase tracking-wider text-[#04b093]">
-                CBM RADIO EDITORIAL ARCHIVE
+                CBM RADIO NEWS ARCHIVE
               </span>
             </div>
             <p className="mt-1 text-base font-bold text-white sm:text-lg">
-              Looking for past features, faith perspectives, or official press communiqués?
+              Looking for past stories, ministry reports, or station announcements?
             </p>
           </div>
 
@@ -434,7 +434,7 @@ export default function NewsSection() {
             href="/news"
             className="inline-flex shrink-0 items-center gap-2 rounded-xl border-2 border-[#04b093] bg-[#04b093] px-6 py-3.5 font-mono text-xs font-black uppercase tracking-wider text-black shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] transition-all hover:-translate-y-0.5 hover:border-white hover:bg-white hover:text-black sm:text-sm"
           >
-            <span>Browse Full Wire Archive</span>
+            <span>Browse All News &amp; Articles</span>
             <ArrowUpRight className="size-4" />
           </Link>
         </div>

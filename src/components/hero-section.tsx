@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -12,8 +12,12 @@ import {
 } from "lucide-react";
 
 import homeService from "@/services/home.service";
+import { pageSectionService } from "@/services/page-section.service";
+import { chartService } from "@/services/chart.service";
 import { useEpisodePlayerStore } from "@/store/episodePlayerStore";
 import type { EpisodeSummary } from "@/types/program";
+import type { PageSection } from "@/types/hero";
+import type { Chart } from "@/types/chart";
 
 import StudioImage from "../../public/cbm_images/behind-the-scenes-studio.png";
 
@@ -100,6 +104,8 @@ export const TOP_TRENDING_ARTISTS: TrendingArtist[] = [
 
 export default function HeroSection() {
   const [episodes, setEpisodes] = useState<EpisodeSummary[]>([]);
+  const [heroSection, setHeroSection] = useState<PageSection | null>(null);
+  const [chart, setChart] = useState<Chart | null>(null);
   const { playEpisode } = useEpisodePlayerStore();
 
   // Scroll observer for staggered slide-in animation
@@ -112,12 +118,38 @@ export default function HeroSection() {
     Promise.allSettled([
       homeService.getFeaturedEpisodes(),
       homeService.getLatestEpisodes(),
-    ]).then(([featuredRes, latestRes]) => {
+      pageSectionService.getSectionsForPage("home", "hero"),
+      chartService.getCharts(),
+    ]).then(async ([featuredRes, latestRes, heroRes, chartsRes]) => {
       if (!isMounted) return;
+
       const featured = featuredRes.status === "fulfilled" ? featuredRes.value : [];
       const latest = latestRes.status === "fulfilled" ? latestRes.value : [];
       const combined = [...featured, ...latest.filter((l) => !featured.some((f) => f.id === l.id))];
       setEpisodes(combined.slice(0, 5));
+
+      if (heroRes.status === "fulfilled" && Array.isArray(heroRes.value) && heroRes.value.length > 0) {
+        setHeroSection(heroRes.value[0]);
+      }
+
+      if (chartsRes.status === "fulfilled" && Array.isArray(chartsRes.value) && chartsRes.value.length > 0) {
+        const activeCharts = chartsRes.value.filter((c) => c.is_active);
+        const targetChart =
+          activeCharts.find((c) => (c.entries_count ?? 0) > 0) ||
+          activeCharts[0] ||
+          chartsRes.value[0];
+
+        if (targetChart?.slug) {
+          try {
+            const chartDetails = await chartService.getChartBySlug(targetChart.slug);
+            if (isMounted && chartDetails) {
+              setChart(chartDetails);
+            }
+          } catch {
+            // Keep fallback
+          }
+        }
+      }
     });
 
     return () => {
@@ -144,6 +176,54 @@ export default function HeroSection() {
   }, []);
 
   const activeEpisode = episodes[0] || null;
+
+  // Dynamic Leaderboard Items mapped from Dashboard Chart
+  const leaderboardItems: TrendingArtist[] = useMemo(() => {
+    if (chart && Array.isArray(chart.entries) && chart.entries.length > 0) {
+      const widthPercents = [100, 92, 85, 78, 70, 62];
+      return chart.entries.slice(0, 6).map((entry, idx) => {
+        const isTeal = idx % 2 === 1;
+        const entryImage =
+          entry.cover_image ||
+          entry.cover_image_url ||
+          `/artists/artist-${(idx % 6) + 1}.jpg`;
+        const link =
+          entry.spotify_url ||
+          entry.apple_music_url ||
+          entry.youtube_url ||
+          entry.audio_url ||
+          "/charts";
+
+        return {
+          rank: entry.rank || idx + 1,
+          name: entry.artist ? `${entry.title} — ${entry.artist}` : entry.title,
+          image: entryImage,
+          color: isTeal ? "#04b093" : "#ffffff",
+          textColor: "#000000",
+          strokeColor: "rgba(0, 0, 0, 0.9)",
+          link,
+          widthPercent: widthPercents[idx] || 60,
+        };
+      });
+    }
+    return TOP_TRENDING_ARTISTS;
+  }, [chart]);
+
+  const leaderboardLabel = chart
+    ? chart.edition_date
+      ? `EDITION ${chart.edition_date} // ${chart.title.toUpperCase()}`
+      : `${chart.title.toUpperCase()} // LEADERBOARD`
+    : TRENDING_WEEK_LABEL;
+
+  const heroHeadline =
+    heroSection?.title || "Moving African Sound, Culture & Faith Forward.";
+  const heroSubtitle =
+    heroSection?.subtitle || "CBM ORIGINAL BROADCAST";
+  const heroBody =
+    heroSection?.body ||
+    "Authentic dialogue, transformative conversations, and community-powered stories created for the people who shape culture every day. Stream every episode on demand.";
+  const heroCtaLabel = heroSection?.cta_label;
+  const heroCtaUrl = heroSection?.cta_url;
 
   return (
     <section className="relative border-b-2 border-black bg-[#04b093] text-black">
@@ -193,29 +273,41 @@ export default function HeroSection() {
                 </span>
                 <span className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-black flex items-center gap-1.5">
                   <Sparkles size={12} />
-                  <span>CBM ORIGINAL BROADCAST</span>
+                  <span>{heroSubtitle}</span>
                 </span>
               </div>
 
               {/* Massive Billboard Headline */}
               <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.98] text-black">
-                Moving African Sound, Culture & Faith Forward.
+                {heroHeadline}
               </h1>
 
               {/* Lead Deck */}
               <p className="mt-5 max-w-xl text-sm sm:text-base leading-relaxed text-black/85 font-semibold">
-                Authentic dialogue, transformative conversations, and community-powered stories created for the people who shape culture every day. Stream every episode on demand.
+                {heroBody}
               </p>
 
               {/* Call-to-Action Bar */}
               <div className="mt-6 flex flex-wrap items-center gap-3.5 sm:gap-4">
-                <a
-                  href="#episodes"
-                  className="inline-flex min-h-12 items-center gap-2.5 rounded-full bg-black px-7 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer"
-                >
-                  <Headphones size={16} />
-                  <span>Stream Episodes</span>
-                </a>
+                {heroCtaLabel && heroCtaUrl ? (
+                  <a
+                    href={heroCtaUrl}
+                    target={heroCtaUrl.startsWith("http") ? "_blank" : undefined}
+                    rel={heroCtaUrl.startsWith("http") ? "noopener noreferrer" : undefined}
+                    className="inline-flex min-h-12 items-center gap-2.5 rounded-full bg-black px-7 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer"
+                  >
+                    <span>{heroCtaLabel}</span>
+                    <ArrowUpRight size={15} />
+                  </a>
+                ) : (
+                  <a
+                    href="#episodes"
+                    className="inline-flex min-h-12 items-center gap-2.5 rounded-full bg-black px-7 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 shadow-[4px_4px_0_0_rgba(0,0,0,1)] cursor-pointer"
+                  >
+                    <Headphones size={16} />
+                    <span>Stream Episodes</span>
+                  </a>
+                )}
 
                 <a
                   href="#shows"
@@ -314,7 +406,7 @@ export default function HeroSection() {
               {/* Section Header */}
               <div className="border-b-2 border-white/20 pb-4">
                 <p className="text-[0.62rem] sm:text-xs font-black uppercase tracking-[0.25em] text-[#04b093]">
-                  {TRENDING_WEEK_LABEL}
+                  {leaderboardLabel}
                 </p>
                 <h3 className="mt-1 text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
                   Top 6 Trending Artists
@@ -323,7 +415,7 @@ export default function HeroSection() {
 
               {/* 6 Horizontal Bars Stacked Vertically */}
               <div className="my-5 flex flex-col gap-2.5 sm:gap-3">
-                {TOP_TRENDING_ARTISTS.map((artist, idx) => {
+                {leaderboardItems.map((artist, idx) => {
                   const textColor = artist.textColor || "#000000";
                   const strokeColor = artist.strokeColor || "rgba(0, 0, 0, 0.9)";
 
