@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback, useId } from "react";
+import Image, { StaticImageData } from "next/image";
 import { Play, Pause, Volume2, VolumeX, Radio, Sparkles } from "lucide-react";
 
 // =========================================================================
@@ -12,6 +13,7 @@ export const STREAM_URL = "https://stream.zeno.fm/f3wvbbqmdg8uv";
 export interface TurntablePlayerProps {
   nowPlayingTitle?: string;
   nowPlayingSubtitle?: string;
+  coverImage?: string | StaticImageData;
   streamUrl?: string;
   className?: string;
 }
@@ -19,6 +21,7 @@ export interface TurntablePlayerProps {
 export default function TurntablePlayer({
   nowPlayingTitle = "CBM Radio 24/7 Live Broadcast",
   nowPlayingSubtitle = "Original Shows, Culture & African Sound",
+  coverImage,
   streamUrl = STREAM_URL,
   className = "",
 }: TurntablePlayerProps) {
@@ -280,30 +283,39 @@ export default function TurntablePlayer({
                   "CBM RADIO" text, tiny silver spindle dot
                   ========================================================================= */}
               <div
-                className="relative flex aspect-square w-[32%] items-center justify-center rounded-full border-2 border-[#854d0e] shadow-md"
+                className="relative flex aspect-square w-[34%] items-center justify-center rounded-full border-2 border-zinc-900 overflow-hidden shadow-md"
                 style={{
                   background: "radial-gradient(circle at 50% 50%, #fef08a 0%, #facc15 65%, #eab308 100%)",
                 }}
               >
+                {coverImage && (
+                  <div className="absolute inset-0">
+                    <Image
+                      src={coverImage}
+                      alt={nowPlayingTitle}
+                      fill
+                      className="object-cover"
+                      unoptimized={typeof coverImage === "string"}
+                    />
+                    <div className="absolute inset-0 bg-black/35" />
+                  </div>
+                )}
                 {/* Thin darker decorative inner rings */}
-                <div className="pointer-events-none absolute inset-1.5 rounded-full border border-[#a16207]/40" />
-                <div className="pointer-events-none absolute inset-3 rounded-full border border-[#a16207]/30" />
+                <div className="pointer-events-none absolute inset-1.5 rounded-full border border-white/30" />
+                <div className="pointer-events-none absolute inset-3 rounded-full border border-white/20" />
 
                 {/* Curved / Centered Label Typography */}
-                <div className="relative flex flex-col items-center justify-center text-center">
-                  <span className="text-[7px] sm:text-[8px] font-black tracking-widest text-[#422006] uppercase leading-none">
-                    CBM RADIO
+                <div className="relative z-10 flex flex-col items-center justify-center text-center px-1">
+                  <span className="text-[7px] sm:text-[7.5px] font-black tracking-widest text-white drop-shadow uppercase leading-tight truncate max-w-[80px]">
+                    {nowPlayingTitle}
                   </span>
-                  <span className="mt-0.5 text-[5px] sm:text-[5.5px] font-mono font-bold tracking-wider text-[#713f12] leading-none">
+                  <span className="mt-0.5 text-[5px] sm:text-[5.5px] font-mono font-bold tracking-wider text-[#04b093] leading-none drop-shadow">
                     33⅓ RPM
-                  </span>
-                  <span className="mt-0.5 text-[4.5px] font-mono font-black text-[#854d0e] tracking-tight">
-                    STEREO
                   </span>
                 </div>
 
                 {/* Tiny Silver Spindle Dot in exact center */}
-                <div className="absolute left-1/2 top-1/2 size-2.5 sm:size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-zinc-600 bg-gradient-to-br from-white via-zinc-300 to-zinc-500 shadow-sm" />
+                <div className="relative z-20 size-2.5 sm:size-3 rounded-full border border-zinc-600 bg-gradient-to-br from-white via-zinc-300 to-zinc-500 shadow-sm" />
               </div>
             </div>
           </div>

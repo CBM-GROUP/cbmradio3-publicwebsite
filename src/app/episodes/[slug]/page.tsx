@@ -4,11 +4,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import {
+  CalendarDays,
+  Clock,
+  ExternalLink,
+  Mic2,
+  Radio,
+  Volume2,
+} from "lucide-react";
 
+import {
+  EpisodeActionToolbar,
+  RelatedEpisodeCard,
+} from "@/components/episodes/episode-detail-client";
+import EpisodeComments from "@/components/comments/episode-comments";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import { getStrictYouTubeEmbedUrl } from "@/lib/youtube";
 import { episodeService } from "@/services/episode.service";
+import type { EpisodeSummary } from "@/types/program";
 import Logo from "../../../../public/cbmradio.png";
 
 const getEpisode = cache(async (slug: string) => {
@@ -20,22 +34,60 @@ const getEpisode = cache(async (slug: string) => {
   }
 });
 
+const getRelatedEpisodes = cache(async (programId?: number, currentEpisodeId?: number) => {
+  try {
+    let related: EpisodeSummary[] = [];
+    if (programId) {
+      const res = await episodeService.getEpisodes({
+        program: programId,
+        ordering: "-publish_date",
+      });
+      related = res.results.filter((ep) => ep.id !== currentEpisodeId);
+    }
+    // If not enough from the same program, backfill with recent station episodes
+    if (related.length < 3) {
+      const fallbackRes = await episodeService.getEpisodes({
+        ordering: "-publish_date",
+      });
+      const additional = fallbackRes.results.filter(
+        (ep) => ep.id !== currentEpisodeId && !related.some((r) => r.id === ep.id)
+      );
+      related = [...related, ...additional];
+    }
+    return related.slice(0, 3);
+  } catch {
+    return [];
+  }
+});
+
 type EpisodePageProps = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: EpisodePageProps): Promise<Metadata> {
   const { slug } = await params;
   const episode = await getEpisode(slug);
-  if (!episode) return { title: "Episode not found | CBM Radio" };
-  const description = episode.description.trim().slice(0, 160) || `Listen to ${episode.title} from ${episode.program.title}.`;
+  if (!episode) return { title: "Episode Not Found | CBM Radio" };
+
+  const description =
+    episode.description.trim().slice(0, 160) ||
+    `Listen to ${episode.title} from ${episode.program?.title || "CBM Radio"}.`;
+
+  const coverUrl = episode.cover_image || episode.external_cover_image_url;
+
   return {
-    title: `${episode.title} | CBM Radio`,
+    title: `${episode.title} | ${episode.program?.title || "CBM Radio"}`,
     description,
     alternates: { canonical: `/episodes/${episode.slug}` },
     openGraph: {
-      title: episode.title,
+      title: `${episode.title} | CBM Radio`,
       description,
-      type: "article",
-      images: episode.cover_image ? [episode.cover_image] : undefined,
+      type: "video.other",
+      images: coverUrl ? [coverUrl] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${episode.title} | CBM Radio`,
+      description,
+      images: coverUrl ? [coverUrl] : undefined,
     },
   };
 }
@@ -44,43 +96,329 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
   const { slug } = await params;
   const episode = await getEpisode(slug);
   if (!episode) notFound();
-  const embedUrl = getStrictYouTubeEmbedUrl(episode.youtube_embed_url);
-  const published = formatEpisodeDate(episode.publish_date);
 
-  return <>
-    <Header />
-    <main className="min-h-screen bg-[#04b093] px-4 pb-20 pt-32 text-black sm:px-6 lg:px-8">
-      <article className="mx-auto max-w-5xl rounded-2xl border-2 border-black bg-black p-6 sm:p-10 text-white shadow-2xl">
-        <nav aria-label="Episode navigation" className="flex flex-wrap gap-x-3 gap-y-3 text-xs font-black uppercase">
-          <Link href="/episodes" className="rounded-full border-2 border-black bg-[#04b093] px-4 py-1.5 text-black transition-colors hover:bg-white hover:text-black">&larr; All episodes</Link>
-          <Link href={`/episodes?program=${encodeURIComponent(episode.program.slug)}`} className="rounded-full border-2 border-zinc-700 bg-zinc-900 px-4 py-1.5 text-zinc-300 transition-colors hover:border-[#04b093] hover:text-[#04b093]">More from {episode.program.title}</Link>
-        </nav>
-        <div className="mt-8">
-          <span className="inline-block rounded-full bg-[#04b093] px-3 py-1 text-xs font-black uppercase tracking-wider text-black">
-            {episode.program.title}
-          </span>
+  const embedUrl = getStrictYouTubeEmbedUrl(
+    episode.youtube_embed_url || episode.youtube_link
+  );
+  const publishedDate = formatEpisodeDate(episode.publish_date);
+  const relatedEpisodes = await getRelatedEpisodes(episode.program?.id, episode.id);
+
+  const programCover = episode.program?.cover_image;
+
+  return (
+    <>
+      <Header />
+      <main className="min-h-screen bg-[#04b093] px-3 pb-24 pt-28 text-black sm:px-6 sm:pt-32 lg:px-8">
+        <div className="mx-auto max-w-5xl space-y-8">
+          
+          {/* Breadcrumb Navigation Bar */}
+          <nav
+            aria-label="Episode breadcrumb"
+            className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-black bg-black p-4 text-white shadow-[6px_6px_0_0_#000]"
+          >
+            <div className="flex flex-wrap items-center gap-2 text-xs font-black uppercase">
+              <Link
+                href="/episodes"
+                className="inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-[#04b093] px-3.5 py-1.5 text-black shadow-[2px_2px_0_0_#000] transition-all hover:bg-white hover:text-black"
+              >
+                &larr; All Episodes
+              </Link>
+              {episode.program && (
+                <Link
+                  href={`/episodes?program=${encodeURIComponent(episode.program.slug)}`}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-700 bg-zinc-900 px-3.5 py-1.5 text-zinc-300 transition-colors hover:border-[#04b093] hover:text-[#04b093]"
+                >
+                  <span>More from {episode.program.title}</span>
+                </Link>
+              )}
+            </div>
+
+            <div className="hidden items-center gap-2 text-[11px] font-black uppercase tracking-wider text-zinc-400 sm:flex">
+              <span className="flex h-2 w-2 rounded-full bg-[#04b093] animate-pulse" />
+              <span>Broadcast Archive</span>
+            </div>
+          </nav>
+
+          {/* Cinematic Hero Theater: Prioritizing Title & Video */}
+          <section className="overflow-hidden rounded-3xl border-3 border-black bg-black p-6 text-white shadow-[10px_10px_0_0_#000] sm:p-8 md:p-10">
+            
+            {/* Program & Metadata Header Line */}
+            <div className="flex flex-wrap items-center gap-3">
+              {episode.program && (
+                <Link
+                  href={`/episodes?program=${encodeURIComponent(episode.program.slug)}`}
+                  className="group inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900/90 py-1 pl-1.5 pr-3 text-xs font-black uppercase tracking-wider text-zinc-300 transition-colors hover:border-[#04b093] hover:text-[#04b093]"
+                  title={`View more episodes from ${episode.program.title}`}
+                >
+                  {/* Subtle, de-emphasized Program Thumbnail */}
+                  {programCover ? (
+                    <div className="relative h-5 w-5 shrink-0 overflow-hidden rounded-full border border-zinc-700">
+                      <Image
+                        src={programCover}
+                        alt={episode.program.title}
+                        fill
+                        sizes="20px"
+                        unoptimized
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#04b093]/20 text-[9px] font-black text-[#04b093]">
+                      CBM
+                    </span>
+                  )}
+                  <span>{episode.program.title}</span>
+                </Link>
+              )}
+
+              {episode.program?.presenter && (
+                <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-zinc-300">
+                  <Mic2 className="h-3.5 w-3.5 text-[#04b093]" />
+                  <span>Hosted by {episode.program.presenter}</span>
+                </div>
+              )}
+
+              {publishedDate && (
+                <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#04b093]">
+                  <CalendarDays className="h-3.5 w-3.5 text-[#04b093]" />
+                  <time dateTime={episode.publish_date || undefined}>
+                    {publishedDate}
+                  </time>
+                </div>
+              )}
+
+              {episode.program?.schedule && (
+                <div className="hidden items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900 px-2.5 py-0.5 text-[11px] text-zinc-400 md:flex">
+                  <Clock className="h-3 w-3 text-zinc-500" />
+                  <span>{episode.program.schedule}</span>
+                </div>
+              )}
+            </div>
+
+            {/* PRIORITY 1: Prominent Episode Title */}
+            <h1 className="mt-5 break-words hyphens-auto text-2xl font-black uppercase leading-tight tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl [overflow-wrap:anywhere]">
+              {episode.title}
+            </h1>
+
+            {/* PRIORITY 2: Dominant Full-Width Video Player Theater */}
+            <div
+              id="episode-video-stage"
+              className="relative mt-6 aspect-video w-full overflow-hidden rounded-2xl border-2 border-zinc-800 bg-zinc-950 shadow-2xl sm:mt-8"
+            >
+              {embedUrl ? (
+                <iframe
+                  src={embedUrl}
+                  title={`${episode.title} Video Broadcast`}
+                  className="h-full w-full"
+                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+              ) : (
+                <div className="group relative h-full w-full">
+                  <Image
+                    src={episode.cover_image || Logo}
+                    alt={episode.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 1024px"
+                    unoptimized={Boolean(episode.cover_image)}
+                    className="object-cover"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-white">
+                    <span className="flex items-center gap-1.5 rounded-full bg-black/80 px-3 py-1 font-bold backdrop-blur">
+                      <Volume2 className="h-3.5 w-3.5 text-[#04b093]" />
+                      Audio Broadcast
+                    </span>
+                    <span className="font-mono text-[11px] text-zinc-400">
+                      CBM Radio Kampala
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Action Bar (Directly beneath video) */}
+            <div className="mt-6 border-t border-zinc-800/80 pt-6">
+              <EpisodeActionToolbar
+                episode={episode}
+                hasVideo={Boolean(embedUrl)}
+              />
+            </div>
+
+          </section>
+
+          {/* Body Section: Show Notes & De-emphasized Program Info */}
+          <div className="grid gap-8 lg:grid-cols-12">
+            
+            {/* Left 8 Columns: Detailed Show Notes & Comments */}
+            <div className="space-y-8 lg:col-span-8">
+              
+              {/* Show Notes Card */}
+              <section
+                aria-labelledby="episode-notes-heading"
+                className="rounded-3xl border-2 border-black bg-black p-6 text-white shadow-[8px_8px_0_0_#000] sm:p-8"
+              >
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+                  <h2
+                    id="episode-notes-heading"
+                    className="flex items-center gap-2 text-xl font-black uppercase tracking-tight text-[#04b093] sm:text-2xl"
+                  >
+                    <span>About This Broadcast</span>
+                  </h2>
+                  <span className="text-xs font-mono font-bold uppercase text-zinc-500">
+                    CBM SHOW NOTES
+                  </span>
+                </div>
+
+                <div className="mt-6">
+                  {episode.description.trim() ? (
+                    <div className="space-y-4 whitespace-pre-line break-words text-base leading-relaxed text-zinc-300 sm:text-lg sm:leading-8">
+                      {episode.description}
+                    </div>
+                  ) : (
+                    <p className="text-zinc-400 italic">
+                      No additional description was provided for this broadcast.
+                    </p>
+                  )}
+                </div>
+              </section>
+
+              {/* Community Comments Section */}
+              <div className="rounded-3xl border-2 border-black bg-black p-6 text-white shadow-[8px_8px_0_0_#000] sm:p-8">
+                <EpisodeComments episodeId={episode.id} />
+              </div>
+
+            </div>
+
+            {/* Right 4 Columns: Subtle Program Card & Station Info */}
+            <aside className="space-y-8 lg:col-span-4">
+              
+              {/* Program Dossier Card: Compact layout with de-emphasized artwork */}
+              {episode.program && (
+                <div className="overflow-hidden rounded-3xl border-2 border-black bg-black p-6 text-white shadow-[8px_8px_0_0_#000]">
+                  <span className="border border-black bg-[#04b093] px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-black">
+                    Official Show
+                  </span>
+
+                  {/* Compact Header with small subtle program thumbnail */}
+                  <div className="mt-4 flex items-center gap-3.5">
+                    {programCover && (
+                      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 shadow">
+                        <Image
+                          src={programCover}
+                          alt={episode.program.title}
+                          fill
+                          sizes="56px"
+                          unoptimized
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="text-base font-black uppercase text-white leading-tight">
+                        {episode.program.title}
+                      </h3>
+                      {episode.program.presenter && (
+                        <p className="mt-1 text-xs font-bold uppercase tracking-wider text-[#04b093]">
+                          {episode.program.presenter}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 space-y-2 border-t border-zinc-800/80 pt-3">
+                    {episode.program.schedule && (
+                      <p className="text-xs text-zinc-400">
+                        Schedule: <span className="font-semibold text-zinc-200">{episode.program.schedule}</span>
+                      </p>
+                    )}
+
+                    {episode.program.short_description && (
+                      <p className="text-xs leading-relaxed text-zinc-400">
+                        {episode.program.short_description}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="mt-5 border-t border-zinc-800 pt-4">
+                    <Link
+                      href={`/episodes?program=${encodeURIComponent(episode.program.slug)}`}
+                      className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-700 bg-zinc-900 py-2.5 text-xs font-black uppercase tracking-wider text-zinc-200 transition-all hover:border-[#04b093] hover:text-[#04b093]"
+                    >
+                      <span>All Episodes from Show</span>
+                      <ExternalLink className="h-3 w-3" />
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* Station Dial Card */}
+              <div className="rounded-3xl border-2 border-black bg-zinc-950 p-6 text-white shadow-[8px_8px_0_0_#000]">
+                <div className="flex items-center gap-2">
+                  <Radio className="h-4 w-4 text-[#04b093]" />
+                  <span className="border border-black bg-[#04b093] px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-black">
+                    Live Broadcast
+                  </span>
+                </div>
+
+                <h4 className="mt-3 text-base font-black uppercase text-white">
+                  CBM Radio 24/7 Stream
+                </h4>
+
+                <p className="mt-1 text-xs leading-relaxed text-zinc-400">
+                  Uplifting gospel sounds, life-transforming sermons, and community talk shows direct from Kampala to the world.
+                </p>
+
+                <div className="mt-4 flex items-center justify-between border-t border-zinc-800 pt-3 text-xs font-mono text-zinc-400">
+                  <span>Online / FM Stream</span>
+                  <span className="font-bold text-[#04b093]">ON AIR</span>
+                </div>
+              </div>
+
+            </aside>
+          </div>
+
+          {/* More Episodes from CBM Radio (Related Grid) */}
+          {relatedEpisodes.length > 0 && (
+            <section className="pt-6">
+              <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <span className="border-2 border-black bg-black px-3 py-1 text-xs font-black uppercase tracking-wider text-[#04b093]">
+                    Tune In Next
+                  </span>
+                  <h3 className="mt-2 text-2xl font-black uppercase tracking-tight text-black sm:text-3xl">
+                    More Broadcasts You Might Like
+                  </h3>
+                </div>
+                <Link
+                  href="/episodes"
+                  className="rounded-xl border-2 border-black bg-black px-4 py-2 text-xs font-black uppercase tracking-wider text-white shadow-[3px_3px_0_0_#000] transition-all hover:bg-white hover:text-black"
+                >
+                  Explore All Episodes &rarr;
+                </Link>
+              </div>
+
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {relatedEpisodes.map((relEp) => (
+                  <RelatedEpisodeCard key={relEp.id} episode={relEp} />
+                ))}
+              </div>
+            </section>
+          )}
+
         </div>
-        <h1 className="mt-4 break-words text-3xl font-black uppercase leading-tight tracking-tight sm:text-5xl">{episode.title}</h1>
-        {published && <p className="mt-3 text-sm font-semibold uppercase tracking-wider text-zinc-400"><time dateTime={episode.publish_date || undefined}>{published}</time></p>}
-        <div className="relative mt-8 aspect-video overflow-hidden rounded-xl border-2 border-black/60 bg-zinc-900 shadow-lg">
-          <Image src={episode.cover_image || Logo} alt={episode.cover_image ? episode.title : "CBM Radio"} fill sizes="(max-width: 1024px) 100vw, 1024px" unoptimized={Boolean(episode.cover_image)} className="object-cover" priority />
-        </div>
-        <section aria-labelledby="episode-description" className="mt-10 border-t border-zinc-800 pt-8">
-          <h2 id="episode-description" className="text-xl font-black uppercase tracking-tight text-[#04b093]">About this episode</h2>
-          {episode.description.trim() ? <div className="mt-4 space-y-4 whitespace-pre-line break-words leading-relaxed text-zinc-300">{episode.description}</div> : <p className="mt-4 text-zinc-400">No description is available for this episode.</p>}
-        </section>
-        <section aria-labelledby="episode-player" className="mt-10 border-t border-zinc-800 pt-8">
-          <h2 id="episode-player" className="text-xl font-black uppercase tracking-tight text-[#04b093]">Listen and watch</h2>
-          {embedUrl ? <div className="mt-4 aspect-video overflow-hidden rounded-xl border-2 border-black bg-black"><iframe src={embedUrl} title={`${episode.title} video`} className="h-full w-full" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div> : <p className="mt-4 rounded-xl border border-zinc-800 bg-zinc-900 p-5 text-zinc-400">Video playback is unavailable for this episode.</p>}
-        </section>
-      </article>
-    </main>
-    <Footer />
-  </>;
+      </main>
+      <Footer />
+    </>
+  );
 }
 
 function formatEpisodeDate(value: string | null) {
   if (!value) return null;
   const date = new Date(`${value}T00:00:00`);
-  return Number.isNaN(date.getTime()) ? null : new Intl.DateTimeFormat("en-UG", { dateStyle: "long", timeZone: "Africa/Kampala" }).format(date);
+  return Number.isNaN(date.getTime())
+    ? null
+    : new Intl.DateTimeFormat("en-UG", { dateStyle: "long", timeZone: "Africa/Kampala" }).format(date);
 }
