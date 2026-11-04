@@ -36,6 +36,7 @@ export interface Chart {
   cover_image_url?: string;
   is_active: boolean;
   display_order: number;
+  entry_count?: number;
   entries_count?: number;
   entries?: ChartEntry[];
 }
