@@ -109,16 +109,12 @@ export function EpisodeActionToolbar({ episode, hasVideo }: EpisodeActionToolbar
           )}
         </button>
 
-        {hasVideo && (
-          <button
-            type="button"
-            onClick={handleScrollToVideo}
-            className="inline-flex items-center gap-2 rounded-xl border-2 border-zinc-700 bg-zinc-900 px-5 py-3.5 text-xs font-black uppercase tracking-wider text-zinc-100 shadow-[4px_4px_0_0_#000] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:border-[#04b093] hover:text-[#04b093] hover:shadow-[2px_2px_0_0_#000]"
-          >
-            <Tv className="h-4 w-4 text-[#04b093]" />
-            <span>Watch Video</span>
-          </button>
-        )}
+        <a
+          href="#episode-notes-heading"
+          className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-900 px-5 py-3.5 text-xs font-black uppercase tracking-wider text-zinc-200 shadow-[4px_4px_0_0_#000] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:border-[#04b093] hover:text-[#04b093] hover:shadow-[2px_2px_0_0_#000]"
+        >
+          <span>Show Notes & Discussion</span>
+        </a>
       </div>
 
       {/* Social Sharing Strip */}
