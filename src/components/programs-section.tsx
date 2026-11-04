@@ -200,12 +200,12 @@ export default function ProgramsSection() {
           <div>
             <div className="flex flex-wrap items-center gap-3">
               <span className="bg-black px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.22em] text-[#04b093] shadow-md">
-                ROTATING SHOW CRATE
+                FEATURED SHOW SPOTLIGHT
               </span>
               
             </div>
             <h2 className="mt-3 text-3xl font-black uppercase tracking-tight text-black sm:text-4xl lg:text-5xl">
-              Original Shows & Series Roster
+              Featured Shows & Series Spotlight
             </h2>
             <p className="mt-2 max-w-2xl text-sm font-bold leading-relaxed text-black/85">
               Explore CBM Radio&apos;s original shows, talk series, and daily broadcasts. Point or tap on any program disc below to slide out the master CD and explore full broadcast details.
@@ -248,6 +248,19 @@ export default function ProgramsSection() {
             01 // MASTER SPOTLIGHT SHOWCASE: 3D SLIDING CD & EDITORIAL CONTROL CARD
             ========================================================================= */}
         <div className="relative mb-12 overflow-hidden rounded-3xl border-3 sm:border-4 border-black bg-black p-6 sm:p-10 lg:p-12 text-white shadow-[14px_14px_0_0_rgba(0,0,0,1)] hover:shadow-[18px_18px_0_0_rgba(0,0,0,1)] transition-all duration-300">
+          {/* Ambient Program Art Background */}
+          <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-25">
+            <Image
+              src={activeProgram.cover_image || activeProgram.meta.artwork}
+              alt={activeProgram.title}
+              fill
+              sizes="100vw"
+              unoptimized={Boolean(activeProgram.cover_image)}
+              className="object-cover blur-sm scale-105 transition-all duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-black/75" />
+          </div>
+
           {/* Subtle Ambient Backlights */}
           <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-[#04b093]/20 blur-3xl" />
           <div
@@ -384,93 +397,121 @@ export default function ProgramsSection() {
                   key={program.id}
                   onPointerEnter={() => handleSelectProgram(program.id)}
                   onClick={() => handleSelectProgram(program.id)}
-                  className={`group relative cursor-pointer rounded-2xl border-2 sm:border-3 transition-all duration-300 p-4.5 ${
+                  className={`group relative cursor-pointer overflow-hidden rounded-2xl border-2 sm:border-3 transition-all duration-300 p-4.5 ${
                     isActive
-                      ? "border-black bg-black text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)] scale-[1.03] -translate-y-1.5 z-20 ring-2 ring-[#04b093]/50"
-                      : "border-black/70 bg-black/85 text-white/90 hover:border-black hover:bg-black hover:scale-[1.02] shadow-[4px_4px_0_0_rgba(0,0,0,0.5)] z-10"
+                      ? "border-black text-white shadow-[8px_8px_0_0_rgba(0,0,0,1)] scale-[1.03] -translate-y-1.5 z-20 ring-2 ring-[#04b093]"
+                      : "border-black/80 text-white/95 hover:border-black hover:scale-[1.02] shadow-[4px_4px_0_0_rgba(0,0,0,0.6)] hover:shadow-[6px_6px_0_0_rgba(0,0,0,0.9)] z-10"
                   }`}
                 >
-                  {/* Top Bar with Disc No. & Active Pill */}
-                  <div className="mb-3 flex items-center justify-between text-[0.62rem] font-mono font-black uppercase">
-                    <span
-                      className={`px-2.5 py-0.5 rounded-full ${
-                        isActive ? "bg-[#04b093] text-black" : "bg-zinc-800 text-zinc-300"
-                      }`}
-                    >
-                      DISC 0{idx + 1}
-                    </span>
-                    {isActive ? (
-                      <span className="flex items-center gap-1 font-bold text-[#04b093]">
-                        <span className="size-1.5 rounded-full bg-[#04b093] animate-ping" />
-                        ACTIVE
-                      </span>
-                    ) : (
-                      <span className="text-zinc-400 group-hover:text-white">TAP TO EJECT</span>
-                    )}
-                  </div>
-
-                  {/* CD Visual Container: Sleeve + Sliding Disc */}
-                  <div className="relative mb-3 flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-xl bg-zinc-950 p-2 border border-white/10">
-                    
-                    {/* Compact Disc sliding out */}
+                  {/* Program Art Background */}
+                  <div className="absolute inset-0 z-0 overflow-hidden">
+                    <Image
+                      src={artwork}
+                      alt={program.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 20vw"
+                      unoptimized={Boolean(program.cover_image)}
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    {/* Rich Atmospheric Dark Gradient Overlay to ensure crisp readability */}
                     <div
-                      className={`chart-spin absolute top-1/2 aspect-square w-20 -translate-y-1/2 rounded-full border border-white/25 shadow-xl transition-all duration-500 ${
+                      className={`absolute inset-0 transition-opacity duration-300 ${
                         isActive
-                          ? "right-2 scale-110"
-                          : "right-6 opacity-75 group-hover:right-3 group-hover:opacity-100"
+                          ? "bg-gradient-to-t from-black via-black/85 to-black/60"
+                          : "bg-gradient-to-t from-black via-black/90 to-black/75 group-hover:via-black/85 group-hover:to-black/65"
                       }`}
-                      style={{
-                        background: `
-                          radial-gradient(circle at 50% 50%, transparent 0 28%, rgba(255,255,255,0.06) 28.5% 29%, transparent 29.5%),
-                          conic-gradient(from 0deg, #18181b 0deg, #3f3f46 45deg, #18181b 90deg, #52525b 135deg, #18181b 180deg, #3f3f46 225deg, #18181b 270deg, #52525b 315deg, #18181b 360deg),
-                          conic-gradient(from 120deg, transparent 0deg, rgba(4,176,147,0.3) 60deg, rgba(234,179,8,0.3) 120deg, rgba(239,68,68,0.2) 180deg, rgba(59,130,246,0.3) 240deg, transparent 300deg)
-                        `,
-                      }}
-                    >
-                      {/* Disc Center Hole */}
-                      <div className="absolute left-1/2 top-1/2 flex size-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/50 bg-black">
-                        <div className="size-2 rounded-full bg-zinc-900 border border-white/70" />
-                      </div>
-                    </div>
-
-                    {/* Mini Jewel Case Sleeve (Front) */}
-                    <div className="relative z-10 aspect-square h-full overflow-hidden rounded-lg border border-white/20 bg-zinc-900 shadow-md">
-                      <Image
-                        src={artwork}
-                        alt={program.title}
-                        fill
-                        sizes="100px"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        unoptimized={Boolean(program.cover_image)}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                      <div className="absolute bottom-1 left-1.5 right-1 text-[0.55rem] font-black uppercase text-white truncate">
-                        {program.meta.genre}
-                      </div>
-                    </div>
-
+                    />
+                    {/* Subtle Program Accent Ambient Glow */}
+                    <div
+                      className="absolute -right-6 -top-6 h-24 w-24 rounded-full blur-xl opacity-35"
+                      style={{ backgroundColor: program.meta.accent }}
+                    />
                   </div>
 
-                  {/* Program Title & Presenter */}
-                  <h4
-                    className={`text-sm font-black uppercase tracking-tight line-clamp-1 transition-colors ${
-                      isActive ? "text-[#04b093]" : "text-white group-hover:text-[#04b093]"
-                    }`}
-                  >
-                    {program.title}
-                  </h4>
+                  {/* Foreground Content */}
+                  <div className="relative z-10 flex flex-col h-full">
+                    {/* Top Bar with Disc No. & Active Pill */}
+                    <div className="mb-3 flex items-center justify-between text-[0.62rem] font-mono font-black uppercase">
+                      <span
+                        className={`px-2.5 py-0.5 rounded-full ${
+                          isActive ? "bg-[#04b093] text-black" : "bg-black/70 backdrop-blur-sm text-zinc-300 border border-white/10"
+                        }`}
+                      >
+                        DISC 0{idx + 1}
+                      </span>
+                      {isActive ? (
+                        <span className="flex items-center gap-1 font-bold text-[#04b093] bg-black/60 px-2 py-0.5 rounded-full backdrop-blur-sm">
+                          <span className="size-1.5 rounded-full bg-[#04b093] animate-ping" />
+                          ACTIVE
+                        </span>
+                      ) : (
+                        <span className="text-zinc-300 group-hover:text-white bg-black/50 px-2 py-0.5 rounded-full backdrop-blur-sm">TAP TO CUE</span>
+                      )}
+                    </div>
 
-                  <p className="mt-0.5 text-[0.72rem] font-medium text-zinc-400 line-clamp-1">
-                    {program.presenter ? `By ${program.presenter}` : program.meta.genre}
-                  </p>
+                    {/* CD Visual Container: Sleeve + Sliding Disc */}
+                    <div className="relative mb-3 flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-xl bg-black/60 backdrop-blur-sm p-2 border border-white/15">
+                      
+                      {/* Compact Disc sliding out */}
+                      <div
+                        className={`chart-spin absolute top-1/2 aspect-square w-20 -translate-y-1/2 rounded-full border border-white/25 shadow-xl transition-all duration-500 ${
+                          isActive
+                            ? "right-2 scale-110"
+                            : "right-6 opacity-75 group-hover:right-3 group-hover:opacity-100"
+                        }`}
+                        style={{
+                          background: `
+                            radial-gradient(circle at 50% 50%, transparent 0 28%, rgba(255,255,255,0.06) 28.5% 29%, transparent 29.5%),
+                            conic-gradient(from 0deg, #18181b 0deg, #3f3f46 45deg, #18181b 90deg, #52525b 135deg, #18181b 180deg, #3f3f46 225deg, #18181b 270deg, #52525b 315deg, #18181b 360deg),
+                            conic-gradient(from 120deg, transparent 0deg, rgba(4,176,147,0.3) 60deg, rgba(234,179,8,0.3) 120deg, rgba(239,68,68,0.2) 180deg, rgba(59,130,246,0.3) 240deg, transparent 300deg)
+                          `,
+                        }}
+                      >
+                        {/* Disc Center Hole */}
+                        <div className="absolute left-1/2 top-1/2 flex size-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/50 bg-black">
+                          <div className="size-2 rounded-full bg-zinc-900 border border-white/70" />
+                        </div>
+                      </div>
 
-                  {/* Bottom Bar: Action Pill */}
-                  <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-2 text-[0.68rem] font-black uppercase">
-                    <span className="text-[#04b093] flex items-center gap-1">
-                      <Play size={11} className={isActive ? "fill-[#04b093]" : ""} />
-                      {isActive ? "Selected" : "Select"}
-                    </span>
-                    <ArrowUpRight size={12} className="text-zinc-500 group-hover:text-white" />
+                      {/* Mini Jewel Case Sleeve (Front) */}
+                      <div className="relative z-10 aspect-square h-full overflow-hidden rounded-lg border border-white/25 bg-zinc-900 shadow-md">
+                        <Image
+                          src={artwork}
+                          alt={program.title}
+                          fill
+                          sizes="100px"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          unoptimized={Boolean(program.cover_image)}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                        <div className="absolute bottom-1 left-1.5 right-1 text-[0.55rem] font-black uppercase text-white truncate">
+                          {program.meta.genre}
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* Program Title & Presenter */}
+                    <h4
+                      className={`text-sm font-black uppercase tracking-tight line-clamp-1 transition-colors ${
+                        isActive ? "text-[#04b093]" : "text-white group-hover:text-[#04b093]"
+                      }`}
+                    >
+                      {program.title}
+                    </h4>
+
+                    <p className="mt-0.5 text-[0.72rem] font-medium text-zinc-300 line-clamp-1">
+                      {program.presenter ? `By ${program.presenter}` : program.meta.genre}
+                    </p>
+
+                    {/* Bottom Bar: Action Pill */}
+                    <div className="mt-3 flex items-center justify-between border-t border-white/15 pt-2 text-[0.68rem] font-black uppercase">
+                      <span className="text-[#04b093] flex items-center gap-1 font-bold">
+                        <Play size={11} className={isActive ? "fill-[#04b093]" : ""} />
+                        {isActive ? "Cued Up" : "Cue Show"}
+                      </span>
+                      <ArrowUpRight size={12} className="text-zinc-400 group-hover:text-white" />
+                    </div>
                   </div>
                 </div>
               );
