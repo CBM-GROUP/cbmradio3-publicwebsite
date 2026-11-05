@@ -154,12 +154,12 @@ export default function StationDispatchesFlatLay() {
 
   // Trigger entrance drops on mount
   useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const timer = setTimeout(() => {
       setIsLoaded(true);
+      setIsReducedMotion(mq.matches);
     }, 10);
 
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setIsReducedMotion(mq.matches);
     const handler = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
     mq.addEventListener("change", handler);
     return () => {
