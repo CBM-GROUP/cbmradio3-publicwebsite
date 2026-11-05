@@ -1,4 +1,5 @@
 export type PageHeroKey =
+  | "home"
   | "programs"
   | "episodes"
   | "news"
