@@ -2,15 +2,16 @@
 
 import axios from "axios";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
-import { Loader2, X } from "lucide-react";
+import { ArrowUpRight, Camera, Loader2, Sparkles, X } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import PageHero from "@/components/page-hero";
 import DynamicPageSections from "@/components/dynamic-page-sections";
+import AccordionGallery, { type AccordionGalleryItem } from "@/components/accordion-gallery";
 import { galleryService } from "@/services/gallery.service";
 import type { PaginatedResponse } from "@/types/api";
 import type { GalleryItem } from "@/types/gallery";
@@ -25,10 +26,40 @@ const EMPTY_GALLERY: PaginatedResponse<GalleryItem> = {
   previous: null,
   results: [],
 };
+
+const DEFAULT_ACCORDION_ITEMS: AccordionGalleryItem[] = [
+  {
+    image: "/cbm_images/behind-the-scenes-studio.png",
+    label: "Live Studio Broadcast",
+    alt: "Behind the scenes in the CBM Radio studio",
+  },
+  {
+    image: "/cbm_images/artist-spotlight.png",
+    label: "Artist Acoustic Lounge",
+    alt: "Live acoustic performance in Studio A",
+  },
+  {
+    image: "/cbm_images/cbm-conversation-radio-show.png",
+    label: "Conversations on Purpose",
+    alt: "Community conversations and podcast recording",
+  },
+  {
+    image: "/cbm_images/on-air-studio.png",
+    label: "Master Broadcast Deck",
+    alt: "Studio transmission console and audio hardware",
+  },
+  {
+    image: "/cbm_images/newsroom-studio-set.png",
+    label: "Newsroom & Production",
+    alt: "Newsroom studio set and digital production",
+  },
+];
+
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.05 } },
 };
+
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20, scale: 0.95 },
   show: {
@@ -58,7 +89,13 @@ function isSafeGalleryImage(value: string) {
 
 export default function GalleryPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#04b093] pt-32 text-center text-xs font-black uppercase tracking-wider text-black">Loading gallery...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#04b093] pt-32 text-center text-xs font-black uppercase tracking-wider text-black">
+          Loading gallery...
+        </div>
+      }
+    >
       <GalleryContent />
     </Suspense>
   );
@@ -77,10 +114,15 @@ function GalleryContent() {
 
   useEffect(() => {
     let isMounted = true;
-    galleryService.getGallerySection().then((value) => {
-      if (isMounted) setSection(value);
-    }).catch(() => undefined);
-    return () => { isMounted = false; };
+    galleryService
+      .getGallerySection()
+      .then((value) => {
+        if (isMounted) setSection(value);
+      })
+      .catch(() => undefined);
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -88,23 +130,28 @@ function GalleryContent() {
     queueMicrotask(() => {
       if (isMounted) setCollectionState("loading");
     });
-    galleryService.getGalleryItems({ page }).then((response) => {
-      if (!isMounted) return;
-      setGallery({
-        ...response,
-        results: response.results.filter((item) => isSafeGalleryImage(item.image)),
-      });
-      setCollectionState("ready");
-    }).catch((error: unknown) => {
-      if (!isMounted) return;
-      if (page > 1 && axios.isAxiosError(error) && error.response?.status === 404) {
-        setGallery(EMPTY_GALLERY);
+    galleryService
+      .getGalleryItems({ page })
+      .then((response) => {
+        if (!isMounted) return;
+        setGallery({
+          ...response,
+          results: response.results.filter((item) => isSafeGalleryImage(item.image)),
+        });
         setCollectionState("ready");
-      } else {
-        setCollectionState("error");
-      }
-    });
-    return () => { isMounted = false; };
+      })
+      .catch((error: unknown) => {
+        if (!isMounted) return;
+        if (page > 1 && axios.isAxiosError(error) && error.response?.status === 404) {
+          setGallery(EMPTY_GALLERY);
+          setCollectionState("ready");
+        } else {
+          setCollectionState("error");
+        }
+      });
+    return () => {
+      isMounted = false;
+    };
   }, [page, retryVersion]);
 
   useEffect(() => {
@@ -116,19 +163,56 @@ function GalleryContent() {
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [selectedImage]);
 
-  const navigateToPage = useCallback((nextPage: number) => {
-    const nextParams = new URLSearchParams(searchParams.toString());
-    if (nextPage <= 1) nextParams.delete("page");
-    else nextParams.set("page", String(nextPage));
-    const query = nextParams.toString();
-    router.push(query ? pathname + "?" + query : pathname, { scroll: false });
-    window.requestAnimationFrame(() => {
-      document.getElementById("gallery-content")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
+  const navigateToPage = useCallback(
+    (nextPage: number) => {
+      const nextParams = new URLSearchParams(searchParams.toString());
+      if (nextPage <= 1) nextParams.delete("page");
+      else nextParams.set("page", String(nextPage));
+      const query = nextParams.toString();
+      router.push(query ? pathname + "?" + query : pathname, { scroll: false });
+      window.requestAnimationFrame(() => {
+        document.getElementById("gallery-content")?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       });
-    });
-  }, [pathname, router, searchParams]);
+    },
+    [pathname, router, searchParams],
+  );
+
+  // Map dynamic gallery items or fallback to curated studio items for the interactive accordion
+  const accordionItems: AccordionGalleryItem[] = useMemo(() => {
+    if (gallery.results.length >= 3) {
+      return gallery.results.slice(0, 6).map((item) => ({
+        image: item.image,
+        label: item.title || item.caption || "CBM Moment",
+        alt: item.title || "CBM Radio Gallery Moment",
+      }));
+    }
+    return DEFAULT_ACCORDION_ITEMS;
+  }, [gallery.results]);
+
+  const handleAccordionItemClick = useCallback(
+    (item: AccordionGalleryItem) => {
+      const matched = gallery.results.find((g) => g.image === item.image);
+      if (matched) {
+        setSelectedImage(matched);
+      } else {
+        setSelectedImage({
+          id: 9999,
+          title: item.label || "CBM Studio Moment",
+          image: item.image,
+          external_image_url: "",
+          caption: item.alt || "Inside the CBM Radio studio facility.",
+          category: "studio",
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
+      }
+    },
+    [gallery.results],
+  );
 
   return (
     <>
@@ -146,90 +230,283 @@ function GalleryContent() {
 
         <section id="gallery-content" className="scroll-mt-24">
           <div className="mx-auto max-w-4xl px-6 py-12 text-center">
-            <span className="inline-block rounded-full bg-black px-4 py-1 text-xs font-black uppercase tracking-wider text-[#04b093]">Inside CBM Radio</span>
-            <h2 className="mt-4 text-3xl font-black uppercase tracking-tight text-black sm:text-5xl">{section?.title || "Explore Our Gallery"}</h2>
-            {section?.subtitle && <p className="mt-2 text-xs font-bold uppercase tracking-wider text-black/80">{section.subtitle}</p>}
+            <span className="inline-block rounded-full bg-black px-4 py-1 text-xs font-black uppercase tracking-wider text-[#04b093]">
+              Inside CBM Radio
+            </span>
+            <h2 className="mt-4 text-3xl font-black uppercase tracking-tight text-black sm:text-5xl">
+              {section?.title || "Explore Our Gallery"}
+            </h2>
+            {section?.subtitle && (
+              <p className="mt-2 text-xs font-bold uppercase tracking-wider text-black/80">
+                {section.subtitle}
+              </p>
+            )}
             <p className="mt-4 whitespace-pre-line font-bold leading-relaxed text-black/80">
-              {section?.body || "Explore broadcasts, events, presenters and memorable moments from CBM Radio."}
+              {section?.body ||
+                "Explore broadcasts, events, presenters and memorable moments from CBM Radio."}
             </p>
           </div>
 
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            {collectionState === "loading" && (
-              <div className="flex min-h-64 items-center justify-center gap-4 text-black font-black uppercase text-xs" aria-live="polite">
-                <Loader2 className="h-6 w-6 animate-spin text-black" aria-hidden="true" />
-                <p>Loading gallery...</p>
-              </div>
-            )}
-            {collectionState === "error" && (
-              <div className="min-h-64 text-center text-black font-bold" role="alert">
-                <p className="text-lg">The gallery is temporarily unavailable.</p>
-                <button type="button" onClick={() => setRetryVersion((value) => value + 1)} className="mt-4 rounded-full border-2 border-black bg-black px-6 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black">Retry</button>
-              </div>
-            )}
-            {collectionState === "ready" && gallery.results.length === 0 && (
-              <div className="min-h-64 text-center font-bold text-black">
-                <p>{page > 1 ? "No gallery items are available on this page." : "No gallery items are available yet."}</p>
-                {page > 1 && <button type="button" onClick={() => navigateToPage(1)} className="mt-4 font-black uppercase text-black underline underline-offset-4">Return to page 1</button>}
-              </div>
-            )}
+            
+            {/* =========================================================================
+                FEATURED ACCORDION EXHIBIT (React Bits AccordionGallery with GSAP)
+                ========================================================================= */}
+            <div className="mb-14 rounded-3xl border-3 sm:border-4 border-black bg-black p-4 sm:p-6 text-white shadow-[12px_12px_0_0_rgba(0,0,0,1)]">
+              {/* Header strip */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-white/15 pb-4 mb-5">
+                <div className="flex items-center gap-2.5">
+                  <span className="rounded-full bg-[#04b093] px-3.5 py-1 text-[0.65rem] font-black uppercase tracking-widest text-black shadow-sm">
+                    FEATURED EXHIBIT
+                  </span>
+                  <span className="text-xs font-black uppercase tracking-wider text-zinc-300 flex items-center gap-1.5">
+                    <Sparkles size={13} className="text-[#04b093]" />
+                    <span>Interactive Studio Showcase</span>
+                  </span>
+                </div>
 
-            {collectionState === "ready" && gallery.results.length > 0 && (
-              <motion.div key={page} variants={containerVariants} initial="hidden" animate="show" className="grid auto-rows-48 grid-cols-2 gap-3 sm:grid-cols-3 sm:auto-rows-56 lg:grid-cols-4">
-                <AnimatePresence mode="popLayout">
-                  {gallery.results.map((item, index) => (
-                    <motion.button
+                <div className="flex items-center gap-2 text-[0.68rem] font-bold uppercase tracking-wider text-zinc-400">
+                  <span className="hidden sm:inline">Hover to expand • Click to view in lightroom</span>
+                </div>
+              </div>
+
+              {/* Accordion Component */}
+              <AccordionGallery
+                items={accordionItems}
+                defaultIndex={2}
+                expandRatio={0.52}
+                trigger="hover"
+                accentColor="#04b093"
+                overlayColor="#000000"
+                textColor="#ffffff"
+                grayscale={false}
+                showLabels={true}
+                duration={0.5}
+                ease="sine.inOut"
+                parallax={1}
+                tilt={6}
+                height={460}
+                gap={8}
+                radius={16}
+                onItemClick={handleAccordionItemClick}
+              />
+
+              {/* Bottom hint */}
+              <div className="mt-4 flex items-center justify-between text-xs text-zinc-400 border-t border-white/10 pt-3">
+                <span className="text-[0.65rem] font-bold uppercase tracking-wider">
+                  CBM Radio Visual Archive
+                </span>
+                <span className="text-[0.65rem] font-black uppercase tracking-wider text-[#04b093]">
+                  {accordionItems.length} Featured Frames
+                </span>
+              </div>
+            </div>
+
+            {/* =========================================================================
+                FULL PHOTO ARCHIVE GRID
+                ========================================================================= */}
+            <div className="border-t-2 border-black/20 pt-10">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <Camera size={16} className="text-black" />
+                  <h3 className="text-lg sm:text-xl font-black uppercase tracking-tight text-black">
+                    Complete Photo Archive
+                  </h3>
+                </div>
+                {gallery.count > 0 && (
+                  <span className="text-xs font-black uppercase tracking-wider text-black/70">
+                    {gallery.count} Total Moments
+                  </span>
+                )}
+              </div>
+
+              {collectionState === "loading" && (
+                <div
+                  className="flex min-h-64 items-center justify-center gap-4 text-black font-black uppercase text-xs"
+                  aria-live="polite"
+                >
+                  <Loader2 className="h-6 w-6 animate-spin text-black" aria-hidden="true" />
+                  <p>Loading photo collection...</p>
+                </div>
+              )}
+
+              {collectionState === "error" && (
+                <div className="min-h-64 text-center text-black font-bold" role="alert">
+                  <p className="text-lg">The gallery is temporarily unavailable.</p>
+                  <button
+                    type="button"
+                    onClick={() => setRetryVersion((value) => value + 1)}
+                    className="mt-4 rounded-full border-2 border-black bg-black px-6 py-2.5 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black"
+                  >
+                    Retry
+                  </button>
+                </div>
+              )}
+
+              {collectionState === "ready" && gallery.results.length === 0 && (
+                <div className="min-h-48 text-center font-bold text-black py-8">
+                  <p>
+                    {page > 1
+                      ? "No additional gallery items are available on this page."
+                      : "Additional photo moments will appear here once published."}
+                  </p>
+                  {page > 1 && (
+                    <button
                       type="button"
-                      layout
-                      variants={itemVariants}
-                      key={item.id}
-                      onClick={() => setSelectedImage(item)}
-                      className={"group relative overflow-hidden rounded-2xl border-2 border-black bg-black text-left shadow-xl transition hover:-translate-y-1 hover:shadow-2xl " + (index % 7 === 0 ? "col-span-2 row-span-2" : "")}
-                      aria-label={"Open " + (item.title || "gallery image")}
+                      onClick={() => navigateToPage(1)}
+                      className="mt-4 font-black uppercase text-black underline underline-offset-4"
                     >
-                      <Image
-                        src={item.image}
-                        alt={item.title || "CBM Radio gallery moment"}
-                        fill
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                        unoptimized
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading={index < 4 ? "eager" : "lazy"}
-                      />
-                      {(item.title || item.caption) && (
-                        <div className="absolute inset-x-0 bottom-0 bg-black/80 p-4 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 group-focus:opacity-100 border-t-2 border-black">
-                          {item.title && <h3 className="font-black uppercase tracking-tight text-white">{item.title}</h3>}
-                          {item.caption && <p className="mt-1 line-clamp-2 text-xs font-medium text-zinc-300">{item.caption}</p>}
-                        </div>
-                      )}
-                    </motion.button>
-                  ))}
-                </AnimatePresence>
-              </motion.div>
-            )}
+                      Return to page 1
+                    </button>
+                  )}
+                </div>
+              )}
 
-            {collectionState === "ready" && (gallery.previous || gallery.next) && (
-              <nav aria-label="Gallery pagination" className="mt-12 flex items-center justify-center gap-4">
-                <button type="button" disabled={!gallery.previous} onClick={() => navigateToPage(Math.max(1, page - 1))} className="rounded-full border-2 border-black bg-black px-5 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40">Previous</button>
-                <span className="text-xs font-black uppercase tracking-wider text-black" aria-current="page">Page {page}</span>
-                <button type="button" disabled={!gallery.next} onClick={() => navigateToPage(page + 1)} className="rounded-full border-2 border-black bg-black px-5 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40">Next</button>
-              </nav>
-            )}
+              {collectionState === "ready" && gallery.results.length > 0 && (
+                <motion.div
+                  key={page}
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="show"
+                  className="grid auto-rows-48 grid-cols-2 gap-3 sm:grid-cols-3 sm:auto-rows-56 lg:grid-cols-4"
+                >
+                  <AnimatePresence mode="popLayout">
+                    {gallery.results.map((item, index) => (
+                      <motion.button
+                        type="button"
+                        layout
+                        variants={itemVariants}
+                        key={item.id}
+                        onClick={() => setSelectedImage(item)}
+                        className={
+                          "group relative overflow-hidden rounded-2xl border-2 border-black bg-black text-left shadow-xl transition hover:-translate-y-1 hover:shadow-2xl " +
+                          (index % 7 === 0 ? "col-span-2 row-span-2" : "")
+                        }
+                        aria-label={"Open " + (item.title || "gallery image")}
+                      >
+                        <Image
+                          src={item.image}
+                          alt={item.title || "CBM Radio gallery moment"}
+                          fill
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                          unoptimized
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading={index < 4 ? "eager" : "lazy"}
+                        />
+                        {(item.title || item.caption) && (
+                          <div className="absolute inset-x-0 bottom-0 bg-black/80 p-4 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 group-focus:opacity-100 border-t-2 border-black">
+                            {item.title && (
+                              <h3 className="font-black uppercase tracking-tight text-white">
+                                {item.title}
+                              </h3>
+                            )}
+                            {item.caption && (
+                              <p className="mt-1 line-clamp-2 text-xs font-medium text-zinc-300">
+                                {item.caption}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </motion.button>
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
+              )}
+
+              {collectionState === "ready" && (gallery.previous || gallery.next) && (
+                <nav
+                  aria-label="Gallery pagination"
+                  className="mt-12 flex items-center justify-center gap-4"
+                >
+                  <button
+                    type="button"
+                    disabled={!gallery.previous}
+                    onClick={() => navigateToPage(Math.max(1, page - 1))}
+                    className="rounded-full border-2 border-black bg-black px-5 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Previous
+                  </button>
+                  <span
+                    className="text-xs font-black uppercase tracking-wider text-black"
+                    aria-current="page"
+                  >
+                    Page {page}
+                  </span>
+                  <button
+                    type="button"
+                    disabled={!gallery.next}
+                    onClick={() => navigateToPage(page + 1)}
+                    className="rounded-full border-2 border-black bg-black px-5 py-2 text-xs font-black uppercase tracking-wider text-[#04b093] transition-all hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Next
+                  </button>
+                </nav>
+              )}
+            </div>
+
           </div>
         </section>
+
         <DynamicPageSections page="gallery" position="middle" />
         <DynamicPageSections page="gallery" position="bottom" />
       </main>
       <Footer />
 
+      {/* Lightbox Dialog Modal */}
       <AnimatePresence>
         {selectedImage && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8" role="dialog" aria-modal="true" aria-label={selectedImage.title || "Gallery image"}>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedImage(null)} className="absolute inset-0 cursor-pointer bg-black/95 backdrop-blur-md" />
-            <button type="button" onClick={() => setSelectedImage(null)} className="absolute right-4 top-4 z-60 rounded-full bg-black/60 border border-white/20 p-2 text-white transition hover:bg-[#04b093] hover:text-black sm:right-8 sm:top-8" aria-label="Close gallery image"><X size={28} /></button>
-            <motion.figure initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} onClick={(event) => event.stopPropagation()} className="relative z-60 flex h-[80vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border-2 border-black bg-black shadow-2xl sm:h-[90vh]">
-              <div className="relative flex-1"><Image src={selectedImage.image} alt={selectedImage.title || "Expanded CBM Radio moment"} fill sizes="100vw" unoptimized className="object-contain" /></div>
-              {(selectedImage.title || selectedImage.caption) && <figcaption className="border-t-2 border-black bg-black/90 p-4 sm:p-6">{selectedImage.title && <h3 className="text-lg font-black uppercase text-white sm:text-xl">{selectedImage.title}</h3>}{selectedImage.caption && <p className="mt-2 text-xs font-medium text-zinc-300 sm:text-sm">{selectedImage.caption}</p>}</figcaption>}
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
+            role="dialog"
+            aria-modal="true"
+            aria-label={selectedImage.title || "Gallery image"}
+          >
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedImage(null)}
+              className="absolute inset-0 cursor-pointer bg-black/95 backdrop-blur-md"
+            />
+            <button
+              type="button"
+              onClick={() => setSelectedImage(null)}
+              className="absolute right-4 top-4 z-60 rounded-full bg-black/60 border border-white/20 p-2 text-white transition hover:bg-[#04b093] hover:text-black sm:right-8 sm:top-8"
+              aria-label="Close gallery image"
+            >
+              <X size={28} />
+            </button>
+            <motion.figure
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              onClick={(event) => event.stopPropagation()}
+              className="relative z-60 flex h-[80vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border-2 border-black bg-black shadow-2xl sm:h-[90vh]"
+            >
+              <div className="relative flex-1">
+                <Image
+                  src={selectedImage.image}
+                  alt={selectedImage.title || "Expanded CBM Radio moment"}
+                  fill
+                  sizes="100vw"
+                  unoptimized
+                  className="object-contain"
+                />
+              </div>
+              {(selectedImage.title || selectedImage.caption) && (
+                <figcaption className="border-t-2 border-black bg-black/90 p-4 sm:p-6">
+                  {selectedImage.title && (
+                    <h3 className="text-lg font-black uppercase text-white sm:text-xl">
+                      {selectedImage.title}
+                    </h3>
+                  )}
+                  {selectedImage.caption && (
+                    <p className="mt-2 text-xs font-medium text-zinc-300 sm:text-sm">
+                      {selectedImage.caption}
+                    </p>
+                  )}
+                </figcaption>
+              )}
             </motion.figure>
           </div>
         )}
