@@ -84,8 +84,8 @@ export const WIRE_ARTICLES: WireArticle[] = [
       ],
       subheading: "Analog Warmth in an Algorithmic Era",
       subparagraphs: [
-        "Unlike Western counterparts who rely almost exclusively on synthesizer plugins, East African producers insist on authentic studio room acoustics. In CBM Radio’s live sound room, artists record live percussions and acoustic horns before layering digital frequencies.",
-        "This tactile recording process gives the music an organic heartbeat that cuts cleanly through both high-end car stereos and dusty FM transistor radios in rural counties.",
+        "Unlike Western counterparts who rely almost exclusively on synthesizer plugins, East African producers insist on authentic studio room acoustics. In CBM Radio’s live sound room, artists record live percussions and acoustic horns before layering digital audio tracks.",
+        "This tactile recording process gives the music an organic heartbeat that cuts cleanly through both high-end car stereos and transistor speakers in rural counties.",
       ],
       bulletListTitle: "Key Pillars of the Movement:",
       bulletList: [
@@ -118,7 +118,7 @@ export const WIRE_ARTICLES: WireArticle[] = [
     category: "Culture",
     headline: "Preserving Sonic Heritage: How Mombasa Vinyl Crates Are Rescuing Forgotten Coastal Taarab",
     excerpt:
-      "Station archivist Samuel Ndegwa digs through century-old tape reels and shellac discs in Old Town Mombasa, restoring cultural poetry for FM transmission.",
+      "Station archivist Samuel Ndegwa digs through century-old tape reels and shellac discs in Old Town Mombasa, restoring cultural poetry for digital transmission.",
     coverImage: "/cbm_images/cbm-conversation-radio-show.png",
     author: {
       name: "Fatma Bakhresa",
@@ -138,7 +138,7 @@ export const WIRE_ARTICLES: WireArticle[] = [
       subheading: "From Shellac Grooves to Clean Digital Master Tapes",
       subparagraphs: [
         "Using optical turntable styluses and noise-reduction preamplifiers, the preservation team removes decades of ocean humidity and saline erosion without stripping away the authentic crackle of the performance.",
-        "Selected restored master tapes will premiere as a weekly midnight retrospective series titled 'The Coastal Wire' on CBM Radio 104.2 FM.",
+        "Selected restored master tapes will premiere as a weekly midnight retrospective series titled 'The Coastal Wire' on CBM Radio.",
       ],
     },
     secondaryFeatured: true,
@@ -150,7 +150,7 @@ export const WIRE_ARTICLES: WireArticle[] = [
     id: "wire-3",
     slug: "cbm-expands-regional-transmitters-eldoret-kisumu",
     category: "Station News",
-    headline: "CBM Radio Expands Regional Broadcast Network with High-Gain FM Transmitters in Western Kenya",
+    headline: "CBM Radio Expands Regional Broadcast Network with High-Capacity Relay Hubs in Western Kenya",
     excerpt:
       "New high-elevation mast installations in the Rift Valley and Lake Victoria basin bring crystal-clear audio to an estimated 1.8 million additional households.",
     coverImage: "/cbm_images/behind-the-scenes-studio.png",
@@ -164,9 +164,9 @@ export const WIRE_ARTICLES: WireArticle[] = [
     dateline: "Eldoret, Kenya —",
     content: {
       lead:
-        "CBM Radio has officially commissioned two state-of-the-art 5kW FM broadcast transmission facilities situated on high-elevation ridgelines overlooking Eldoret and Kisumu.",
+        "CBM Radio has officially commissioned two state-of-the-art digital broadcast transmission facilities situated on high-elevation ridgelines overlooking Eldoret and Kisumu.",
       paragraphs: [
-        "The infrastructural investment addresses longstanding frequency shadows across agricultural valleys and border regions, delivering uninterrupted transmission to long-distance truck corridors and community trading centres.",
+        "The infrastructural investment addresses longstanding connectivity shadows across agricultural valleys and border regions, delivering uninterrupted transmission to long-distance transport corridors and community trading centres.",
         "Equipped with backup solar battery banks and dual satellite telemetry uplinks, the new transmitter arrays ensure 99.98% broadcast uptime even during severe wet-season electrical outages.",
       ],
     },
@@ -444,7 +444,7 @@ export const WIRE_ARTICLES: WireArticle[] = [
 // Top Ticker Headlines
 const TICKER_ITEMS = [
   "EAST AFRICA AFROGOSPEL STREAMS SURGE 340% ACROSS CONTINENT",
-  "NEW HIGH-GAIN 5KW FM TRANSMITTER COMMISSIONED IN RIFT VALLEY",
+  "NEW HIGH-CAPACITY STREAM RELAY COMMISSIONED IN RIFT VALLEY",
   "MOMBASA COASTAL TAARAB 1950S MASTER REELS RESTORED TO DIGITAL",
   "WRC SAFARI RALLY: CBM MOBILE CRUISER PROVIDES TELEMETRY FEED",
   "ANNUAL REPORT CONFIRMS 2.4M WEEKLY LISTENERS ACROSS AIRWAVES",

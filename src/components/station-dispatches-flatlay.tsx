@@ -95,7 +95,7 @@ export const STATION_PHOTO_PRINTS: PhotoPrintItem[] = [
     imageUrl: "/cbm_images/on-air-studio.png",
     alt: "On air studio transmission desk",
     caption: "Dispatch #12",
-    handwrittenNote: "Dispatch #12 — 104.2 FM live",
+    handwrittenNote: "Dispatch #12 — Digital stream live",
     tag: "DISPATCH",
     storySlug: "on-air-studio",
     storyExcerpt: "The red tally lamp goes live as the mid-day cultural journal dispatches across Kenya and syndication.",
@@ -287,7 +287,7 @@ export default function StationDispatchesFlatLay() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[#04b093]">▸</span>
-              <span>Live production logs from 104.2 FM & digital stream</span>
+              <span>Live production logs from digital studio stream</span>
             </div>
           </div>
 

@@ -57,13 +57,13 @@ const FALLBACK_DISPATCHES: ArticleSummary[] = [
   },
   {
     id: 1,
-    title: "CBM Radio Expands FM Coverage Across Greater Kampala and Jinja",
-    slug: "cbm-radio-expands-fm-coverage-kampala-jinja",
+    title: "CBM Radio Expands Digital Broadcast Network Across East Africa",
+    slug: "cbm-radio-expands-digital-broadcast-network",
     category: {
       id: 2,
       name: "Station Announcements",
       slug: "station-announcements",
-      description: "CBM Radio frequencies, upcoming broadcast specials, and community schedules.",
+      description: "CBM Radio broadcast specials, stream updates, and community schedules.",
       is_active: true,
       display_order: 2,
     },
@@ -335,7 +335,7 @@ export default function NewsSection() {
                   </span>
                   <span>LATEST ARTICLES &amp; UPDATES</span>
                 </div>
-                <span className="text-black/70">RADIO WIRE // 104.2 FM</span>
+                <span className="text-black/70">RADIO WIRE // DIGITAL STREAM</span>
               </div>
 
               {/* Stack of Companion Wire Cards */}
@@ -407,7 +407,7 @@ export default function NewsSection() {
             <div className="mt-4 flex items-center justify-between rounded-xl border-2 border-black bg-[#04b093]/40 p-3 font-mono text-xs font-black uppercase tracking-wider text-black">
               <span className="flex items-center gap-1.5">
                 <Sparkles className="size-3.5" />
-                <span>FREQUENCY 104.2 FM</span>
+                <span>CBM DIGITAL RADIO</span>
               </span>
               <span className="text-black/80">UPDATED LIVE</span>
             </div>

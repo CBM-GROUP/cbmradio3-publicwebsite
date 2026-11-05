@@ -55,7 +55,7 @@ const STAGES: StageConfig[] = [
     badge: "TODAY",
     name: "LIVE ON CBM RADIO",
     tagline: "Your show goes on air.",
-    detail: "Your premiere broadcast hits live FM & streaming airwaves, with permanent on-demand syndication in the station crate.",
+    detail: "Your premiere broadcast hits live digital streaming airwaves, with permanent on-demand syndication in the station crate.",
     subtext: "STAGE 04 // LIVE BROADCAST TRANSMISSION",
     icon: Radio,
   },
