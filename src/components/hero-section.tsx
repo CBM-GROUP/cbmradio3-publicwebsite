@@ -157,12 +157,18 @@ export default function HeroSection() {
     : "OFFICIAL MUSIC LEADERBOARD";
 
   const heroHeadline =
-    heroSection?.title || "Moving African Sound, Culture & Faith Forward.";
+    heroSection?.title ||
+    (activeEpisode?.title
+      ? `Spotlight: ${activeEpisode.title}`
+      : "Studio Spotlight: Purpose, Culture & Calling");
   const heroSubtitle =
-    heroSection?.subtitle || "CBM ORIGINAL BROADCAST";
+    heroSection?.subtitle ||
+    activeEpisode?.program_title ||
+    "FEATURED BROADCAST RELEASE";
   const heroBody =
     heroSection?.body ||
-    "Authentic dialogue, transformative conversations, and community-powered stories created for the people who shape culture every day. Stream every episode on demand.";
+    activeEpisode?.description ||
+    "Stream the newest full-length broadcast episode from our Kampala studio. Tune in directly or watch the visual studio broadcast on demand.";
   const heroCtaLabel = heroSection?.cta_label;
   const heroCtaUrl = heroSection?.cta_url;
 
@@ -210,7 +216,7 @@ export default function HeroSection() {
               {/* Category Kicker */}
               <div className="flex items-center gap-3">
                 <span className="bg-black px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-[#04b093]">
-                  COVER STORY
+                  {heroSection?.title ? "COVER STORY" : "SPOTLIGHT EPISODE"}
                 </span>
                 <span className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-black flex items-center gap-1.5">
                   <Sparkles size={12} />
