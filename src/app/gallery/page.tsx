@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
-import { ArrowUpRight, Camera, Loader2, Sparkles, X } from "lucide-react";
+import { Camera, Loader2, Sparkles, X } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
@@ -27,34 +27,6 @@ const EMPTY_GALLERY: PaginatedResponse<GalleryItem> = {
   results: [],
 };
 
-const DEFAULT_ACCORDION_ITEMS: AccordionGalleryItem[] = [
-  {
-    image: "/cbm_images/behind-the-scenes-studio.png",
-    label: "Live Studio Broadcast",
-    alt: "Behind the scenes in the CBM Radio studio",
-  },
-  {
-    image: "/cbm_images/artist-spotlight.png",
-    label: "Artist Acoustic Lounge",
-    alt: "Live acoustic performance in Studio A",
-  },
-  {
-    image: "/cbm_images/cbm-conversation-radio-show.png",
-    label: "Conversations on Purpose",
-    alt: "Community conversations and podcast recording",
-  },
-  {
-    image: "/cbm_images/on-air-studio.png",
-    label: "Master Broadcast Deck",
-    alt: "Studio transmission console and audio hardware",
-  },
-  {
-    image: "/cbm_images/newsroom-studio-set.png",
-    label: "Newsroom & Production",
-    alt: "Newsroom studio set and digital production",
-  },
-];
-
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.05 } },
@@ -76,11 +48,12 @@ function parsePage(value: string | null) {
   return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : 1;
 }
 
-function isSafeGalleryImage(value: string) {
-  if (!value) return false;
-  if (value.startsWith("/") && !value.startsWith("//")) return true;
+function isSafeGalleryImage(value: string | null | undefined): boolean {
+  if (!value || typeof value !== "string") return false;
+  const trimmed = value.trim();
+  if (trimmed.startsWith("/") && !trimmed.startsWith("//")) return true;
   try {
-    const url = new URL(value);
+    const url = new URL(trimmed);
     return url.protocol === "http:" || url.protocol === "https:";
   } catch {
     return false;
@@ -107,11 +80,13 @@ function GalleryContent() {
   const searchParams = useSearchParams();
   const page = parsePage(searchParams.get("page"));
   const [gallery, setGallery] = useState(EMPTY_GALLERY);
+  const [featuredDashboardItems, setFeaturedDashboardItems] = useState<GalleryItem[]>([]);
   const [section, setSection] = useState<PageSection | null>(null);
   const [collectionState, setCollectionState] = useState<RequestState>("loading");
   const [retryVersion, setRetryVersion] = useState(0);
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
 
+  // Fetch page editorial section
   useEffect(() => {
     let isMounted = true;
     galleryService
@@ -125,6 +100,25 @@ function GalleryContent() {
     };
   }, []);
 
+  // Fetch featured items from dashboard for the accordion (always latest items from page 1)
+  useEffect(() => {
+    let isMounted = true;
+    galleryService
+      .getGalleryItems({ page: 1 })
+      .then((response) => {
+        if (!isMounted) return;
+        const valid = (response.results || []).filter(
+          (item) => item.is_active && isSafeGalleryImage(item.image),
+        );
+        setFeaturedDashboardItems(valid);
+      })
+      .catch(() => undefined);
+    return () => {
+      isMounted = false;
+    };
+  }, [retryVersion]);
+
+  // Fetch paginated gallery collection from dashboard
   useEffect(() => {
     let isMounted = true;
     queueMicrotask(() => {
@@ -136,7 +130,9 @@ function GalleryContent() {
         if (!isMounted) return;
         setGallery({
           ...response,
-          results: response.results.filter((item) => isSafeGalleryImage(item.image)),
+          results: response.results.filter(
+            (item) => item.is_active && isSafeGalleryImage(item.image),
+          ),
         });
         setCollectionState("ready");
       })
@@ -180,38 +176,44 @@ function GalleryContent() {
     [pathname, router, searchParams],
   );
 
-  // Map dynamic gallery items or fallback to curated studio items for the interactive accordion
+  // Accordion receives images strictly from the dashboard gallery (zero hardcoded images)
   const accordionItems: AccordionGalleryItem[] = useMemo(() => {
-    if (gallery.results.length >= 3) {
-      return gallery.results.slice(0, 6).map((item) => ({
+    const source =
+      featuredDashboardItems.length > 0
+        ? featuredDashboardItems
+        : gallery.results;
+
+    return source
+      .filter((item) => item.is_active && isSafeGalleryImage(item.image))
+      .slice(0, 8)
+      .map((item) => ({
         image: item.image,
-        label: item.title || item.caption || "CBM Moment",
-        alt: item.title || "CBM Radio Gallery Moment",
+        label: item.title || item.caption || "Gallery Moment",
+        alt: item.caption || item.title || "CBM Radio Gallery Moment",
       }));
-    }
-    return DEFAULT_ACCORDION_ITEMS;
-  }, [gallery.results]);
+  }, [featuredDashboardItems, gallery.results]);
 
   const handleAccordionItemClick = useCallback(
     (item: AccordionGalleryItem) => {
-      const matched = gallery.results.find((g) => g.image === item.image);
+      const allKnown = [...featuredDashboardItems, ...gallery.results];
+      const matched = allKnown.find((g) => g.image === item.image);
       if (matched) {
         setSelectedImage(matched);
       } else {
         setSelectedImage({
           id: 9999,
-          title: item.label || "CBM Studio Moment",
+          title: item.label || "Gallery Moment",
           image: item.image,
           external_image_url: "",
-          caption: item.alt || "Inside the CBM Radio studio facility.",
-          category: "studio",
+          caption: item.alt || "",
+          category: "general",
           is_active: true,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         });
       }
     },
-    [gallery.results],
+    [featuredDashboardItems, gallery.results],
   );
 
   return (
@@ -250,57 +252,59 @@ function GalleryContent() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             
             {/* =========================================================================
-                FEATURED ACCORDION EXHIBIT (React Bits AccordionGallery with GSAP)
+                FEATURED ACCORDION EXHIBIT (Populated dynamically from Dashboard Gallery)
                 ========================================================================= */}
-            <div className="mb-14 rounded-3xl border-3 sm:border-4 border-black bg-black p-4 sm:p-6 text-white shadow-[12px_12px_0_0_rgba(0,0,0,1)]">
-              {/* Header strip */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-white/15 pb-4 mb-5">
-                <div className="flex items-center gap-2.5">
-                  <span className="rounded-full bg-[#04b093] px-3.5 py-1 text-[0.65rem] font-black uppercase tracking-widest text-black shadow-sm">
-                    FEATURED EXHIBIT
-                  </span>
-                  <span className="text-xs font-black uppercase tracking-wider text-zinc-300 flex items-center gap-1.5">
-                    <Sparkles size={13} className="text-[#04b093]" />
-                    <span>Interactive Studio Showcase</span>
-                  </span>
+            {accordionItems.length > 0 && (
+              <div className="mb-14 rounded-3xl border-3 sm:border-4 border-black bg-black p-4 sm:p-6 text-white shadow-[12px_12px_0_0_rgba(0,0,0,1)]">
+                {/* Header strip */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-white/15 pb-4 mb-5">
+                  <div className="flex items-center gap-2.5">
+                    <span className="rounded-full bg-[#04b093] px-3.5 py-1 text-[0.65rem] font-black uppercase tracking-widest text-black shadow-sm">
+                      FEATURED EXHIBIT
+                    </span>
+                    <span className="text-xs font-black uppercase tracking-wider text-zinc-300 flex items-center gap-1.5">
+                      <Sparkles size={13} className="text-[#04b093]" />
+                      <span>Interactive Gallery Showcase</span>
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-[0.68rem] font-bold uppercase tracking-wider text-zinc-400">
+                    <span className="hidden sm:inline">Hover to expand • Click to inspect image</span>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-[0.68rem] font-bold uppercase tracking-wider text-zinc-400">
-                  <span className="hidden sm:inline">Hover to expand • Click to view in lightroom</span>
+                {/* Accordion Component with dynamic dashboard items */}
+                <AccordionGallery
+                  items={accordionItems}
+                  defaultIndex={Math.min(2, accordionItems.length - 1)}
+                  expandRatio={accordionItems.length === 2 ? 0.65 : 0.52}
+                  trigger="hover"
+                  accentColor="#04b093"
+                  overlayColor="#000000"
+                  textColor="#ffffff"
+                  grayscale={false}
+                  showLabels={true}
+                  duration={0.5}
+                  ease="sine.inOut"
+                  parallax={1}
+                  tilt={6}
+                  height={460}
+                  gap={8}
+                  radius={16}
+                  onItemClick={handleAccordionItemClick}
+                />
+
+                {/* Bottom metadata */}
+                <div className="mt-4 flex items-center justify-between text-xs text-zinc-400 border-t border-white/10 pt-3">
+                  <span className="text-[0.65rem] font-bold uppercase tracking-wider">
+                    CBM Radio Visual Archive
+                  </span>
+                  <span className="text-[0.65rem] font-black uppercase tracking-wider text-[#04b093]">
+                    {accordionItems.length} Featured Frames
+                  </span>
                 </div>
               </div>
-
-              {/* Accordion Component */}
-              <AccordionGallery
-                items={accordionItems}
-                defaultIndex={2}
-                expandRatio={0.52}
-                trigger="hover"
-                accentColor="#04b093"
-                overlayColor="#000000"
-                textColor="#ffffff"
-                grayscale={false}
-                showLabels={true}
-                duration={0.5}
-                ease="sine.inOut"
-                parallax={1}
-                tilt={6}
-                height={460}
-                gap={8}
-                radius={16}
-                onItemClick={handleAccordionItemClick}
-              />
-
-              {/* Bottom hint */}
-              <div className="mt-4 flex items-center justify-between text-xs text-zinc-400 border-t border-white/10 pt-3">
-                <span className="text-[0.65rem] font-bold uppercase tracking-wider">
-                  CBM Radio Visual Archive
-                </span>
-                <span className="text-[0.65rem] font-black uppercase tracking-wider text-[#04b093]">
-                  {accordionItems.length} Featured Frames
-                </span>
-              </div>
-            </div>
+            )}
 
             {/* =========================================================================
                 FULL PHOTO ARCHIVE GRID
@@ -348,7 +352,7 @@ function GalleryContent() {
                   <p>
                     {page > 1
                       ? "No additional gallery items are available on this page."
-                      : "Additional photo moments will appear here once published."}
+                      : "No gallery items published yet. Add images from the dashboard to display them here."}
                   </p>
                   {page > 1 && (
                     <button

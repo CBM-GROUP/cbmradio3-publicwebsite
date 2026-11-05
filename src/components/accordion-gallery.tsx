@@ -35,16 +35,8 @@ export interface AccordionGalleryProps {
   onItemClick?: (item: AccordionGalleryItem, index: number) => void;
 }
 
-const DEFAULT_ITEMS: AccordionGalleryItem[] = [
-  { image: "https://picsum.photos/id/1015/900/1200", label: "Canyon", link: "#" },
-  { image: "https://picsum.photos/id/1018/900/1200", label: "Ridgeline", link: "#" },
-  { image: "https://picsum.photos/id/1039/900/1200", label: "Falls", link: "#" },
-  { image: "https://picsum.photos/id/1043/900/1200", label: "Harbour", link: "#" },
-  { image: "https://picsum.photos/id/1044/900/1200", label: "Skyline", link: "#" },
-];
-
 export default function AccordionGallery({
-  items = DEFAULT_ITEMS,
+  items = [],
   defaultIndex = 2,
   accentColor = "#ffffff",
   overlayColor = "#060010",
@@ -76,9 +68,12 @@ export default function AccordionGallery({
 
   const vertical = orientation === "vertical";
   const count = items.length;
-  const [active, setActive] = useState(
-    Math.min(Math.max(defaultIndex, 0), Math.max(0, count - 1)),
-  );
+
+  const dynamicExpandRatio =
+    count === 2 ? 0.65 : count === 3 ? 0.58 : expandRatio;
+
+  const initialActive = Math.min(Math.max(defaultIndex, 0), Math.max(0, count - 1));
+  const [active, setActive] = useState(initialActive);
 
   useEffect(() => {
     setActive((prev) => Math.min(Math.max(prev, 0), Math.max(0, items.length - 1)));
@@ -94,7 +89,7 @@ export default function AccordionGallery({
       const panels = panelRefs.current;
       if (!panels.length) return;
 
-      const r = Math.min(Math.max(expandRatio, 0.2), 0.9);
+      const r = Math.min(Math.max(dynamicExpandRatio, 0.2), 0.9);
       const grow = count > 1 ? (r * (count - 1)) / (1 - r) : 1;
       const mediaSize = mediaSizeRef.current;
 
@@ -152,7 +147,7 @@ export default function AccordionGallery({
     [
       active,
       count,
-      expandRatio,
+      dynamicExpandRatio,
       duration,
       ease,
       vertical,
@@ -167,13 +162,13 @@ export default function AccordionGallery({
 
   useEffect(() => {
     const el = rootRef.current;
-    if (!el) return;
+    if (!el || count === 0) return;
 
     const measure = () => {
       const rect = el.getBoundingClientRect();
       const total = vertical ? rect.height : rect.width;
       const usable = Math.max(total - gap * (count - 1), 120);
-      const size = Math.max(140, usable * Math.min(Math.max(expandRatio, 0.2), 0.9) * 1.22);
+      const size = Math.max(140, usable * Math.min(Math.max(dynamicExpandRatio, 0.2), 0.9) * 1.22);
       mediaSizeRef.current = size;
       el.style.setProperty("--ag-media-size", `${size}px`);
       applyLayout(!firstRunRef.current);
@@ -183,12 +178,14 @@ export default function AccordionGallery({
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [applyLayout, gap, count, expandRatio, vertical]);
+  }, [applyLayout, gap, count, dynamicExpandRatio, vertical]);
 
   useEffect(() => {
-    applyLayout(!firstRunRef.current);
-    firstRunRef.current = false;
-  }, [applyLayout]);
+    if (count > 0) {
+      applyLayout(!firstRunRef.current);
+      firstRunRef.current = false;
+    }
+  }, [applyLayout, count]);
 
   useEffect(
     () => () => {
@@ -226,7 +223,7 @@ export default function AccordionGallery({
     }
   };
 
-  if (items.length === 0) return null;
+  if (!items || items.length === 0) return null;
 
   return (
     <div
