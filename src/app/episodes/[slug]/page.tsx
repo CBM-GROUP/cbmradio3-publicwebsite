@@ -372,8 +372,8 @@ export default async function EpisodePage({ params }: EpisodePageProps) {
                 </p>
 
                 <div className="mt-4 flex items-center justify-between border-t border-zinc-800 pt-3 text-xs font-mono text-zinc-400">
-                  <span>Online / FM Stream</span>
-                  <span className="font-bold text-[#04b093]">ON AIR</span>
+                  <span>Online / Digital Stream</span>
+                  <span className="font-bold text-[#04b093]">LIVE STREAM</span>
                 </div>
               </div>
 

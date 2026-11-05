@@ -1,5 +1,4 @@
 import Header from "@/components/header";
-import HomeHero from "@/components/home-hero";
 import HeroSection from "@/components/hero-section";
 import HomepageCharts from "@/components/homepage-charts";
 import EpisodesSection from "@/components/episodes-section";
@@ -19,10 +18,7 @@ export default function Home() {
         {/* Dynamic Hero Placement */}
         <DynamicPageSections page="home" position="hero" />
 
-        {/* 01 // Flagship Broadcast Stage & Multi-Media Live Hero */}
-        <HomeHero />
-
-        {/* 02 // Master Editorial Cover Deck with Live Switcher & Player Stage */}
+        {/* 01 // Master Editorial Cover Deck with Live Switcher & Player Stage */}
         <HeroSection />
 
         {/* Dynamic Top Placement */}
