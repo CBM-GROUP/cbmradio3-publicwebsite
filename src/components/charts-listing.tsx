@@ -406,7 +406,7 @@ export default function ChartsListing() {
 
         {activeChart && (
           <>
-            {/* 02 // Hero: 16:9 artwork & chart details */}
+            {/* 02 // Hero: 16:9 sleeve + sliding vinyl */}
             <div className="relative mb-12 rounded-3xl border-2 border-black bg-black p-5 sm:p-8 lg:p-10 text-white shadow-[8px_8px_0_0_rgba(0,0,0,0.35)]">
               {/* Ambient Glows clipped inside card */}
               <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl" aria-hidden="true">
@@ -415,33 +415,57 @@ export default function ChartsListing() {
               </div>
 
               <div className="relative z-10 grid items-center gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] xl:grid-cols-[540px_minmax(0,1fr)] lg:gap-10">
-                {/* 16:9 Hero Artwork */}
-                <div className="relative mx-auto flex w-full max-w-[480px] md:max-w-[560px] lg:max-w-none items-center justify-center lg:justify-start">
-                  <div className="relative aspect-video w-full overflow-hidden rounded-2xl border-2 border-white/20 bg-zinc-900 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
-                    {heroArtwork ? (
-                      <Image
-                        src={heroArtwork}
-                        alt={activeChart.title}
-                        fill
-                        priority
-                        unoptimized
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 500px, 560px"
-                        className="object-cover object-center"
-                      />
-                    ) : (
-                      <Image
-                        src={CBMTeamArtwork}
-                        alt={activeChart.title}
-                        fill
-                        priority
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 500px, 560px"
-                        className="object-cover object-center"
-                      />
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-                    <span className="absolute bottom-3 left-3 rotate-[-3deg] rounded-md border-2 border-black bg-[#04b093] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-black shadow-sm">
-                      CBM Official
-                    </span>
+                {/* 16:9 Sleeve with sliding vinyl */}
+                <div className="relative mx-auto flex w-full max-w-[420px] sm:max-w-[480px] md:max-w-[540px] items-center justify-center lg:justify-start">
+                  <div className="group relative w-full pr-8 sm:pr-12 md:pr-16">
+                    {/* Vinyl Disk sliding from behind right edge */}
+                    <div
+                      className={`chart-vinyl absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 aspect-square h-[86%] rounded-full shadow-2xl transition-transform duration-700 ease-out z-0 ${
+                        isPlaying
+                          ? "translate-x-7 sm:translate-x-10 md:translate-x-12"
+                          : "translate-x-1 sm:translate-x-2 group-hover:translate-x-7 sm:group-hover:translate-x-10 md:group-hover:translate-x-12"
+                      }`}
+                    >
+                      <div
+                        className="chart-spin absolute inset-0 rounded-full"
+                        style={{ animationPlayState: isPlaying ? "running" : "paused" }}
+                      >
+                        <div className="absolute left-1/2 top-1/2 h-14 w-14 sm:h-18 sm:w-18 md:h-20 md:w-20 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full border-4 border-black bg-[#04b093]">
+                          {artworkOf(top1) && (
+                            <Image src={artworkOf(top1)} alt="" fill unoptimized sizes="80px" className="object-cover" />
+                          )}
+                          <span className="absolute left-1/2 top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 16:9 Sleeve Outer Jacket */}
+                    <div className="relative z-10 aspect-video w-full overflow-hidden rounded-2xl border-2 border-white/20 bg-zinc-900 shadow-[0_20px_50px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:-rotate-1">
+                      {heroArtwork ? (
+                        <Image
+                          src={heroArtwork}
+                          alt={activeChart.title}
+                          fill
+                          priority
+                          unoptimized
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 500px, 540px"
+                          className="object-cover object-center"
+                        />
+                      ) : (
+                        <Image
+                          src={CBMTeamArtwork}
+                          alt={activeChart.title}
+                          fill
+                          priority
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 500px, 540px"
+                          className="object-cover object-center"
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                      <span className="absolute bottom-3 left-3 rotate-[-3deg] rounded-md border-2 border-black bg-[#04b093] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-black shadow-sm">
+                        CBM Official
+                      </span>
+                    </div>
                   </div>
                 </div>
 

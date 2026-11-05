@@ -325,13 +325,13 @@ export default function TrendingCircularCarousel({
                     <span className="flex items-center gap-1.5 text-[0.62rem] font-mono font-bold uppercase text-zinc-400">
                       <Disc3
                         size={14}
-                        className={`text-[#04b093] ${isCenter ? "chart-spin" : ""}`}
+                        className="text-[#04b093]"
                       />
                       <span>NO. 0{idx + 1}</span>
                     </span>
                   </div>
 
-                  {/* Media Visual Showcase Box with Pushing CD Disc */}
+                  {/* Media Visual Showcase Box */}
                   <div className="relative mb-5 flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-2xl border-2 border-white/20 bg-zinc-950">
                     <Image
                       src={item.image}
@@ -342,26 +342,6 @@ export default function TrendingCircularCarousel({
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-
-                    {/* Compact Disc */}
-                    <div
-                      className={`chart-spin absolute top-1/2 aspect-square -translate-y-1/2 rounded-full border border-white/30 shadow-[0_15px_35px_rgba(0,0,0,0.9)] transition-all duration-700 ${
-                        isCenter
-                          ? "right-2 sm:right-3 w-32 sm:w-36 opacity-100 scale-100"
-                          : "right-6 w-24 opacity-60 scale-85"
-                      }`}
-                      style={{
-                        background: `
-                          radial-gradient(circle at 50% 50%, transparent 0 28%, rgba(255,255,255,0.08) 28.5% 29%, transparent 29.5%),
-                          conic-gradient(from 0deg, #18181b 0deg, #3f3f46 45deg, #18181b 90deg, #52525b 135deg, #18181b 180deg, #3f3f46 225deg, #18181b 270deg, #52525b 315deg, #18181b 360deg),
-                          conic-gradient(from 120deg, transparent 0deg, rgba(4,176,147,0.4) 60deg, rgba(234,179,8,0.35) 120deg, rgba(239,68,68,0.3) 180deg, rgba(59,130,246,0.4) 240deg, transparent 300deg)
-                        `,
-                      }}
-                    >
-                      <div className="absolute left-1/2 top-1/2 flex size-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/60 bg-black">
-                        <div className="size-2.5 rounded-full bg-zinc-900 border border-white/80" />
-                      </div>
-                    </div>
 
                     {/* Live Broadcast schedule tag on Center Card */}
                     {isCenter ? (
