@@ -116,8 +116,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   const structuredDocument: StructuredArticleDocument | null =
     article.content_schema_version === 1 &&
-    isStructuredArticleDocument(article.content_json) &&
-    hasRenderableStructuredContent(article.content_json)
+      isStructuredArticleDocument(article.content_json) &&
+      hasRenderableStructuredContent(article.content_json)
       ? article.content_json
       : null;
 
@@ -142,34 +142,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <Header />
       <main className="min-h-screen bg-[#04b093] px-3 pb-24 pt-28 text-black sm:px-6 sm:pt-32 lg:px-8">
         <div className="mx-auto max-w-5xl space-y-8">
-          
-          {/* Breadcrumb Navigation Bar */}
-          <nav
-            aria-label="Article breadcrumb"
-            className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-black bg-black p-4 text-white shadow-[6px_6px_0_0_#000]"
-          >
-            <div className="flex flex-wrap items-center gap-2 text-xs font-black uppercase">
-              <Link
-                href="/news"
-                className="inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-[#04b093] px-3.5 py-1.5 text-black shadow-[2px_2px_0_0_#000] transition-all hover:bg-white hover:text-black"
-              >
-                &larr; Back to News & Articles
-              </Link>
-              {article.category && (
-                <Link
-                  href={`/news?category=${encodeURIComponent(article.category.slug)}`}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-700 bg-zinc-900 px-3.5 py-1.5 text-[#04b093] transition-colors hover:border-[#04b093]"
-                >
-                  <span>{article.category.name}</span>
-                </Link>
-              )}
-            </div>
 
-            <div className="hidden items-center gap-2 text-[11px] font-black uppercase tracking-wider text-zinc-400 sm:flex">
-              <Newspaper className="h-3.5 w-3.5 text-[#04b093]" />
-              <span>CBM Radio Newsroom Dispatch</span>
-            </div>
-          </nav>
+
 
           {/* Broad-sheet Article Header */}
           <header className="overflow-hidden rounded-3xl border-3 border-black bg-black p-6 text-white shadow-[10px_10px_0_0_#000] sm:p-8 md:p-10">
@@ -243,23 +217,24 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </header>
 
           {/* Featured Cover Image Stage */}
-          {article.cover_image && (
-            <div className="relative aspect-video overflow-hidden rounded-3xl border-3 border-black bg-black shadow-[10px_10px_0_0_#000]">
-              <Image
-                src={article.cover_image}
-                alt={article.title}
-                fill
-                sizes="(max-width: 1024px) 100vw, 1024px"
-                unoptimized
-                className="object-cover"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            </div>
-          )}
+
 
           {/* Editorial Reading Chamber */}
           <article className="overflow-hidden rounded-3xl border-3 border-black bg-black p-6 text-white shadow-[10px_10px_0_0_#000] sm:p-10 md:p-12 [overflow-wrap:anywhere]">
+            {article.cover_image && (
+              <div className="relative aspect-video overflow-hidden rounded-3xl border-3 border-black bg-black shadow-[10px_10px_0_0_#000]">
+                <Image
+                  src={article.cover_image}
+                  alt={article.title}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 1024px"
+                  unoptimized
+                  className="object-cover"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              </div>
+            )}
             <div className="article-body">
               {structuredDocument ? (
                 <ArticleRenderer
@@ -381,7 +356,33 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               </div>
             </section>
           )}
+          {/* Breadcrumb Navigation Bar */}
+          <nav
+            aria-label="Article breadcrumb"
+            className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-black bg-black p-4 text-white shadow-[6px_6px_0_0_#000]"
+          >
+            <div className="flex flex-wrap items-center gap-2 text-xs font-black uppercase">
+              <Link
+                href="/news"
+                className="inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-[#04b093] px-3.5 py-1.5 text-black shadow-[2px_2px_0_0_#000] transition-all hover:bg-white hover:text-black"
+              >
+                &larr; Back to News & Articles
+              </Link>
+              {article.category && (
+                <Link
+                  href={`/news?category=${encodeURIComponent(article.category.slug)}`}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-700 bg-zinc-900 px-3.5 py-1.5 text-[#04b093] transition-colors hover:border-[#04b093]"
+                >
+                  <span>{article.category.name}</span>
+                </Link>
+              )}
+            </div>
 
+            <div className="hidden items-center gap-2 text-[11px] font-black uppercase tracking-wider text-zinc-400 sm:flex">
+              <Newspaper className="h-3.5 w-3.5 text-[#04b093]" />
+              <span>CBM Radio Newsroom Dispatch</span>
+            </div>
+          </nav>
         </div>
       </main>
       <Footer />
