@@ -15,6 +15,18 @@ export function getYouTubeMedia(value: string | undefined): YouTubeMedia | null 
   return { videoId, watchUrl: `https://www.youtube.com/watch?v=${videoId}`, embedUrl };
 }
 
+export function buildYouTubeAutoplayEmbedUrl(media: YouTubeMedia): string {
+  const url = new URL(media.embedUrl);
+  url.searchParams.set("autoplay", "1");
+  url.searchParams.set("mute", "1");
+  url.searchParams.set("controls", "0");
+  url.searchParams.set("loop", "1");
+  url.searchParams.set("playlist", media.videoId);
+  url.searchParams.set("playsinline", "1");
+  url.searchParams.set("rel", "0");
+  return url.toString();
+}
+
 export function getYouTubeEmbedUrl(value: string | undefined) {
   return parseYouTubeEmbedUrl(value);
 }
