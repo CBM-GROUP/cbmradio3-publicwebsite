@@ -10,7 +10,6 @@ import {
   Clock,
   Eye,
   Newspaper,
-  Sparkles,
   User,
 } from "lucide-react";
 
@@ -132,6 +131,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     .filter(Boolean);
 
   const uploadTimestamp = article.published_at || article.created_at;
+  const coverUrl = article.cover_image || article.external_cover_image_url;
   const relatedArticles = await getRelatedArticles(
     article.category?.slug,
     article.id
@@ -223,10 +223,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           {/* Featured Cover Image Stage */}
 
           <article className="overflow-hidden rounded-3xl border-3 border-black bg-white p-6 text-black shadow-[3px_2px_0_0_#000] sm:p-10 md:p-12 [overflow-wrap:anywhere]">
-            {article.cover_image && (
-              <div className="relative aspect-video overflow-hidden rounded-3xl border-3 border-black bg-black shadow-[10px_10px_0_0_#000]">
+            {coverUrl && (
+              <div className="relative mb-8 aspect-video overflow-hidden rounded-3xl border-3 border-black bg-zinc-900 shadow-[8px_8px_0_0_#000,0_16px_32px_rgba(0,0,0,0.18)] sm:mb-10">
                 <Image
-                  src={article.cover_image}
+                  src={coverUrl}
                   alt={article.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 1024px"
@@ -234,7 +234,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   className="object-cover"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
               </div>
             )}
             <div className="article-body">
@@ -244,18 +244,18 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   articleTitle={article.title}
                 />
               ) : paragraphs.length > 0 ? (
-                <div className="space-y-6 text-base leading-relaxed text-zinc-300 break-words [overflow-wrap:anywhere] sm:text-lg sm:leading-8">
+                <div className="space-y-6 text-base leading-relaxed text-black break-words [overflow-wrap:anywhere] sm:text-lg sm:leading-8">
                   {paragraphs.map((paragraph, index) => (
                     <p
                       key={"paragraph-" + index}
-                      className="whitespace-pre-line break-words [overflow-wrap:anywhere] leading-relaxed sm:leading-8"
+                      className="whitespace-pre-line break-words [overflow-wrap:anywhere] leading-relaxed text-black sm:leading-8"
                     >
                       {paragraph}
                     </p>
                   ))}
                 </div>
               ) : (
-                <p className="text-zinc-400 italic">
+                <p className="text-zinc-600 italic">
                   This article does not have content yet.
                 </p>
               )}

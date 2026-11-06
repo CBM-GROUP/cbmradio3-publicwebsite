@@ -49,7 +49,7 @@ export function ArticleRenderer({
   articleTitle: string;
 }) {
   return (
-    <div className="space-y-6 text-base leading-relaxed text-zinc-300 break-words [overflow-wrap:anywhere] sm:text-lg sm:leading-8">
+    <div className="space-y-6 text-base leading-relaxed text-black break-words [overflow-wrap:anywhere] sm:text-lg sm:leading-8">
       {document.content.map((node, index) =>
         renderNode(node, articleTitle, "root-" + index),
       )}
@@ -93,28 +93,28 @@ function renderNode(
     case "text":
       return <span key={path}>{renderText(node)}</span>;
     case "paragraph":
-      return <p key={path} className="break-words [overflow-wrap:anywhere] leading-relaxed sm:leading-8">{renderChildren(node, articleTitle, path)}</p>;
+      return <p key={path} className="break-words [overflow-wrap:anywhere] leading-relaxed text-black sm:leading-8">{renderChildren(node, articleTitle, path)}</p>;
     case "heading": {
       const children = renderChildren(node, articleTitle, path);
       const level = node.attrs?.level;
-      if (level === 3) return <h3 key={path} className="pt-4 text-lg sm:text-xl md:text-2xl font-black uppercase tracking-tight text-white break-words [overflow-wrap:anywhere]">{children}</h3>;
-      if (level && level >= 4) return <h4 key={path} className="pt-3 text-base sm:text-lg md:text-xl font-black uppercase tracking-tight text-white break-words [overflow-wrap:anywhere]">{children}</h4>;
-      return <h2 key={path} className="pt-6 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black uppercase tracking-tight text-white break-words [overflow-wrap:anywhere]">{children}</h2>;
+      if (level === 3) return <h3 key={path} className="pt-4 text-lg sm:text-xl md:text-2xl font-black uppercase tracking-tight text-black break-words [overflow-wrap:anywhere]">{children}</h3>;
+      if (level && level >= 4) return <h4 key={path} className="pt-3 text-base sm:text-lg md:text-xl font-black uppercase tracking-tight text-black break-words [overflow-wrap:anywhere]">{children}</h4>;
+      return <h2 key={path} className="pt-6 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black uppercase tracking-tight text-black break-words [overflow-wrap:anywhere]">{children}</h2>;
     }
     case "bulletList":
-      return <ul key={path} className="ml-5 sm:ml-6 list-disc space-y-2 break-words [overflow-wrap:anywhere]">{renderChildren(node, articleTitle, path)}</ul>;
+      return <ul key={path} className="ml-5 sm:ml-6 list-disc space-y-2 text-black break-words [overflow-wrap:anywhere]">{renderChildren(node, articleTitle, path)}</ul>;
     case "orderedList":
-      return <ol key={path} start={node.attrs?.start} className="ml-5 sm:ml-6 list-decimal space-y-2 break-words [overflow-wrap:anywhere]">{renderChildren(node, articleTitle, path)}</ol>;
+      return <ol key={path} start={node.attrs?.start} className="ml-5 sm:ml-6 list-decimal space-y-2 text-black break-words [overflow-wrap:anywhere]">{renderChildren(node, articleTitle, path)}</ol>;
     case "listItem":
-      return <li key={path} className="[&>p]:inline break-words [overflow-wrap:anywhere]">{renderChildren(node, articleTitle, path)}</li>;
+      return <li key={path} className="text-black [&>p]:inline break-words [overflow-wrap:anywhere]">{renderChildren(node, articleTitle, path)}</li>;
     case "blockquote":
-      return <blockquote key={path} className="my-6 border-l-4 border-[#04b093] pl-4 sm:pl-5 italic text-zinc-300 text-base sm:text-xl break-words [overflow-wrap:anywhere] leading-relaxed">{renderChildren(node, articleTitle, path)}</blockquote>;
+      return <blockquote key={path} className="my-6 rounded-r-xl border-y border-r border-zinc-200/80 border-l-4 border-[#04b093] bg-zinc-50 p-4 sm:p-5 italic text-black text-base sm:text-xl break-words [overflow-wrap:anywhere] leading-relaxed">{renderChildren(node, articleTitle, path)}</blockquote>;
     case "image":
       return <StructuredImage key={node.attrs.media_id || path} node={node} articleTitle={articleTitle} />;
     case "youtube":
       return <StructuredYouTube key={node.attrs.media_id || path} node={node} articleTitle={articleTitle} />;
     case "horizontalRule":
-      return <hr key={path} className="my-10 border-zinc-700" />;
+      return <hr key={path} className="my-10 border-black/20" />;
     case "hardBreak":
       return <br key={path} />;
     default:
@@ -124,11 +124,11 @@ function renderNode(
 
 function renderText(node: StructuredTextNode): ReactNode {
   return (node.marks || []).reduce<ReactNode>((content, mark, index) => {
-    if (mark.type === "bold") return <strong key={index}>{content}</strong>;
+    if (mark.type === "bold") return <strong key={index} className="font-black text-black">{content}</strong>;
     if (mark.type === "italic") return <em key={index}>{content}</em>;
     if (mark.type === "link") {
       const href = typeof mark.attrs?.href === "string" ? safeTextLink(mark.attrs.href) : null;
-      if (href) return <a key={index} href={href} className="text-[#04b093] underline hover:text-white break-all [overflow-wrap:anywhere]">{content}</a>;
+      if (href) return <a key={index} href={href} className="font-bold text-[#04b093] underline decoration-2 underline-offset-2 hover:text-black break-all [overflow-wrap:anywhere]">{content}</a>;
     }
     return content;
   }, node.text);
@@ -165,10 +165,12 @@ function StructuredImage({
   return (
     <figure className="my-8">
       {/* Snapshot hosts are dynamic, so a validated native image avoids an unrestricted Next.js allowlist. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={alt} className="h-auto w-full rounded-xl object-contain" loading="lazy" />
+      <div className="overflow-hidden rounded-2xl border-3 border-black bg-zinc-100 shadow-[8px_8px_0_0_#000,0_16px_32px_rgba(0,0,0,0.18)]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={src} alt={alt} className="h-auto w-full object-contain" loading="lazy" />
+      </div>
       {node.attrs.caption?.trim() && (
-        <figcaption className="mt-3 text-center text-sm text-zinc-500">
+        <figcaption className="mt-3 text-center text-sm font-semibold text-zinc-700">
           {node.attrs.caption}
         </figcaption>
       )}
@@ -187,7 +189,7 @@ function StructuredYouTube({
   if (!embedUrl) return null;
 
   return (
-    <div className="relative my-8 aspect-video overflow-hidden rounded-xl bg-black">
+    <div className="relative my-8 aspect-video overflow-hidden rounded-2xl border-3 border-black bg-black shadow-[8px_8px_0_0_#000,0_16px_32px_rgba(0,0,0,0.18)]">
       <iframe
         src={embedUrl}
         title={"YouTube video for " + articleTitle}
