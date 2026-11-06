@@ -2,13 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Film,
-  Image as ImageIcon,
-  Pause,
   Play,
   Volume2,
   VolumeX,
@@ -18,6 +13,8 @@ import { pageHeroService } from "@/services/page-hero.service";
 import type { HeroSlide, PageHero as PageHeroData, PageHeroKey } from "@/types/page-hero";
 import { buildYouTubeAutoplayEmbedUrl, getYouTubeMedia } from "@/lib/youtube";
 import YouTubeDialog from "@/components/media/youtube-dialog";
+
+const SLIDE_INTERVAL_MS = 6000;
 
 interface PageHeroProps {
   pageKey: PageHeroKey;
@@ -54,13 +51,11 @@ export default function PageHero({
 }: PageHeroProps) {
   const [hero, setHero] = useState<PageHeroData | null>(null);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const [activeVideoModal, setActiveVideoModal] = useState<{
     title: string;
     media: NonNullable<ReturnType<typeof getYouTubeMedia>>;
   } | null>(null);
   const [isVideoMuted, setIsVideoMuted] = useState(true);
-  const touchStartX = useRef<number | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -103,28 +98,16 @@ export default function PageHero({
   }, [slides, hero, fallbackTitle, fallbackSubtitle, fallbackDescription, fallbackImage]);
 
   const isMultiSlide = hero?.media_type === "slides" && slideContents.length > 0;
-
-  // Active slide index safety clamp
   const safeIndex = isMultiSlide ? Math.min(activeSlideIndex, slideContents.length - 1) : 0;
 
-  const nextSlide = useCallback(() => {
-    if (slideContents.length <= 1) return;
-    setActiveSlideIndex((prev) => (prev + 1) % slideContents.length);
-  }, [slideContents.length]);
-
-  const prevSlide = useCallback(() => {
-    if (slideContents.length <= 1) return;
-    setActiveSlideIndex((prev) => (prev - 1 + slideContents.length) % slideContents.length);
-  }, [slideContents.length]);
-
-  // Auto-advance multi-slide carousel every 6 seconds (if not paused by hover or modal)
+  // Automatic preset timer transitions for multi-slide carousel
   useEffect(() => {
-    if (!isMultiSlide || slideContents.length <= 1 || isPaused || activeVideoModal) return;
+    if (!isMultiSlide || slideContents.length <= 1 || activeVideoModal) return;
     const timer = setInterval(() => {
       setActiveSlideIndex((prev) => (prev + 1) % slideContents.length);
-    }, 6000);
+    }, SLIDE_INTERVAL_MS);
     return () => clearInterval(timer);
-  }, [isMultiSlide, slideContents.length, isPaused, activeVideoModal]);
+  }, [isMultiSlide, slideContents.length, activeVideoModal]);
 
   // Resolve active slide content or fallback content
   const content = useMemo((): HeroContent => {
@@ -191,6 +174,12 @@ export default function PageHero({
       : overlayPosition === "right"
       ? "items-end text-right"
       : "items-start text-left";
+  const rowAlignment =
+    overlayPosition === "center"
+      ? "justify-center"
+      : overlayPosition === "right"
+      ? "justify-end"
+      : "justify-start";
 
   const overlayStrength =
     typeof hero?.overlay_strength === "number" &&
@@ -204,32 +193,12 @@ export default function PageHero({
   const youtubeMedia = isVideo ? getYouTubeMedia(content.videoUrl) : null;
   const directVideoUrl = isVideo && !youtubeMedia ? content.videoUrl : null;
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (slideContents.length <= 1) return;
-    touchStartX.current = e.touches[0]?.clientX ?? null;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (slideContents.length <= 1 || touchStartX.current === null) return;
-    const endX = e.changedTouches[0]?.clientX ?? touchStartX.current;
-    const deltaX = endX - touchStartX.current;
-    touchStartX.current = null;
-    if (Math.abs(deltaX) > 45) {
-      if (deltaX < 0) nextSlide();
-      else prevSlide();
-    }
-  };
-
   return (
     <section
       className={
-        "relative flex min-h-[440px] sm:min-h-[500px] items-center overflow-hidden border-b-2 border-black px-6 pb-20 pt-32 sm:px-12 lg:px-20 transition-colors duration-500 " +
+        "relative flex min-h-[440px] sm:min-h-[500px] items-center overflow-hidden border-b-2 border-black px-6 pb-16 pt-32 sm:px-12 lg:px-20 transition-colors duration-500 " +
         (hasImage || isVideo ? "bg-black text-white" : "bg-[#04b093] text-black")
       }
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
       aria-roledescription={isMultiSlide ? "carousel" : undefined}
       aria-label={`${content.title} Hero Section`}
     >
@@ -248,7 +217,7 @@ export default function PageHero({
                 key={slideItem.id ?? idx}
                 aria-hidden={!isSlideActive}
                 className={
-                  "absolute inset-0 transition-all duration-700 ease-out " +
+                  "absolute inset-0 transition-all duration-1000 ease-in-out " +
                   (isSlideActive
                     ? "opacity-100 scale-100 z-[1]"
                     : "opacity-0 scale-105 z-0 pointer-events-none")
@@ -320,7 +289,7 @@ export default function PageHero({
         </div>
       )}
 
-      {/* Deep Multi-Layer Vignette for 100% Readability */}
+      {/* Configurable Overlay Opacity Layer */}
       {(hasImage || isVideo) && (
         <>
           <div
@@ -329,11 +298,8 @@ export default function PageHero({
             aria-hidden="true"
           />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-black via-black/75 to-black/40 z-[3]"
-            aria-hidden="true"
-          />
-          <div
-            className="absolute inset-0 bg-radial-gradient from-transparent via-black/40 to-black/90 z-[3]"
+            className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-[3] transition-opacity duration-500"
+            style={{ opacity: Math.min(1, overlay + 0.15) }}
             aria-hidden="true"
           />
         </>
@@ -341,9 +307,9 @@ export default function PageHero({
 
       {/* Content Container */}
       <div className={"relative z-10 mx-auto flex w-full max-w-5xl flex-col " + textAlignment}>
-        {/* Eyebrow / Media Type Badge & Carousel Counter */}
-        <div className="flex flex-wrap items-center gap-2.5">
-          {content.subtitle && (
+        {/* Eyebrow / Subtitle */}
+        {content.subtitle && (
+          <div className={`flex flex-wrap items-center gap-2.5 ${rowAlignment}`}>
             <span
               className={
                 "rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-[0.22em] shadow-md transition-all " +
@@ -352,32 +318,13 @@ export default function PageHero({
             >
               {content.subtitle}
             </span>
-          )}
-
-          {isMultiSlide && (
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-white border border-white/20">
-              {content.mediaType === "video" ? (
-                <>
-                  <Film className="h-3 w-3 text-[#04b093]" />
-                  <span>VIDEO SLIDE</span>
-                </>
-              ) : content.mediaType === "image" ? (
-                <>
-                  <ImageIcon className="h-3 w-3 text-[#04b093]" />
-                  <span>PHOTO SLIDE</span>
-                </>
-              ) : null}
-              <span className="text-zinc-400 ml-1">
-                {safeIndex + 1}/{slideContents.length}
-              </span>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Main Title */}
         <h1
           className={
-            "mt-4 max-w-4xl text-4xl font-black uppercase tracking-tight sm:text-6xl lg:text-7xl leading-none transition-all duration-300 " +
+            "mt-4 max-w-4xl text-4xl font-black uppercase tracking-tight sm:text-6xl lg:text-7xl leading-none transition-all duration-500 " +
             (hasImage || isVideo
               ? "text-white drop-shadow-[0_4px_24px_rgba(0,0,0,1)]"
               : "text-black")
@@ -390,7 +337,7 @@ export default function PageHero({
         {content.description && (
           <p
             className={
-              "mt-5 max-w-3xl text-base sm:text-xl font-bold leading-relaxed transition-all duration-300 " +
+              "mt-5 max-w-3xl text-base sm:text-xl font-bold leading-relaxed transition-all duration-500 " +
               (hasImage || isVideo
                 ? "text-zinc-100 drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
                 : "text-black/90")
@@ -401,7 +348,7 @@ export default function PageHero({
         )}
 
         {/* Action Controls & Interactive Player */}
-        <div className="mt-8 flex flex-wrap items-center gap-4">
+        <div className={`mt-8 flex flex-wrap items-center gap-4 ${rowAlignment}`}>
           <SafeHeroAction label={content.ctaLabel} url={content.ctaUrl} />
 
           {isVideo && (
@@ -425,82 +372,6 @@ export default function PageHero({
           )}
         </div>
       </div>
-
-      {/* Multi-Slide Carousel Controls (Arrows, Indicators, Auto-play indicator) */}
-      {isMultiSlide && slideContents.length > 1 && (
-        <>
-          {/* Previous / Next Arrow Controls */}
-          <div className="absolute inset-y-0 left-3 sm:left-6 z-20 flex items-center pointer-events-none">
-            <button
-              type="button"
-              onClick={prevSlide}
-              aria-label="Previous slide"
-              className="pointer-events-auto flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-md transition-all hover:bg-[#04b093] hover:text-black hover:scale-110 active:scale-95 shadow-xl cursor-pointer"
-            >
-              <ChevronLeft className="h-6 w-6" />
-            </button>
-          </div>
-
-          <div className="absolute inset-y-0 right-3 sm:right-6 z-20 flex items-center pointer-events-none">
-            <button
-              type="button"
-              onClick={nextSlide}
-              aria-label="Next slide"
-              className="pointer-events-auto flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-md transition-all hover:bg-[#04b093] hover:text-black hover:scale-110 active:scale-95 shadow-xl cursor-pointer"
-            >
-              <ChevronRight className="h-6 w-6" />
-            </button>
-          </div>
-
-          {/* Bottom Pagination Strip & Media Type Indicators */}
-          <div className="absolute bottom-5 inset-x-0 z-20 flex flex-col items-center gap-2 pointer-events-none">
-            <div className="pointer-events-auto flex items-center gap-2 rounded-full border border-white/20 bg-black/70 backdrop-blur-md px-4 py-2 shadow-xl">
-              {slides.map((s, idx) => {
-                const isActive = idx === safeIndex;
-                return (
-                  <button
-                    key={s.id}
-                    type="button"
-                    onClick={() => setActiveSlideIndex(idx)}
-                    aria-label={`Go to slide ${idx + 1}: ${s.title || "Slide"}`}
-                    aria-current={isActive ? "true" : undefined}
-                    className={
-                      "group flex items-center gap-1.5 rounded-full transition-all duration-300 py-1 cursor-pointer " +
-                      (isActive
-                        ? "bg-[#04b093] text-black px-3 font-black text-xs shadow-md"
-                        : "text-zinc-400 hover:text-white px-2 text-[11px]")
-                    }
-                  >
-                    {s.media_type === "video" ? (
-                      <Film className={`h-3 w-3 ${isActive ? "text-black" : "text-zinc-400"}`} />
-                    ) : (
-                      <ImageIcon className={`h-3 w-3 ${isActive ? "text-black" : "text-zinc-400"}`} />
-                    )}
-                    <span>{idx + 1}</span>
-                    {isActive && (
-                      <span className="hidden sm:inline-block max-w-[120px] truncate uppercase text-[10px] tracking-wider">
-                        {s.title || `Item ${idx + 1}`}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-
-              <div className="h-3 w-[1px] bg-white/20 mx-1" />
-
-              <button
-                type="button"
-                onClick={() => setIsPaused(!isPaused)}
-                aria-label={isPaused ? "Resume auto play" : "Pause auto play"}
-                className="text-zinc-300 hover:text-white transition-colors p-1 cursor-pointer"
-                title={isPaused ? "Carousel paused (click to play)" : "Carousel running (click to pause)"}
-              >
-                {isPaused ? <Play className="h-3 w-3 fill-current" /> : <Pause className="h-3 w-3" />}
-              </button>
-            </div>
-          </div>
-        </>
-      )}
 
       {/* Video Modal Player (if user clicked Watch Video on a YouTube slide) */}
       {activeVideoModal && (
