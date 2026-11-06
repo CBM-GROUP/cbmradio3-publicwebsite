@@ -13,7 +13,6 @@ import {
   Pause,
   Play,
   Radio,
-  Sparkles,
   Volume2,
   VolumeX,
 } from "lucide-react";
@@ -22,6 +21,7 @@ import { pageHeroService } from "@/services/page-hero.service";
 import type { HeroSlide, PageHero as PageHeroData } from "@/types/page-hero";
 import { buildYouTubeAutoplayEmbedUrl, getYouTubeMedia } from "@/lib/youtube";
 import YouTubeDialog from "@/components/media/youtube-dialog";
+import LiveWireMarquee from "@/components/live-wire-marquee";
 
 const FALLBACK_HERO = {
   title: "Moving African Sound, Culture & Faith Forward.",
@@ -308,26 +308,8 @@ export default function HomeHero() {
         aria-hidden="true"
       />
 
-      {/* 5. TOP STATUS & BRANDING STRIP (Clean & Dignified — No frequencies) */}
-      <div className="relative z-20 w-full border-b border-white/10 bg-black/50 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 sm:px-8 lg:px-12">
-          <div className="flex items-center gap-2.5">
-            <span className="flex size-2 rounded-full bg-[#04b093] animate-pulse" />
-            <span className="text-[0.68rem] font-black uppercase tracking-[0.25em] text-[#04b093]">
-              CBM DIGITAL RADIO
-            </span>
-            <span className="hidden sm:inline text-white/30">•</span>
-            <span className="hidden sm:inline text-[0.65rem] font-bold uppercase tracking-wider text-zinc-400">
-              KAMPALA &amp; WORLDWIDE
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 text-[0.65rem] font-black uppercase tracking-widest text-zinc-300">
-            <Sparkles size={12} className="text-[#04b093]" />
-            <span>24/7 DIGITAL STREAM</span>
-          </div>
-        </div>
-      </div>
+      {/* 5. TOP MOVING LIVE WIRE (Articles, Programs, Episodes & Charts) */}
+      <LiveWireMarquee />
 
       {/* 6. MAIN HERO STAGE CONTENT */}
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-5 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
