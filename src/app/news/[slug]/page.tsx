@@ -216,11 +216,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </div>
           </header>
 
-          {/* Featured Cover Image Stage */}
 
 
           {/* Editorial Reading Chamber */}
-          <article className="overflow-hidden rounded-3xl border-3 border-black bg-black p-6 text-white shadow-[10px_10px_0_0_#000] sm:p-10 md:p-12 [overflow-wrap:anywhere]">
+
+          {/* Featured Cover Image Stage */}
+
+          <article className="overflow-hidden rounded-3xl border-3 border-black bg-white p-6 text-black shadow-[3px_2px_0_0_#000] sm:p-10 md:p-12 [overflow-wrap:anywhere]">
             {article.cover_image && (
               <div className="relative aspect-video overflow-hidden rounded-3xl border-3 border-black bg-black shadow-[10px_10px_0_0_#000]">
                 <Image
