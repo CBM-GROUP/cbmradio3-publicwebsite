@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowUpRight,
-  Flame,
   Headphones,
   Play,
   Sparkles,
@@ -18,6 +17,7 @@ import { useEpisodePlayerStore } from "@/store/episodePlayerStore";
 import type { EpisodeSummary } from "@/types/program";
 import type { PageSection } from "@/types/hero";
 import type { Chart } from "@/types/chart";
+import LiveWireMarquee from "@/components/live-wire-marquee";
 
 import StudioImage from "../../public/cbm_images/behind-the-scenes-studio.png";
 
@@ -177,36 +177,7 @@ export default function HeroSection() {
   return (
     <section className="relative border-b-2 border-black bg-[#04b093] text-black">
       {/* Billboard Editorial Marquee News Wire */}
-      <div className="border-b-2 border-black bg-black py-2.5 overflow-hidden text-white">
-        <div className="animate-marquee flex items-center gap-8 whitespace-nowrap text-[0.68rem] font-black uppercase tracking-[0.25em]">
-          <span className="flex items-center gap-2 text-[#04b093]">
-            <Flame size={13} className="fill-[#04b093]" />
-            HOT PODCAST DROPS
-          </span>
-          <span className="text-white/30">•</span>
-          <span>ORIGINAL EAST AFRICAN TALK & AUDIO SERIES</span>
-          <span className="text-white/30">•</span>
-          <span className="text-[#04b093] font-black">STREAM ON DEMAND</span>
-          <span className="text-white/30">•</span>
-          <span>CBM RADIO MEDIA NETWORK</span>
-          <span className="text-white/30">•</span>
-          <span>FAITH · CULTURE · CONVERSATIONS · VOICES</span>
-          <span className="text-white/30">•</span>
-          <span className="flex items-center gap-2 text-[#04b093]">
-            <Flame size={13} className="fill-[#04b093]" />
-            HOT PODCAST DROPS
-          </span>
-          <span className="text-white/30">•</span>
-          <span>ORIGINAL EAST AFRICAN TALK & AUDIO SERIES</span>
-          <span className="text-white/30">•</span>
-          <span className="text-[#04b093] font-black">STREAM ON DEMAND</span>
-          <span className="text-white/30">•</span>
-          <span>CBM RADIO MEDIA NETWORK</span>
-          <span className="text-white/30">•</span>
-          <span>FAITH · CULTURE · CONVERSATIONS · VOICES</span>
-          <span className="text-white/30">•</span>
-        </div>
-      </div>
+      <LiveWireMarquee className="border-black" />
 
       {/* Main Billboard Stage */}
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-12 lg:px-12 lg:py-14">

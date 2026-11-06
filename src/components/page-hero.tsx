@@ -6,7 +6,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ChevronLeft,
   ChevronRight,
-  ExternalLink,
   Film,
   Image as ImageIcon,
   Pause,
@@ -17,7 +16,7 @@ import {
 
 import { pageHeroService } from "@/services/page-hero.service";
 import type { HeroSlide, PageHero as PageHeroData, PageHeroKey } from "@/types/page-hero";
-import { getYouTubeEmbedUrl, getYouTubeMedia } from "@/lib/youtube";
+import { buildYouTubeAutoplayEmbedUrl, getYouTubeMedia } from "@/lib/youtube";
 import YouTubeDialog from "@/components/media/youtube-dialog";
 
 interface PageHeroProps {
@@ -61,13 +60,17 @@ export default function PageHero({
     media: NonNullable<ReturnType<typeof getYouTubeMedia>>;
   } | null>(null);
   const [isVideoMuted, setIsVideoMuted] = useState(true);
+  const touchStartX = useRef<number | null>(null);
 
   useEffect(() => {
     let isMounted = true;
     pageHeroService
       .getPageHero(pageKey)
       .then((result) => {
-        if (isMounted && isUsableHero(result, pageKey)) setHero(result);
+        if (isMounted) {
+          setHero(isUsableHero(result, pageKey) ? result : null);
+          setActiveSlideIndex(0);
+        }
       })
       .catch(() => {
         if (isMounted) setHero(null);
@@ -87,39 +90,46 @@ export default function PageHero({
       .sort((a, b) => a.display_order - b.display_order || a.id - b.id);
   }, [hero]);
 
-  const isMultiSlide = hero?.media_type === "slides" && slides.length > 0;
+  const slideContents = useMemo(() => {
+    if (!hero || !slides.length) return [];
+    return slides.map((slide) =>
+      contentFromSlide(slide, hero, {
+        title: fallbackTitle,
+        subtitle: fallbackSubtitle,
+        description: fallbackDescription,
+        image: fallbackImage,
+      }),
+    );
+  }, [slides, hero, fallbackTitle, fallbackSubtitle, fallbackDescription, fallbackImage]);
+
+  const isMultiSlide = hero?.media_type === "slides" && slideContents.length > 0;
 
   // Active slide index safety clamp
-  const safeIndex = isMultiSlide ? Math.min(activeSlideIndex, slides.length - 1) : 0;
+  const safeIndex = isMultiSlide ? Math.min(activeSlideIndex, slideContents.length - 1) : 0;
 
   const nextSlide = useCallback(() => {
-    if (!slides.length) return;
-    setActiveSlideIndex((prev) => (prev + 1) % slides.length);
-  }, [slides.length]);
+    if (slideContents.length <= 1) return;
+    setActiveSlideIndex((prev) => (prev + 1) % slideContents.length);
+  }, [slideContents.length]);
 
   const prevSlide = useCallback(() => {
-    if (!slides.length) return;
-    setActiveSlideIndex((prev) => (prev - 1 + slides.length) % slides.length);
-  }, [slides.length]);
+    if (slideContents.length <= 1) return;
+    setActiveSlideIndex((prev) => (prev - 1 + slideContents.length) % slideContents.length);
+  }, [slideContents.length]);
 
   // Auto-advance multi-slide carousel every 6 seconds (if not paused by hover or modal)
   useEffect(() => {
-    if (!isMultiSlide || slides.length <= 1 || isPaused || activeVideoModal) return;
+    if (!isMultiSlide || slideContents.length <= 1 || isPaused || activeVideoModal) return;
     const timer = setInterval(() => {
-      setActiveSlideIndex((prev) => (prev + 1) % slides.length);
+      setActiveSlideIndex((prev) => (prev + 1) % slideContents.length);
     }, 6000);
     return () => clearInterval(timer);
-  }, [isMultiSlide, slides.length, isPaused, activeVideoModal]);
+  }, [isMultiSlide, slideContents.length, isPaused, activeVideoModal]);
 
   // Resolve active slide content or fallback content
   const content = useMemo((): HeroContent => {
     if (isMultiSlide) {
-      const activeSlide = slides[safeIndex];
-      return contentFromSlide(activeSlide, hero!, {
-        title: fallbackTitle,
-        subtitle: fallbackSubtitle,
-        description: fallbackDescription,
-      });
+      return slideContents[safeIndex];
     }
 
     if (!hero) {
@@ -135,19 +145,29 @@ export default function PageHero({
       };
     }
 
+    const heroImage =
+      getSafeImageUrl(
+        hero.resolved_image_url || hero.uploaded_image || hero.external_image_url,
+      ) || (hero.media_type === "slides" ? fallbackImage : "");
+
     return {
       title: hero.title || fallbackTitle,
       subtitle: hero.subtitle || fallbackSubtitle,
       description: hero.description || fallbackDescription,
-      mediaType: hero.media_type === "slides" ? "none" : hero.media_type,
-      imageUrl: getSafeImageUrl(hero.resolved_image_url),
+      mediaType:
+        hero.media_type === "slides"
+          ? heroImage
+            ? "image"
+            : "none"
+          : hero.media_type,
+      imageUrl: heroImage,
       videoUrl: getSafeWebUrl(hero.video_url),
-      ctaLabel: hero.cta_label || "",
-      ctaUrl: hero.cta_url || "",
+      ctaLabel: hero.cta_label || fallbackCtaLabel,
+      ctaUrl: hero.cta_url || fallbackCtaUrl,
     };
   }, [
     isMultiSlide,
-    slides,
+    slideContents,
     safeIndex,
     hero,
     fallbackTitle,
@@ -184,36 +204,89 @@ export default function PageHero({
   const youtubeMedia = isVideo ? getYouTubeMedia(content.videoUrl) : null;
   const directVideoUrl = isVideo && !youtubeMedia ? content.videoUrl : null;
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (slideContents.length <= 1) return;
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (slideContents.length <= 1 || touchStartX.current === null) return;
+    const endX = e.changedTouches[0]?.clientX ?? touchStartX.current;
+    const deltaX = endX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(deltaX) > 45) {
+      if (deltaX < 0) nextSlide();
+      else prevSlide();
+    }
+  };
+
   return (
     <section
       className={
-        "relative flex min-h-[440px] sm:min-h-[500px] items-center overflow-hidden border-b-2 border-black px-6 pb-16 pt-32 sm:px-12 lg:px-20 transition-colors duration-500 " +
+        "relative flex min-h-[440px] sm:min-h-[500px] items-center overflow-hidden border-b-2 border-black px-6 pb-20 pt-32 sm:px-12 lg:px-20 transition-colors duration-500 " +
         (hasImage || isVideo ? "bg-black text-white" : "bg-[#04b093] text-black")
       }
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       aria-roledescription={isMultiSlide ? "carousel" : undefined}
       aria-label={`${content.title} Hero Section`}
     >
-      {/* 1. Background Image Media */}
-      {hasImage && (
-        <div className="absolute inset-0 z-0">
-          <Image
-            key={content.imageUrl}
-            src={content.imageUrl}
-            alt={content.title}
-            fill
-            sizes="100vw"
-            priority
-            unoptimized
-            className={"object-cover transition-opacity duration-700 " + imagePosition}
-          />
+      {/* 1. Background Media Layer (Layered Crossfade for Multi-Slide Carousels) */}
+      {isMultiSlide ? (
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          {slideContents.map((slideItem, idx) => {
+            const isSlideActive = idx === safeIndex;
+            const slideHasImage =
+              slideItem.mediaType === "image" && Boolean(slideItem.imageUrl);
+
+            if (!slideHasImage) return null;
+
+            return (
+              <div
+                key={slideItem.id ?? idx}
+                aria-hidden={!isSlideActive}
+                className={
+                  "absolute inset-0 transition-all duration-700 ease-out " +
+                  (isSlideActive
+                    ? "opacity-100 scale-100 z-[1]"
+                    : "opacity-0 scale-105 z-0 pointer-events-none")
+                }
+              >
+                <Image
+                  src={slideItem.imageUrl}
+                  alt={slideItem.title}
+                  fill
+                  sizes="100vw"
+                  priority={idx === 0}
+                  unoptimized
+                  className={"object-cover " + imagePosition}
+                />
+              </div>
+            );
+          })}
         </div>
+      ) : (
+        hasImage && (
+          <div className="absolute inset-0 z-0">
+            <Image
+              key={content.imageUrl}
+              src={content.imageUrl}
+              alt={content.title}
+              fill
+              sizes="100vw"
+              priority
+              unoptimized
+              className={"object-cover transition-opacity duration-700 " + imagePosition}
+            />
+          </div>
+        )
       )}
 
       {/* 2. Background Direct HTML5 Video Media (e.g. mp4, webm) */}
       {directVideoUrl && (
-        <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute inset-0 z-[1] overflow-hidden">
           <video
             key={directVideoUrl}
             src={directVideoUrl}
@@ -236,9 +309,10 @@ export default function PageHero({
 
       {/* 3. Background YouTube Video Ambient / Poster Media */}
       {youtubeMedia && (
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
+        <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none opacity-45">
           <iframe
-            src={`${youtubeMedia.embedUrl}?autoplay=1&mute=1&controls=0&loop=1&playlist=${youtubeMedia.videoId}&playsinline=1`}
+            key={youtubeMedia.videoId}
+            src={buildYouTubeAutoplayEmbedUrl(youtubeMedia)}
             title={content.title}
             className="h-[140%] w-[140%] -translate-x-[15%] -translate-y-[15%] object-cover pointer-events-none"
             allow="autoplay; encrypted-media"
@@ -250,16 +324,16 @@ export default function PageHero({
       {(hasImage || isVideo) && (
         <>
           <div
-            className="absolute inset-0 bg-black z-[1] transition-opacity duration-500"
+            className="absolute inset-0 bg-black z-[2] transition-opacity duration-500"
             style={{ opacity: overlay }}
             aria-hidden="true"
           />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-black via-black/75 to-black/40 z-[2]"
+            className="absolute inset-0 bg-gradient-to-t from-black via-black/75 to-black/40 z-[3]"
             aria-hidden="true"
           />
           <div
-            className="absolute inset-0 bg-radial-gradient from-transparent via-black/40 to-black/90 z-[2]"
+            className="absolute inset-0 bg-radial-gradient from-transparent via-black/40 to-black/90 z-[3]"
             aria-hidden="true"
           />
         </>
@@ -294,7 +368,7 @@ export default function PageHero({
                 </>
               ) : null}
               <span className="text-zinc-400 ml-1">
-                {safeIndex + 1}/{slides.length}
+                {safeIndex + 1}/{slideContents.length}
               </span>
             </div>
           )}
@@ -303,7 +377,7 @@ export default function PageHero({
         {/* Main Title */}
         <h1
           className={
-            "mt-4 max-w-4xl text-4xl font-black uppercase tracking-tight sm:text-6xl lg:text-7xl leading-none transition-all " +
+            "mt-4 max-w-4xl text-4xl font-black uppercase tracking-tight sm:text-6xl lg:text-7xl leading-none transition-all duration-300 " +
             (hasImage || isVideo
               ? "text-white drop-shadow-[0_4px_24px_rgba(0,0,0,1)]"
               : "text-black")
@@ -316,7 +390,7 @@ export default function PageHero({
         {content.description && (
           <p
             className={
-              "mt-5 max-w-3xl text-base sm:text-xl font-bold leading-relaxed " +
+              "mt-5 max-w-3xl text-base sm:text-xl font-bold leading-relaxed transition-all duration-300 " +
               (hasImage || isVideo
                 ? "text-zinc-100 drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
                 : "text-black/90")
@@ -353,7 +427,7 @@ export default function PageHero({
       </div>
 
       {/* Multi-Slide Carousel Controls (Arrows, Indicators, Auto-play indicator) */}
-      {isMultiSlide && slides.length > 1 && (
+      {isMultiSlide && slideContents.length > 1 && (
         <>
           {/* Previous / Next Arrow Controls */}
           <div className="absolute inset-y-0 left-3 sm:left-6 z-20 flex items-center pointer-events-none">
@@ -391,7 +465,7 @@ export default function PageHero({
                     aria-label={`Go to slide ${idx + 1}: ${s.title || "Slide"}`}
                     aria-current={isActive ? "true" : undefined}
                     className={
-                      "group flex items-center gap-1.5 rounded-full transition-all duration-300 py-1 " +
+                      "group flex items-center gap-1.5 rounded-full transition-all duration-300 py-1 cursor-pointer " +
                       (isActive
                         ? "bg-[#04b093] text-black px-3 font-black text-xs shadow-md"
                         : "text-zinc-400 hover:text-white px-2 text-[11px]")
@@ -418,7 +492,7 @@ export default function PageHero({
                 type="button"
                 onClick={() => setIsPaused(!isPaused)}
                 aria-label={isPaused ? "Resume auto play" : "Pause auto play"}
-                className="text-zinc-300 hover:text-white transition-colors p-1"
+                className="text-zinc-300 hover:text-white transition-colors p-1 cursor-pointer"
                 title={isPaused ? "Carousel paused (click to play)" : "Carousel running (click to pause)"}
               >
                 {isPaused ? <Play className="h-3 w-3 fill-current" /> : <Pause className="h-3 w-3" />}
@@ -462,15 +536,24 @@ function isUsableHero(
 function contentFromSlide(
   slide: HeroSlide,
   hero: PageHeroData,
-  fallback: { title: string; subtitle: string; description: string },
+  fallback: { title: string; subtitle: string; description: string; image: string },
 ): HeroContent {
+  const resolvedSlideImage =
+    getSafeImageUrl(
+      slide.resolved_image_url || slide.uploaded_image || slide.external_image_url,
+    ) ||
+    getSafeImageUrl(
+      hero.resolved_image_url || hero.uploaded_image || hero.external_image_url,
+    ) ||
+    fallback.image;
+
   return {
     id: slide.id,
     title: slide.title || hero.title || fallback.title,
     subtitle: slide.subtitle || hero.subtitle || fallback.subtitle,
     description: slide.description || hero.description || fallback.description,
     mediaType: slide.media_type,
-    imageUrl: getSafeImageUrl(slide.resolved_image_url),
+    imageUrl: resolvedSlideImage,
     videoUrl: getSafeWebUrl(slide.video_url),
     ctaLabel: slide.cta_label || hero.cta_label || "",
     ctaUrl: slide.cta_url || hero.cta_url || "",
@@ -495,9 +578,10 @@ function isUsableSlide(value: unknown): value is HeroSlide {
 
 function getSafeImageUrl(value: unknown) {
   if (typeof value !== "string" || !value) return "";
-  if (value.startsWith("/") && !value.startsWith("//")) return value;
+  const trimmed = value.trim();
+  if (trimmed.startsWith("/") && !trimmed.startsWith("//")) return trimmed;
   try {
-    const parsed = new URL(value);
+    const parsed = new URL(trimmed);
     return parsed.protocol === "http:" || parsed.protocol === "https:"
       ? parsed.href
       : "";
@@ -508,8 +592,10 @@ function getSafeImageUrl(value: unknown) {
 
 function getSafeWebUrl(value: unknown) {
   if (typeof value !== "string" || !value) return "";
+  const trimmed = value.trim();
+  if (trimmed.startsWith("/") && !trimmed.startsWith("//")) return trimmed;
   try {
-    const parsed = new URL(value);
+    const parsed = new URL(trimmed);
     return parsed.protocol === "http:" || parsed.protocol === "https:"
       ? parsed.href
       : "";
