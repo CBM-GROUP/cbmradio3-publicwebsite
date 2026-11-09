@@ -45,7 +45,7 @@ export default function FloatingPlayerDock() {
   return (
     <>
       {/* Floating Bottom Console Dock */}
-      <div className="fixed bottom-4 inset-x-4 z-40 mx-auto max-w-4xl animate-in fade-in slide-in-from-bottom-5 duration-300">
+      <div className="fixed bottom-4 inset-x-4 z-40 mx-auto max-w-4xl mb-[env(safe-area-inset-bottom,0px)] animate-in fade-in slide-in-from-bottom-5 duration-300">
         <div className="border border-[#04b093]/30 bg-[#0a0c0f]/95 p-3.5 sm:p-4 text-white shadow-[0_20px_50px_rgba(0,0,0,0.9)] backdrop-blur-xl">
           
           {/* Top Progress Track */}
@@ -125,15 +125,25 @@ export default function FloatingPlayerDock() {
 
               {/* Open Video Player Modal */}
               {media && (
-                <button
-                  type="button"
-                  onClick={openVideoModal}
-                  aria-label="Open full video modal"
-                  className="hidden sm:inline-flex items-center gap-1.5 border border-white/20 bg-white/5 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white hover:border-[#04b093] hover:text-[#04b093] transition"
-                >
-                  <Maximize2 size={13} />
-                  <span>Watch Video</span>
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={openVideoModal}
+                    aria-label="Open full video modal"
+                    className="hidden sm:inline-flex items-center gap-1.5 border border-white/20 bg-white/5 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white hover:border-[#04b093] hover:text-[#04b093] transition"
+                  >
+                    <Maximize2 size={13} />
+                    <span>Watch Video</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={openVideoModal}
+                    aria-label="Watch video"
+                    className="grid sm:hidden size-9 place-items-center border border-white/20 bg-white/5 text-white hover:border-[#04b093] hover:text-[#04b093] transition"
+                  >
+                    <Maximize2 size={14} />
+                  </button>
+                </>
               )}
 
               {/* View Episode Page Link */}

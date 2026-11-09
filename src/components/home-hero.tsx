@@ -304,12 +304,12 @@ export default function HomeHero() {
           </div>
 
           {/* Massive Display Headline */}
-          <h1 className="mt-5 text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.95] text-white drop-shadow-md transition-all duration-500">
+          <h1 className="mt-5 text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.95] text-white drop-shadow-md transition-all duration-500 break-words [overflow-wrap:anywhere]">
             {title}
           </h1>
 
           {/* Subtitle / Lead Deck */}
-          <p className="mt-5 max-w-2xl text-base sm:text-lg leading-relaxed text-zinc-200 font-medium drop-shadow transition-all duration-500">
+          <p className="mt-5 max-w-2xl text-base sm:text-lg leading-relaxed text-zinc-200 font-medium drop-shadow transition-all duration-500 break-words [overflow-wrap:anywhere]">
             {description}
           </p>
 

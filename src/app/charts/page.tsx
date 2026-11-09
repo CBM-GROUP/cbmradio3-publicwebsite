@@ -23,7 +23,7 @@ export default function ChartsPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-[#04b093] text-black">
+      <main className="min-h-screen overflow-x-clip bg-[#04b093] text-black">
         <PageHero
           pageKey="charts"
           fallbackTitle="Music Charts"
