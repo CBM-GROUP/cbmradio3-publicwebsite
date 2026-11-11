@@ -283,6 +283,12 @@ export default function Gallery() {
           --row-overlap: calc(var(--hex-h) * -0.5 + var(--hex-gap));
           --hex-row-gap: calc(var(--hex-size) * 0.5 + var(--hex-gap));
         }
+        @media (max-width: 374px) {
+          .honeycomb-section {
+            --hex-size: 68px;
+            --hex-gap: 3px;
+          }
+        }
         @media (min-width: 480px) {
           .honeycomb-section {
             --hex-size: 102px;

@@ -197,12 +197,12 @@ export default function HeroSection() {
             </div>
 
             {/* Massive Billboard Headline */}
-            <h1 className="mt-3 text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.98] text-black">
+            <h1 className="mt-3 text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.98] text-black break-words [overflow-wrap:anywhere]">
               {heroHeadline}
             </h1>
 
             {/* Lead Deck */}
-            <p className="mt-3 text-sm sm:text-base leading-relaxed text-black/85 font-semibold max-w-xl">
+            <p className="mt-3 text-sm sm:text-base leading-relaxed text-black/85 font-semibold max-w-xl break-words [overflow-wrap:anywhere]">
               {heroBody}
             </p>
           </div>

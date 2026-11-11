@@ -167,6 +167,32 @@ export default function TurntablePlayer({
     window.addEventListener("mouseup", handleMouseUp);
   };
 
+  const handleKnobTouchStart = (e: React.TouchEvent) => {
+    if (!e.touches.length) return;
+    setIsDraggingKnob(true);
+    const startY = e.touches[0].clientY;
+    const startVol = volume;
+
+    const handleTouchMove = (moveEvent: TouchEvent) => {
+      if (!moveEvent.touches.length) return;
+      const deltaY = startY - moveEvent.touches[0].clientY;
+      const newVol = Math.max(0, Math.min(1, startVol + deltaY / 150));
+      setVolume(Number(newVol.toFixed(2)));
+      if (isMuted) setIsMuted(false);
+    };
+
+    const handleTouchEnd = () => {
+      setIsDraggingKnob(false);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("touchcancel", handleTouchEnd);
+    };
+
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd);
+    window.addEventListener("touchcancel", handleTouchEnd);
+  };
+
   const uniqueId = useId();
 
   return (
@@ -559,6 +585,7 @@ export default function TurntablePlayer({
                 ref={knobRef}
                 onWheel={handleKnobWheel}
                 onMouseDown={handleKnobMouseDown}
+                onTouchStart={handleKnobTouchStart}
                 className="group relative size-9 sm:size-11 cursor-ns-resize rounded-full border-2 border-zinc-500 shadow-lg active:scale-95"
                 style={{
                   background: `

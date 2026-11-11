@@ -115,6 +115,26 @@ export default function TrendingCircularCarousel({
   });
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length > 0) {
+      touchStartXRef.current = e.touches[0].clientX;
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null || e.changedTouches.length === 0) return;
+    const diff = touchStartXRef.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) {
+        handleNext();
+      } else {
+        handlePrev();
+      }
+    }
+    touchStartXRef.current = null;
+  };
 
   // Load programs dynamically from the backend
   useEffect(() => {
@@ -257,7 +277,26 @@ export default function TrendingCircularCarousel({
             3D CIRCULAR MOVING CARDS ORBIT
             Self-rotating every 4 seconds; pushes forward into the front at center!
             ========================================================================= */}
-        <div className="relative mx-auto mt-6 sm:mt-10 flex min-h-[540px] sm:min-h-[600px] w-full max-w-5xl items-center justify-center [perspective:1400px] pt-4 sm:pt-6 pb-6">
+        <style>{`
+          .carousel-orbit {
+            --carousel-offset-x: 36%;
+          }
+          @media (min-width: 640px) {
+            .carousel-orbit {
+              --carousel-offset-x: 52%;
+            }
+          }
+          @media (min-width: 768px) {
+            .carousel-orbit {
+              --carousel-offset-x: 60%;
+            }
+          }
+        `}</style>
+        <div
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          className="carousel-orbit relative mx-auto mt-6 sm:mt-10 flex min-h-[540px] sm:min-h-[600px] w-full max-w-5xl items-center justify-center [perspective:1400px] pt-4 sm:pt-6 pb-6 touch-pan-y"
+        >
           {/* Circular Orbit Ground Shadow */}
           <div className="pointer-events-none absolute bottom-4 left-1/2 h-16 w-3/4 -translate-x-1/2 rounded-[50%] bg-black/25 blur-xl" />
 
@@ -274,10 +313,10 @@ export default function TrendingCircularCarousel({
                 "translate3d(0%, 10px, 100px) scale(1.06) rotateY(0deg) rotate(0deg)";
             } else if (isRight) {
               transformStyle =
-                "translate3d(60%, 36px, -90px) scale(0.82) rotateY(-20deg) rotate(3deg)";
+                "translate3d(var(--carousel-offset-x), 36px, -90px) scale(0.82) rotateY(-20deg) rotate(3deg)";
             } else if (isLeft) {
               transformStyle =
-                "translate3d(-60%, 36px, -90px) scale(0.82) rotateY(20deg) rotate(-3deg)";
+                "translate3d(calc(-1 * var(--carousel-offset-x)), 36px, -90px) scale(0.82) rotateY(20deg) rotate(-3deg)";
             }
 
             return (
